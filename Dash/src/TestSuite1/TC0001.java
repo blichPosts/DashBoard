@@ -30,7 +30,7 @@ public class TC0001 extends BaseClass
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Select OK to stop the webdriver and browser.");
+	    JOptionPane.showMessageDialog(frame, "Select OK. This is Bob edit.");
 		driver.close();
 		driver.quit();
 	}
