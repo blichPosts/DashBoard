@@ -1,0 +1,3 @@
+
+10/3/16 - added sleep in 'GoToOrderStatus()' in base class. Frame clash. Possibly happening because of 'Application Exception' error shown 
+          after login.

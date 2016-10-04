@@ -1,0 +1,374 @@
+package Dash;
+
+import java.io.File;
+import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class BaseClass
+{
+	public static WebDriver driver;
+	public static String baseUrl;
+	//public static String CMD_baseUrl = "https://commcareqa.tangoe.com/manage/login";
+	//public static String CMD_baseUrl = "http://dc1qacmdweb04:8080/manage/login/login.trq";
+	//public static String CMD_baseUrl = "https://qa1cmd.tangoe.com/manage/login/login.trq";
+	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";	
+	
+	// https://qa3.traq.com/manage/login/login.trq
+	
+	public static boolean testCaseStatus = false;
+	
+	// these are timeouts.
+	public static int ExtremeTimeout = 120;
+	public static int MainTimeout = 45;
+	public static int MediumTimeout = 15;	
+	public static int ShortTimeout = 5;
+	public static int MiniTimeout = 3;	
+	public static int TinyTimeout = 2;
+	
+	// command variables
+	//public static String commandUserName = "bob.lichtenfels@tangoe.com XX1";
+	//public static String commandPassword = "hop*ititmb9";	
+	
+	
+	public static String commandUserName = "shirley.banai@philips.com";
+	public static String commandPassword = "traq01";	
+	public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq";
+	
+	
+	//shirley.banai@philips.com
+	
+	public static JFrame frame;	
+	
+	// these are for accessing current project folder.
+	static File currentDirectory; 
+	public static String projectPath = ""; 
+
+	public enum Action // needed for base class methods. 
+	{
+		Add,
+		Remove
+	}
+
+	// ctor
+	public BaseClass()  
+	{
+		System.out.println("BASE CLASS CONSTRUCTOR...");
+		// projectPath = currentDirectory.getAbsolutePath();
+	}
+	
+	public static void ShowArray(String [] strArray)
+	{
+		for(int x = 0; x < strArray.length; x++)
+		{
+			System.out.println(x + " " + strArray[x]);
+		}
+	}
+	
+	// this takes in a string that is a running total called 'runningTotal' and a string that is 
+	// a value to add or subtract to/from the running total called 'valueToChange'.
+	// 1) create doubles that hold the running total and the value to add.
+	// 2) setup a decimal format.
+	// 3) add running total and value to add.
+	// 4) return string that has new running total
+	public static String GetNewTotal(String runningTotal, String valueToChange, Action actionType)
+	{
+		// convert to double and create a decimal format.
+		double tempTotalIn  = Double.valueOf(runningTotal).doubleValue();
+        double tempValueForAction  = Double.valueOf(valueToChange).doubleValue(); 
+	    DecimalFormat decFormat = new DecimalFormat("#.00");
+        
+        // add value to add sent in to running total and return.
+	    if(actionType == Action.Add)
+	    {
+	    	tempTotalIn += tempValueForAction;
+	    }
+	    else
+	    {	
+	    	tempTotalIn -= tempValueForAction;	    
+	    }
+
+	    return decFormat.format(tempTotalIn);
+	}		
+
+	// this is method that takes a decimal cost (2344.45) and converts is to full money text ($2,344.45).  
+	public static String CostMonthlyCalculatedConvertToFullText(String costMonthlyTotal)
+	{
+		
+		StringBuilder finalValue = new StringBuilder(); // this is the string that gets created. it is returned. 
+		// System.out.println(costMonthlyTotal); // DEBUG.
+		
+		int threeCntr = 1;
+		
+		// trim the monthly total into two parts with dollar part in element 0.  
+		String [] tempArray = costMonthlyTotal.split("\\.");
+		
+		// loop through the dollar part from right to left. starting at end, build the string to be returned with inserted "," where needed.   
+		for(int x = tempArray[0].length(); x > 0; x--)
+		{
+			finalValue.insert(0,tempArray[0].charAt(x - 1));
+			
+			if(threeCntr == 3 && x != 1) // insert "," if the x counter is not at he first number in the dollar part.
+			{
+				finalValue.insert(0,",");
+				threeCntr = 0;
+			}
+			threeCntr++;	
+		}
+
+		finalValue.append("." + tempArray[1]); // add the cents part to end 
+		finalValue.insert(0, "$"); // add dollar sign to front.
+		
+		return finalValue.toString();
+	}		
+	
+	public static void setUpDriver() throws Exception
+	{
+		//driver = new FirefoxDriver();
+		//System.setProperty("webdriver.ie.driver", path + "\\IEDriverServer.exe");
+		
+		currentDirectory = new File(".");
+		projectPath = currentDirectory.getAbsolutePath();
+		
+		System.setProperty("webdriver.chrome.driver", projectPath + "\\chromedriver.exe");
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--disable-extensions");
+		driver = new ChromeDriver(options);		
+
+		baseUrl = CMD_baseUrl;
+		driver.get(baseUrl);
+		
+		// maximize and configure timeouts
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+	}
+	
+	public static void loginAsAdmin()throws Exception
+	{
+		// wait for login button.
+		WaitForElementClickable(By.xpath("//input[@name='Login']"), MainTimeout, "Error waiting for Login Button element on login page.");
+	    
+		
+		driver.findElement(By.xpath("//input[@name='userName']")).clear();
+	    driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(commandUserName);	    
+	    driver.findElement(By.xpath("//input[@name='password']")).clear();
+	    driver.findElement(By.xpath("//input[@name='password']")).sendKeys(commandPassword);	    
+	    driver.findElement(By.xpath("//input[@name='Login']")).click();	    
+
+	    //input[@name='Login']
+		//WaitForElementClickable(By.xpath("//input[@class='login-button']"), MainTimeout, "Error waiting for Login Button element on login page.");		
+	    /*
+	    driver.findElement(By.xpath("(//input[@class='login-text-field'])[1]")).clear();
+	    driver.findElement(By.xpath("(//input[@class='login-text-field'])[1]")).sendKeys(commandUserName);	    
+	    driver.findElement(By.xpath("(//input[@class='login-text-field'])[2]")).clear();
+	    driver.findElement(By.xpath("(//input[@class='login-text-field'])[2]")).sendKeys(commandPassword);	    
+	    driver.findElement(By.xpath("//input[@class='login-button']")).click();
+	    */
+	}
+	
+
+	// bladdxx
+	// ////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////
+	// NOTE !!!!!!!!!!!!!!!!!!!!!!!! this is just a test for switching a frame in command.
+	// ////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////
+	// from the login page, go to the order status page.
+	public static void GoToOrderStatus() throws Exception
+	{
+	    WaitForElementClickable(By.id("menuMainProcure"),MainTimeout, "Failed wait in GoToOrderStatus");	    
+	    DebugTimeout(2, "Two second wait in 'GoToOrderStatus' - frame clash.");
+	    driver.findElement(By.id("menuMainProcure")).click();
+		
+	    WaitForElementPresent(By.id("menuMainProcure_Order_Status"),MainTimeout);	    
+	    driver.findElement(By.id("menuMainProcure_Order_Status")).click();
+	    
+	    // switch to the correct frame and wait for name text box.
+	    DebugTimeout(0, "Ready for frame switch");
+	    driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
+	    WaitForElementPresent(By.xpath("(.//*[@id='pad_rt_5']/input[1])[1]"), MainTimeout);
+	    WaitForElementPresent(By.xpath("(//td/br)[1]/../input[@name='lastName']"), MainTimeout);	    
+	    DebugTimeout(0, "frame switch done");
+	    WaitForElementClickable(By.xpath("//input[@value='Search']"),MainTimeout,"failed wait before selecting search button.");	    
+	}
+	
+	
+	
+	public static void ShowPopup(String message)		
+	{
+		JOptionPane.showMessageDialog(frame, message);
+	}
+
+	// /////////////////////////////////////////////////////////////////
+	// The next two methods are need for date/time testing
+	// /////////////////////////////////////////////////////////////////
+	public static String BuildDateString()
+	{
+		LocalDateTime ldt = LocalDateTime.now();
+        // System.out.println(ldt.getDayOfMonth() + " " + GetMonth() + " " + ldt.getYear());
+		return ldt.getDayOfMonth() + " " + GetMonth() + " " + ldt.getYear();
+	}
+	
+	// This returns the month in a string/calendar format with first char as Caps.
+	public static String GetMonth()
+	{
+	   LocalDateTime ldt = LocalDateTime.now();
+	   ldt.getMonth();
+	   StringBuilder strBuilder = new StringBuilder();
+	   String strMonth = ldt.getMonth().toString();
+		   
+	   for(int z = 0; z < strMonth.length(); z++)
+	   {
+		   if(z == 0)
+		   {
+			   strBuilder.append(strMonth.charAt(z));			   
+		   }
+		   else
+		   {
+			   strBuilder.append( strMonth.toLowerCase().charAt(z));			   
+		   }
+		}
+		return strBuilder.toString();
+	}
+	
+	
+	// this takes a by object, a time duration in seconds, and an anticipated size to be found.
+	// the by object is used in "driver.findelements(by)". the "driver.findelements(by)" 
+	public static boolean WaitForElements(By by, long waitDuration, int anticipatedSize) throws Exception
+	{
+		long waitTime = waitDuration;
+		
+		long startTime = System.currentTimeMillis(); //fetch starting time
+		while((System.currentTimeMillis()-startTime) < waitTime *1000)
+		{
+			if(driver.findElements(by).size() == anticipatedSize)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static void DebugTimeout(int TimeOut,  String... userInput) throws InterruptedException
+	{
+		if(userInput.length > 0)
+		{
+			System.out.println(userInput[0]);
+		}
+		Thread.sleep(TimeOut * 1000);
+	}	
+		
+		public static void WaitForElementClickable(By by, int waitTime, String message)
+		{
+		    try
+		    {
+		    	WebDriverWait wait = new WebDriverWait(driver, waitTime);
+		    	wait.until(ExpectedConditions.elementToBeClickable(by));
+		    }
+		    catch (WebDriverException e)
+		    {
+		        throw new WebDriverException(message);
+		    }
+		}	
+	    
+		public static boolean WaitForElementNotClickableNoThrow(By by, int waitTime, String message)
+		{
+		    try
+		    {
+		    	WebDriverWait wait = new WebDriverWait(driver, waitTime);
+		    	ExpectedConditions.not(ExpectedConditions.elementToBeClickable(by)).apply(driver);
+		    }
+		    catch (WebDriverException e)
+		    {
+		    	return false;
+		    }
+		    return true;
+		}	
+		
+		public static boolean WaitForElementVisible(By by, int timeOut) throws Exception 
+		{
+		    try
+		    {
+				WebDriverWait wait = new WebDriverWait(driver, timeOut);
+			    wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+		    }
+	        catch (Exception e)
+	        {
+		        //System.out.println(e.toString());
+		        throw new Exception(e.toString());
+	        }	    
+		    return true;
+		}
+		
+		public static boolean WaitForElementVisibleNoThrow(By by, int timeOut) throws Exception 
+		{
+		    try
+		    {
+				WebDriverWait wait = new WebDriverWait(driver, timeOut);
+			    wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+		    }
+	        catch (Exception e)
+	        {
+	        	return false;
+	        }	    
+		    return true;
+		}		
+		
+		
+		public static boolean WaitForElementNotVisibleNoThrow(By by, int timeOut) throws Exception 
+		{
+		    try
+		    {
+				WebDriverWait wait = new WebDriverWait(driver, timeOut);
+			    wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
+		    }
+	        catch (Exception e)
+	        {
+	        	return false;
+	        }	    
+		    return true;
+		}				
+		
+		public static boolean WaitForElementPresent(By by, int timeOut) throws Exception 
+		{
+		    try
+		    {
+				WebDriverWait wait = new WebDriverWait(driver, timeOut);
+			    wait.until(ExpectedConditions.presenceOfElementLocated(by));
+		    }
+	        catch (Exception e)
+	        {
+		        //System.out.println(e.toString());
+		        throw new Exception(e.toString());
+	        }	    
+		    return true;
+		}		
+
+		public static boolean WaitForElementNotPresentNoThrow(By by, int timeOut) throws Exception 
+		{
+		    try
+		    {
+				WebDriverWait wait = new WebDriverWait(driver, timeOut);
+			    wait.until(ExpectedConditions.presenceOfElementLocated(by));
+			    ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(by)).apply(driver);			    
+		    }
+	        catch (Exception e)
+	        {
+		        return false;
+	        	//System.out.println(e.toString());
+		        //throw new Exception(e.toString());
+	        }	    
+		    return true;
+		}		
+}
