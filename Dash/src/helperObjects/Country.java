@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// this will hold the country name and a list of the vendors attached to it.
-public class Country 
+// this will hold the country name and a list of the vendors attached to it..
+public class Country    
 {
 
 	public String name = "";

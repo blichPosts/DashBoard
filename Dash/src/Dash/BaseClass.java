@@ -56,7 +56,7 @@ public class BaseClass
 	static File currentDirectory; 
 	public static String projectPath = ""; 
 
-	public static List<Country> countryList = new ArrayList<Country>();	 // this a list for holding the countries.
+	public static List<Country> countryList = new ArrayList<Country>();	 // this a list for holding the countries..
 	
 	
 	
