@@ -58,8 +58,6 @@ public class BaseClass
 
 	public static List<Country> countryList = new ArrayList<Country>();	 // this a list for holding the countries..
 	
-	
-	
 	public enum Action // needed for base class methods. 
 	{
 		Add,
@@ -163,23 +161,12 @@ public class BaseClass
 	{
 		// wait for login button.
 		WaitForElementClickable(By.xpath("//input[@name='Login']"), MainTimeout, "Error waiting for Login Button element on login page.");
-	    
 		
 		driver.findElement(By.xpath("//input[@name='userName']")).clear();
 	    driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(commandUserName);	    
 	    driver.findElement(By.xpath("//input[@name='password']")).clear();
 	    driver.findElement(By.xpath("//input[@name='password']")).sendKeys(commandPassword);	    
 	    driver.findElement(By.xpath("//input[@name='Login']")).click();	    
-
-	    //input[@name='Login']
-		//WaitForElementClickable(By.xpath("//input[@class='login-button']"), MainTimeout, "Error waiting for Login Button element on login page.");		
-	    /*
-	    driver.findElement(By.xpath("(//input[@class='login-text-field'])[1]")).clear();
-	    driver.findElement(By.xpath("(//input[@class='login-text-field'])[1]")).sendKeys(commandUserName);	    
-	    driver.findElement(By.xpath("(//input[@class='login-text-field'])[2]")).clear();
-	    driver.findElement(By.xpath("(//input[@class='login-text-field'])[2]")).sendKeys(commandPassword);	    
-	    driver.findElement(By.xpath("//input[@class='login-button']")).click();
-	    */
 	}
 	
 
