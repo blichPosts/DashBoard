@@ -3,6 +3,8 @@ package Dash;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
@@ -15,6 +17,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import helperObjects.Country;
 
 public class BaseClass
 {
@@ -46,15 +50,16 @@ public class BaseClass
 	public static String commandPassword = "traq01";	
 	public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq";
 	
-	
-	//shirley.banai@philips.com
-	
 	public static JFrame frame;	
 	
 	// these are for accessing current project folder.
 	static File currentDirectory; 
 	public static String projectPath = ""; 
 
+	public static List<Country> countryList = new ArrayList<Country>();	 // this a list for holding the countries.
+	
+	
+	
 	public enum Action // needed for base class methods. 
 	{
 		Add,
