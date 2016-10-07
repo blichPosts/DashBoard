@@ -27,7 +27,8 @@ public class BaseClass
 	//public static String CMD_baseUrl = "https://commcareqa.tangoe.com/manage/login";
 	//public static String CMD_baseUrl = "http://dc1qacmdweb04:8080/manage/login/login.trq";
 	//public static String CMD_baseUrl = "https://qa1cmd.tangoe.com/manage/login/login.trq";
-	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";	
+	// public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";	
+	public static String CMD_baseUrl = "http://dc1devmule1:3000/fleet/expense";	
 	
 	// https://qa3.traq.com/manage/login/login.trq
 	
@@ -56,7 +57,7 @@ public class BaseClass
 	static File currentDirectory; 
 	public static String projectPath = ""; 
 
-	public static List<Country> countryList = new ArrayList<Country>();	 // this a list for holding the countries..
+	public static List<Country> countryList = new ArrayList<Country>();	 // this a list for holding the countries.
 	
 	public enum Action // needed for base class methods. 
 	{
@@ -169,6 +170,35 @@ public class BaseClass
 	    driver.findElement(By.xpath("//input[@name='Login']")).click();	    
 	}
 	
+	
+	public static void SelectExpenseTab()throws Exception	
+	{
+		WaitForElementClickable(By.xpath("//a[text()='View Expense']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
+		driver.findElement(By.xpath("//a[text()='View Expense']")).click();
+	}
+	
+	public static void SelectUsageTab()throws Exception	
+	{
+		WaitForElementClickable(By.xpath("//a[text()='View Expense']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
+		driver.findElement(By.xpath("//a[text()='View Usage']")).click();
+	}
+	
+	public static void WaitForExpensePageLoad()throws Exception	
+	{
+		WaitForElementVisible(By.xpath("//div[text()='Countries']"), MediumTimeout);
+		WaitForElementVisible(By.xpath("//h3[text()='Count of Service Numbers']"), MediumTimeout);		
+		WaitForElementVisible(By.xpath("//div/h3[text()='Count of Service Numbers']"), MediumTimeout);		
+		WaitForElementClickable(By.xpath("//select"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad"); 	
+	}	
+
+	public static void ShowCountryVendorList()
+	{
+		for(Country ctry : countryList)
+		{
+			System.out.println("Country ----------- " + ctry.name);
+			ctry.ShowVendorList();
+		}
+	}	
 
 	// bladdxx
 	// ////////////////////////////////////////////////////////////////////////////////////////////////

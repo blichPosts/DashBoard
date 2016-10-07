@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.testng.Assert;
+
 // this will hold the country name and a list of the vendors attached to it..
 public class Country    
 {
-
 	public String name = "";
 	public List<String> vendorList = new ArrayList<String>();
 	
@@ -22,12 +23,32 @@ public class Country
 		vendorList.add(vendor);
 	}
 	
-	// verify the vendor list is sorted.
-	public void VerifyVendorListSorted() 
+	public void VerifyVendorListSorted(String country)
 	{
-		List<String> sampleList = vendorList;
-		Collections.sort(sampleList);
-		// Assert.assertEquals(sampleList, vendorList);
+		List<String> actualList = new ArrayList<String>();
+		List<String> expectedList = new ArrayList<String>();
+		
+		for(String str : vendorList)
+		{
+			actualList.add(str);
+			expectedList.add(str);
+		}
+		
+		Collections.sort(expectedList);
+		
+		System.out.println("Test vendor list for " + country);
+		Assert.assertEquals(actualList, expectedList); // later will use test NG assert 
+	}
+	
+	public int NumberOfVendors()
+	{
+		return vendorList.size();
+	}
+	
+	public String VendorByIndexOneBased(int index)
+	{
+		Assert.assertTrue(index <= vendorList.size()); // add Test NG assert
+		return vendorList.get(index - 1);
 	}
 	
 	public void ShowVendorList()
@@ -36,5 +57,5 @@ public class Country
 		{
 			System.out.println(str);
 		}
-	}
+	}	
 }
