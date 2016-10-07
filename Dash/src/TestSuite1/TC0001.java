@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -29,17 +30,40 @@ public class TC0001 extends BaseClass
 		SelectExpenseTab();
 		
 		// get all countries
-		List<WebElement> webEleList = driver.findElements(By.cssSelector(".tdb-povGroup__Label--subhead"));
+		List<WebElement> ctryList = driver.findElements(By.cssSelector(".tdb-povGroup__Label--subhead"));
 		
-		for(int x = 1; x <= webEleList.size(); x++)
+		// get all vendors
+		List<WebElement> vndrList = driver.findElements(By.cssSelector(".md-checkbox-label"));	
+		
+		
+		int y = 0;
+		int numberOfVendorsInCountry = 0;
+
+		// got through the countries
+		for(int x = 1; x <= ctryList.size(); x++)
 		{
-			//System.out.println(webEleList.get(x-1).getText());
-			//System.out.println(driver.findElements(By.xpath("(//div/div[@class='tdb-povGroup__Label--subhead'])[" + x + "]/following-sibling ::div/div")).size());
-			Country tmpCountry = new Country(webEleList.get(x-1).getText());
+			// create country object and add to list.
+			Country tmpCountry = new Country(ctryList.get(x-1).getText()); 
 			countryList.add(tmpCountry);
+			
+			// add the vendors to the country just added to the list by getting  the number of vendors for the country and add that number of vendors from the vendor list.
+			numberOfVendorsInCountry = driver.findElements(By.xpath("(//div/div[@class='tdb-povGroup__Label--subhead'])[" + x + "]/following-sibling ::div/div")).size();
+			
+			Assert.assertTrue(numberOfVendorsInCountry > 0, "Found a country with no vendors.");
+			
+			for(int z = 0; z < numberOfVendorsInCountry; z++)
+			{
+				tmpCountry.AddToVendorList(vndrList.get(y).getText());
+				y++;
+			}
 		}
 		
-		ShowCountryVendorList();
+		// ShowCountryVendorList(); 
+		
+		// verify the countries and the vendors for each country are in alphabetical order.
+		VerifyCountryAndVendorListSorted();
+		
+		DebugTimeout(9999, "DONE");
 		
 		
 		// for(int x = 0; x < webEleList.size(); x++){DebugTimeout(0, webEleList.get(x).getText());}
@@ -55,14 +79,6 @@ public class TC0001 extends BaseClass
 		
 		// this tells how many check boxes under a country.  
 		// (//div/div[@class='tdb-povGroup__Label--subhead'])[8]/following-sibling ::div/div
-		
-		
-		DebugTimeout(9999, "DONE");
-		
-		//select
-		//GoToOrderStatus();
-		// DebugTimeout(9999, "Freeze");
-
 		
 		//loginAsAdmin();
 		//GoToOrderStatus();
