@@ -201,28 +201,7 @@ public class BaseClass
 			ctry.ShowVendorList();
 		}
 	}	
-	
-	// bladdxx -- add to source
-	public static void VerifyCountryAndVendorListSorted()
-	{
-		List<String> actualList = new ArrayList<String>();
-		List<String> expectedList = new ArrayList<String>();		
-		
-		// add the name of each country to an actual and expected list. also verify the vendor list is sorted for each country.
-		for(Country ctr : countryList)
-		{
-			ctr.VerifyVendorListSorted(ctr.name);
-			actualList.add(ctr.name);
-			expectedList.add(ctr.name);			
-		}
-		
-		// sort the expected list 
-		Collections.sort(expectedList);
-		
-		Assert.assertEquals(actualList, expectedList, "Failed check for country list being sorted in  BaseClass.VerifyCountryListSorted.");   
-	}		
 
-	// bladdxx
 	// ////////////////////////////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////////////////////////////////////////////////////////////////////////
 	// NOTE !!!!!!!!!!!!!!!!!!!!!!!! this is just a test for switching a frame in command.

@@ -35,7 +35,7 @@ public class Country
 		}
 		
 		Collections.sort(expectedList);
-		Assert.assertEquals(actualList, expectedList, "Failed test for vendor list being sorted in Country object. Country name is: " + country); // later will use test NG assert 
+		Assert.assertEquals(actualList, expectedList, "Failed test for vendor list being sorted in Country object in Country.VerifyVendorListSorted. Country name is: " + country);  
 	}
 	
 	public int NumberOfVendors()
