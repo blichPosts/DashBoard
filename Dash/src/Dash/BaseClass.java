@@ -1,9 +1,11 @@
 package Dash;
 
 import java.io.File;
+import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -108,6 +110,23 @@ public class BaseClass
 	    return decFormat.format(tempTotalIn);
 	}		
 
+	// returns one month behind current month and year. 
+	static public String MonthYear()
+	{
+		Calendar c = Calendar.getInstance();		
+		int month = c.get(Calendar.MONTH);		
+		int year = c.get(Calendar.YEAR);		
+		String monthString = new DateFormatSymbols().getMonths()[month - 1];
+		
+		if(monthString.equals("January"))
+		{
+			year = year - 1;
+		}
+		
+		return monthString + " " + year;
+	}	
+	
+	
 	// this is method that takes a decimal cost (2344.45) and converts is to full money text ($2,344.45).  
 	public static String CostMonthlyCalculatedConvertToFullText(String costMonthlyTotal)
 	{
@@ -187,7 +206,7 @@ public class BaseClass
 	
 	public static void WaitForExpensePageLoad()throws Exception	
 	{
-		WaitForElementVisible(By.xpath("//div[text()='Countries']"), MediumTimeout);
+		WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);
 		WaitForElementVisible(By.xpath("//h3[text()='Count of Service Numbers']"), MediumTimeout);		
 		WaitForElementVisible(By.xpath("//div/h3[text()='Count of Service Numbers']"), MediumTimeout);		
 		WaitForElementClickable(By.xpath("//select"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad"); 	

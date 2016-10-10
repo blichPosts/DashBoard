@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.mustache.BaseChunk;
 
@@ -14,6 +15,10 @@ import Dash.BaseClass;
 public class CommonTestStepActions extends BaseClass
 {
 
+	public static String []  monthArray = {"January" , "February", "March", "April", "May" , "June", "July", "August", "September", "October", "November", "December"};
+	public static List<String> monthListExpected = new ArrayList<>(); 
+	public static List<String> monthListActual = new ArrayList<>();	
+	
 	// loads each country into a country list. it also adds the vendors for each country.
 	public static void SetupCountryAndVendorData()
 	{
@@ -48,6 +53,51 @@ public class CommonTestStepActions extends BaseClass
 		}		
 	}
 
+	public static void VerifyMonthPullDownFormat()
+	{
+		Assert.assertEquals(new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText(), MonthYear(), "");
+	}
+	
+	public static void VerifyMonthPullDownSelectionsAndContent() 
+	{
+		String firstMonth;
+		String lastMonth;
+		
+		// put all of the pulldown item in a web list.
+		List<WebElement> webList = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();
+		
+		// create a list of months expected from the hard-coded monthArray.
+		for(int x = 0; x < monthArray.length; x++)
+		{
+			monthListExpected.add(monthArray[x]);
+		}
+		
+		// create a list of months actual from the web list.
+		for(int x = 0; x < monthArray.length; x++)
+		{
+			monthListActual.add(webList.get(x).getText().split(" ")[0]);
+		}
+		
+		// store the first month in the web list. 
+		firstMonth = webList.get(0).getText().split(" ")[0];
+		
+		// store the last month in the web list.
+		lastMonth = webList.get(webList.size() - 1).getText().split(" ")[0];
+
+		System.out.println(lastMonth);
+		System.out.println(firstMonth);		
+		
+		// sort the arrays for compare. 
+		Collections.sort(monthListExpected);
+		Collections.sort(monthListActual);
+		
+		// for(int x = 0; x < monthArray.length; x++){DebugTimeout(0, monthListExpected.get(x));} // DEBUG
+		// for(int x = 0; x < monthArray.length; x++) {DebugTimeout(0, monthListActual.get(x));} // DEBUG		
+		
+		// do the compare.
+		Assert.assertEquals(monthListActual, monthListExpected, "");
+	}	
+	
 	public static void VerifyCountryAndVendorListSorted()
 	{
 		List<String> actualList = new ArrayList<String>();
@@ -74,5 +124,12 @@ public class CommonTestStepActions extends BaseClass
 		SelectExpenseTabAndVerifyUsageTabNotSelected();
 		WaitForExpensePageLoad();
 	}
+	
+	// helpers
+	public static void BuildMonthList()
+	{
+		
+	}
+	
 
 }

@@ -27,19 +27,19 @@ public class PointOfViewVisual extends BaseClass
 	}
 	
 	@Test
-	public static void PointOfViewVisualTest()throws Exception
+	public static void PointOfViewVisualTest() throws Exception
 	{
-		CommonTestStepActions.GoToExpenses();
+		
+		// #1 Observe the month selector in the left pane described in the summary. The month is displayed with MMM-YYYY format.		
+		// #2 In the 'Overview Dashboard Selector' component, select the 'View Total Expense' tab.
+		CommonTestStepActions.GoToExpenses(); // #2
+		CommonTestStepActions.VerifyMonthPullDownFormat(); // #1
 		
 		
-		// List<WebElement> webEleList = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getAllSelectedOptions();
+		// #3  Switch the month selector through various selections. All twelve months are available for selection. 
+		CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent();
 		
-		List<WebElement> webEleList = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();		
 		
-		for(WebElement webEle : webEleList)
-		{
-			DebugTimeout(0, webEle.getText());
-		}
 		
 		// verify the countries and the vendors for each country are in alphabetical order.
 		CommonTestStepActions.VerifyCountryAndVendorListSorted();
