@@ -18,7 +18,7 @@ import helperObjects.Country;
 import helperObjects.CommonTestStepActions;
 
 
-public class TC0001 extends BaseClass
+public class PointOfViewVisual extends BaseClass
 {
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -27,12 +27,19 @@ public class TC0001 extends BaseClass
 	}
 	
 	@Test
-	public static void tc0001()throws Exception
+	public static void PointOfViewVisualTest()throws Exception
 	{
 		CommonTestStepActions.GoToExpenses();
 		
 		
-		// new Select(driver.findElement(By.cssSelector(""))).getAllSelectedOptions();
+		// List<WebElement> webEleList = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getAllSelectedOptions();
+		
+		List<WebElement> webEleList = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();		
+		
+		for(WebElement webEle : webEleList)
+		{
+			DebugTimeout(0, webEle.getText());
+		}
 		
 		// verify the countries and the vendors for each country are in alphabetical order.
 		CommonTestStepActions.VerifyCountryAndVendorListSorted();
@@ -40,7 +47,7 @@ public class TC0001 extends BaseClass
 		DebugTimeout(9999, "DONE");		
 		
 
-		// drilling own into controls.
+		// drilling down into controls.
 		//WebElement web;
 		//  //web = driver.findElement(By.xpath("//div[@id='highcharts-2']/*/*/*/..[@class='highcharts-axis-labels highcharts-xaxis-labels']"));
 		//  //web = driver.findElement(By.xpath("//div[@id='highcharts-2']/*/*/*"));

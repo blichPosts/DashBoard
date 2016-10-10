@@ -17,6 +17,8 @@ public class CommonTestStepActions extends BaseClass
 	// loads each country into a country list. it also adds the vendors for each country.
 	public static void SetupCountryAndVendorData()
 	{
+		countryList.clear(); // make sure it's cleared in case has already been used.  
+		
 		// get all countries
 		List<WebElement> ctryList = driver.findElements(By.cssSelector(".tdb-povGroup__Label--subhead"));
 		
@@ -50,7 +52,6 @@ public class CommonTestStepActions extends BaseClass
 	{
 		List<String> actualList = new ArrayList<String>();
 		List<String> expectedList = new ArrayList<String>();		
-		
 		
 		SetupCountryAndVendorData();
 		
