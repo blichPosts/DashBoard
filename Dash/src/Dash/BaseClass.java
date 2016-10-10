@@ -172,11 +172,11 @@ public class BaseClass
 	    driver.findElement(By.xpath("//input[@name='Login']")).click();	    
 	}
 	
-	
-	public static void SelectExpenseTab()throws Exception	
+	public static void SelectExpenseTabAndVerifyUsageTabNotSelected()throws Exception	
 	{
 		WaitForElementClickable(By.xpath("//a[text()='View Expense']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
 		driver.findElement(By.xpath("//a[text()='View Expense']")).click();
+		Assert.assertFalse(driver.findElement(By.xpath("//a[text()='View Usage']")).isSelected());
 	}
 	
 	public static void SelectUsageTab()throws Exception	

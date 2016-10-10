@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -28,18 +29,31 @@ public class TC0001 extends BaseClass
 	@Test
 	public static void tc0001()throws Exception
 	{
-		WaitForExpensePageLoad();
+		CommonTestStepActions.GoToExpenses();
 		
-		SelectExpenseTab();
 		
-		WaitForExpensePageLoad();
+		// new Select(driver.findElement(By.cssSelector(""))).getAllSelectedOptions();
 		
-		CommonTestStepActions.SetupCountryAndVendorData();
-
 		// verify the countries and the vendors for each country are in alphabetical order.
 		CommonTestStepActions.VerifyCountryAndVendorListSorted();
 		
 		DebugTimeout(9999, "DONE");		
+		
+
+		// drilling own into controls.
+		//WebElement web;
+		//  //web = driver.findElement(By.xpath("//div[@id='highcharts-2']/*/*/*/..[@class='highcharts-axis-labels highcharts-xaxis-labels']"));
+		//  //web = driver.findElement(By.xpath("//div[@id='highcharts-2']/*/*/*"));
+		//web = driver.findElement(By.xpath("//div[@id='highcharts-2']/*/*/*/.."));
+		//web = driver.findElement(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[8]"));
+		//String [] strArray= driver.findElement(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[8]")).getText().split("\n");
+		//ShowArray(strArray); 
+		//strArray= driver.findElement(By.xpath(".//*[@id='highcharts-0']/*/*[@class='highcharts-legend']")).getText().split("\n");
+		//ShowArray(strArray);
+
+		
+		
+		
 	}
 	
 	@AfterClass

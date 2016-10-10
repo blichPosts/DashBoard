@@ -51,6 +51,9 @@ public class CommonTestStepActions extends BaseClass
 		List<String> actualList = new ArrayList<String>();
 		List<String> expectedList = new ArrayList<String>();		
 		
+		
+		SetupCountryAndVendorData();
+		
 		// add the name of each country to an actual and expected list. also verify the vendor list is sorted for each country.
 		for(Country ctr : countryList)
 		{
@@ -64,4 +67,11 @@ public class CommonTestStepActions extends BaseClass
 		
 		Assert.assertEquals(actualList, expectedList, "Failed check for country list being sorted in  CommonTestStepActions.VerifyCountryListSorted.");   
 	}		
+	
+	public static void GoToExpenses() throws Exception
+	{
+		SelectExpenseTabAndVerifyUsageTabNotSelected();
+		WaitForExpensePageLoad();
+	}
+
 }
