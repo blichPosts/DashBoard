@@ -54,6 +54,9 @@ public class BaseClass
 	public static String commandUserName = "shirley.banai@philips.com";
 	public static String commandPassword = "traq01";	
 	public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq";
+
+	// names of the three KPI blocks in expenses page from left to right.
+	public static String [] ExpenseKpiNames = {"Total Expense", "Count of Service Numbers", "Cost per Service Number"};
 	
 	public static JFrame frame;	
 	
@@ -195,7 +198,7 @@ public class BaseClass
 	{
 		WaitForElementClickable(By.xpath("//a[text()='View Expense']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
 		driver.findElement(By.xpath("//a[text()='View Expense']")).click(); // select 'view expenses'.
-		// is selected tru 
+		// is selected true fails.
 		//Assert.assertFalse(driver.findElement(By.xpath("//a[text()='View Usage']")).isSelected()); // verify not selected.
 		//Assert.assertTrue(driver.findElement(By.xpath("//a[text()='View Expense']")).isSelected()); // verify selected.		
 	}
@@ -214,6 +217,22 @@ public class BaseClass
 		WaitForElementClickable(By.xpath("//select"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad"); 	
 	}	
 
+	public static void WaitForExpensePageDetailedLoad()throws Exception	
+	{
+		WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);
+		WaitForElementVisible(By.xpath("//h3[text()='Count of Service Numbers']"), MediumTimeout);		
+		WaitForElementVisible(By.xpath("//div/h3[text()='Count of Service Numbers']"), MediumTimeout);		
+		WaitForElementClickable(By.xpath("//select"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad"); 	
+		
+		// not sure if these two will always work. maybe the ID will change - beware. 
+		WaitForElementPresent(By.xpath(".//*[@id='highcharts-8']/*/*"), MediumTimeout);
+		WaitForElementVisible(By.xpath("(.//*[@id='highcharts-8']/*/*[@class='highcharts-axis'])[1]"), MediumTimeout);
+
+	}		
+	
+	
+	
+	
 	public static void ShowCountryVendorList()
 	{
 		for(Country ctry : countryList)

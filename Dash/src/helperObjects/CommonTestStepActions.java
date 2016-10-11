@@ -94,7 +94,7 @@ public class CommonTestStepActions extends BaseClass
 		//for(int x = 0; x < monthArray.length; x++) {DebugTimeout(0, monthListActual.get(x));} // DEBUG		
 		
 		// do the compare.
-		// Assert.assertEquals(monthListActual, monthListExpected, "");
+		Assert.assertEquals(monthListActual, monthListExpected, "Failed month list compare in CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent");
 	}	
 	
 	public static void VerifyCountryAndVendorListSorted()
@@ -123,6 +123,16 @@ public class CommonTestStepActions extends BaseClass
 		WaitForExpensePageLoad();
 		SelectExpenseTab();
 	}
+	
+	public static void GoToExpensePageDetailedWait() throws Exception
+	{
+		WaitForExpensePageDetailedLoad();
+		SelectExpenseTab();
+	}
+	
+	
+	
+	
 	
 	// helpers
 	public static void BuildMonthList()

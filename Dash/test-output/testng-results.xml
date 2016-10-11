@@ -1,51 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="0" total="1" passed="1">
+<testng-results skipped="0" failed="1" total="1" passed="0">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="10426191" started-at="2016-10-11T10:00:16Z" finished-at="2016-10-11T12:54:02Z">
+  <suite name="Default suite" duration-ms="27323" started-at="2016-10-11T17:04:56Z" finished-at="2016-10-11T17:05:24Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="10426191" started-at="2016-10-11T10:00:16Z" finished-at="2016-10-11T12:54:02Z">
-      <class name="TestSuite1.PointOfViewVisual">
-        <test-method status="PASS" signature="setUp()[pri:0, instance:TestSuite1.PointOfViewVisual@48eff760]" name="setUp" is-config="true" duration-ms="6958" started-at="2016-10-11T06:00:16Z" finished-at="2016-10-11T06:00:23Z">
+    <test name="Default test" duration-ms="27323" started-at="2016-10-11T17:04:56Z" finished-at="2016-10-11T17:05:24Z">
+      <class name="TestSuite1.KPITilesVisual">
+        <test-method status="PASS" signature="setUp()[pri:0, instance:TestSuite1.KPITilesVisual@48eff760]" name="setUp" is-config="true" duration-ms="6035" started-at="2016-10-11T13:04:56Z" finished-at="2016-10-11T13:05:02Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method status="PASS" signature="PointOfViewVisualTest()[pri:0, instance:TestSuite1.PointOfViewVisual@48eff760]" name="PointOfViewVisualTest" duration-ms="10014709" started-at="2016-10-11T06:00:23Z" finished-at="2016-10-11T08:47:18Z">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- PointOfViewVisualTest -->
-        <test-method status="FAIL" signature="closeDriver()[pri:0, instance:TestSuite1.PointOfViewVisual@48eff760]" name="closeDriver" is-config="true" duration-ms="0" started-at="2016-10-11T08:47:18Z" finished-at="2016-10-11T08:47:18Z">
-          <exception class="org.openqa.selenium.remote.UnreachableBrowserException">
+        <test-method status="FAIL" signature="KpiTilesVisualTest()[pri:0, instance:TestSuite1.KPITilesVisual@48eff760]" name="KpiTilesVisualTest" duration-ms="15249" started-at="2016-10-11T13:05:02Z" finished-at="2016-10-11T13:05:18Z">
+          <exception class="org.junit.ComparisonFailure">
             <message>
-              <![CDATA[Error communicating with the remote browser. It may have died.
-Build info: version: '2.53.1', revision: 'a36b8b1', time: '2016-06-30 17:32:46'
-System info: host: 'BLICHTENFEL6440', ip: '10.2.70.193', os.name: 'Windows 7', os.arch: 'amd64', os.version: '6.1', java.version: '1.8.0_51'
-Driver info: driver.version: RemoteWebDriver
-Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.23.409699 (49b0fa931cda1caad0ae15b7d1b68004acd05129), userDataDir=C:\Users\BOB~1.LIC\AppData\Local\Temp\scoped_dir17432_8502}, takesHeapSnapshot=true, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=53.0.2785.143, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true}]
-Session ID: f763591454b541a12dc731670c16ffbf]]>
+              <![CDATA[Total Expense expected:<[Total Expense]> but was:<[]>]]>
             </message>
             <full-stacktrace>
-              <![CDATA[org.openqa.selenium.remote.UnreachableBrowserException: Error communicating with the remote browser. It may have died.
-Build info: version: '2.53.1', revision: 'a36b8b1', time: '2016-06-30 17:32:46'
-System info: host: 'BLICHTENFEL6440', ip: '10.2.70.193', os.name: 'Windows 7', os.arch: 'amd64', os.version: '6.1', java.version: '1.8.0_51'
-Driver info: driver.version: RemoteWebDriver
-Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.23.409699 (49b0fa931cda1caad0ae15b7d1b68004acd05129), userDataDir=C:\Users\BOB~1.LIC\AppData\Local\Temp\scoped_dir17432_8502}, takesHeapSnapshot=true, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=53.0.2785.143, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true}]
-Session ID: f763591454b541a12dc731670c16ffbf
-	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:665)
-	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:701)
-	at org.openqa.selenium.remote.RemoteWebDriver.close(RemoteWebDriver.java:521)
-	at TestSuite1.PointOfViewVisual.closeDriver(PointOfViewVisual.java:71)
+              <![CDATA[org.junit.ComparisonFailure: Total Expense expected:<[Total Expense]> but was:<[]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	at TestSuite1.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:47)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
-	at org.testng.internal.Invoker.invokeConfigurationMethod(Invoker.java:510)
-	at org.testng.internal.Invoker.invokeConfigurations(Invoker.java:211)
-	at org.testng.internal.Invoker.invokeConfigurations(Invoker.java:138)
-	at org.testng.internal.TestMethodWorker.invokeAfterClassMethods(TestMethodWorker.java:220)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
 	at org.testng.TestRunner.privateRun(TestRunner.java:774)
 	at org.testng.TestRunner.run(TestRunner.java:624)
 	at org.testng.SuiteRunner.runTest(SuiteRunner.java:359)
@@ -60,48 +44,17 @@ Session ID: f763591454b541a12dc731670c16ffbf
 	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:126)
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:152)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:57)
-Caused by: org.openqa.selenium.WebDriverException: org.apache.http.conn.HttpHostConnectException: Connect to localhost:23178 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: connect
-Build info: version: '2.53.1', revision: 'a36b8b1', time: '2016-06-30 17:32:46'
-System info: host: 'BLICHTENFEL6440', ip: '10.2.70.193', os.name: 'Windows 7', os.arch: 'amd64', os.version: '6.1', java.version: '1.8.0_51'
-Driver info: driver.version: RemoteWebDriver
-	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:91)
-	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:644)
-	... 27 more
-Caused by: org.apache.http.conn.HttpHostConnectException: Connect to localhost:23178 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: connect
-	at org.apache.http.impl.conn.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:151)
-	at org.apache.http.impl.conn.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:353)
-	at org.apache.http.impl.execchain.MainClientExec.establishRoute(MainClientExec.java:380)
-	at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:236)
-	at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:184)
-	at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:88)
-	at org.apache.http.impl.execchain.RedirectExec.execute(RedirectExec.java:110)
-	at org.apache.http.impl.client.InternalHttpClient.doExecute(InternalHttpClient.java:184)
-	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:71)
-	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:55)
-	at org.openqa.selenium.remote.internal.ApacheHttpClient.fallBackExecute(ApacheHttpClient.java:144)
-	at org.openqa.selenium.remote.internal.ApacheHttpClient.execute(ApacheHttpClient.java:90)
-	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:142)
-	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:82)
-	... 28 more
-Caused by: java.net.ConnectException: Connection refused: connect
-	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method)
-	at java.net.DualStackPlainSocketImpl.socketConnect(Unknown Source)
-	at java.net.AbstractPlainSocketImpl.doConnect(Unknown Source)
-	at java.net.AbstractPlainSocketImpl.connectToAddress(Unknown Source)
-	at java.net.AbstractPlainSocketImpl.connect(Unknown Source)
-	at java.net.PlainSocketImpl.connect(Unknown Source)
-	at java.net.SocksSocketImpl.connect(Unknown Source)
-	at java.net.Socket.connect(Unknown Source)
-	at org.apache.http.conn.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:74)
-	at org.apache.http.impl.conn.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:134)
-	... 41 more
 ]]>
             </full-stacktrace>
-          </exception> <!-- org.openqa.selenium.remote.UnreachableBrowserException -->
+          </exception> <!-- org.junit.ComparisonFailure -->
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- KpiTilesVisualTest -->
+        <test-method status="PASS" signature="closeDriver()[pri:0, instance:TestSuite1.KPITilesVisual@48eff760]" name="closeDriver" is-config="true" duration-ms="6022" started-at="2016-10-11T13:05:18Z" finished-at="2016-10-11T13:05:24Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- closeDriver -->
-      </class> <!-- TestSuite1.PointOfViewVisual -->
+      </class> <!-- TestSuite1.KPITilesVisual -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>

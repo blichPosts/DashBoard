@@ -1,4 +1,4 @@
-package TestSuite1;
+package testSuiteExpense;
 
 import javax.swing.JOptionPane;
 

@@ -3,13 +3,13 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="TestSuite1.PointOfViewVisual">
+      <class name="TestSuite1.KPITilesVisual">
         <methods>
-          <include name="closeDriver"/>
-          <include name="PointOfViewVisualTest"/>
           <include name="setUp"/>
+          <include name="KpiTilesVisualTest"/>
+          <include name="closeDriver"/>
         </methods>
-      </class> <!-- TestSuite1.PointOfViewVisual -->
+      </class> <!-- TestSuite1.KPITilesVisual -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

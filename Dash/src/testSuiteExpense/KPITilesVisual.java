@@ -1,4 +1,4 @@
-package TestSuite1;
+package testSuiteExpense;
 
 import java.util.List;
 
@@ -25,34 +25,22 @@ public class KPITilesVisual extends BaseClass
 	}
 	
 	@Test
-	public static void PointOfViewVisualTest() throws Exception
+	public static void KpiTilesVisualTest() throws Exception
 	{
 		
-		CommonTestStepActions.GoToExpensePage();
+		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		
 		// #1 Observe the KPI components - There are three KPI components, 'Total Expense', 'Count of Service Numbers', and Cost Per Service Number.
-		// Assert.assertEquals(driver.findElements(By.cssSelector(".tdb-kpi")).size(), 3);
+		Assert.assertEquals(driver.findElements(By.cssSelector(".tdb-kpi")).size(), 3);
 		
-		DebugTimeout(5, "Wait 5");
-		
-		WaitForElementVisible(By.xpath("(//*[@id='highcharts-376']/*/*[@class='highcharts-axis'])[1]/*"), MediumTimeout);
-		
-		// (//*[@id='highcharts-376']/*/*[@class='highcharts-axis'])[1]/*
+		List<WebElement> webList = driver.findElements(By.cssSelector(".tdb-kpi > h3")); // get the names of the three KPI components. 
 
-		// (//*[@id='highcharts-376']/*/*[@class='highcharts-axis'])[1]
-		
-		DebugTimeout(5, "Wait 10");
-		List<WebElement> webList = driver.findElements(By.cssSelector(".tdb-kpi > h3"));
-		for(WebElement webEle : webList)
-		{DebugTimeout(0, webEle.getText());}
-		
-		// (//*[@id='highcharts-376']/*/*[@class='highcharts-axis'])[1]
-		
-
-		System.out.println(driver.findElement(By.xpath("(//h3[@class='tdb-kpi__title'])[1]")).getText());
-		
-		
+		// verify the three components.
+		for(int x = 0; x < ExpenseKpiNames.length; x++)
+		{
+			Assert.assertEquals(ExpenseKpiNames[x], webList.get(x).getText());
+		}
 		
 		DebugTimeout(9999, "DONE");		
 
