@@ -191,11 +191,13 @@ public class BaseClass
 	    driver.findElement(By.xpath("//input[@name='Login']")).click();	    
 	}
 	
-	public static void SelectExpenseTabAndVerifyUsageTabNotSelected()throws Exception	
+	public static void SelectExpenseTab()throws Exception	
 	{
 		WaitForElementClickable(By.xpath("//a[text()='View Expense']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
-		driver.findElement(By.xpath("//a[text()='View Expense']")).click();
-		Assert.assertFalse(driver.findElement(By.xpath("//a[text()='View Usage']")).isSelected());
+		driver.findElement(By.xpath("//a[text()='View Expense']")).click(); // select 'view expenses'.
+		// is selected tru 
+		//Assert.assertFalse(driver.findElement(By.xpath("//a[text()='View Usage']")).isSelected()); // verify not selected.
+		//Assert.assertTrue(driver.findElement(By.xpath("//a[text()='View Expense']")).isSelected()); // verify selected.		
 	}
 	
 	public static void SelectUsageTab()throws Exception	

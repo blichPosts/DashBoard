@@ -1,20 +1,12 @@
 package TestSuite1;
 
-import java.util.List;
-
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
-import helperObjects.CommonTestStepActions;
-import helperObjects.Country;
 import helperObjects.CommonTestStepActions;
 
 
@@ -30,17 +22,15 @@ public class PointOfViewVisual extends BaseClass
 	public static void PointOfViewVisualTest() throws Exception
 	{
 		
-		// #1 Observe the month selector in the left pane described in the summary. The month is displayed with MMM-YYYY format.		
-		// #2 In the 'Overview Dashboard Selector' component, select the 'View Total Expense' tab.
-		CommonTestStepActions.GoToExpenses(); // #2
+		// #1 Observe the month selector in the left pane described in the summary - The month is displayed with MMM-YYYY format.		
+		// #2 In the 'Overview Dash board Selector' component, select the 'View Total Expense' tab.
+		CommonTestStepActions.GoToExpensePage(); // #2
 		CommonTestStepActions.VerifyMonthPullDownFormat(); // #1
 		
-		
-		// #3  Switch the month selector through various selections. All twelve months are available for selection. 
+		// #3  Switch the month selector through various selections - Thirteen descending months are available for selection.
 		CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent();
 		
-		
-		
+		// #4
 		// verify the countries and the vendors for each country are in alphabetical order.
 		CommonTestStepActions.VerifyCountryAndVendorListSorted();
 		
@@ -72,3 +62,17 @@ public class PointOfViewVisual extends BaseClass
 		driver.quit();
 	}
 }
+
+
+
+/*
+Step #4 - not ready yet in dev
+Each country has a select/unselect “All” menu item to allow the user to select/deselect all vendors under this country at the same time. 
+
+step# 2 -  currency tab  to the right is not there in dev, can't verify selected and not selected with 'View Expense View Usage' tabs.
+
+
+Step #3 - testing is not exact with months.
+*/
+
+

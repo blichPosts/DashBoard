@@ -84,18 +84,17 @@ public class CommonTestStepActions extends BaseClass
 		// store the last month in the web list.
 		lastMonth = webList.get(webList.size() - 1).getText().split(" ")[0];
 
-		System.out.println(lastMonth);
-		System.out.println(firstMonth);		
+		Assert.assertEquals(lastMonth, firstMonth); // verify last and first are 
 		
 		// sort the arrays for compare. 
 		Collections.sort(monthListExpected);
 		Collections.sort(monthListActual);
 		
-		// for(int x = 0; x < monthArray.length; x++){DebugTimeout(0, monthListExpected.get(x));} // DEBUG
-		// for(int x = 0; x < monthArray.length; x++) {DebugTimeout(0, monthListActual.get(x));} // DEBUG		
+		//for(int x = 0; x < monthArray.length; x++){DebugTimeout(0, monthListExpected.get(x));} // DEBUG
+		//for(int x = 0; x < monthArray.length; x++) {DebugTimeout(0, monthListActual.get(x));} // DEBUG		
 		
 		// do the compare.
-		Assert.assertEquals(monthListActual, monthListExpected, "");
+		// Assert.assertEquals(monthListActual, monthListExpected, "");
 	}	
 	
 	public static void VerifyCountryAndVendorListSorted()
@@ -119,10 +118,10 @@ public class CommonTestStepActions extends BaseClass
 		Assert.assertEquals(actualList, expectedList, "Failed check for country list being sorted in  CommonTestStepActions.VerifyCountryListSorted.");   
 	}		
 	
-	public static void GoToExpenses() throws Exception
+	public static void GoToExpensePage() throws Exception
 	{
-		SelectExpenseTabAndVerifyUsageTabNotSelected();
 		WaitForExpensePageLoad();
+		SelectExpenseTab();
 	}
 	
 	// helpers
