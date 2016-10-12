@@ -57,9 +57,9 @@ function toggleAllBoxes() {
 <tr>
 <td>Tests passed/Failed/Skipped:</td><td>0/1/0</td>
 </tr><tr>
-<td>Started on:</td><td>Tue Oct 11 13:04:56 EDT 2016</td>
+<td>Started on:</td><td>Wed Oct 12 12:57:35 EDT 2016</td>
 </tr>
-<tr><td>Total time:</td><td>27 seconds (27323 ms)</td>
+<tr><td>Total time:</td><td>25 seconds (25949 ms)</td>
 </tr><tr>
 <td>Included groups:</td><td></td>
 </tr><tr>
@@ -75,10 +75,13 @@ function toggleAllBoxes() {
 <td><b>Instance</b></td>
 </tr>
 <tr>
-<td title='TestSuite1.KPITilesVisual.KpiTilesVisualTest()'><b>KpiTilesVisualTest</b><br>Test class: TestSuite1.KPITilesVisual</td>
-<td><div><pre>org.junit.ComparisonFailure: Total Expense expected:&lt;[Total Expense]&gt; but was:&lt;[]&gt;
-	at org.junit.Assert.assertEquals(Assert.java:115)
-	at TestSuite1.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:47)
+<td title='testSuiteExpense.KPITilesVisual.KpiTilesVisualTest()'><b>KpiTilesVisualTest</b><br>Test class: testSuiteExpense.KPITilesVisual</td>
+<td><div><pre>java.lang.AssertionError: Failure in ExpenseHelper.VerifyTotalExpenseCostFor input string: &quot;&quot;
+	at org.testng.Assert.fail(Assert.java:94)
+	at helperObjects.ExpenseHelper.VerifyInteger(ExpenseHelper.java:83)
+	at helperObjects.ExpenseHelper.VerifyContainsDollarAndKilo(ExpenseHelper.java:92)
+	at helperObjects.ExpenseHelper.VerifyTotalExpenseCostAndTitle(ExpenseHelper.java:28)
+	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:49)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -103,10 +106,13 @@ function toggleAllBoxes() {
 	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:126)
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:152)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:57)
-</pre></div><a href='#' onClick='toggleBox("stack-trace285133380", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
-<div class='stack-trace' id='stack-trace285133380'><pre>org.junit.ComparisonFailure: Total Expense expected:&lt;[Total Expense]&gt; but was:&lt;[]&gt;
-	at org.junit.Assert.assertEquals(Assert.java:115)
-	at TestSuite1.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:47)
+</pre></div><a href='#' onClick='toggleBox("stack-trace1068586139", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1068586139'><pre>java.lang.AssertionError: Failure in ExpenseHelper.VerifyTotalExpenseCostFor input string: &quot;&quot;
+	at org.testng.Assert.fail(Assert.java:94)
+	at helperObjects.ExpenseHelper.VerifyInteger(ExpenseHelper.java:83)
+	at helperObjects.ExpenseHelper.VerifyContainsDollarAndKilo(ExpenseHelper.java:92)
+	at helperObjects.ExpenseHelper.VerifyTotalExpenseCostAndTitle(ExpenseHelper.java:28)
+	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:49)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -132,8 +138,8 @@ function toggleAllBoxes() {
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:152)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:57)
 </pre></div></td>
-<td>15</td>
-<td>TestSuite1.KPITilesVisual@48eff760</td></tr>
+<td>16</td>
+<td>testSuiteExpense.KPITilesVisual@48eff760</td></tr>
 </table><p>
 </body>
 </html>

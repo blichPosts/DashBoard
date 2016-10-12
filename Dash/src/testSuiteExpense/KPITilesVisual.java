@@ -19,6 +19,10 @@ import helperObjects.ExpenseHelper;
 
 public class KPITilesVisual extends BaseClass
 {
+	public static String rollingAverages = "Rolling Averages";
+	public static String monthsThree = "3 months";	
+	public static String monthsTwo = "2 months";
+	
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
@@ -35,30 +39,23 @@ public class KPITilesVisual extends BaseClass
 		// driver.findElement(By.cssSelector(".tdb-povGroup__toggle>a")).click();
 		
 		// #1 Observe the KPI components - There are three KPI components, 'Total Expense', 'Count of Service Numbers', and Cost Per Service Number.
-		Assert.assertEquals(driver.findElements(By.cssSelector(".tdb-kpi")).size(), 3);
-		
-		List<WebElement> webList = driver.findElements(By.cssSelector(".tdb-kpi > h3")); // get the names of the three KPI components. 
-
-		Assert.assertTrue(webList.size() == 3);
-		
-		// verify the three components.
-		for(int x = 0; x < ExpenseKpiNames.length; x++)
-		{
-			Assert.assertEquals(ExpenseKpiNames[x], webList.get(x).getText());
-		}
+		ExpenseHelper.VerifyThreeComponents();
 		
 		// # 2
 		//Observe the first component from the left.
 
-		//The middle section shows the total expense amount with K indicator for selected vendor or country.
-		//Next there is a trend icon (up/down) arrow.
-		//Next there is a Rolling average with rolling avreages for three and six months.
-
 		//The top says 'Total Expense'		
-		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > h3")).getText(), ExpenseKpiNames[0]);
-		
 		//The middle section shows the total expense amount with K indicator for selected vendor or country.
-		ExpenseHelper.VerifyTotalExpenseCost();
+		ExpenseHelper.VerifyTotalExpenseCostAndTitle();
+		
+		//Next there is a trend icon (up/down) arrow.
+		ExpenseHelper.VerifyTrend();
+		
+		// Next there is a Rolling average with rolling avreages for three and six moths.
+
+		
+		
+		//Next there is a Rolling average with rolling averages for three and six months.
 		
 		// .tdb-kpi:nth-of-type(1) > div> div:nth-of-type(1)
 		

@@ -2,24 +2,27 @@
 <testng-results skipped="0" failed="1" total="1" passed="0">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="27323" started-at="2016-10-11T17:04:56Z" finished-at="2016-10-11T17:05:24Z">
+  <suite name="Default suite" duration-ms="25949" started-at="2016-10-12T16:57:35Z" finished-at="2016-10-12T16:58:01Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="27323" started-at="2016-10-11T17:04:56Z" finished-at="2016-10-11T17:05:24Z">
-      <class name="TestSuite1.KPITilesVisual">
-        <test-method status="PASS" signature="setUp()[pri:0, instance:TestSuite1.KPITilesVisual@48eff760]" name="setUp" is-config="true" duration-ms="6035" started-at="2016-10-11T13:04:56Z" finished-at="2016-10-11T13:05:02Z">
+    <test name="Default test" duration-ms="25949" started-at="2016-10-12T16:57:35Z" finished-at="2016-10-12T16:58:01Z">
+      <class name="testSuiteExpense.KPITilesVisual">
+        <test-method status="PASS" signature="setUp()[pri:0, instance:testSuiteExpense.KPITilesVisual@48eff760]" name="setUp" is-config="true" duration-ms="5868" started-at="2016-10-12T12:57:35Z" finished-at="2016-10-12T12:57:40Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method status="FAIL" signature="KpiTilesVisualTest()[pri:0, instance:TestSuite1.KPITilesVisual@48eff760]" name="KpiTilesVisualTest" duration-ms="15249" started-at="2016-10-11T13:05:02Z" finished-at="2016-10-11T13:05:18Z">
-          <exception class="org.junit.ComparisonFailure">
+        <test-method status="FAIL" signature="KpiTilesVisualTest()[pri:0, instance:testSuiteExpense.KPITilesVisual@48eff760]" name="KpiTilesVisualTest" duration-ms="16941" started-at="2016-10-12T12:57:40Z" finished-at="2016-10-12T12:57:57Z">
+          <exception class="java.lang.AssertionError">
             <message>
-              <![CDATA[Total Expense expected:<[Total Expense]> but was:<[]>]]>
+              <![CDATA[Failure in ExpenseHelper.VerifyTotalExpenseCostFor input string: ""]]>
             </message>
             <full-stacktrace>
-              <![CDATA[org.junit.ComparisonFailure: Total Expense expected:<[Total Expense]> but was:<[]>
-	at org.junit.Assert.assertEquals(Assert.java:115)
-	at TestSuite1.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:47)
+              <![CDATA[java.lang.AssertionError: Failure in ExpenseHelper.VerifyTotalExpenseCostFor input string: ""
+	at org.testng.Assert.fail(Assert.java:94)
+	at helperObjects.ExpenseHelper.VerifyInteger(ExpenseHelper.java:83)
+	at helperObjects.ExpenseHelper.VerifyContainsDollarAndKilo(ExpenseHelper.java:92)
+	at helperObjects.ExpenseHelper.VerifyTotalExpenseCostAndTitle(ExpenseHelper.java:28)
+	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:49)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -46,15 +49,15 @@
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:57)
 ]]>
             </full-stacktrace>
-          </exception> <!-- org.junit.ComparisonFailure -->
+          </exception> <!-- java.lang.AssertionError -->
           <reporter-output>
           </reporter-output>
         </test-method> <!-- KpiTilesVisualTest -->
-        <test-method status="PASS" signature="closeDriver()[pri:0, instance:TestSuite1.KPITilesVisual@48eff760]" name="closeDriver" is-config="true" duration-ms="6022" started-at="2016-10-11T13:05:18Z" finished-at="2016-10-11T13:05:24Z">
+        <test-method status="PASS" signature="closeDriver()[pri:0, instance:testSuiteExpense.KPITilesVisual@48eff760]" name="closeDriver" is-config="true" duration-ms="3125" started-at="2016-10-12T12:57:57Z" finished-at="2016-10-12T12:58:01Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- closeDriver -->
-      </class> <!-- TestSuite1.KPITilesVisual -->
+      </class> <!-- testSuiteExpense.KPITilesVisual -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>
