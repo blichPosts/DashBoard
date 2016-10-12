@@ -57,6 +57,10 @@ public class BaseClass
 	// names of the three KPI blocks in expenses page from left to right.
 	public static String [] ExpenseKpiNames = {"Total Expense", "Count of Service Numbers", "Cost per Service Number"};
 	
+	// names for the three KPI blocks in Usage page, under Domestic
+	public static String [] UsageKpiNames = {"Voice (min)", "Data (TB)", "Messages"};
+	
+	
 	public static JFrame frame;	
 	
 	// these are for accessing current project folder.
@@ -202,11 +206,14 @@ public class BaseClass
 		//Assert.assertTrue(driver.findElement(By.xpath("//a[text()='View Expense']")).isSelected()); // verify selected.		
 	}
 	
+	
+	// Modified by Ana
 	public static void SelectUsageTab()throws Exception	
 	{
-		WaitForElementClickable(By.xpath("//a[text()='View Expense']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
-		driver.findElement(By.xpath("//a[text()='View Usage']")).click();
+		WaitForElementClickable(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
+		driver.findElement(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']")).click();
 	}
+	
 	
 	public static void WaitForExpensePageLoad()throws Exception	
 	{
@@ -215,6 +222,8 @@ public class BaseClass
 		WaitForElementVisible(By.xpath("//div/h3[text()='Count of Service Numbers']"), MediumTimeout);		
 		WaitForElementClickable(By.xpath("//select"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad"); 	
 	}	
+	
+	
 
 	public static void WaitForExpensePageDetailedLoad()throws Exception	
 	{
@@ -230,6 +239,26 @@ public class BaseClass
 	}		
 	
 	
+	// Added by Ana 
+	public static void WaitForViewUsageSelector() throws Exception{
+		
+		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']"), MainTimeout);
+		driver.findElement(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']")).click();
+		
+		
+	}
+	
+	// Added by Ana -- **** not sure if needed *****
+	public static void WaitForUsagePageDetailedLoad() throws Exception {
+		
+		//WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);
+		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/div[2]/main/app-usage-dashboard/div/app-usage-kpis/div[1]/div[1]/div/div[1]/h3[text()='Voice (min)']"), MediumTimeout);		
+		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/div[2]/main/app-usage-dashboard/div/app-usage-kpis/div[1]/div[1]/div/div[2]/h3[text()='Data (TB)']"), MediumTimeout);	
+		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/div[2]/main/app-usage-dashboard/div/app-usage-kpis/div[1]/div[1]/div/div[3]/h3[text()='Messages']"), MediumTimeout);
+		
+		
+		
+	}
 	
 	
 	public static void ShowCountryVendorList()

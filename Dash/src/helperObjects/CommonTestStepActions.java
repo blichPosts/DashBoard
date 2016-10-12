@@ -131,9 +131,17 @@ public class CommonTestStepActions extends BaseClass
 	}
 	
 	
+	// added by Ana
+	public static void GoToUsagePageDetailedWait() throws Exception
+	{
+		//WaitForExpensePageDetailedLoad();  // wait for Expense page to load since it's the page loaded by default when loading Dashboard UI
+		WaitForViewUsageSelector();
+		//SelectUsageTab();
+	}
 	
 	
 	
+
 	// helpers
 	public static void BuildMonthList()
 	{
