@@ -2,27 +2,28 @@
 <testng-results skipped="0" failed="1" total="1" passed="0">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="25949" started-at="2016-10-12T16:57:35Z" finished-at="2016-10-12T16:58:01Z">
+  <suite name="Default suite" duration-ms="37786" started-at="2016-10-13T11:21:41Z" finished-at="2016-10-13T11:22:18Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="25949" started-at="2016-10-12T16:57:35Z" finished-at="2016-10-12T16:58:01Z">
+    <test name="Default test" duration-ms="37786" started-at="2016-10-13T11:21:41Z" finished-at="2016-10-13T11:22:18Z">
       <class name="testSuiteExpense.KPITilesVisual">
-        <test-method status="PASS" signature="setUp()[pri:0, instance:testSuiteExpense.KPITilesVisual@48eff760]" name="setUp" is-config="true" duration-ms="5868" started-at="2016-10-12T12:57:35Z" finished-at="2016-10-12T12:57:40Z">
+        <test-method status="PASS" signature="setUp()[pri:0, instance:testSuiteExpense.KPITilesVisual@48eff760]" name="setUp" is-config="true" duration-ms="6399" started-at="2016-10-13T07:21:41Z" finished-at="2016-10-13T07:21:47Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method status="FAIL" signature="KpiTilesVisualTest()[pri:0, instance:testSuiteExpense.KPITilesVisual@48eff760]" name="KpiTilesVisualTest" duration-ms="16941" started-at="2016-10-12T12:57:40Z" finished-at="2016-10-12T12:57:57Z">
+        <test-method status="FAIL" signature="KpiTilesVisualTest()[pri:0, instance:testSuiteExpense.KPITilesVisual@48eff760]" name="KpiTilesVisualTest" duration-ms="16093" started-at="2016-10-13T07:21:47Z" finished-at="2016-10-13T07:22:03Z">
           <exception class="java.lang.AssertionError">
             <message>
-              <![CDATA[Failure in ExpenseHelper.VerifyTotalExpenseCostFor input string: ""]]>
+              <![CDATA[Failure in ExpenseHelper.VerifyCountOfServiceNumbersAndTitle expected [Count of Service Numbers] but found [Total Expense]]]>
             </message>
             <full-stacktrace>
-              <![CDATA[java.lang.AssertionError: Failure in ExpenseHelper.VerifyTotalExpenseCostFor input string: ""
+              <![CDATA[java.lang.AssertionError: Failure in ExpenseHelper.VerifyCountOfServiceNumbersAndTitle expected [Count of Service Numbers] but found [Total Expense]
 	at org.testng.Assert.fail(Assert.java:94)
-	at helperObjects.ExpenseHelper.VerifyInteger(ExpenseHelper.java:83)
-	at helperObjects.ExpenseHelper.VerifyContainsDollarAndKilo(ExpenseHelper.java:92)
-	at helperObjects.ExpenseHelper.VerifyTotalExpenseCostAndTitle(ExpenseHelper.java:28)
-	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:49)
+	at org.testng.Assert.failNotEquals(Assert.java:496)
+	at org.testng.Assert.assertEquals(Assert.java:125)
+	at org.testng.Assert.assertEquals(Assert.java:178)
+	at helperObjects.ExpenseHelper.VerifyCountOfServiceNumbersAndTitle(ExpenseHelper.java:32)
+	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:59)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -53,7 +54,7 @@
           <reporter-output>
           </reporter-output>
         </test-method> <!-- KpiTilesVisualTest -->
-        <test-method status="PASS" signature="closeDriver()[pri:0, instance:testSuiteExpense.KPITilesVisual@48eff760]" name="closeDriver" is-config="true" duration-ms="3125" started-at="2016-10-12T12:57:57Z" finished-at="2016-10-12T12:58:01Z">
+        <test-method status="PASS" signature="closeDriver()[pri:0, instance:testSuiteExpense.KPITilesVisual@48eff760]" name="closeDriver" is-config="true" duration-ms="15276" started-at="2016-10-13T07:22:03Z" finished-at="2016-10-13T07:22:18Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- closeDriver -->

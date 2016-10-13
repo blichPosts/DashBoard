@@ -57,9 +57,9 @@ function toggleAllBoxes() {
 <tr>
 <td>Tests passed/Failed/Skipped:</td><td>0/1/0</td>
 </tr><tr>
-<td>Started on:</td><td>Wed Oct 12 12:57:35 EDT 2016</td>
+<td>Started on:</td><td>Thu Oct 13 07:21:41 EDT 2016</td>
 </tr>
-<tr><td>Total time:</td><td>25 seconds (25949 ms)</td>
+<tr><td>Total time:</td><td>37 seconds (37786 ms)</td>
 </tr><tr>
 <td>Included groups:</td><td></td>
 </tr><tr>
@@ -76,12 +76,13 @@ function toggleAllBoxes() {
 </tr>
 <tr>
 <td title='testSuiteExpense.KPITilesVisual.KpiTilesVisualTest()'><b>KpiTilesVisualTest</b><br>Test class: testSuiteExpense.KPITilesVisual</td>
-<td><div><pre>java.lang.AssertionError: Failure in ExpenseHelper.VerifyTotalExpenseCostFor input string: &quot;&quot;
+<td><div><pre>java.lang.AssertionError: Failure in ExpenseHelper.VerifyCountOfServiceNumbersAndTitle expected [Count of Service Numbers] but found [Total Expense]
 	at org.testng.Assert.fail(Assert.java:94)
-	at helperObjects.ExpenseHelper.VerifyInteger(ExpenseHelper.java:83)
-	at helperObjects.ExpenseHelper.VerifyContainsDollarAndKilo(ExpenseHelper.java:92)
-	at helperObjects.ExpenseHelper.VerifyTotalExpenseCostAndTitle(ExpenseHelper.java:28)
-	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:49)
+	at org.testng.Assert.failNotEquals(Assert.java:496)
+	at org.testng.Assert.assertEquals(Assert.java:125)
+	at org.testng.Assert.assertEquals(Assert.java:178)
+	at helperObjects.ExpenseHelper.VerifyCountOfServiceNumbersAndTitle(ExpenseHelper.java:32)
+	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:59)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -106,13 +107,14 @@ function toggleAllBoxes() {
 	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:126)
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:152)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:57)
-</pre></div><a href='#' onClick='toggleBox("stack-trace1068586139", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
-<div class='stack-trace' id='stack-trace1068586139'><pre>java.lang.AssertionError: Failure in ExpenseHelper.VerifyTotalExpenseCostFor input string: &quot;&quot;
+</pre></div><a href='#' onClick='toggleBox("stack-trace1270038388", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1270038388'><pre>java.lang.AssertionError: Failure in ExpenseHelper.VerifyCountOfServiceNumbersAndTitle expected [Count of Service Numbers] but found [Total Expense]
 	at org.testng.Assert.fail(Assert.java:94)
-	at helperObjects.ExpenseHelper.VerifyInteger(ExpenseHelper.java:83)
-	at helperObjects.ExpenseHelper.VerifyContainsDollarAndKilo(ExpenseHelper.java:92)
-	at helperObjects.ExpenseHelper.VerifyTotalExpenseCostAndTitle(ExpenseHelper.java:28)
-	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:49)
+	at org.testng.Assert.failNotEquals(Assert.java:496)
+	at org.testng.Assert.assertEquals(Assert.java:125)
+	at org.testng.Assert.assertEquals(Assert.java:178)
+	at helperObjects.ExpenseHelper.VerifyCountOfServiceNumbersAndTitle(ExpenseHelper.java:32)
+	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:59)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)

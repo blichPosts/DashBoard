@@ -48,7 +48,7 @@
               <ul>
                 <li>
                   <a href="#" class="navigator-link " panel-name="test-xml-Default_suite">
-                    <span>C:\Users\bob.lichtenfels\AppData\Local\Temp\testng-eclipse-1768028757\testng-customsuite.xml</span>
+                    <span>C:\Users\bob.lichtenfels\AppData\Local\Temp\testng-eclipse-1135606003\testng-customsuite.xml</span>
                   </a> <!-- navigator-link  -->
                 </li>
                 <li>
@@ -127,12 +127,13 @@
                   <a name="KpiTilesVisualTest">
                   </a> <!-- KpiTilesVisualTest -->
                   <span class="method-name">KpiTilesVisualTest</span>
-                  <div class="stack-trace">java.lang.AssertionError: Failure in ExpenseHelper.VerifyTotalExpenseCostFor input string: &quot;&quot;
+                  <div class="stack-trace">java.lang.AssertionError: Failure in ExpenseHelper.VerifyCountOfServiceNumbersAndTitle expected [Count of Service Numbers] but found [Total Expense]
 	at org.testng.Assert.fail(Assert.java:94)
-	at helperObjects.ExpenseHelper.VerifyInteger(ExpenseHelper.java:83)
-	at helperObjects.ExpenseHelper.VerifyContainsDollarAndKilo(ExpenseHelper.java:92)
-	at helperObjects.ExpenseHelper.VerifyTotalExpenseCostAndTitle(ExpenseHelper.java:28)
-	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:49)
+	at org.testng.Assert.failNotEquals(Assert.java:496)
+	at org.testng.Assert.assertEquals(Assert.java:125)
+	at org.testng.Assert.assertEquals(Assert.java:178)
+	at helperObjects.ExpenseHelper.VerifyCountOfServiceNumbersAndTitle(ExpenseHelper.java:32)
+	at testSuiteExpense.KPITilesVisual.KpiTilesVisualTest(KPITilesVisual.java:59)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -166,7 +167,7 @@
         </div> <!-- panel Default_suite -->
         <div panel-name="test-xml-Default_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">C:\Users\bob.lichtenfels\AppData\Local\Temp\testng-eclipse-1768028757\testng-customsuite.xml</span>
+            <span class="header-content">C:\Users\bob.lichtenfels\AppData\Local\Temp\testng-eclipse-1135606003\testng-customsuite.xml</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <pre>
@@ -219,7 +220,7 @@ data.addRows(1);
 data.setCell(0, 0, 0)
 data.setCell(0, 1, 'KpiTilesVisualTest')
 data.setCell(0, 2, 'testSuiteExpense.KPITilesVisual')
-data.setCell(0, 3, 16941);
+data.setCell(0, 3, 16093);
 window.suiteTableData['Default_suite']= { tableData: data, tableDiv: 'times-div-Default_suite'}
 return data;
 }
@@ -259,11 +260,11 @@ return data;
                 <img src="failed.png">
                 </img>
                 <span class="method-name">KpiTilesVisualTest</span>
-                <span class="method-start">5870 ms</span>
+                <span class="method-start">6402 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">closeDriver</span>
-                <span class="method-start">22817 ms</span>
+                <span class="method-start">22498 ms</span>
               </div> <!-- configuration-class after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
