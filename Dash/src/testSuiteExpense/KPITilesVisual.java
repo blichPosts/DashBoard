@@ -47,20 +47,23 @@ public class KPITilesVisual extends BaseClass
 		ExpenseHelper.VerifyTotalExpenseCostAndTitle();
 		
 		//Next there is a trend icon (up/down) arrow.
-		ExpenseHelper.TotalExpenseTrendVerifyTrend();
+		ExpenseHelper.TotalExpensedVerifyTrend();
 		
 		// Next there is a Rolling average with rolling averages for three and six months.
 		ExpenseHelper.VerifyRollingAverageTotalExpense();
 		
-		//DebugTimeout(0, driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(2) > h3")).getText());
-		
 		// # 3
 		// Observe the second component from the left.
-		ExpenseHelper.VerifyCountOfServiceNumbersAndTitle();
 		 
 	    // The top says 'Count of Service Numbers'
 	    // The middle section shows the total count of service numbers managed by the selected vendors in the selected month.
+		ExpenseHelper.VerifyCountOfServiceNumbersCostAndTitle();		
 		
+	    // Next there is a trend icon (up/down) arrow.
+		ExpenseHelper.CountServiceNumbersVerifyTrend();
+		
+		// Next there is a Rolling average with rolling averages for three and six months.
+		ExpenseHelper.VerifyRollingAverageTotalExpense(); // NEW CHANGE   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
 		
 		DebugTimeout(9999, "DONE");		
