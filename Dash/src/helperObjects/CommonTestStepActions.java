@@ -146,6 +146,9 @@ public class CommonTestStepActions extends BaseClass
 		
 	}
 
+	public static void anaTest(){
+		// testing branches
+	}
 	
 	
 	
