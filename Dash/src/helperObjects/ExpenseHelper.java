@@ -68,16 +68,18 @@ public class ExpenseHelper extends BaseClass
 	{
 		errMessage = "Failure in ExpenseHelper.VerifyRollingAverage";
 		
-		VerifyRollingAverageTotalExpense(errMessage);
+		VerifyRollingAverageTotalExpense(errMessage, "//h4[@class='tdb-h4'])[1]/../..");
 	}
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers
 	// //////////////////////////////////////////////////////////////////////
 	
-	public static void VerifyRollingAverageTotalExpense(String errMess) 
+	public static void VerifyRollingAverageTotalExpense(String errMess, String locator) 
 	{
-		String strArray [] = driver.findElement(By.xpath("(//h4[@class='tdb-h4'])[1]/../..")).getText().split("\n");
+		// String strArray [] = driver.findElement(By.xpath("(//h4[@class='tdb-h4'])[1]/../..")).getText().split("\n");
+		
+		String strArray [] = driver.findElement(By.xpath(locator)).getText().split("\n");
 		
 		Assert.assertEquals(strArray[0], rollingAverages, errMess); // rolling averages text
 		Assert.assertEquals(strArray[1].split("s")[0] + "s", rollingMonthsThree, ""); // 3 months text 

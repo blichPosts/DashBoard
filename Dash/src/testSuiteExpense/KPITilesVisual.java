@@ -62,8 +62,8 @@ public class KPITilesVisual extends BaseClass
 	    // Next there is a trend icon (up/down) arrow.
 		ExpenseHelper.CountServiceNumbersVerifyTrend();
 		
-		// Next there is a Rolling average with rolling averages for three and six months.
-		ExpenseHelper.VerifyRollingAverageTotalExpense(); // NEW CHANGE   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// Next there is a Rolling average with rolling averages for three and six months. NOTE - using method for total expense. it's the same.
+		ExpenseHelper.VerifyRollingAverageTotalExpense(); 
 		
 		
 		DebugTimeout(9999, "DONE");		
