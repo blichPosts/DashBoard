@@ -68,6 +68,11 @@ public class BaseClass
 	public static String projectPath = ""; 
 
 	public static List<Country> countryList = new ArrayList<Country>();	 // this a list for holding the countries.
+
+	// these are for both Expenses KPIs and Usage KPIs.
+	public static String rollingAverages = "Rolling Averages";
+	public static String rollingMonthsThree = "3 months";	
+	public static String rollingMonthsSix = "6 months";	
 	
 	public enum Action // needed for base class methods. 
 	{
