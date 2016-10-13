@@ -58,7 +58,7 @@ public class BaseClass
 	public static String [] ExpenseKpiNames = {"Total Expense", "Count of Service Numbers", "Cost per Service Number"};
 	
 	// names for the three KPI blocks in Usage page, under Domestic
-	public static String [] UsageKpiNames = {"Voice (min)", "Data (TB)", "Messages"};
+	public static String [] UsageKpiNames = {"Voice (min)", "Data (B)", "Messages", "Data (B)"};
 	
 	
 	public static JFrame frame;	

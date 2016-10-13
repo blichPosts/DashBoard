@@ -6,7 +6,6 @@ import javax.swing.JOptionPane;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.By.ByCssSelector;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -24,6 +23,7 @@ public class KPITilesVisualUsage extends BaseClass
 		setUpDriver();
 	}
 	
+	
 	@Test
 	public static void KpiTilesVisualUsageTest() throws Exception
 	{
@@ -36,21 +36,27 @@ public class KPITilesVisualUsage extends BaseClass
 		
 
 		// #2 Observe the KPI components - There are three KPI tiles under Domestic: 'Voice', 'Data', 'Messages'; and one KPI tile under Roaming: 'Data'
-		/*Assert.assertEquals(driver.findElements(By.cssSelector(".tdb-kpi")).size(), 3);
+		Assert.assertEquals(driver.findElements(By.cssSelector(".tdb-kpi__title")).size(), 4);
 		
-		List<WebElement> webList = driver.findElements(By.cssSelector(".tdb-kpi")); // get the names of the three KPI components. 
+		List<WebElement> webList = driver.findElements(By.cssSelector(".tdb-kpi__title")); // get the names of the three 'Domestic' KPI components. 
 
-		// verify the three components under Domestic.
 		for(int x = 0; x < UsageKpiNames.length; x++)
 		{
+			//System.out.println("From web list: " + webList.get(x).getText());
+			//System.out.println("From UsageKPINames: " + UsageKpiNames[x]);
 			Assert.assertEquals(UsageKpiNames[x], webList.get(x).getText());
 		}
 		
-		DebugTimeout(9999, "DONE");		
-		*/
+		// 
 		
+		
+		
+		
+		//DebugTimeout(9999, "DONE");		
+				
 		
 	}
+	
 	
 	@AfterClass
 	public static void closeDriver() throws Exception
