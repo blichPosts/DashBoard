@@ -1,7 +1,5 @@
 package testSuiteExpense;
 
-import java.util.List;
-
 import javax.swing.JOptionPane;
 
 import org.junit.Assert;
@@ -49,29 +47,21 @@ public class KPITilesVisual extends BaseClass
 		ExpenseHelper.VerifyTotalExpenseCostAndTitle();
 		
 		//Next there is a trend icon (up/down) arrow.
-		ExpenseHelper.VerifyTrend();
+		ExpenseHelper.TotalExpenseTrendVerifyTrend();
 		
-		// Next there is a Rolling average with rolling avreages for three and six moths.
-
-		
-		
-		//Next there is a Rolling average with rolling averages for three and six months.
-		
-		// .tdb-kpi:nth-of-type(1) > div> div:nth-of-type(1)
-		
-		//DebugTimeout(0, driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > div> div:nth-of-type(1)")).getText());
-		
-		// .tdb-kpi:nth-of-type(1) > div> div:nth-of-type(2) > span:nth-of-type(2)
-		
-		// next level.
-		// .tdb-kpi:nth-of-type(1) > div> div:nth-of-type(1)
-		
-		
+		// Next there is a Rolling average with rolling averages for three and six months.
+		ExpenseHelper.VerifyRollingAverageTotalExpense();
 		
 		//DebugTimeout(0, driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(2) > h3")).getText());
-		//DebugTimeout(0, driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(3) > h3")).getText());		
 		
-		// .tdb-kpi:nth-of-type(1) > h3
+		// # 3
+		// Observe the second component from the left.
+		ExpenseHelper.VerifyCountOfServiceNumbersAndTitle();
+		 
+	    // The top says 'Count of Service Numbers'
+	    // The middle section shows the total count of service numbers managed by the selected vendors in the selected month.
+		
+		
 		
 		DebugTimeout(9999, "DONE");		
 	}
