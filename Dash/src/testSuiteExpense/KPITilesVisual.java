@@ -62,11 +62,22 @@ public class KPITilesVisual extends BaseClass
 	    // Next there is a trend icon (up/down) arrow.
 		ExpenseHelper.CountServiceNumbersVerifyTrend();
 		
-		// Next there is a Rolling average with rolling averages for three and six months. NOTE - using method for total expense. it's the same.
-		ExpenseHelper.VerifyRollingAverageTotalExpense(); 
+		// Next there is a Rolling average with rolling averages for three and six months. 
+		ExpenseHelper.VerifyRollingAverageCountServiceNumbers(); 
 		
+		// #4 - Observe the third component from the left. 
+	    // The top says 'Cost per Service Number'
+	    // The middle section shows the average Cost per Service Number for the selected vendors/countries and for the selected month.		
+		ExpenseHelper.VerifyCostPerServiceNumberCostAndTitle();		
 		
-		DebugTimeout(9999, "DONE");		
+		// There will be a trend icon represented by an arrow indicating direction. 
+		// The icon will have a percentage number indicating the percentage of change between the current amount and the benchmark
+		ExpenseHelper.CostPerServiceNumberVerifyTrend();
+		
+		// There is a section that says 'Rolling Averages'. It lists the 3 and 6 month rolling averages for the expenses per service number.
+		ExpenseHelper.VerifyRollingAverageCostPerServiceNumber();		
+		
+		// DebugTimeout(9999, "DONE");		
 	}
 	
 	@AfterClass
