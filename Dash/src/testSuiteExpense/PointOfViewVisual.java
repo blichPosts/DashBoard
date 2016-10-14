@@ -29,10 +29,14 @@ public class PointOfViewVisual extends BaseClass
 		
 		// #3  Switch the month selector through various selections - Thirteen descending months are available for selection.
 		CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent();
+		CommonTestStepActions.UsePulldownList();
 		
 		// #4
 		// verify the countries and the vendors for each country are in alphabetical order.
 		CommonTestStepActions.VerifyCountryAndVendorListSorted();
+		
+		
+		
 		
 		DebugTimeout(9999, "DONE");		
 		

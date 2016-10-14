@@ -99,13 +99,31 @@ public class CommonTestStepActions extends BaseClass
 		Assert.assertEquals(monthListActual, monthListExpected, "Failed month list compare in CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent");
 	}	
 	
-	
-	public static void SelectVarious()
+	// select and verify the first, middle, and last selections in the pulldown.
+	public static void UsePulldownList()
 	{
+		String actualString = "";
+		String errMessage = "Failure in verifying point of view pulldown selections.";
 		
-	}
-	
-	
+		// put all of the pull down item in a web list.
+		List<WebElement> webList = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();
+
+		// select using text from web list, get selection, and compare with web list selection.
+		new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).selectByVisibleText(webList.get(0).getText());
+		actualString = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();
+		Assert.assertEquals(actualString, webList.get(0).getText(), errMessage);
+		
+		// select using text from web list, get selection, and compare with web list selection.
+		new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).selectByVisibleText(webList.get(webList.size()/2).getText());
+		actualString = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();		
+		Assert.assertEquals(actualString, webList.get(webList.size()/2).getText(), errMessage);
+		
+		
+		// select using text from web list, get selection, and compare with web list selection.
+		new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).selectByVisibleText(webList.get(webList.size() - 1).getText());
+		actualString = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();		
+		Assert.assertEquals(actualString, webList.get(webList.size()- 1).getText(), errMessage); 
+	}		
 	
 	public static void VerifyCountryAndVendorListSorted()
 	{
