@@ -75,7 +75,9 @@ public class KPITilesVisualUsage extends BaseClass
 		*/
 		
 		
-		// Verify the units of measure for the rolling amounts. 
+		
+		// #4 Verify the units of measure for the rolling amounts.
+		
 		// Voice
 		Assert.assertEquals(rollingAmounts.get(0).getText().endsWith(UsageHelper.minutes), true);
 		Assert.assertEquals(rollingAmounts.get(1).getText().endsWith(UsageHelper.minutes), true);
@@ -110,6 +112,25 @@ public class KPITilesVisualUsage extends BaseClass
 		
 		Assert.assertEquals(unitsOfData, true);
 		
+		
+		// #5 Verify that the trending values have the '%' symbol, on all the KPI tiles -- icons cannot be verified
+		
+		List<WebElement> trendingElements = driver.findElements(By.cssSelector(".tdb-kpi__trend>span"));
+		Assert.assertEquals(trendingElements.size(), 8);
+		
+		/*
+		 * for(int i = 0; i < trendingElements.size(); i++){
+			System.out.println("Trending element: " + trendingElements.get(i).getText());
+		}
+		*/
+		
+		Assert.assertEquals(trendingElements.get(1).getText().endsWith("%"), true);
+		Assert.assertEquals(trendingElements.get(3).getText().endsWith("%"), true);
+		Assert.assertEquals(trendingElements.get(5).getText().endsWith("%"), true);
+		Assert.assertEquals(trendingElements.get(7).getText().endsWith("%"), true);
+
+		
+				
 		
 	}
 	
