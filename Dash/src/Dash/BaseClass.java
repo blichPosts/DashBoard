@@ -247,7 +247,7 @@ public class BaseClass
 	// Added by Ana 
 	public static void WaitForViewUsageSelector() throws Exception{
 		
-		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']"), MainTimeout);
+		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']"), ExtremeTimeout);
 		driver.findElement(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']")).click();
 		
 		
