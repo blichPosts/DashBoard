@@ -66,6 +66,8 @@ public class CommonTestStepActions extends BaseClass
 		// put all of the pulldown item in a web list.
 		List<WebElement> webList = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();
 		
+		Assert.assertTrue(webList.size() == 13); // verify 13 months shown
+		
 		// create a list of months expected from the hard-coded monthArray.
 		for(int x = 0; x < monthArray.length; x++)
 		{
@@ -84,7 +86,7 @@ public class CommonTestStepActions extends BaseClass
 		// store the last month in the web list.
 		lastMonth = webList.get(webList.size() - 1).getText().split(" ")[0];
 
-		Assert.assertEquals(lastMonth, firstMonth); // verify last and first are equal.
+		Assert.assertEquals(lastMonth, firstMonth); // verify last and first are equal as expected.
 		
 		// sort the arrays for compare. 
 		Collections.sort(monthListExpected);
@@ -93,7 +95,7 @@ public class CommonTestStepActions extends BaseClass
 		//for(int x = 0; x < monthArray.length; x++){DebugTimeout(0, monthListExpected.get(x));} // DEBUG
 		//for(int x = 0; x < monthArray.length; x++) {DebugTimeout(0, monthListActual.get(x));} // DEBUG		
 		
-		// do the compare.
+		// do the compare to verify all 12 months are shown
 		Assert.assertEquals(monthListActual, monthListExpected, "Failed month list compare in CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent");
 	}	
 	
