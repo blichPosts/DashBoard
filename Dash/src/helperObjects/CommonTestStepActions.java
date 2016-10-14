@@ -84,7 +84,7 @@ public class CommonTestStepActions extends BaseClass
 		// store the last month in the web list.
 		lastMonth = webList.get(webList.size() - 1).getText().split(" ")[0];
 
-		Assert.assertEquals(lastMonth, firstMonth); // verify last and first are 
+		Assert.assertEquals(lastMonth, firstMonth); // verify last and first are equal.
 		
 		// sort the arrays for compare. 
 		Collections.sort(monthListExpected);
@@ -96,6 +96,14 @@ public class CommonTestStepActions extends BaseClass
 		// do the compare.
 		Assert.assertEquals(monthListActual, monthListExpected, "Failed month list compare in CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent");
 	}	
+	
+	
+	public static void SelectVarious()
+	{
+		
+	}
+	
+	
 	
 	public static void VerifyCountryAndVendorListSorted()
 	{
