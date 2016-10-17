@@ -76,8 +76,6 @@ public class KPITilesVisual extends BaseClass
 		
 		// There is a section that says 'Rolling Averages'. It lists the 3 and 6 month rolling averages for the expenses per service number.
 		ExpenseHelper.VerifyRollingAverageCostPerServiceNumber();		
-		
-		// DebugTimeout(9999, "DONE");		
 	}
 	
 	@AfterClass

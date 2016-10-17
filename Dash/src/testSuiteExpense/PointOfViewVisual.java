@@ -27,16 +27,20 @@ public class PointOfViewVisual extends BaseClass
 		CommonTestStepActions.GoToExpensePage(); // #2
 		CommonTestStepActions.VerifyMonthPullDownFormat(); // #1
 		
-		// #3  Switch the month selector through various selections - Thirteen descending months are available for selection.
+		// #3  Switch the month selector through various selections - Thirteen descending months are available for selection, starting with the current month/year. 
 		CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent();
 		CommonTestStepActions.UsePulldownList();
+
 		
 		// #4
-		// verify the countries and the vendors for each country are in alphabetical order.
+		// Observe the Country and the Vendor (has check box selectors) in the 'Country Vendor' selector control in the 'Point Of View'.
+		
+		// The elements of this selector are arranged hierarchically showing countries and vendors, with the vendors corresponding to each country indented inside the corresponding country
+		// Each vendor has check box menu items to allow the user to select/de-select the vendors -- NOTE: in automation - this will be tested in later tests. 
+		// Each country has a select/un-select “All” menu item to allow the user to select/de-select all vendors under this country at the same time. 
+		// The countries are listed in alphabetical order. The Vendors within the countries are listed in alphabetical order within each country.
 		CommonTestStepActions.VerifyCountryAndVendorListSorted();
-		
-		
-		
+		CommonTestStepActions.VerifyMonthPulldownDetail();
 		
 		DebugTimeout(9999, "DONE");		
 		
