@@ -29,9 +29,10 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 		// Select all the vendors in the Point of View and select all of the vendor legends.
 		CommonTestStepActions.SelectAllVendors();
 
+		// The title is 'Total Expense by Vendor'.
 		// The pie shows data only for the five largest vendors selected. Data for other vendors selected are shown under the “Others” slice. 
 		// The “Others” slice should not appear if just five or less vendors are selected.
-		TotalExpenseByVendorCarrier.VerifyLegendsAndPieCount();
+		TotalExpenseByVendorCarrier.VerifyLegendsTitleAndPieCount();
 		
 		DebugTimeout(9999, "DONE");		
 	}

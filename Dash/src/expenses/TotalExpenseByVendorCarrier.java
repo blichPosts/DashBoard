@@ -34,10 +34,11 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 
 	}
 	
-	public static void VerifyLegendsAndPieCount()
+	public static void VerifyLegendsTitleAndPieCount()
 	{
+		String errMessage = "Failed checks in TotalExpenseByVendorCarrier.VerifyLegendsAndPieCount";
+		
 		setAllLegendsAndPieCount();
-		System.out.println(numPieParts);
 		
 		if(numPieParts <= 5)
 		{
@@ -48,6 +49,8 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 			Assert.assertTrue(legendsList.contains(otherString), "");
 			Assert.assertTrue(numPieParts == maxNumLegends, "");
 		}
+		
+		// (//h3[@class='tdb-h3'])[1]
 		
 		
 	}
