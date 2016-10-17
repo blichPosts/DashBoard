@@ -1,4 +1,8 @@
 
+1) Name for MonthYear() (base class)needs changed to MonthYearMinusOneYear().
+2) PointOfViewVisualTest() #4 missing some things not ready.
+
+
 
 
 Xpath for getting inyo controls:

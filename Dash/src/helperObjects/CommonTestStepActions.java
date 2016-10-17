@@ -1,6 +1,8 @@
 package helperObjects;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +20,11 @@ public class CommonTestStepActions extends BaseClass
 	public static String []  monthArray = {"January" , "February", "March", "April", "May" , "June", "July", "August", "September", "October", "November", "December"};
 	public static List<String> monthListExpected = new ArrayList<>(); 
 	public static List<String> monthListActual = new ArrayList<>();	
+	
+	// put all of the pulldown items in a web list. 
+	public static List<WebElement> webListPulldown = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();
+
+	public static String errMessage = "";
 	
 	// loads each country into a country list. it also adds the vendors for each country.
 	public static void SetupCountryAndVendorData()
@@ -43,7 +50,7 @@ public class CommonTestStepActions extends BaseClass
 			// add the vendors to the country just added to the list by getting  the number of vendors for the country and add that number of vendors from the vendor list.
 			numberOfVendorsInCountry = driver.findElements(By.xpath("(//div/div[@class='tdb-povGroup__Label--subhead'])[" + x + "]/following-sibling ::div/div")).size();
 			
-			Assert.assertTrue(numberOfVendorsInCountry > 0, "Found a country with no vendors."); // verify at leats one vendor is found.
+			Assert.assertTrue(numberOfVendorsInCountry > 0, "Found a country with no vendors."); // verify at leasts one vendor is found.
 			
 			for(int z = 0; z < numberOfVendorsInCountry; z++)
 			{
@@ -58,15 +65,30 @@ public class CommonTestStepActions extends BaseClass
 		Assert.assertEquals(new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText(), MonthYear(), "");
 	}
 	
+	public static void SelectAllVendors()
+	{
+		WaitForElementClickable(By.cssSelector(".tdb-povGroup__toggle > a"), MediumTimeout, "Select all is not present in CommonTestStepActions.SelectAllVendors");
+		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("All"))
+		{
+			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
+		}
+	}
+	
+	public static void UnSelectAllVendors()
+	{
+		WaitForElementClickable(By.cssSelector(".tdb-povGroup__toggle > a"), MediumTimeout, "Unselect all is not present in CommonTestStepActions.UnSelectAllVendors");
+		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("None"))
+		{
+			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
+		}
+	}	
+	
 	public static void VerifyMonthPullDownSelectionsAndContent() 
 	{
 		String firstMonth;
 		String lastMonth;
 		
-		// put all of the pulldown item in a web list.
-		List<WebElement> webList = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();
-		
-		Assert.assertTrue(webList.size() == 13); // verify 13 months shown
+		Assert.assertTrue(webListPulldown.size() == 13); // verify 13 months shown
 		
 		// create a list of months expected from the hard-coded monthArray.
 		for(int x = 0; x < monthArray.length; x++)
@@ -77,14 +99,14 @@ public class CommonTestStepActions extends BaseClass
 		// create a list of months actual from the web list.
 		for(int x = 0; x < monthArray.length; x++)
 		{
-			monthListActual.add(webList.get(x).getText().split(" ")[0]);
+			monthListActual.add(webListPulldown.get(x).getText().split(" ")[0]);
 		}
 		
 		// store the first month in the web list. 
-		firstMonth = webList.get(0).getText().split(" ")[0];
+		firstMonth = webListPulldown.get(0).getText().split(" ")[0];
 		
 		// store the last month in the web list.
-		lastMonth = webList.get(webList.size() - 1).getText().split(" ")[0];
+		lastMonth = webListPulldown.get(webListPulldown.size() - 1).getText().split(" ")[0];
 
 		Assert.assertEquals(lastMonth, firstMonth); // verify last and first are equal as expected.
 		
@@ -99,13 +121,84 @@ public class CommonTestStepActions extends BaseClass
 		Assert.assertEquals(monthListActual, monthListExpected, "Failed month list compare in CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent");
 	}	
 	
+	// select and verify the first, middle, and last selections in the pulldown.
+	public static void UsePulldownList()
+	{
+		String actualString = "";
+		errMessage = "Failure in verifying point of view pulldown selections.";
+		
+		// select using text from web list, get selection, and compare with web list selection.
+		new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).selectByVisibleText(webListPulldown.get(0).getText());
+		actualString = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();
+		Assert.assertEquals(actualString, webListPulldown.get(0).getText(), errMessage);
+		
+		// select using text from web list, get selection, and compare with web list selection.
+		new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).selectByVisibleText(webListPulldown.get(webListPulldown.size()/2).getText());
+		actualString = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();		
+		Assert.assertEquals(actualString, webListPulldown.get(webListPulldown.size()/2).getText(), errMessage);
+		
+		
+		// select using text from web list, get selection, and compare with web list selection.
+		new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).selectByVisibleText(webListPulldown.get(webListPulldown.size() - 1).getText());
+		actualString = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();		
+		Assert.assertEquals(actualString, webListPulldown.get(webListPulldown.size()- 1).getText(), errMessage); 
+	}		
 	
-	public static void SelectVarious()
+	// verify the list of months/years in the months pulldown is descending for 13 months, starting at the current month/year.  
+	public static void VerifyMonthPulldownDetail()
 	{
 		
+		// list with two years worth of months.
+		List<String> twoYearMonthsList = new ArrayList<String>();
+		
+		twoYearMonthsList.add("January");
+		twoYearMonthsList.add("February"); 
+		twoYearMonthsList.add("March"); 
+		twoYearMonthsList.add("April");
+		twoYearMonthsList.add("May");  
+		twoYearMonthsList.add("June"); 
+		twoYearMonthsList.add("July"); 
+		twoYearMonthsList.add("August");
+		twoYearMonthsList.add("September"); 
+		twoYearMonthsList.add("October");
+		twoYearMonthsList.add("November");
+		twoYearMonthsList.add("December");
+		twoYearMonthsList.add("January");
+		twoYearMonthsList.add("February");
+		twoYearMonthsList.add("March");
+		twoYearMonthsList.add("April");
+		twoYearMonthsList.add("May");
+		twoYearMonthsList.add("June");
+		twoYearMonthsList.add("July");
+		twoYearMonthsList.add("August"); 
+		twoYearMonthsList.add("September");
+		twoYearMonthsList.add("October");
+		twoYearMonthsList.add("November");
+		twoYearMonthsList.add("December");
+
+		String currentMonthYear = MonthYearCurrentYear(); // get current month/year.
+		
+		int currentYear =  Integer.valueOf(MonthYearCurrentYear().split(" ")[1]); // store current year as int.
+		
+		// find the index of the current month in the 'twoYearMonthsList' list and get its index + 12.
+		// 12 is added because the list will be traversed backwards from  index + 12.
+		int startMonth = twoYearMonthsList.indexOf(currentMonthYear.split(" ")[0]) + 12; 
+
+		// go through the lists comparing actual month/year to expected month/year.
+		for(int x = startMonth, y = 0; y < 13; x--, y++)
+		{
+			//System.out.println(webListPulldown.get(y).getText()); // DEBUG
+			//System.out.println(twoYearMonthsList.get(x) + " " + currentYear); // DEBUG
+			
+			Assert.assertEquals(webListPulldown.get(y).getText(), twoYearMonthsList.get(x) + " " + currentYear, "");
+			
+			// if 'January' has been reached, need to decrement year for rest of descending months. 
+			if(webListPulldown.get(y).getText().contains("January"))
+			{
+				currentYear--;
+			}
+		}
 	}
-	
-	
 	
 	public static void VerifyCountryAndVendorListSorted()
 	{
@@ -148,7 +241,18 @@ public class CommonTestStepActions extends BaseClass
 		WaitForViewUsageSelector();
 		//SelectUsageTab();
 	}
+
 	
+	// returns one month behind current month and year. 
+	static public String MonthYearCurrentYear()
+	{
+		Calendar c = Calendar.getInstance();		
+		int month = c.get(Calendar.MONTH);		
+		int year = c.get(Calendar.YEAR);		
+		String monthString = new DateFormatSymbols().getMonths()[month];
+		
+		return monthString + " " + year;
+	}	
 
 	// helpers
 	public static void BobTest()
