@@ -7,7 +7,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
+import expenses.TotalExpenseByVendorCarrier;
 import helperObjects.CommonTestStepActions;
+
 
 public class TotalExpenseByVendorCarrierVisual extends BaseClass
 {
@@ -29,7 +31,7 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 
 		// The pie shows data only for the five largest vendors selected. Data for other vendors selected are shown under the “Others” slice. 
 		// The “Others” slice should not appear if just five or less vendors are selected.
-		
+		TotalExpenseByVendorCarrier.getAllLegends();
 		
 		DebugTimeout(9999, "DONE");		
 	}
