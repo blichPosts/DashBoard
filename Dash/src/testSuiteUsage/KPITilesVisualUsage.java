@@ -49,7 +49,7 @@ public class KPITilesVisualUsage extends BaseClass
 		{
 			//System.out.println("From web list: " + webList.get(x).getText());
 			//System.out.println("From UsageKPINames: " + UsageKpiNames[x]);
-			Assert.assertEquals(UsageKpiNames[x], webList.get(x).getText());
+			Assert.assertTrue(webList.get(x).getText().contains(UsageKpiNames[x]));
 		}
 		
 		
