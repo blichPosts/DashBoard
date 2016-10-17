@@ -27,6 +27,12 @@ public class CommonTestStepActions extends BaseClass
 	public static String errMessage = "";
 	
 	// loads each country into a country list. it also adds the vendors for each country.
+	public static String GetPulldownTextSelected()
+	{
+		return new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();
+	}
+	
+	// loads each country into a country list. it also adds the vendors for each country.
 	public static void SetupCountryAndVendorData()
 	{
 		countryList.clear(); // make sure it's cleared in case has already been used.  
@@ -62,7 +68,7 @@ public class CommonTestStepActions extends BaseClass
 
 	public static void VerifyMonthPullDownFormat()
 	{
-		Assert.assertEquals(new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText(), MonthYear(), "");
+		Assert.assertEquals(new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText(), MonthYearMinusOne(), "");
 	}
 	
 	public static void SelectAllVendors()

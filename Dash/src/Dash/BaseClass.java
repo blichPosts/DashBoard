@@ -122,7 +122,7 @@ public class BaseClass
 	}		
 
 	// returns one month behind current month and year. 
-	static public String MonthYear()
+	static public String MonthYearMinusOne()
 	{
 		Calendar c = Calendar.getInstance();		
 		int month = c.get(Calendar.MONTH);		

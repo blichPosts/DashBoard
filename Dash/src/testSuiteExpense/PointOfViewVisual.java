@@ -43,22 +43,6 @@ public class PointOfViewVisual extends BaseClass
 		CommonTestStepActions.VerifyMonthPulldownDetail();
 		
 		DebugTimeout(9999, "DONE");		
-		
-
-		// drilling down into controls.
-		//WebElement web;
-		//  //web = driver.findElement(By.xpath("//div[@id='highcharts-2']/*/*/*/..[@class='highcharts-axis-labels highcharts-xaxis-labels']"));
-		//  //web = driver.findElement(By.xpath("//div[@id='highcharts-2']/*/*/*"));
-		//web = driver.findElement(By.xpath("//div[@id='highcharts-2']/*/*/*/.."));
-		//web = driver.findElement(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[8]"));
-		//String [] strArray= driver.findElement(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[8]")).getText().split("\n");
-		//ShowArray(strArray); 
-		//strArray= driver.findElement(By.xpath(".//*[@id='highcharts-0']/*/*[@class='highcharts-legend']")).getText().split("\n");
-		//ShowArray(strArray);
-
-		
-		
-		
 	}
 	
 	@AfterClass

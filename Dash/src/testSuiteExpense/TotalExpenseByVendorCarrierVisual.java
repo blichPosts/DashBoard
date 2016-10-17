@@ -21,7 +21,7 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 	}
 	
 	@Test
-	public static void TotalExpenseByVendorCarrierVisuallTest() throws Exception
+	public static void TotalExpenseByVendorCarrierVisualTest() throws Exception
 	{
 		CommonTestStepActions.GoToExpensePage();
 
@@ -33,6 +33,7 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 		// The pie shows data only for the five largest vendors selected. Data for other vendors selected are shown under the “Others” slice. 
 		// The “Others” slice should not appear if just five or less vendors are selected.
 		TotalExpenseByVendorCarrier.VerifyLegendsTitleAndPieCount();
+		TotalExpenseByVendorCarrier.VerifyVendorView();
 		
 		DebugTimeout(9999, "DONE");		
 	}
