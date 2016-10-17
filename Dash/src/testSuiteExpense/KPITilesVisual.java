@@ -47,23 +47,37 @@ public class KPITilesVisual extends BaseClass
 		ExpenseHelper.VerifyTotalExpenseCostAndTitle();
 		
 		//Next there is a trend icon (up/down) arrow.
-		ExpenseHelper.TotalExpenseTrendVerifyTrend();
+		ExpenseHelper.TotalExpensedVerifyTrend();
 		
 		// Next there is a Rolling average with rolling averages for three and six months.
 		ExpenseHelper.VerifyRollingAverageTotalExpense();
 		
-		//DebugTimeout(0, driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(2) > h3")).getText());
-		
 		// # 3
 		// Observe the second component from the left.
-		ExpenseHelper.VerifyCountOfServiceNumbersAndTitle();
 		 
 	    // The top says 'Count of Service Numbers'
 	    // The middle section shows the total count of service numbers managed by the selected vendors in the selected month.
+		ExpenseHelper.VerifyCountOfServiceNumbersCostAndTitle();		
 		
+	    // Next there is a trend icon (up/down) arrow.
+		ExpenseHelper.CountServiceNumbersVerifyTrend();
 		
+		// Next there is a Rolling average with rolling averages for three and six months. 
+		ExpenseHelper.VerifyRollingAverageCountServiceNumbers(); 
 		
-		DebugTimeout(9999, "DONE");		
+		// #4 - Observe the third component from the left. 
+	    // The top says 'Cost per Service Number'
+	    // The middle section shows the average Cost per Service Number for the selected vendors/countries and for the selected month.		
+		ExpenseHelper.VerifyCostPerServiceNumberCostAndTitle();		
+		
+		// There will be a trend icon represented by an arrow indicating direction. 
+		// The icon will have a percentage number indicating the percentage of change between the current amount and the benchmark
+		ExpenseHelper.CostPerServiceNumberVerifyTrend();
+		
+		// There is a section that says 'Rolling Averages'. It lists the 3 and 6 month rolling averages for the expenses per service number.
+		ExpenseHelper.VerifyRollingAverageCostPerServiceNumber();		
+		
+		// DebugTimeout(9999, "DONE");		
 	}
 	
 	@AfterClass

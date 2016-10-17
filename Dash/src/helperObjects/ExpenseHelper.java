@@ -13,27 +13,6 @@ public class ExpenseHelper extends BaseClass
 	public static String tmpStr = "";
 	public static String errMessage = "";	
 	
-	
-	public static void VerifyTotalExpenseCostAndTitle() 
-	{
-		errMessage = "Failure in ExpenseHelper.VerifyTotalExpenseCost";
-		
-		//The top says 'Total Expense'		
-		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > h3")).getText(), ExpenseKpiNames[0], errMessage);
-
-		VerifyExpenseTotalCost(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > div> div:nth-of-type(1)")).getText(), errMessage);
-	}
-	
-	public static void VerifyCountOfServiceNumbersAndTitle() 
-	{
-		errMessage = "Failure in ExpenseHelper.VerifyCountOfServiceNumbersAndTitle";
-		
-		//The top says 'Count of Service Numbers'		
-		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(2) > h3")).getText(), ExpenseKpiNames[1], errMessage);
-
-		VerifyExpenseTotalCost(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > div> div:nth-of-type(1)")).getText(), errMessage);
-	}	
-	
 	public static void VerifyThreeComponents()
 	{
 		errMessage = "Failure in ExpenseHelper.VerifyThreeComponents";
@@ -51,43 +30,95 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	public static void TotalExpenseTrendVerifyTrend()
+	public static void VerifyTotalExpenseCostAndTitle() 
 	{
-		errMessage = "Failure in ExpenseHelper.TotalExpenseTrendVerifyTrend";
+		errMessage = "Failure in ExpenseHelper.VerifyTotalExpenseCost";
 		
-		VerifyTrendDetails(driver.findElement(By.cssSelector(".tdb-kpi__trend > span:nth-of-type(2)")).getText(), errMessage);
+		//The top says 'Total Expense'		
+		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > h3")).getText(), ExpenseKpiNames[0], errMessage);
+
+		VerifyExpenseTotalCost(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > div> div:nth-of-type(1)")).getText(), errMessage);
 	}
+	
+	public static void VerifyCountOfServiceNumbersCostAndTitle() 
+	{
+		errMessage = "Failure in ExpenseHelper.VerifyCountOfServiceNumbersAndTitle";
+		
+		//The top says 'Count of Service Numbers'		
+		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(2) > h3")).getText(), ExpenseKpiNames[1], errMessage);
+
+		VerifyCountServiceNumbers(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(2) > div> div:nth-of-type(1)")).getText(), errMessage);
+	}	
+	
+	public static void VerifyCostPerServiceNumberCostAndTitle() 
+	{
+		errMessage = "Failure in ExpenseHelper.VerifyCostPerServiceNumberCostAndTitle";
+		
+		//The top says 'Count of Service Numbers'		
+		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(3) > h3")).getText(), ExpenseKpiNames[2], errMessage);
+
+		VerifyCostPerServiceNumber(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(3) > div> div:nth-of-type(1)")).getText(), errMessage);
+	}		
+	
+	public static void TotalExpensedVerifyTrend()
+	{
+		errMessage = "Failure in ExpenseHelper.TotalExpensedVerifyTrend";
+		
+		VerifyTrendDetails(driver.findElement(By.xpath("((//div[@class='tdb-kpi__trend'])[1]/span)[2]")).getText(), errMessage);
+	}
+	
+	public static void CountServiceNumbersVerifyTrend()
+	{
+		errMessage = "Failure in ExpenseHelper.CountServiceNumbersVerifyTrend";
+		
+		VerifyTrendDetails(driver.findElement(By.xpath("((//div[@class='tdb-kpi__trend'])[2]/span)[2]")).getText(), errMessage);
+	}	
+	
+	public static void CostPerServiceNumberVerifyTrend()
+	{
+		errMessage = "Failure in ExpenseHelper.CostPerServiceNumberVerifyTrend";
+		
+		VerifyTrendDetails(driver.findElement(By.xpath("((//div[@class='tdb-kpi__trend'])[3]/span)[2]")).getText(), errMessage);
+	}		
 	
 	public static void VerifyRollingAverageTotalExpense()
 	{
 		errMessage = "Failure in ExpenseHelper.VerifyRollingAverage";
 		
-		VerifyRollingAverageTotalExpense(errMessage);
+		VerifyRollingAverageTotalExpense(errMessage, "(//h4[@class='tdb-h4'])[1]/../..");
 	}
+	
+	public static void VerifyRollingAverageCountServiceNumbers()
+	{
+		errMessage = "Failure in ExpenseHelper.VerifyRollingAverageCountServiceNumbers";
+		
+		VerifyRollingAverageTotalExpense(errMessage, "(//h4[@class='tdb-h4'])[2]/../.."); 
+	}
+	
+	public static void VerifyRollingAverageCostPerServiceNumber()
+	{
+		errMessage = "Failure in ExpenseHelper.VerifyRollingAverageCountServiceNumbers";
+		
+		VerifyRollingAverageTotalExpense(errMessage, "(//h4[@class='tdb-h4'])[3]/../.."); 
+	}
+	
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers
 	// //////////////////////////////////////////////////////////////////////
 	
-	public static void VerifyRollingAverageTotalExpense(String errMess) 
+	public static void VerifyRollingAverageTotalExpense(String errMess, String locator) 
 	{
-		String strArray [] = driver.findElement(By.xpath("(//h4[@class='tdb-h4'])[1]/../..")).getText().split("\n");
+		// String strArray [] = driver.findElement(By.xpath("(//h4[@class='tdb-h4'])[1]/../..")).getText().split("\n");
 		
-		// bladdxx
-		//Assert.assertEquals(strArray[0], rollingAverages, errMess); // rolling averages text
-
-		//Assert.assertEquals(strArray[1].split("s")[0] + "s", rollingMonthsThree, ""); // 3 months text 
-		//Assert.assertEquals(strArray[2].split("s")[0] + "s", rollingMonthsSix, "");	//  months text
-
-		VerifyInteger(strArray[1].split("months")[1].replace("K",""), errMess);	// numeric value	
-		VerifyInteger(strArray[2].split("months")[1].replace("K",""), errMess);	// numeric value
+		String strArray [] = driver.findElement(By.xpath(locator)).getText().split("\n");
 		
-		/*
-		0 Rolling Averages
-		1 3 months511K
-		2 6 months516K
-		DONE
-		 */
+		Assert.assertEquals(strArray[0], rollingAverages, errMess); // rolling averages text
+		Assert.assertEquals(strArray[1].split("s")[0] + "s", rollingMonthsThree, ""); // 3 months text 
+		Assert.assertEquals(strArray[2].split("s")[0] + "s", rollingMonthsSix, "");	//  6 months text
+
+		VerifyInteger(strArray[1].split("months")[1].replace("K","").replace(".","").replace("$", ""), errMess);	// numeric value	
+		VerifyInteger(strArray[2].split("months")[1].replace("K","").replace(".","").replace("$", ""), errMess);	// numeric value
 	}
 	
 	public static void VerifyInteger(String tmpStr, String errMessage)
@@ -109,6 +140,20 @@ public class ExpenseHelper extends BaseClass
 		tmpStrIn = tmpStrIn.replace("K","").replace("$", "").replace(".",""); // remove all but numbers.
 		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
 	}
+	
+	public static void VerifyCountServiceNumbers(String tmpStrIn, String errMess)
+	{
+		Assert.assertTrue(tmpStrIn.contains("K"), errMessage); // verify contains 'K'.
+		tmpStrIn = tmpStrIn.replace("K","").replace("$", "").replace(".",""); // remove all but numbers.
+		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
+	}	
+	
+	public static void VerifyCostPerServiceNumber(String tmpStrIn, String errMess)
+	{
+		Assert.assertTrue(tmpStrIn.contains("$"), errMessage); // verify contains '$'.
+		tmpStrIn = tmpStrIn.replace("$","").replace(".",""); // remove all but numbers.
+		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
+	}	
 	
 	public static void VerifyCountServiceNumbersCost(String tmpStrIn, String errMess)
 	{
