@@ -67,7 +67,8 @@ public class CommonTestStepActions extends BaseClass
 	
 	public static void SelectAllVendors()
 	{
-		if(!driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("All"))
+		WaitForElementClickable(By.cssSelector(".tdb-povGroup__toggle > a"), MediumTimeout, "Select all is not present in CommonTestStepActions.SelectAllVendors");
+		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("All"))
 		{
 			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
 		}
@@ -75,13 +76,12 @@ public class CommonTestStepActions extends BaseClass
 	
 	public static void UnSelectAllVendors()
 	{
-		if(!driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("None"))
+		WaitForElementClickable(By.cssSelector(".tdb-povGroup__toggle > a"), MediumTimeout, "Unselect all is not present in CommonTestStepActions.UnSelectAllVendors");
+		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("None"))
 		{
 			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
 		}
 	}	
-	
-	
 	
 	public static void VerifyMonthPullDownSelectionsAndContent() 
 	{
