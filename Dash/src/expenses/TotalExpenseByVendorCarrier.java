@@ -64,6 +64,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	public static void VerifyVendorView()
 	{
 		String errMessage = "Failed check for Total Expanse title in TotalExpenseByVendorCarrier.VerifyVendorView";
+		
 		Assert.assertEquals(driver.findElement(By.xpath("//h3[@class='tdb-h3']")).getText(), titleVendor, errMessage);
 		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.cssSelector(".tdb-h2")).getText(), errMessage);
 	}
