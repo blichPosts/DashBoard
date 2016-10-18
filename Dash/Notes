@@ -1,7 +1,8 @@
 
 1) PointOfViewVisualTest() #4 missing some things not ready.
 2) TotalExpenseByVendorCarrierVisual - need to be able to select one vendor at time (less then six) to check when 'other' shows up.
-
+ 									 - need to be able to verify all vendors in the legend when legends for every vendor show up in the legends
+ 									 - the same goes for the countries.  
 
 
 

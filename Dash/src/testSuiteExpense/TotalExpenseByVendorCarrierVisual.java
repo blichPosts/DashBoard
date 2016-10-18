@@ -23,7 +23,7 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 	@Test
 	public static void TotalExpenseByVendorCarrierVisualTest() throws Exception
 	{
-		CommonTestStepActions.GoToExpensePage();
+		CommonTestStepActions.GoToExpensePageDetailedWait();
 
 		// #1
 		// Select all the vendors in the Point of View and select all of the vendor legends.
@@ -34,6 +34,16 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 		// The “Others” slice should not appear if just five or less vendors are selected.
 		TotalExpenseByVendorCarrier.VerifyLegendsTitleAndPieCount();
 		TotalExpenseByVendorCarrier.VerifyVendorView();
+		
+		// #2 Select country in the 'Country/Vendor View Selector'
+		CommonTestStepActions.SelectCountryView();
+		
+	    // The title is 'Total Expenses by Country'.
+	    // There is a slice in the pie for each country.
+	    // There is a legend for each country.
+	    // If there are more the five countries there is an other legend and pie element.
+		TotalExpenseByVendorCarrier.VerifyLegendsTitleAndPieCount();
+		TotalExpenseByVendorCarrier.VerifyCountryView();
 		
 		DebugTimeout(9999, "DONE");		
 	}

@@ -88,6 +88,19 @@ public class CommonTestStepActions extends BaseClass
 			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
 		}
 	}	
+
+	public static void SelectVendorView()
+	{
+		WaitForElementClickable(By.cssSelector("#md-tab-label-0-0"), MediumTimeout, "Vendor view is not present in CommonTestStepActions.UnSelectAllVendors");
+		driver.findElement(By.cssSelector("#md-tab-label-0-0")).click();
+	}	
+	
+	public static void SelectCountryView()
+	{
+		WaitForElementClickable(By.cssSelector("#md-tab-label-0-1"), MediumTimeout, "Vendor view is not present in CommonTestStepActions.UnSelectAllVendors");
+		driver.findElement(By.cssSelector("#md-tab-label-0-1")).click();
+	}		
+	
 	
 	public static void VerifyMonthPullDownSelectionsAndContent() 
 	{

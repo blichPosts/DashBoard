@@ -63,9 +63,20 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	// verify title and month/year are correct.
 	public static void VerifyVendorView()
 	{
-		String errMessage = "Failed check for Total Expanse title in TotalExpenseByVendorCarrier.VerifyVendorView";
+		String errMessage = "Failed check for vendor text in TotalExpenseByVendorCarrier.VerifyVendorView.";
 		
 		Assert.assertEquals(driver.findElement(By.xpath("//h3[@class='tdb-h3']")).getText(), titleVendor, errMessage);
 		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.cssSelector(".tdb-h2")).getText(), errMessage);
 	}
+	
+	// verify title and month/year are correct.
+	public static void VerifyCountryView() throws Exception
+	{
+		String errMessage = "Failed check for country text in TotalExpenseByVendorCarrier.VerifyCountryView.";
+		
+		WaitForElementVisible(By.xpath("//span[text()='Country']"), MainTimeout);
+		
+		Assert.assertEquals(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText(), titlecountry, errMessage);
+		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.cssSelector(".tdb-h2")).getText(), errMessage);
+	}	
 }
