@@ -63,7 +63,8 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	// verify title and month/year are correct.
 	public static void VerifyVendorView()
 	{
-		Assert.assertEquals(driver.findElement(By.xpath("//h3[@class='tdb-h3']")).getText(), titleVendor, "Failed check for Total Expanse title in TotalExpenseByVendorCarrier.VerifyVendorView");
-		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.cssSelector(".tdb-h2")).getText(), "");
+		String errMessage = "Failed check for Total Expanse title in TotalExpenseByVendorCarrier.VerifyVendorView";
+		Assert.assertEquals(driver.findElement(By.xpath("//h3[@class='tdb-h3']")).getText(), titleVendor, errMessage);
+		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.cssSelector(".tdb-h2")).getText(), errMessage);
 	}
 }
