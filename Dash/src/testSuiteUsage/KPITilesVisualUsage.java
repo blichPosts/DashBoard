@@ -52,7 +52,6 @@ public class KPITilesVisualUsage extends BaseClass
 			Assert.assertTrue(webList.get(x).getText().contains(UsageKpiNames[x]));
 		}
 		
-		
 		// #3 Verify the Rolling Averages section
 		
 		// Rolling Averages label

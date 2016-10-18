@@ -10,7 +10,7 @@ import Dash.BaseClass;
 import expenses.TotalExpenseByVendorCarrier;
 import helperObjects.CommonTestStepActions;
 
-public class TotalExpenseByVendorSpendCategory 
+public class TotalExpenseByVendorSpendCategoryVisual 
 {
 	
 	
