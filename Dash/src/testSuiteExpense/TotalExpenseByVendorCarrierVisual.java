@@ -24,7 +24,7 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 	public static void TotalExpenseByVendorCarrierVisualTest() throws Exception
 	{
 		CommonTestStepActions.GoToExpensePageDetailedWait();
-
+		
 		// #1
 		// Select all the vendors in the Point of View and select all of the vendor legends.
 		CommonTestStepActions.SelectAllVendors();
@@ -44,8 +44,6 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 	    // If there are more the five countries there is an other legend and pie element.
 		TotalExpenseByVendorCarrier.VerifyLegendsTitleAndPieCount();
 		TotalExpenseByVendorCarrier.VerifyCountryView();
-		
-		DebugTimeout(9999, "DONE");		
 	}
 	
 	@AfterClass

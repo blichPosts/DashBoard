@@ -41,8 +41,6 @@ public class PointOfViewVisual extends BaseClass
 		// The countries are listed in alphabetical order. The Vendors within the countries are listed in alphabetical order within each country.
 		CommonTestStepActions.VerifyCountryAndVendorListSorted();
 		CommonTestStepActions.VerifyMonthPulldownDetail();
-		
-		DebugTimeout(9999, "DONE");		
 	}
 	
 	@AfterClass

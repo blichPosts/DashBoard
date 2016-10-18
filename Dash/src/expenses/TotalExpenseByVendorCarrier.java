@@ -28,6 +28,18 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	
 	public static void setAllLegendsAndPieCount()
 	{
+		
+		if(webElementListLegands != null) // clear if already has contents.
+		{
+			webElementListLegands.clear();			
+		}
+
+		if(legendsList != null) // clear if already has contents.
+		{
+			legendsList.clear();			
+		}
+
+		
 		// store all legend names into web element list.
 		webElementListLegands = driver.findElements(By.xpath("//div[@id='highcharts-0']/*/*[@class='highcharts-legend']/*/*/*[@class='highcharts-legend-item']"));
 		
