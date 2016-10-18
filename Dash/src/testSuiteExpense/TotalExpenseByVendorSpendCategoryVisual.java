@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import expenses.TotalExpenseByVendorCarrier;
+import expenses.TotalExpenseByVendorSpendCategory;
 import helperObjects.CommonTestStepActions;
 
 public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
@@ -28,10 +29,20 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		// Select all the vendors in the Point of View and select all of the vendor legends.
 		CommonTestStepActions.SelectAllVendors();
 		
-		// test. test two.
+		// It's title says 'Total Expenses by Vendor and Spend Category'.
+		// To the right of the horizontal bar graphs there are legends with these labels
+	    // Voice
+	    // Data
+	    // Messages
+	    // Roaming
+	    // Equipment
+	    // Taxes
+	    // Other - this is shown if there are six or more vendors added. (TBD -  this may be error in test writing).
+	    // Account
+
+		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndPieCount();
 		
-		
-		
+		DebugTimeout(9999, "Freeze");
 		
 
 	}
