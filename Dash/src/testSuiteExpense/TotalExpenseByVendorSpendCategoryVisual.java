@@ -55,8 +55,6 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 	    //Each legend has a corresponding section in the bar.
 		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
 		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
-		
-		DebugTimeout(9999, "Freeze");
 	}
 	
 	@AfterClass
