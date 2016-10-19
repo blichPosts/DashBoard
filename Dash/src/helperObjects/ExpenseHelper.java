@@ -136,29 +136,29 @@ public class ExpenseHelper extends BaseClass
 	
 	public static void VerifyExpenseTotalCost(String tmpStrIn, String errMess)
 	{
-		Assert.assertTrue(tmpStrIn.contains("$"), errMessage); // verify contains '$'.
-		Assert.assertTrue(tmpStrIn.contains("K"), errMessage); // verify contains 'K'.
+		Assert.assertTrue(tmpStrIn.startsWith("$"), errMessage); // verify contains '$'.
+		Assert.assertTrue(tmpStrIn.endsWith("K"), errMessage); // verify contains 'K'.
 		tmpStrIn = tmpStrIn.replace("K","").replace("$", "").replace(".",""); // remove all but numbers.
 		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
 	}
 	
 	public static void VerifyCountServiceNumbers(String tmpStrIn, String errMess)
 	{
-		Assert.assertTrue(tmpStrIn.contains("K"), errMessage); // verify contains 'K'.
+		Assert.assertTrue(tmpStrIn.endsWith("K"), errMessage); // verify contains 'K'.
 		tmpStrIn = tmpStrIn.replace("K","").replace("$", "").replace(".",""); // remove all but numbers.
 		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
 	}	
 	
 	public static void VerifyCostPerServiceNumber(String tmpStrIn, String errMess)
 	{
-		Assert.assertTrue(tmpStrIn.contains("$"), errMessage); // verify contains '$'.
+		Assert.assertTrue(tmpStrIn.startsWith("$"), errMessage); // verify contains '$'.
 		tmpStrIn = tmpStrIn.replace("$","").replace(".",""); // remove all but numbers.
 		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
 	}	
 	
 	public static void VerifyCountServiceNumbersCost(String tmpStrIn, String errMess)
 	{
-		Assert.assertTrue(tmpStrIn.contains("K"), errMessage); // verify contains 'K'.
+		Assert.assertTrue(tmpStrIn.endsWith("K"), errMessage); // verify contains 'K'.
 		tmpStrIn = tmpStrIn.replace("K","").replace(".", "").replace(".",""); // remove all but numbers.
 		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
 	}	
@@ -169,12 +169,10 @@ public class ExpenseHelper extends BaseClass
 		// tmpStr = driver.findElement(By.cssSelector(".tdb-kpi__trend > span:nth-of-type(1)")).getText();
 		// Assert.assertTrue(tmpStr.contains("?"), ""); 
 		
-		Assert.assertTrue(tmpStrIn.contains("%"), ""); // verify contains "%".		
+		Assert.assertTrue(tmpStrIn.endsWith("%"), ""); // verify contains "%".		
 		tmpStrIn = tmpStrIn.replace("%", "").replace(".", ""); // get number with percent.
 		VerifyInteger(tmpStrIn, errMessage); // verify all integers after removing $, % , and '.'.
 	}
-	
-
 };
 
 

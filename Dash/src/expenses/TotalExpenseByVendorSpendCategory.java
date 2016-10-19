@@ -17,9 +17,11 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	public static List<WebElement> eleList; 
 	public static List<String> expectedSpendCategoryLegends = new ArrayList<String>();
 	public static List<String> actualSpendCategoryLegends = new ArrayList<String>();
+	public static List<String> vendorsList = new ArrayList<String>();
 	public static String []  legendsArray;
 	public static int numberOfLegendsInBarChart = 0;
 	public static int numberOfLegendsInLegendList = 0;	
+	public static String otherString = "Other";
 	
 	public static String title = "Total Expense by Vendor and Spend Category";
 	static String errMessage = "";
@@ -52,6 +54,8 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	public static void VerifyLegendsTitleAndbarGraphCount() throws InterruptedException
 	{
 		errMessage = "Failed checks in TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndPieCount.";
+		
+		ClearAllContainers();
 		
 		Setupdata();
 		
@@ -97,17 +101,58 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		*/
 	}	
 	
+	public static void VerifyVendorsCountries()
+	{
+		// clear containers if needed.
+		ClearAllContainers();
+		
+		Setupdata();
+
+		// get the list vendors or countries listed by the bar graph.
+		eleList = driver.findElements(By.xpath("(.//*[@id='highcharts-2']/*/*)[11]/*/*"));
+		
+		for(WebElement ele : eleList) // put vendor names into a list so can use 'contains'. 
+		{
+			vendorsList.add(ele.getText());
+		}
+		
+		// verify 'other' selection present or not.
+		if(eleList.size() < 5)
+		{
+			Assert.assertFalse(vendorsList.contains(otherString));
+		}
+		else
+		{
+			Assert.assertTrue(vendorsList.contains(otherString));
+		}
+	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	// //////////////////////////////////////////////////////////////////////////////////////////////////
+	// 										Helpers.
+	// //////////////////////////////////////////////////////////////////////////////////////////////////
+	public static void ClearAllContainers()
+	{
+		if(eleList != null)
+		{
+			eleList.clear();
+		}
+		
+		if(expectedSpendCategoryLegends  != null)
+		{
+			expectedSpendCategoryLegends.clear();			
+		}
+		
+		if(actualSpendCategoryLegends  != null)
+		{
+			actualSpendCategoryLegends.clear();			
+		}
+		
+		if(vendorsList  != null)
+		{
+			vendorsList.clear();			
+		}
+		
+		legendsArray = null;
+	}
 }

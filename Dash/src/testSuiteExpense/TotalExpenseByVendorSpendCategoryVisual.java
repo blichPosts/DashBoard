@@ -41,7 +41,38 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 	    // Account
 		// Each bar graph is broken into sections. The number of sections in each bar graph is equal to the number of legends 
 		// listed to the right of the bar (all of the legends have been checked).
+		// It there are five or more vendors selected there will be an 'other' vendor type listed.
 		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
+		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
+
+		// #2
+		
+		// In the 'Country/Vendor View Selector' component, select Country.
+		CommonTestStepActions.SelectCountryView();
+		
+	    //All of the countries are listed in the horizontal bar graph.
+	    //The legends listed in the above test case are shown.
+	    //Each bar graph is broken into sections. The number of sections in each bar graph is equal to the number of legends listed to the right of the bar graph (all of the checkboxes have been checked).
+	    //Each legend has a corresponding section in the bar.
+		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
+		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		DebugTimeout(9999, "Freeze");
 		
