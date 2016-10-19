@@ -46,7 +46,6 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
 
 		// #2
-		
 		// In the 'Country/Vendor View Selector' component, select Country.
 		CommonTestStepActions.SelectCountryView();
 		
@@ -57,26 +56,7 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
 		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		DebugTimeout(9999, "Freeze");
-		
-
 	}
 	
 	@AfterClass
