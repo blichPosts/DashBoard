@@ -39,8 +39,9 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 	    // Taxes
 	    // Other - this is shown if there are six or more vendors added. (TBD -  this may be error in test writing).
 	    // Account
-
-		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndPieCount();
+		// Each bar graph is broken into sections. The number of sections in each bar graph is equal to the number of legends 
+		// listed to the right of the bar (all of the legends have been checked).
+		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
 		
 		DebugTimeout(9999, "Freeze");
 		
