@@ -1,5 +1,6 @@
 package helperObjects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -306,12 +307,59 @@ public class UsageHelper extends BaseClass{
 	}
 
 
-	
-	// ******* CONTINUE HERE *****************
-	
+		
 	public static void verifyVendorsListedInCharts() {
 		
+		// this list will have the names of the vendors that have been SELECTED on the Point of View section
+		List<String> listVendorsChecked = new ArrayList<String>();
 		
+		// this list will have ALL the names of the vendors LISTED on the Point of View section
+		List<WebElement> listVendorsLabels = driver.findElements(By.cssSelector(".md-checkbox-label"));
+		
+		
+		// Add the names of the vendors that are selected to the listVendorsChecked list
+		/*for(int i = 0; i < listVendorsLabels.size(); i++){
+			
+			int num = i + 1;
+			String checkXpath = ".//*[@id='input-md-checkbox-" + num + "']";
+			boolean isChecked = driver.findElement(By.xpath(checkXpath)).isSelected();
+			
+			if(isChecked){
+				
+				String vendorName = listVendorsLabels.get(i).getText();
+				listVendorsChecked.add(vendorName);
+				System.out.println("Is selected? : " + isChecked + "- Vendor Name: " + vendorName);
+				
+			}
+			
+		}
+		
+		int amountVendorsSelected = listVendorsChecked.size();
+		*/
+		
+		
+		// Get the charts to get the id of the chart - I hope this works! -- it worked :) 
+		List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
+		String chartId = charts.get(0).getAttribute("id");
+		System.out.println("chart: " + chartId);
+		
+		
+		//  xpath -->  .//*[@id='highcharts-97']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels']/*/*
+		//  css -->    #highcharts-97 > svg > g:nth-of-type(8) > text > tspan
+			
+		
+		List<WebElement> vendorsInLegend = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));  // --works   ("g.highcharts-axis-labels.highcharts-xaxis-labels"));
+		
+		System.out.println("Vendors #: " + vendorsInLegend.size());
+		
+		
+		for(WebElement e: vendorsInLegend){
+			
+			System.out.println(e.getText());
+			
+		}
+		
+		// ******* CONTINUE HERE *****************
 		
 		
 		
