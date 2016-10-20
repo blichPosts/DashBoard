@@ -44,7 +44,15 @@ public class TotalUsageByVendor extends BaseClass {
 			UsageHelper.verifyBarChartTitlesUsageByVendor();
 			
 			
+			// #5 Verify legends of charts 
+			UsageHelper.verifyLegendsOfCharts();
+			
+			
+			// #6 Verify that Vendors selected are listed in charts 
+			UsageHelper.verifyVendorsListedInCharts();
+			
 			// **** CONTINUE HERE *************
+			
 			
 			
 		}
