@@ -16,6 +16,9 @@ public class TotalExpensesTrend extends BaseClass
 	public static List<WebElement> webEleList;
 	public static List<String> expectedTrends = new ArrayList<String>();
 	public static List<String> actualTrends = new ArrayList<String>();
+
+	public static String mainTitle = "Expense Trending"; 
+	public static String vendorTitle = "Expense by Vendor - All Categories";
 	
 	
 	public static void Setupdata()
@@ -49,14 +52,37 @@ public class TotalExpensesTrend extends BaseClass
 		Assert.assertEquals(actualTrends, expectedTrends, "");
 	}
 
+	public static void VerifyTitlesVendorView()
+	{
+	
+		System.out.println(driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(1)")).getText());		
+		
+		
+		
+		// .tdb-card > h3:nth-of-type(1) > span
+	
+	
+	
+	}
+
+	
+	// .tdb-card > h3:nth-of-type(1) > span
+	
+	
+	
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// 										Helpers.
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	public static void ClearAllContainers()
 	{
+		if(webEleList != null)
+		{
+			webEleList.clear();
+		}
 
+		if(expectedTrends != null)
+		{
+			expectedTrends.clear();
+		}
 	}
-	
-	
-	
 }

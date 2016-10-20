@@ -48,6 +48,9 @@ public class TotalExpensesTrendVisual extends BaseClass
 		
 		TotalExpensesTrend.VerifyTrends();
 		
+		TotalExpensesTrend.VerifyTitlesVendorView();
+		
+		
 		DebugTimeout(9999, "Freeze");
 	}
 	
