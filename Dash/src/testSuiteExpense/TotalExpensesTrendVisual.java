@@ -29,7 +29,7 @@ public class TotalExpensesTrendVisual extends BaseClass
 		CommonTestStepActions.SelectAllVendors();
 
 		
-		// #1		// insert
+		// #1		// insert two
 		// In the 'Total Spend By Vendor'  component:
 	    // There are these selections in a horizontal selector bar with the title 'Expense Trending'
 	    // All
