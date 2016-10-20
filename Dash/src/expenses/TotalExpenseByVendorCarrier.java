@@ -63,7 +63,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		
 		if(numPieParts <= 5)
 		{
-			
+			Assert.assertFalse(legendsList.contains(otherString), errMessage); // verify other legend is not there.			
 		}
 		else
 		{
@@ -72,7 +72,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		}
 	}
 	
-	// verify title and month/year are correct.
+	// verify title and month/year are correct - vendor.
 	public static void VerifyVendorView()
 	{
 		String errMessage = "Failed check for vendor text in TotalExpenseByVendorCarrier.VerifyVendorView.";
@@ -81,7 +81,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.cssSelector(".tdb-h2")).getText(), errMessage);
 	}
 	
-	// verify title and month/year are correct.
+	// verify title and month/year are correct - country.
 	public static void VerifyCountryView() throws Exception
 	{
 		String errMessage = "Failed check for country text in TotalExpenseByVendorCarrier.VerifyCountryView.";

@@ -3,13 +3,13 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="testSuiteExpense.KPITilesVisual">
+      <class name="testSuiteExpense.TotalExpenseByVendorSpendCategoryVisual">
         <methods>
-          <include name="KpiTilesVisualTest"/>
-          <include name="setUp"/>
           <include name="closeDriver"/>
+          <include name="TotalExpenseByVendorCarrierVisualTest"/>
+          <include name="setUp"/>
         </methods>
-      </class> <!-- testSuiteExpense.KPITilesVisual -->
+      </class> <!-- testSuiteExpense.TotalExpenseByVendorSpendCategoryVisual -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
