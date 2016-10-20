@@ -36,6 +36,7 @@ public class ExpenseHelper extends BaseClass
 		
 		//The top says 'Total Expense'		
 		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > h3")).getText(), ExpenseKpiNames[0], errMessage);
+		// css=.tdb-kpi:nth-of-type(1) > h3 // this type of indexing works.
 
 		VerifyExpenseTotalCost(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > div> div:nth-of-type(1)")).getText(), errMessage);
 	}

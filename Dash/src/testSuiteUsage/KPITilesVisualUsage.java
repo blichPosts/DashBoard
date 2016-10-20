@@ -40,7 +40,6 @@ public class KPITilesVisualUsage extends BaseClass
 		// #2 Observe the KPI components - There are three KPI tiles under Domestic: 'Voice', 'Data', 'Messages'; and one KPI tile under Roaming: 'Data'
 		UsageHelper.verifyKPItilesLabels();
 		
-		
 		// #3 Verify the Rolling Averages section
 		UsageHelper.verifyRollingAveragesLabels();
 		

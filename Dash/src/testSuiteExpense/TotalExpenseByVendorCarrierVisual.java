@@ -1,0 +1,57 @@
+package testSuiteExpense;
+
+import javax.swing.JOptionPane;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import Dash.BaseClass;
+import expenses.TotalExpenseByVendorCarrier;
+import helperObjects.CommonTestStepActions;
+
+
+public class TotalExpenseByVendorCarrierVisual extends BaseClass
+{
+	
+	@BeforeClass
+	public static void setUp() throws Exception
+	{
+		setUpDriver();
+	}
+	
+	@Test
+	public static void TotalExpenseByVendorCarrierVisualTest() throws Exception
+	{
+		CommonTestStepActions.GoToExpensePageDetailedWait();
+		
+		// #1
+		// Select all the vendors in the Point of View and select all of the vendor legends.
+		CommonTestStepActions.SelectAllVendors();
+
+		// The title is 'Total Expense by Vendor'.
+		// The pie shows data only for the five largest vendors selected. Data for other vendors selected are shown under the “Others” slice. 
+		// The “Others” slice should not appear if just five or less vendors are selected.
+		TotalExpenseByVendorCarrier.VerifyLegendsTitleAndPieCount();
+		TotalExpenseByVendorCarrier.VerifyVendorView();
+		
+		// #2 Select country in the 'Country/Vendor View Selector'
+		CommonTestStepActions.SelectCountryView();
+		
+	    // The title is 'Total Expenses by Country'.
+	    // There is a slice in the pie for each country.
+	    // There is a legend for each country.
+	    // If there are more the five countries there is an other legend and pie element.
+		TotalExpenseByVendorCarrier.VerifyLegendsTitleAndPieCount();
+		TotalExpenseByVendorCarrier.VerifyCountryView();
+	}
+	
+	@AfterClass
+	public static void closeDriver() throws Exception
+	{
+		System.out.println("Close Browser.");		
+	    JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
+		driver.close();
+		driver.quit();
+	}	
+}
