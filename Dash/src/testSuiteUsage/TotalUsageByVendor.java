@@ -51,7 +51,7 @@ public class TotalUsageByVendor extends BaseClass {
 			// #6 Verify that Vendors selected are listed in charts 
 			UsageHelper.verifyVendorsInUsageByVendorCharts();
 			
-			// **** CONTINUE HERE *************
+			
 			
 			
 			

@@ -1,14 +1,11 @@
 package helperObjects;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
-
-import com.thoughtworks.selenium.webdriven.commands.GetText;
 
 import Dash.BaseClass;
 
@@ -161,10 +158,6 @@ public class UsageHelper extends BaseClass{
 	}
 
 
-	
-	
-	
-	
 	
 	
 	public static void verifyMonthYearOnVendorView(){
