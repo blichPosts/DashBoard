@@ -27,7 +27,7 @@ public class TotalUsageByVendor extends BaseClass {
 			
 			CommonTestStepActions.GoToUsagePageDetailedWait();
 			
-			/*		
+				
 			// #1 Select Vendor View 
 			UsageHelper.selectVendorView();
 			
@@ -46,10 +46,10 @@ public class TotalUsageByVendor extends BaseClass {
 			
 			// #5 Verify legends of charts 
 			UsageHelper.verifyLegendsOfCharts();
-			*/
+			
 			
 			// #6 Verify that Vendors selected are listed in charts 
-			UsageHelper.verifyVendorsListedInCharts();
+			UsageHelper.verifyVendorsInUsageByVendorCharts();
 			
 			// **** CONTINUE HERE *************
 			

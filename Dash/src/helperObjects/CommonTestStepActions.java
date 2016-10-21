@@ -282,6 +282,42 @@ public class CommonTestStepActions extends BaseClass
 	public static void anaTest(){
 		// testing branches
 	}
+
+	
+	
+	// It returns a list with the vendors that have been selected on the Point of View section
+	// - by Ana
+	public static List<String> getVendorsSelectedInPointOfView() {
+
+		// this list will have the names of the vendors that have been SELECTED on the Point of View section
+		List<String> listVendorsChecked = new ArrayList<String>();
+		
+		// this list will have ALL the names of the vendors LISTED on the Point of View section
+		List<WebElement> listVendorsLabels = driver.findElements(By.cssSelector(".md-checkbox-label"));
+		
+		
+		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
+		for(int i = 0; i < listVendorsLabels.size(); i++){
+			
+			int num = i + 1;
+			String checkBoxXpath = ".//*[@id='input-md-checkbox-" + num + "']";
+			boolean isChecked = driver.findElement(By.xpath(checkBoxXpath)).isSelected();
+			
+			// if the vendor's checkbox is checked then add the vendor's name to the list
+			if(isChecked){
+				
+				String vendorName = listVendorsLabels.get(i).getText();
+				listVendorsChecked.add(vendorName);
+				//System.out.println("Is selected? : " + isChecked + "- Vendor Name: " + vendorName);
+				
+			}
+			
+		}
+		
+		
+		return listVendorsChecked;
+		
+	}
 	
 	
 	

@@ -300,7 +300,6 @@ public class UsageHelper extends BaseClass{
 			}
 				
 			
-			
 		}
 		
 		
@@ -308,59 +307,22 @@ public class UsageHelper extends BaseClass{
 
 
 		
-	public static void verifyVendorsListedInCharts() {
+	public static void verifyVendorsInUsageByVendorCharts() {
 		
 		// this list will have the names of the vendors that have been SELECTED on the Point of View section
-		List<String> listVendorsChecked = new ArrayList<String>();
-		
-		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = driver.findElements(By.cssSelector(".md-checkbox-label"));
-		
-		
-		// Add the names of the vendors that are selected to the listVendorsChecked list
-		/*for(int i = 0; i < listVendorsLabels.size(); i++){
-			
-			int num = i + 1;
-			String checkXpath = ".//*[@id='input-md-checkbox-" + num + "']";
-			boolean isChecked = driver.findElement(By.xpath(checkXpath)).isSelected();
-			
-			if(isChecked){
-				
-				String vendorName = listVendorsLabels.get(i).getText();
-				listVendorsChecked.add(vendorName);
-				System.out.println("Is selected? : " + isChecked + "- Vendor Name: " + vendorName);
-				
-			}
-			
-		}
-		
-		int amountVendorsSelected = listVendorsChecked.size();
-		*/
-		
+		List<String> listVendorsChecked = CommonTestStepActions.getVendorsSelectedInPointOfView();
 		
 		// Get the charts to get the id of the chart - I hope this works! -- it worked :) 
 		List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
+		
+		// Get the id of the "Total Usage by Vendor (DOMESTIC)" chart (FIRST chart)
 		String chartId = charts.get(0).getAttribute("id");
-		System.out.println("chart: " + chartId);
-		
-		
-		//  xpath -->  .//*[@id='highcharts-97']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels']/*/*
-		//  css -->    #highcharts-97 > svg > g:nth-of-type(8) > text > tspan
-			
-		
-		List<WebElement> vendorsInLegend = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));  // --works   ("g.highcharts-axis-labels.highcharts-xaxis-labels"));
-		
-		System.out.println("Vendors #: " + vendorsInLegend.size());
-		
-		
-		for(WebElement e: vendorsInLegend){
-			
-			System.out.println(e.getText());
-			
-		}
-		
-		// ******* CONTINUE HERE *****************
-		
+		verifyVendorsInLegend(chartId, listVendorsChecked);
+				
+		// Get the id of the "Total Usage by Vendor (ROAMING)" chart (SECOND chart)
+		chartId = charts.get(1).getAttribute("id");
+		verifyVendorsInLegend(chartId, listVendorsChecked);
+				
 		
 		
 	}
@@ -368,18 +330,38 @@ public class UsageHelper extends BaseClass{
 
 
 
+	public static void verifyVendorsInLegend(String chartId, List<String> listVendorsChecked){
+		
+		// Get the vendors that are listed on the vertical axis of the "Total Usage by Vendor (Domestic)" chart
+		List<WebElement> vendorsInLegend = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
+		
+		System.out.println("# Vendors: " + vendorsInLegend.size());
+		System.out.println("Chart: " + chartId);
 
-	
-
-
-
-	
-
-
-	
-
-
-	
+		int amountVendorsSelected = listVendorsChecked.size();
+		
+		// If amount of vendors selected is > than 5, then "Other" must be listed along other 5 vendors.
+		// Else the amount of vendors listed in the chart must be equal to the amount of vendors selected, and the vendors in the legend must be in the list of selected vendors.
+		if(amountVendorsSelected > 5){
+			
+			Assert.assertEquals(vendorsInLegend.size(), 6);
+			
+			for(WebElement vendor: vendorsInLegend){
+						
+				if(!vendor.getText().equals("Other"))
+					Assert.assertTrue(listVendorsChecked.contains(vendor.getText()));
+				
+				System.out.println("Vendor in legend: " + vendor.getText());
+				
+			}
+			
+		}else{
+			
+			Assert.assertEquals(vendorsInLegend.size(), amountVendorsSelected);
+			
+		}
+		
+	}
 	
 	
 	
