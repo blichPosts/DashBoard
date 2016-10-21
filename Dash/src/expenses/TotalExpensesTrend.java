@@ -66,8 +66,6 @@ public class TotalExpensesTrend extends BaseClass
 	{
 		errMessage = "Failed check in TotalExpensesTrend.VerifyTitlesVendorView";
 		
-		System.out.println(driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(1)")).getText());		
-		
 		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(1)")).getText(), vendorTitle, errMessage);
 		
 		Assert.assertEquals(driver.findElement(By.xpath("(//div[@class='tdb-card'])[2]/h2")).getText(), mainTitle, errMessage);
@@ -75,38 +73,25 @@ public class TotalExpensesTrend extends BaseClass
 	
 	public static void VerifyMonths() throws ParseException
 	{
-	
-		// get expected month(int)/years pulldown
-		expectedYearMonthList = YearMonthIntergerFromPulldown(); 
+		// get expected month(int)/years pulldown - format is MM-YYYY.
+		expectedYearMonthList = YearMonthIntergerFromPulldownTwoDigitYear();
+		
 		
 		// get actual month(int)/years pulldown
 		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels']/*/*"));
 		
+		// put actual web list values into a list of strings.
 		for(WebElement ele : webEleListMonthYearActual)
 		{
-			// actualYearMonthList.add(ele.getText());
-			System.out.println(ele.getText());			
+			actualYearMonthList.add(ele.getText());
+			//System.out.println(ele.getText());			
 		}
 
-		 // java.util.Collections.sort(actualYearMonthList);
-		
-		for(int x = 0; x < expectedYearMonthList.size(); x++)
+		// the actual list is in descending order. the expected list is in ascending order. using sort on actual list didn't correct order, so use x increment and y decrement.  
+		for(int x = 0, y = expectedYearMonthList.size() - 1; x < expectedYearMonthList.size(); x++, y--)
 		{
-			System.out.println(expectedYearMonthList.get(x));
-			// System.out.println(actualYearMonthList.get(x));
-
+			Assert.assertEquals(actualYearMonthList.get(y), expectedYearMonthList.get(x), "Failed check of months in TotalExpensesTrend.VerifyMonths");
 		}
-		
-		
-		// (.//*[@id='highcharts-4']/*/*)[@class='highcharts-axis-labels highcharts-xaxis-labels']/*
-		
-		// (.//*[@id='highcharts-4']/*/*)[@class='highcharts-axis-labels highcharts-xaxis-labels']/*/*
-
-		
-		
-		// (.//*[@id='highcharts-4']/*/*)[@class='highcharts-axis-labels highcharts-xaxis-labels'] // <<<< this is row of dates.
-		// System.out.println(ConvertMonthToInt("January"));
-		
 	}
 	
 	
@@ -121,13 +106,39 @@ public class TotalExpensesTrend extends BaseClass
 		// get the year/month items from the pulldown and create a list of of month (integer) with year.  
 		for( WebElement ele : CommonTestStepActions.webListPulldown)
 		{
-			if(ele.getText().split(" ")[0].length() == 1)
-			{
-				System.out.println("Here " + ele.getText().split(" ")[0]);
-			}
-			tmpList.add(ConvertMonthToInt(ele.getText().split(" ")[0]) + "-" + ele.getText().split(" ")[1]);
+			// this converts the month to an integer. and then appends a dash and the year.
+			// final format is like this: '6-2016' or '11-2016'.
+			tmpList.add(ConvertMonthToInt(ele.getText().split(" ")[0]) + "-" + ele.getText().split(" ")[1]); 
 		}
 		
+		return tmpList;
+	}
+	
+	
+	// return month/year from pulldown in this format MM-YYYY.  
+	public static List<String> YearMonthIntergerFromPulldownTwoDigitYear() throws ParseException
+	{
+		List<String> tmpList = new ArrayList<String>();
+		String tmpMonthInt = "";
+		
+		// get the year/month items from the pulldown and create a list of of month (integer) with year.  
+		for( WebElement ele : CommonTestStepActions.webListPulldown)
+		{
+			// this converts the month to an integer string and then appends a dash and the year string.
+			// final format is like this: '06-2016' or '11-2016' - YY-MMMM.
+			
+			// get the month.
+			tmpMonthInt = ConvertMonthToInt(ele.getText().split(" ")[0]);
+			
+			// if the month has only one string integer, add a leading zero.
+			if(tmpMonthInt.length() == 1)
+			{
+				tmpMonthInt = "0" + tmpMonthInt;
+			}
+			
+			// add integer month and as string and string year to list to be returned.
+			tmpList.add(tmpMonthInt + "-" + ele.getText().split(" ")[1]); 
+		}
 		return tmpList;
 	}
 	
@@ -145,6 +156,7 @@ public class TotalExpensesTrend extends BaseClass
 		}
 	}
 	
+	/*
 	public static int ConvertMonthToInt(String monthToConvert) throws ParseException
 	{
 		Date date = new SimpleDateFormat("MMM").parse(monthToConvert);//put your month name here
@@ -153,7 +165,16 @@ public class TotalExpensesTrend extends BaseClass
 	    int monthNumber=cal.get(Calendar.MONTH);
 	    return cal.get(Calendar.MONTH) + 1;
 	}
+	*/
 	
+	public static String ConvertMonthToInt(String monthToConvert) throws ParseException
+	{
+		Date date = new SimpleDateFormat("MMM").parse(monthToConvert);//put your month name here
+		Calendar cal = Calendar.getInstance();
+	    cal.setTime(date);
+	    int monthNumber=cal.get(Calendar.MONTH);
+	    return String.valueOf(cal.get(Calendar.MONTH) + 1);
+	}
 	
 	
 }

@@ -55,6 +55,7 @@ public class TotalExpensesTrendVisual extends BaseClass
 		
 		// The legends below the bar graph show each vendor.
 		// It there are six or more vendors selected, there is a legend called 'other'.
+		// .//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/* // <<<< ---  xpath for  legends
 		
 		
 		
