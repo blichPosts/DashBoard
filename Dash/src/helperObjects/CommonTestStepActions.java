@@ -1,9 +1,12 @@
 package helperObjects;
 
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -272,6 +275,58 @@ public class CommonTestStepActions extends BaseClass
 		
 		return monthString + " " + year;
 	}	
+
+	public static List<String> YearMonthIntergerFromPulldown() throws ParseException
+	{
+		List<String> tmpList = new ArrayList<String>();
+		
+		// get the year/month items from the pulldown and create a list of of month (integer) with year.  
+		for( WebElement ele : CommonTestStepActions.webListPulldown)
+		{
+			// this converts the month to an integer. and then appends a dash and the year.
+			// final format is like this: '6-2016' or '11-2016'.
+			tmpList.add(ConvertMonthToInt(ele.getText().split(" ")[0]) + "-" + ele.getText().split(" ")[1]); 
+		}
+		
+		return tmpList;
+	}
+	
+	
+	// return month/year from pulldown in this format MM-YYYY.  
+	public static List<String> YearMonthIntergerFromPulldownTwoDigitYear() throws ParseException
+	{
+		List<String> tmpList = new ArrayList<String>();
+		String tmpMonthInt = "";
+		
+		// get the year/month items from the pulldown and create a list of of month (integer) with year.  
+		for( WebElement ele : CommonTestStepActions.webListPulldown)
+		{
+			// this converts the month to an integer string and then appends a dash and the year string.
+			// final format is like this: '06-2016' or '11-2016' - YY-MMMM.
+			
+			// get the month.
+			tmpMonthInt = ConvertMonthToInt(ele.getText().split(" ")[0]);
+			
+			// if the month has only one string integer, add a leading zero.
+			if(tmpMonthInt.length() == 1)
+			{
+				tmpMonthInt = "0" + tmpMonthInt;
+			}
+			
+			// add integer month and as string and string year to list to be returned.
+			tmpList.add(tmpMonthInt + "-" + ele.getText().split(" ")[1]); 
+		}
+		return tmpList;
+	}
+	
+	public static String ConvertMonthToInt(String monthToConvert) throws ParseException
+	{
+		Date date = new SimpleDateFormat("MMM").parse(monthToConvert);//put your month name here
+		Calendar cal = Calendar.getInstance();
+	    cal.setTime(date);
+	    // int monthNumber=cal.get(Calendar.MONTH);
+	    return String.valueOf(cal.get(Calendar.MONTH) + 1);
+	}
 
 	// helpers
 	public static void BobTest()

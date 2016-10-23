@@ -49,12 +49,15 @@ public class TotalExpensesTrendVisual extends BaseClass
 		// #2
 		// Select all the vendors in the Point Of View and select all of the legends in the 'Expense by Vendor' section.
 		
-		// There is a vertical bar graph for the last 13 months in time with the months from the pulldown listed.
+
+	    // There is a vertical bar graph for the last 13 months in time with the months from the pulldown listed.
+	    // The legends below the bar graph show each vendor.
+	    // It there are six or more vendors selected, there is a legend called 'other'.
+	    // Each vertical bar graph has a value for each of  the legends.
 		TotalExpensesTrend.VerifyMonths();
+		TotalExpensesTrend.VerifyVendorsCountries();
 		
 		
-		// The legends below the bar graph show each vendor.
-		// It there are six or more vendors selected, there is a legend called 'other'.
 		// .//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/* // <<<< ---  xpath for  legends
 		
 		
