@@ -2,6 +2,7 @@ package testSuiteExpense;
 
 import javax.swing.JOptionPane;
 
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -29,7 +30,7 @@ public class TotalExpensesTrendVisual extends BaseClass
 		CommonTestStepActions.SelectAllVendors();
 
 		
-		// #1		// insert two
+		// #1
 		// In the 'Total Spend By Vendor'  component:
 	    // There are these selections in a horizontal selector bar with the title 'Expense Trending'
 	    // All
@@ -41,14 +42,28 @@ public class TotalExpensesTrendVisual extends BaseClass
 	    // Taxes
 	    // Other
 	    // Account 
-
+		TotalExpensesTrend.VerifyTrendValues();
+		
 	    // Below the Expense Trending bar there there is a title 'Expense by Vendor - All Categories'.
-		
-		// .tdb-boxSelector.tdb-align--right > div
-		
-		TotalExpensesTrend.VerifyTrends();
-		
 		TotalExpensesTrend.VerifyTitlesVendorView();
+
+		// #2
+		// Select all the vendors in the Point Of View and select all of the legends in the 'Expense by Vendor' section.
+		
+
+	    // There is a vertical bar graph for the last 13 months in time with the months from the pulldown listed.
+	    // The legends below the bar graph show each vendor.
+	    // It there are six or more vendors selected, there is a legend called 'other'.
+	    // Each vertical bar graph has a value for each of  the legends.
+		TotalExpensesTrend.VerifyMonths();
+	    TotalExpensesTrend.VerifyVendorsCountries();
+		TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections();
+		
+		// an addition.
+		
+		// .//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/* // <<<< ---  xpath for  legends
+		
+		
 		
 		
 		DebugTimeout(9999, "Freeze");

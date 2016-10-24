@@ -1,7 +1,11 @@
 package expenses;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -91,4 +95,12 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		Assert.assertEquals(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText(), titlecountry, errMessage);
 		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.cssSelector(".tdb-h2")).getText(), errMessage);
 	}	
+
+	public static String ConvertMonthToInt(String monthToConvert) throws ParseException
+	{
+		Date date = new SimpleDateFormat("MMM").parse(monthToConvert);
+		Calendar cal = Calendar.getInstance();
+	    cal.setTime(date);
+	    return String.valueOf(cal.get(Calendar.MONTH) + 1);
+	}
 }
