@@ -2,6 +2,7 @@ package testSuiteExpense;
 
 import javax.swing.JOptionPane;
 
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -55,7 +56,8 @@ public class TotalExpensesTrendVisual extends BaseClass
 	    // It there are six or more vendors selected, there is a legend called 'other'.
 	    // Each vertical bar graph has a value for each of  the legends.
 		TotalExpensesTrend.VerifyMonths();
-		TotalExpensesTrend.VerifyVendorsCountries();
+	    TotalExpensesTrend.VerifyVendorsCountries();
+		TotalExpensesTrend.VerifyNumberOfLegendsMatchNumberOfBars();
 		
 		
 		// .//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/* // <<<< ---  xpath for  legends

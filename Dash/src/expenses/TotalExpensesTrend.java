@@ -32,6 +32,7 @@ public class TotalExpensesTrend extends BaseClass
 	public static String vendorTitle = "Expense by Vendor - All Categories";
 	public static String otherString = "Other";
 	public static String errMessage = "";
+	public static int numberOfLegends = 0; // this is used to save the number of legends found in VerifyVendorsCountries().
 	
 	public static void Setupdata()
 	{
@@ -104,10 +105,8 @@ public class TotalExpensesTrend extends BaseClass
 		// clear containers if needed.
 		ClearAllContainers();
 		
-		// Setupdata();
 
 		// get the list vendors or countries listed under the bar graph.
-
 		webEleListVendorCountriesLegends = driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/*"));
 
 		for(WebElement ele : webEleListVendorCountriesLegends) // put vendor names into a list so can use 'contains'. 
@@ -124,8 +123,26 @@ public class TotalExpensesTrend extends BaseClass
 		{
 			Assert.assertTrue(vendorsList.contains(otherString));
 		}
-	}
 
+		numberOfLegends = vendorsList.size();
+	}
+	
+	public static void VerifyNumberOfLegendsMatchNumberOfBars()
+	{
+		String cntrlId = ".//*[@id='highcharts-4']/*/*";
+		
+		
+		System.out.println(driver.findElements(By.xpath(cntrlId +  "[@class='highcharts-series-group']/*[contains(@class,'highcharts-series highcharts')]")).size());
+		System.out.println(driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-series-group']/*[contains(@visibility,'hidden')]")).size());
+	
+		Assert.assertTrue(driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-series-group']/*[contains(@class,'highcharts-series highcharts')]")).size() == numberOfLegends,
+						  "");
+		Assert.assertTrue(driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-series-group']/*[contains(@visibility,'hidden')]")).size() == numberOfLegends,
+						  "");	
+	
+	}
+	
+	
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// 										Helpers.
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
