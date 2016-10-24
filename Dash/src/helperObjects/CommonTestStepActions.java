@@ -4,6 +4,7 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -22,7 +23,8 @@ public class CommonTestStepActions extends BaseClass
 	public static List<String> monthListActual = new ArrayList<>();	
 	
 	// put all of the pulldown items in a web list. 
-	public static List<WebElement> webListPulldown = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();
+	//public static List<WebElement> webListPulldown = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();
+	public static List<WebElement> webListPulldown = new Select(driver.findElement(By.cssSelector(".tbd-flexContainer.tdb-flexContainer--center>select"))).getOptions();
 
 	public static String errMessage = "";
 	
@@ -318,6 +320,52 @@ public class CommonTestStepActions extends BaseClass
 		return listVendorsChecked;
 		
 	}
+	
+	
+	
+	// It returns a list with the countries that have vendors selected on the Point of View section
+	// - by Ana
+	public static List<String> getCountriesSelectedInPointOfView() {
+
+		// this list will have the names of the countries that have been SELECTED on the Point of View section
+		List<String> listCountriesCheckedTemp = new ArrayList<String>();			
+			
+		// this list will have ALL the names of the vendors LISTED on the Point of View section
+		List<WebElement> listVendorsLabels = driver.findElements(By.cssSelector(".md-checkbox-label"));
+		
+		
+		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
+		for(int i = 0; i < listVendorsLabels.size(); i++){
+			
+			int num = i + 1;
+			String checkBoxXpath = ".//*[@id='input-md-checkbox-" + num + "']";
+			boolean isChecked = driver.findElement(By.xpath(checkBoxXpath)).isSelected();
+			
+			// if the vendor's checkbox is checked then get the country name and add it to the list
+			if(isChecked){
+				
+				String countryLabelXpath = checkBoxXpath + "/../../../../../preceding-sibling::div";
+				
+				String countryName = driver.findElement(By.xpath(countryLabelXpath)).getText();
+				listCountriesCheckedTemp.add(countryName);
+				//System.out.println("Is selected? : " + isChecked + "- Country Name: " + countryName);
+				
+			}
+			
+		}
+
+		// This list will have the names of the countries that are selected, and WILL NOT CONTAIN **DUPLICATES**
+		List<String> listCountriesChecked = new ArrayList<String>(new LinkedHashSet<String>(listCountriesCheckedTemp));
+		
+		for (String s: listCountriesChecked){
+			System.out.println("Country: " + s);
+		}
+			
+				
+		return listCountriesChecked;
+		
+	}
+		
 	
 	
 	

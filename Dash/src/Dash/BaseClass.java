@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -243,12 +244,16 @@ public class BaseClass
 
 	}		
 	
+	
 	// Added by Ana 
 	public static void WaitForViewUsageSelector() throws Exception{
 		
-		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']"), ExtremeTimeout);
-		driver.findElement(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']")).click();
+		String xpathUsageSelector = ".//*[@class='tdb-dashboardToggle']/*[2]";
+		WaitForElementVisible(By.xpath(xpathUsageSelector), ExtremeTimeout);
+		driver.findElement(By.xpath(xpathUsageSelector)).click();
+		
 	}
+	
 	
 	// Added by Ana -- **** not sure if needed *****
 	public static void WaitForUsagePageDetailedLoad() throws Exception {
