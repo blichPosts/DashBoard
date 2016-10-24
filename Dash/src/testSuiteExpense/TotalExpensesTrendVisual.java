@@ -59,21 +59,30 @@ public class TotalExpensesTrendVisual extends BaseClass
 	    TotalExpensesTrend.VerifyVendorsCountries();
 		TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections();
 		
-		// an addition.
 		
-		// .//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/* // <<<< ---  xpath for  legends
+	 	
+		// #3
+		// Un-select all the vendors in the point of view, select 'Country' in the 'Country/ Vendor View Selector', and select a vendor in each country. 
+		// NOTE for above: currently, when switch to country view all of the vendors are selected and that means many of the countries are shown in the legend (not all).   
+		CommonTestStepActions.SelectCountryView();
 		
 		
-		
-		
-		DebugTimeout(9999, "Freeze");
+		// #4
+	    //There is a vertiCal bar graph for the last 13 months in time with the months from the pulldown listed.
+	    //The legends below the bar graph show each country.
+	    //It there are six or more vendors selected, there is a legend called 'other'.
+	    //Each vertical bar graph has a value for each of  the legends.
+		TotalExpensesTrend.VerifyTitlesCountryView();
+		TotalExpensesTrend.VerifyMonths();
+	    TotalExpensesTrend.VerifyVendorsCountries();
+		TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections();
 	}
 	
 	@AfterClass
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
+	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
 		driver.close();
 		driver.quit();
 	}	

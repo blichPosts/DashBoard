@@ -30,6 +30,10 @@ public class TotalExpensesTrend extends BaseClass
 	
 	public static String mainTitle = "Expense Trending"; 
 	public static String vendorTitle = "Expense by Vendor - All Categories";
+	public static String countryTitle = "Expense by Country - All Categories";	
+	
+	// Expense by Country - All Categories
+
 	public static String otherString = "Other";
 	public static String errMessage = "";
 	public static int numberOfLegends = 0; // this is used to save the number of legends found in VerifyVendorsCountries().
@@ -76,8 +80,23 @@ public class TotalExpensesTrend extends BaseClass
 		Assert.assertEquals(driver.findElement(By.xpath("(//div[@class='tdb-card'])[2]/h2")).getText(), mainTitle, errMessage);
 	}
 	
-	public static void VerifyMonths() throws ParseException
+	public static void VerifyTitlesCountryView() throws Exception
 	{
+		errMessage = "Failed check in TotalExpensesTrend.VerifyTitlesVendorView";
+		
+		WaitForElementVisible(By.xpath("(//span[text()='Country'])[2]"), MediumTimeout);
+		
+		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(1)")).getText(), countryTitle, errMessage);
+		
+		Assert.assertEquals(driver.findElement(By.xpath("(//div[@class='tdb-card'])[2]/h2")).getText(), mainTitle, errMessage);
+	}
+	
+	
+	public static void VerifyMonths() throws ParseException, InterruptedException
+	{
+		
+		ClearAllContainers();
+		
 		// get expected month(int)/years pulldown - format is MM-YYYY.
 		expectedYearMonthList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		
@@ -104,7 +123,6 @@ public class TotalExpensesTrend extends BaseClass
 	{
 		// clear containers if needed.
 		ClearAllContainers();
-		
 
 		// get the list vendors or countries listed under the bar graph.
 		webEleListVendorCountriesLegends = driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/*"));
@@ -124,22 +142,22 @@ public class TotalExpensesTrend extends BaseClass
 			Assert.assertTrue(vendorsList.contains(otherString));
 		}
 
-		numberOfLegends = vendorsList.size();
+		numberOfLegends = vendorsList.size(); // to be used in VerifyNumLegendsMatchNumBarSections().
 	}
 	
 	public static void VerifyNumLegendsMatchNumBarSections()
 	{
-		String cntrlId = ".//*[@id='highcharts-4']/*/*";
+		errMessage = "Fail verifying number of legands and number of bar chart parts in TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections";
+		String cntrlPath = ".//*[@id='highcharts-4']/*/*[@class='highcharts-series-group']/*";
 		
+		//System.out.println(driver.findElements(By.xpath(cntrlPath + "[contains(@class,'highcharts-series highcharts')]")).size()); // DEBUG
+		//System.out.println(driver.findElements(By.xpath(cntrlPath + "[contains(@visibility,'hidden')]")).size());  // DEBUG
+	
+		// verify none of the legends are un-selected.
+		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath+ "[contains(@visibility,'hidden')]")).size() == 0,  errMessage);	
 		
-		System.out.println(driver.findElements(By.xpath(cntrlId +  "[@class='highcharts-series-group']/*[contains(@class,'highcharts-series highcharts')]")).size());
-		System.out.println(driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-series-group']/*[contains(@visibility,'hidden')]")).size());
-	
-		Assert.assertTrue(driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-series-group']/*[contains(@class,'highcharts-series highcharts')]")).size() == numberOfLegends,
-						  "");
-		Assert.assertTrue(driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-series-group']/*[contains(@visibility,'hidden')]")).size() == numberOfLegends,
-						  "");	
-	
+		// verify the number of legends equals the number of bar chart slices.  
+		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath + "[contains(@class,'highcharts-series highcharts')]")).size() == numberOfLegends, errMessage);
 	}
 	
 	
@@ -158,6 +176,48 @@ public class TotalExpensesTrend extends BaseClass
 		{
 			expectedTrends.clear();
 		}
+		
+		if(webEleListTrends != null)
+		{
+			webEleListTrends.clear();
+		}		
+		
+		if(webEleListMonthYearActual != null)
+		{
+			webEleListMonthYearActual.clear();
+		}		
+		
+		if(webEleListVendorCountriesLegends != null)
+		{
+			webEleListVendorCountriesLegends.clear();
+		}		
+
+		if(expectedTrends  != null)
+		{
+			expectedTrends .clear();
+		}		
+	
+		if(actualTrends  != null)
+		{
+			actualTrends .clear();
+		}		
+		
+		if(expectedYearMonthList  != null)
+		{
+			expectedYearMonthList .clear();
+		}		
+		
+		if(actualYearMonthList  != null)
+		{
+			actualYearMonthList .clear();
+		}		
+		
+		if(vendorsList  != null)
+		{
+			vendorsList .clear();
+		}		
 	}
+	
+	
 	
 }

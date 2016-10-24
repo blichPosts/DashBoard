@@ -47,7 +47,7 @@ public class PointOfViewVisual extends BaseClass
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
+	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
 		driver.close();
 		driver.quit();
 	}

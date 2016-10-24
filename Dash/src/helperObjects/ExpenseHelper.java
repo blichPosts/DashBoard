@@ -108,7 +108,7 @@ public class ExpenseHelper extends BaseClass
 	// 								helpers
 	// //////////////////////////////////////////////////////////////////////
 	
-	public static void VerifyRollingAverageTotalExpense(String errMess, String locator) 
+	public static void VerifyRollingAverageTotalExpense(String errMess, String locator)   
 	{
 		// String strArray [] = driver.findElement(By.xpath("(//h4[@class='tdb-h4'])[1]/../..")).getText().split("\n");
 		
@@ -117,9 +117,9 @@ public class ExpenseHelper extends BaseClass
 		Assert.assertEquals(strArray[0], rollingAverages, errMess); // rolling averages text
 		Assert.assertEquals(strArray[1].split("s")[0] + "s", rollingMonthsThree, ""); // 3 months text 
 		Assert.assertEquals(strArray[2].split("s")[0] + "s", rollingMonthsSix, "");	//  6 months text
-
-		VerifyInteger(strArray[1].split("months")[1].replace("K","").replace(".","").replace("$", ""), errMess);	// numeric value	
-		VerifyInteger(strArray[2].split("months")[1].replace("K","").replace(".","").replace("$", ""), errMess);	// numeric value
+	
+		VerifyInteger(strArray[1].split("months")[1].replace("K","").replace(".","").replace("$", "").trim(), errMess);	// numeric value	
+		VerifyInteger(strArray[2].split("months")[1].replace("K","").replace(".","").replace("$", "").trim(), errMess);	// numeric value
 	}
 	
 	public static void VerifyInteger(String tmpStr, String errMessage)

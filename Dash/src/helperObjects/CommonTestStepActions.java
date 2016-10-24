@@ -23,16 +23,17 @@ public class CommonTestStepActions extends BaseClass
 	public static String []  monthArray = {"January" , "February", "March", "April", "May" , "June", "July", "August", "September", "October", "November", "December"};
 	public static List<String> monthListExpected = new ArrayList<>(); 
 	public static List<String> monthListActual = new ArrayList<>();	
+	public static String pullDownCss  = ".tbd-flexContainer.tdb-flexContainer--center>select";
 	
 	// put all of the pulldown items in a web list. 
-	public static List<WebElement> webListPulldown = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getOptions();
+	public static List<WebElement> webListPulldown = new Select(driver.findElement(By.cssSelector(pullDownCss))).getOptions();
 
 	public static String errMessage = "";
 	
 	// loads each country into a country list. it also adds the vendors for each country.
 	public static String GetPulldownTextSelected()
 	{
-		return new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();
+		return new Select(driver.findElement(By.cssSelector(pullDownCss))).getFirstSelectedOption().getText();
 	}
 	
 	// loads each country into a country list. it also adds the vendors for each country.
@@ -71,7 +72,7 @@ public class CommonTestStepActions extends BaseClass
 
 	public static void VerifyMonthPullDownFormat()
 	{
-		Assert.assertEquals(new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText(), MonthYearMinusOne(), "");
+		Assert.assertEquals(new Select(driver.findElement(By.cssSelector(pullDownCss))).getFirstSelectedOption().getText(), MonthYearMinusOne(), "");
 	}
 	
 	public static void SelectAllVendors()
@@ -98,9 +99,11 @@ public class CommonTestStepActions extends BaseClass
 		driver.findElement(By.cssSelector("#md-tab-label-0-0")).click();
 	}	
 	
-	public static void SelectCountryView()
+	public static void SelectCountryView() throws Exception
 	{
-		WaitForElementClickable(By.cssSelector("#md-tab-label-0-1"), MediumTimeout, "Vendor view is not present in CommonTestStepActions.UnSelectAllVendors");
+		WaitForElementClickable(By.cssSelector("#md-tab-label-0-1"), MediumTimeout, "Vendor view is not present in CommonTestStepActions.SelectCountryView");
+		WaitForElementClickable(By.cssSelector(pullDownCss), MediumTimeout, "");
+		WaitForElementVisible(By.cssSelector(pullDownCss), MediumTimeout);
 		driver.findElement(By.cssSelector("#md-tab-label-0-1")).click();
 	}		
 	
@@ -150,19 +153,19 @@ public class CommonTestStepActions extends BaseClass
 		errMessage = "Failure in verifying point of view pulldown selections.";
 		
 		// select using text from web list, get selection, and compare with web list selection.
-		new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).selectByVisibleText(webListPulldown.get(0).getText());
-		actualString = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();
+		new Select(driver.findElement(By.cssSelector(pullDownCss))).selectByVisibleText(webListPulldown.get(0).getText());
+		actualString = new Select(driver.findElement(By.cssSelector(pullDownCss))).getFirstSelectedOption().getText();
 		Assert.assertEquals(actualString, webListPulldown.get(0).getText(), errMessage);
 		
 		// select using text from web list, get selection, and compare with web list selection.
-		new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).selectByVisibleText(webListPulldown.get(webListPulldown.size()/2).getText());
-		actualString = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();		
+		new Select(driver.findElement(By.cssSelector(pullDownCss))).selectByVisibleText(webListPulldown.get(webListPulldown.size()/2).getText());
+		actualString = new Select(driver.findElement(By.cssSelector(pullDownCss))).getFirstSelectedOption().getText();		
 		Assert.assertEquals(actualString, webListPulldown.get(webListPulldown.size()/2).getText(), errMessage);
 		
 		
 		// select using text from web list, get selection, and compare with web list selection.
-		new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).selectByVisibleText(webListPulldown.get(webListPulldown.size() - 1).getText());
-		actualString = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();		
+		new Select(driver.findElement(By.cssSelector(pullDownCss))).selectByVisibleText(webListPulldown.get(webListPulldown.size() - 1).getText());
+		actualString = new Select(driver.findElement(By.cssSelector(pullDownCss))).getFirstSelectedOption().getText();		
 		Assert.assertEquals(actualString, webListPulldown.get(webListPulldown.size()- 1).getText(), errMessage); 
 	}		
 	
