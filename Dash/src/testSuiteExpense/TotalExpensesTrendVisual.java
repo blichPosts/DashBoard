@@ -59,6 +59,7 @@ public class TotalExpensesTrendVisual extends BaseClass
 	    TotalExpensesTrend.VerifyVendorsCountries();
 		TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections();
 		
+		// an addition.
 		
 		// .//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/* // <<<< ---  xpath for  legends
 		
