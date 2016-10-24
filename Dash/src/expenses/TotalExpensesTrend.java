@@ -127,7 +127,7 @@ public class TotalExpensesTrend extends BaseClass
 		numberOfLegends = vendorsList.size();
 	}
 	
-	public static void VerifyNumberOfLegendsMatchNumberOfBars()
+	public static void VerifyNumLegendsMatchNumBarSections()
 	{
 		String cntrlId = ".//*[@id='highcharts-4']/*/*";
 		

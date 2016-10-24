@@ -57,7 +57,7 @@ public class TotalExpensesTrendVisual extends BaseClass
 	    // Each vertical bar graph has a value for each of  the legends.
 		TotalExpensesTrend.VerifyMonths();
 	    TotalExpensesTrend.VerifyVendorsCountries();
-		TotalExpensesTrend.VerifyNumberOfLegendsMatchNumberOfBars();
+		TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections();
 		
 		
 		// .//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/* // <<<< ---  xpath for  legends
