@@ -37,11 +37,11 @@ public class TotalUsageByVendor extends BaseClass {
 			
 			
 			// #3 Verify that title "Total Usage by Vendor - ... " changes according to what Category was selected
-			UsageHelper.verifyTotalUsageTitle();
+			UsageHelper.verifyTotalUsageTitle("Vendor");
 			
 			
 			// #4 Verify bar charts titles
-			UsageHelper.verifyBarChartTitlesUsageByVendor();
+			UsageHelper.verifyBarChartTitlesTotalUsage();
 			
 			
 			// #5 Verify legends of charts 

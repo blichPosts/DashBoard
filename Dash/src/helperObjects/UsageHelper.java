@@ -47,11 +47,23 @@ public class UsageHelper extends BaseClass{
 	}
 
 	
+	public static void selectCountryView(){
+		
+		WaitForElementClickable(By.cssSelector("#md-tab-label-1-1"), MediumTimeout, "Country View Selector is not clickable.");
+		driver.findElement(By.cssSelector("#md-tab-label-1-1")).click();
+		
+	}
+	
+	
+	
 	
 	public static void verifyDomesticRoamingLabels() {
 		
-		Assert.assertEquals(driver.findElement(By.xpath("html/body/app-root/app-fleet-dashboard-container/div[2]/main/app-usage-dashboard/div/app-usage-kpis/div[1]/div[1]/h3")).getText(), "Domestic (includes overage)");
-		Assert.assertEquals(driver.findElement(By.xpath("html/body/app-root/app-fleet-dashboard-container/div[2]/main/app-usage-dashboard/div/app-usage-kpis/div[1]/div[2]/h3")).getText(), "Roaming");
+		
+		List<WebElement> kpiDomesticRoamingTitles = driver.findElements(By.cssSelector(".tdb-h3.tdb-kpiSection__title"));
+		
+		Assert.assertEquals(kpiDomesticRoamingTitles.get(0).getText(), "Domestic (includes overage)");
+		Assert.assertEquals(kpiDomesticRoamingTitles.get(1).getText(), "Roaming");
 		
 		
 	}
@@ -163,12 +175,12 @@ public class UsageHelper extends BaseClass{
 	public static void verifyMonthYearOnVendorView(){
 		
 		// Get the month and year from Month selector
-		String monthYearSelector = new Select(driver.findElement(By.cssSelector(".tbd-pov__monthPicker>select"))).getFirstSelectedOption().getText();
+		String monthYearSelector = new Select(driver.findElement(By.cssSelector(".tbd-flexContainer.tdb-flexContainer--center>select"))).getFirstSelectedOption().getText();
 		//System.out.println("monthYearSelector:" + monthYearSelector);
 					
 		// Get the month and year from Vendor View
-		String monthYearVendorView = driver.findElement(By.cssSelector(".tdb-h2")).getText();
-		//System.out.println("monthYearVendorView:" + monthYearVendorView);
+		String monthYearVendorView = driver.findElements(By.cssSelector(".tdb-h2")).get(0).getText();
+		System.out.println("monthYearVendorView:" + monthYearVendorView);
 					
 		Assert.assertEquals(monthYearSelector, monthYearVendorView, "Month and Year displayed for Total Usage by Vendor is not the same as the selection made under Month selector.");		
 							
@@ -176,9 +188,9 @@ public class UsageHelper extends BaseClass{
 
 	
 	
-	public static void verifyTotalUsageTitle(){
+	public static void verifyTotalUsageTitle(String viewName){
 		
-		String totalUsageTitleExpected = "Total Usage by Vendor - ";
+		String totalUsageTitleExpected = "Total Usage by " + viewName + " - ";
 		String totalUsageTitleFound = driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText();
 		List<WebElement> categorySelectors = driver.findElements(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option"));
 
@@ -191,7 +203,7 @@ public class UsageHelper extends BaseClass{
 			//System.out.println("Title found:    " + totalUsageTitleFound);
 			//System.out.println("Title expected: " + totalUsageTitleExpected + categorySelectors.get(i).getText());
 			
-			Assert.assertEquals(totalUsageTitleExpected + categorySelectors.get(i).getText(), totalUsageTitleFound);
+			Assert.assertEquals(totalUsageTitleExpected + categorySelectors.get(i).getText(), totalUsageTitleFound, "Title found is different from title expected.");
 			
 		}
 
@@ -199,7 +211,7 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	
-	public static void verifyBarChartTitlesUsageByVendor(){
+	public static void verifyBarChartTitlesTotalUsage(){
 		
 		
 		String domesticTitleFound; 
@@ -310,54 +322,73 @@ public class UsageHelper extends BaseClass{
 		
 		// Get the id of the "Total Usage by Vendor (DOMESTIC)" chart (FIRST chart)
 		String chartId = charts.get(0).getAttribute("id");
-		verifyVendorsInLegend(chartId, listVendorsChecked);
+		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listVendorsChecked);
 				
 		// Get the id of the "Total Usage by Vendor (ROAMING)" chart (SECOND chart)
 		chartId = charts.get(1).getAttribute("id");
-		verifyVendorsInLegend(chartId, listVendorsChecked);
+		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listVendorsChecked);
 				
 		
 		
 	}
 
+	
 
+	public static void verifyCountriesInUsageByCountryCharts() {
+	
+		// this list will have the names of the countries that have been SELECTED on the Point of View section
+		List<String> listCountriesChecked = CommonTestStepActions.getCountriesSelectedInPointOfView();
+		
+		// Get the charts to get the id of the chart - I hope this works! -- it worked :) 
+		List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
+		
+		// Get the id of the "Total Usage by Vendor (DOMESTIC)" chart (FIRST chart)
+		String chartId = charts.get(0).getAttribute("id");
+		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listCountriesChecked);
+				
+		// Get the id of the "Total Usage by Vendor (ROAMING)" chart (SECOND chart)
+		chartId = charts.get(1).getAttribute("id");
+		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listCountriesChecked);
+		
+	}
+	
+	
 
-
-	public static void verifyVendorsInLegend(String chartId, List<String> listVendorsChecked){
+	// This method is used to verify the labels on the vertical axis of both, Total Usage by Vendor charts, and Total Usage by Country charts.
+	public static void verifyLabelsInVerticalAxisTotalUsageCharts(String chartId, List<String> listItemsSelected){
 		
 		// Get the vendors that are listed on the vertical axis of the "Total Usage by Vendor (Domestic)" chart
-		List<WebElement> vendorsInLegend = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
+		List<WebElement> labelsVerticalAxis = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 		
-		System.out.println("# Vendors: " + vendorsInLegend.size());
+		System.out.println("# Vendors: " + labelsVerticalAxis.size());
 		System.out.println("Chart: " + chartId);
 
-		int amountVendorsSelected = listVendorsChecked.size();
+		int amountItemsSelected = listItemsSelected.size();
 		
-		// If amount of vendors selected is > than 5, then "Other" must be listed along other 5 vendors.
-		// Else the amount of vendors listed in the chart must be equal to the amount of vendors selected, and the vendors in the legend must be in the list of selected vendors.
-		if(amountVendorsSelected > 5){
+		// If amount of vendors/countries selected is > than 5, then "Other" must be listed along other 5 vendors/countries.
+		// Else the amount of vendors/countries listed in the chart must be equal to the amount of vendors/countries selected
+		// and the vendors/countries in the vertical axis must be in the list of selected vendors/countries.
+		if(amountItemsSelected > 5){
 			
-			Assert.assertEquals(vendorsInLegend.size(), 6);
+			Assert.assertEquals(labelsVerticalAxis.size(), 6);
 			
-			for(WebElement vendor: vendorsInLegend){
+			for(WebElement label: labelsVerticalAxis){
 						
-				if(!vendor.getText().equals("Other"))
-					Assert.assertTrue(listVendorsChecked.contains(vendor.getText()));
+				if(!label.getText().equals("Other"))
+					Assert.assertTrue(listItemsSelected.contains(label.getText()));
 				
-				System.out.println("Vendor in legend: " + vendor.getText());
+				System.out.println("Item in legend: " + label.getText());
 				
 			}
 			
 		}else{
 			
-			Assert.assertEquals(vendorsInLegend.size(), amountVendorsSelected);
+			Assert.assertEquals(labelsVerticalAxis.size(), amountItemsSelected);
 			
 		}
 		
 	}
-	
-	
-	
+
 	
 	
 }
