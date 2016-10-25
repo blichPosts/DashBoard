@@ -1,11 +1,5 @@
 package testSuiteExpense;
 
-import javax.swing.JOptionPane;
-
-import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.By.ByCssSelector;
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -17,9 +11,6 @@ import helperObjects.ExpenseHelper;
 
 public class KPITilesVisual extends BaseClass
 {
-	public static String rollingAverages = "Rolling Averages";
-	public static String monthsThree = "3 months";	
-	public static String monthsTwo = "2 months";
 	
 	@BeforeClass
 	public static void setUp() throws Exception
