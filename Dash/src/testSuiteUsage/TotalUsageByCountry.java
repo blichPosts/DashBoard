@@ -9,6 +9,8 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.UsageHelper;
+import usage.TotalUsage;
+import usage.UsageTrending;
 
 
 public class TotalUsageByCountry extends BaseClass {
@@ -22,7 +24,7 @@ public class TotalUsageByCountry extends BaseClass {
 	
 	
 	@Test
-	public static void KpiTilesVisualUsageTest() throws Exception
+	public static void TotalUsageByCountryTest() throws Exception
 	{
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
@@ -33,23 +35,23 @@ public class TotalUsageByCountry extends BaseClass {
 		
 		
 		// #2 Verify Month and Year displayed on Vendor View
-		UsageHelper.verifyMonthYearOnVendorView();
+		TotalUsage.verifyMonthYearOnUsageView();
 		
 		
 		// #3 Verify that title "Total Usage by Country - ... " changes according to what Category was selected
-		//UsageHelper.verifyTotalUsageTitle("Country"); -- this is commented because it fails -- the title is incorrect
+		//TotalUsage.verifyTotalUsageTitle(UsageHelper.totalUsageByCountry); //-- this is commented because it fails -- the title is incorrect
 		
 				
 		// #4 Verify bar charts titles
-		UsageHelper.verifyBarChartTitlesTotalUsage();
+		TotalUsage.verifyBarChartTitlesTotalUsage();
 		
 		
 		// #5 Verify legends of charts 
-		UsageHelper.verifyLegendsOfCharts();
+		TotalUsage.verifyLegendsOfCharts();
 		
 		
 		// #6 Verify that Vendors selected are listed in charts 
-		UsageHelper.verifyCountriesInUsageByCountryCharts();
+		TotalUsage.verifyCountriesInUsageByCountryCharts();
 		
 		
 		
