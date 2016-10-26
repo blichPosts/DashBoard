@@ -31,10 +31,10 @@ public class UsageTrending extends BaseClass {
 			categoryLabel = categorySelectors.get(i).getText();
 			totalUsageTitleExpected = titleFirstPart + categoryLabel;
 			
-			//System.out.println("Title found:    " + totalUsageTitleFound);
-			//System.out.println("Title expected: " + totalUsageTitleExpected);
+			System.out.println("Title found:    " + totalUsageTitleFound);
+			System.out.println("Title expected: " + totalUsageTitleExpected);
 			
-			Assert.assertEquals(totalUsageTitleExpected, totalUsageTitleFound, "Title found is different from title expected.");
+			Assert.assertEquals(totalUsageTitleFound, totalUsageTitleExpected, "Title found is different from title expected.");
 			
 		}
 
@@ -55,8 +55,8 @@ public class UsageTrending extends BaseClass {
 		for (int i = 0; i < 3; i++){
 			
 			categorySelectors.get(i).click(); 
-			domesticTitleFound = driver.findElement(By.cssSelector(".tdb-charts__label.tdb-text--italic>.tdb-text--bold")).getText();   //barChartTitles.get(0).getText(); 
-			roamingTitleFound = driver.findElement(By.cssSelector(".tdb-flexUnit--1.tdb-align--center>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();    //barChartTitles.get(1).getText();
+			domesticTitleFound = driver.findElement(By.cssSelector(".tdb-charts__label.tdb-text--italic>.tdb-text--bold")).getText(); 
+			roamingTitleFound = driver.findElement(By.cssSelector(".tdb-flexUnit--1.tdb-align--center>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();
 			
 			System.out.println("usage trending - Domestic title: " + domesticTitleFound);
 			System.out.println("usage trending - Roaming title: " + roamingTitleFound);
@@ -91,7 +91,7 @@ public class UsageTrending extends BaseClass {
 
 	
 	
-	public static void verifyLegendsOfChartsUsageTrending() {
+	public static void verifyVendorsInLegend_ChartsUsageTrending() {
 		
 		// this list will have the names of the vendors that have been SELECTED on the Point of View section
 		List<String> listVendorsChecked = CommonTestStepActions.getVendorsSelectedInPointOfView();
@@ -110,28 +110,46 @@ public class UsageTrending extends BaseClass {
 	}
 
 
-
-	private static void verifyLegendsInUsageTrendingCharts(String chartId, List<String> listVendorsChecked) {
+	public static void verifyCountriesInLegend_ChartsUsageTrending() {
 		
-		// Get the vendors that are listed on the vertical axis of the "Total Usage by Vendor (Domestic)" chart
-		List<WebElement> vendorsInLegend = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));  // if it doesnt find the text add >tspan at the end
+		// this list will have the names of the countries that have been SELECTED on the Point of View section
+		List<String> listCountriesChecked = CommonTestStepActions.getCountriesSelectedInPointOfView();
 		
-		System.out.println("# Vendors: " + vendorsInLegend.size());
-		System.out.println("Chart: " + chartId);
+		// Get the charts to get the id of the chart - I hope this works! -- it worked :) 
+		List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
+		
+		// Get the id of the "Usage Trending Domestic" chart (THIRD chart)
+		String chartId = charts.get(2).getAttribute("id");
+		verifyLegendsInUsageTrendingCharts(chartId, listCountriesChecked);
+				
+		// Get the id of the "Usage Trending Roaming" chart (FOURTH chart)
+		chartId = charts.get(3).getAttribute("id");
+		verifyLegendsInUsageTrendingCharts(chartId, listCountriesChecked);
+		
+	}
+	
+	
+	private static void verifyLegendsInUsageTrendingCharts(String chartId, List<String> listItemsChecked) {
+		
+		// Get the vendors/countries that are listed on the horizontal axis of the "Usage Trending (Domestic)" chart
+		List<WebElement> itemsFoundInLegend = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));
+		
+		System.out.println("# Items: " + itemsFoundInLegend.size());
+		System.out.println(" Chart: " + chartId);
 
-		int amountItemsSelected = listVendorsChecked.size();
+		int amountItemsSelected = listItemsChecked.size();
 		
 		// If amount of vendors/countries selected is > than 5, then "Other" must be listed along other 5 vendors/countries.
 		// Else the amount of vendors/countries listed in the chart's legend must be equal to the amount of vendors/countries selected
 		// and the vendors/countries in the legend must be in the list of selected vendors/countries.
 		if(amountItemsSelected > 5){
 			
-			Assert.assertEquals(vendorsInLegend.size(), 6);
+			Assert.assertEquals(itemsFoundInLegend.size(), 6);
 			
-			for(WebElement label: vendorsInLegend){
+			for(WebElement label: itemsFoundInLegend){
 						
 				if(!label.getText().equals("Other"))
-					Assert.assertTrue(listVendorsChecked.contains(label.getText()));
+					Assert.assertTrue(listItemsChecked.contains(label.getText()));
 				
 				System.out.println("Item in legend: " + label.getText());
 				
@@ -139,7 +157,7 @@ public class UsageTrending extends BaseClass {
 			
 		}else{
 			
-			Assert.assertEquals(vendorsInLegend.size(), amountItemsSelected);
+			Assert.assertEquals(itemsFoundInLegend.size(), amountItemsSelected);
 			
 		}
 		
@@ -149,7 +167,7 @@ public class UsageTrending extends BaseClass {
 	
 	public static void verifyMonthYearInUsageTrendingCharts() throws ParseException{
 		
-		// this list will have the names of the vendors that have been SELECTED on the Point of View section
+		// this list will have the months that are listed on Month selector on the Point of View section
 		List<String> listMonths = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		
 		// Get the charts to get the id of the chart - I hope this works! -- it worked :) 

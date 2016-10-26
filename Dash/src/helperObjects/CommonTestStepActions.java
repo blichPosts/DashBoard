@@ -414,10 +414,11 @@ public class CommonTestStepActions extends BaseClass
 		// This list will have the names of the countries that are selected, and WILL NOT CONTAIN **DUPLICATES**
 		List<String> listCountriesChecked = new ArrayList<String>(new LinkedHashSet<String>(listCountriesCheckedTemp));
 		
+		/*
 		for (String s: listCountriesChecked){
 			System.out.println("Country: " + s);
 		}
-			
+		*/	
 				
 		return listCountriesChecked;
 		
