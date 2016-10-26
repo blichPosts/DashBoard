@@ -10,7 +10,6 @@ import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.UsageHelper;
 import usage.TotalUsage;
-import usage.UsageTrending;
 
 
 public class TotalUsageByCountry extends BaseClass {
