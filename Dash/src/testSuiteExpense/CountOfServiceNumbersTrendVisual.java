@@ -22,15 +22,15 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 	{
 		// #1
 		// Select  vendors view and view the 'Count of Service Numbers' component.
-		CommonTestStepActions.GoToExpensePageDetailedWait();
+		CommonTestStepActions.GoToExpensePageDetailedWait(); // test
 		
 
 	    //The title is 'Cost per Service Number by Vendor - All Categories'
 	    //The last twelve months are shown.
 		// .//*[@id='highcharts-8']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels']/*/* // for last twelve months.
 		
-		// (//span[text()='Vendor'])[4]
-		
+		// (//span[text()='Vendor'])[4]  // commit
+		// (//span[text()='Vendor'])[4]  // commit		  
 		
 		
 	}
