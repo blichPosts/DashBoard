@@ -27,7 +27,8 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 
 	    //The title is 'Cost per Service Number by Vendor - All Categories'
 	    //The last twelve months are shown.
-
+		// .//*[@id='highcharts-8']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels']/*/* // for last twelve months.
+		
 		// (//span[text()='Vendor'])[4]
 		
 		
