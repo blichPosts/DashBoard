@@ -79,7 +79,7 @@ public class CommonTestStepActions extends BaseClass
 	public static void SelectAllVendors()
 	{
 		WaitForElementClickable(By.cssSelector(".tdb-povGroup__toggle > a"), MediumTimeout, "Select all is not present in CommonTestStepActions.SelectAllVendors");
-		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("All"))
+		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("ALL"))
 		{
 			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
 		}
@@ -88,7 +88,7 @@ public class CommonTestStepActions extends BaseClass
 	public static void UnSelectAllVendors()
 	{
 		WaitForElementClickable(By.cssSelector(".tdb-povGroup__toggle > a"), MediumTimeout, "Unselect all is not present in CommonTestStepActions.UnSelectAllVendors");
-		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("None"))
+		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("NONE"))
 		{
 			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
 		}
@@ -352,7 +352,7 @@ public class CommonTestStepActions extends BaseClass
 		List<String> listVendorsChecked = new ArrayList<String>();
 		
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = driver.findElements(By.cssSelector(".md-checkbox-label"));
+		List<WebElement> listVendorsLabels = getAllVendorNames();   //driver.findElements(By.cssSelector(".md-checkbox-label"));
 		
 		
 		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
@@ -388,7 +388,7 @@ public class CommonTestStepActions extends BaseClass
 		List<String> listCountriesCheckedTemp = new ArrayList<String>();			
 			
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = driver.findElements(By.cssSelector(".md-checkbox-label"));
+		List<WebElement> listVendorsLabels = getAllVendorNames();   //driver.findElements(By.cssSelector(".md-checkbox-label"));
 		
 		
 		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
@@ -422,6 +422,41 @@ public class CommonTestStepActions extends BaseClass
 				
 		return listCountriesChecked;
 		
+	}
+
+	
+	// It returns a list with all the vendor names listed on the Point of View section
+	public static List<WebElement> getAllVendorNames(){
+		
+		return driver.findElements(By.xpath(".//span[@class='md-checkbox-label']"));
+		
+	}
+	
+	
+	// ****CONTINUE HERE  *****
+	public static void selectOneVendor(String vendorName) {
+	
+		// this list will have ALL the names of the vendors LISTED on the Point of View section
+		List<WebElement> listVendorsLabels = getAllVendorNames();   //driver.findElements(By.xpath(".//span[@class='md-checkbox-label']"));
+		
+		
+		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
+		for(int i = 0; i < listVendorsLabels.size(); i++){
+			
+			int num = i + 1;
+			String checkBoxXpath = ".//input[@id='input-md-checkbox-" + num + "']/../..";
+			
+			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
+			if(listVendorsLabels.get(i).getText().equals(vendorName)){
+				
+				driver.findElement(By.xpath(checkBoxXpath)).click();
+				
+			}
+			
+			
+			
+		}
+
 	}
 		
 	
