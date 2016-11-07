@@ -332,6 +332,9 @@ public class CommonTestStepActions extends BaseClass
 	    return String.valueOf(cal.get(Calendar.MONTH) + 1);
 	}
 
+	
+	
+	
 	// helpers
 	public static void BobTest()
 	{
@@ -460,6 +463,64 @@ public class CommonTestStepActions extends BaseClass
 	}
 		
 	
+	public static String convertMonthNumberToName(String month, String year){
+		
+		switch(month){
+			case "1":
+				return ("January " + year);
+			case "2":
+				return ("February " + year);
+			case "3":
+				return ("March " + year);
+			case "4":
+				return ("April " + year);
+			case "5":
+				return ("May " + year);
+			case "6":
+				return ("June " + year);
+			case "7":
+				return ("July " + year);
+			case "8":
+				return ("August " + year);
+			case "9":
+				return ("September " + year);
+			case "10":
+				return ("October " + year);
+			case "11":
+				return ("November " + year);
+			case "12":
+				return ("December " + year);
+			default:
+				return "";
+		}
+		
+	}
+	
+	
+	public static void selectMonthYearPulldown(String monthYear){
+		
+		// this list will have ALL the 'Month Year' listed on the pulldown on the Point of View section
+		List<WebElement> listMonthYear = driver.findElements(By.xpath(".//select/option"));
+		
+		
+		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
+		for(int i = 0; i < listMonthYear.size(); i++){
+			
+			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
+			if(listMonthYear.get(i).getText().equals(monthYear)){
+				
+				listMonthYear.get(i).click();
+				
+			}
+			
+			
+			
+		}
+
+		
+		
+		
+	}
 	
 	
 	
