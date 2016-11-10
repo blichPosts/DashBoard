@@ -3,7 +3,6 @@ package testSuiteUsage;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -34,10 +33,14 @@ public class UsagePageTestValuesFromFile extends BaseClass{
 	public static void UsagePageTestValuesFromFileTest() throws Exception
 	{
 		
-		String path = "D:/Documents/CMD Dashboard/CreateFilesProgram/";
-		String file = "AT&T Mobility.txt";
+		String vendor = "Etisalat";
+		//String vendor = "AT&T Mobility";
+		
+		String path = "D:/Documents/CMD Dashboard/CreateFilesProgram/ ";
+		String file = vendor + ".txt";
 		String completePath = path + file;
 		
+		System.out.println("Path: " + completePath);
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 			
@@ -51,28 +54,51 @@ public class UsagePageTestValuesFromFile extends BaseClass{
 		
 		// #3 Select only one vendor
 		CommonTestStepActions.UnSelectAllVendors();
-		CommonTestStepActions.selectOneVendor("AT&T Mobility");
+		CommonTestStepActions.selectOneVendor(vendor);
 		
-		String[] oneMonthData = valuesfromFile[0]; 
-		String year =  oneMonthData[0];
-		String month = Integer.toString((Integer.parseInt(oneMonthData[1]) - 1));
 		
-		String monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
-		System.out.println("monthYear: " + monthYear);
+		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
+		String monthYear = "";
 		
-		// #4 Select month on month/year selector
-		CommonTestStepActions.selectMonthYearPulldown(monthYear);
+		int i = 0;
 		
-		Thread.sleep(2000);
+		do {
 		
-		String domesticVoiceUsage = oneMonthData[2];
-		String domesticVoiceOverageUsage = oneMonthData[3];
-		String domesticMessagesUsage = oneMonthData[4];
-		String domesticDataUsage = oneMonthData[5];
-		String roamingDataUsage = oneMonthData[7];
-						
-		// #5 Compare the values displayed on the KPIs to the values from spreadsheet
-		UsageKPITilesActions.verifyKPItileValues(domesticVoiceUsage, domesticVoiceOverageUsage, domesticMessagesUsage, domesticDataUsage, roamingDataUsage);
+			String[] oneMonthData = valuesfromFile[i]; 
+			String year =  "";
+			String month = "";
+			
+			if(oneMonthData[1].equals("1")){
+				month = "12";
+				year = Integer.toString(Integer.parseInt(oneMonthData[0]) - 1);
+			}else{
+				month = Integer.toString((Integer.parseInt(oneMonthData[1]) - 1));
+				year =  oneMonthData[0];
+			}
+			
+			
+			monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
+			System.out.println("monthYear: " + monthYear);
+			
+			// #4 Select month on month/year selector
+			CommonTestStepActions.selectMonthYearPulldown(monthYear);
+			
+			Thread.sleep(2000);
+			
+			String domesticVoiceUsage = oneMonthData[2];
+			String domesticVoiceOverageUsage = oneMonthData[3];
+			String domesticMessagesUsage = oneMonthData[4];
+			String domesticDataUsage = oneMonthData[5];
+			String roamingDataUsage = oneMonthData[7];
+							
+			// #5 Compare the values displayed on the KPIs to the values from spreadsheet
+			UsageKPITilesActions.verifyKPItileValues(domesticVoiceUsage, domesticVoiceOverageUsage, domesticMessagesUsage, domesticDataUsage, roamingDataUsage);
+			
+			i++;
+			
+		} while (!monthYear.equals(lastMonthListedMonthSelector));
+		
+		
 		
 	}
 	

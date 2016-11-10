@@ -27,10 +27,12 @@ public class ReadFilesHelper {
 		
 		List<String> linesOfFile = getRowsfromFile(filePath);
 		
-		String [][] values = new String[13][9];  // 13 rows - one for each month
-												 // 9 columns - one for each value needed for Usage page tests 				
+		int linesAmount = linesOfFile.size() - 2; 
 		
-		for (int i = 0; i < linesOfFile.size()-2; i++){
+		String [][] values = new String[linesAmount][9]; // # rows it's variable for each vendor - one for each line found in the file
+												 		 // 9 columns - one for each value needed for Usage page tests 	
+		
+		for (int i = 0; i < linesAmount; i++){
 			
 			//System.out.println("line # " + i);
 			
@@ -50,7 +52,7 @@ public class ReadFilesHelper {
 		}
 		
 		
-		for (int i = 0; i < 13; i++){
+		for (int i = 0; i < linesAmount; i++){
 			
 			System.out.print("Row " + (i+1) + ": ");
 			
@@ -71,7 +73,7 @@ public class ReadFilesHelper {
 	
 	public static List<String> getRowsfromFile(String filePath) throws IOException{
 		
-		Path path = Paths.get("D:/Documents/CMD Dashboard/CreateFilesProgram/AT&T Mobility.txt");
+		Path path = Paths.get(filePath);
 		Stream<String> rows = Files.lines(path);
 		
 		List<String> lines = new ArrayList<String>();
@@ -97,11 +99,11 @@ public class ReadFilesHelper {
 		
 		
 		String itemsOfLine[];
-		String lineWithNoSpaces = lineToBeSplited.replaceAll("                 ", ";"); 
+		//String lineWithNoSpaces = lineToBeSplited.replaceAll("          ", ";"); 
 		
 		//System.out.println("lineWithNoSpaces: " + lineWithNoSpaces); 
 				 		
-		itemsOfLine = lineWithNoSpaces.split(";");
+		itemsOfLine = lineToBeSplited.split(";;");    //lineWithNoSpaces.split(";");
 		//itemsOfLine = line.get(2).split(" ");
 		
 		//System.out.println("Items #: " + itemsOfLine.length);  // 31, the last item is empty, must be discarded 
