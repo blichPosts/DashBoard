@@ -2,6 +2,8 @@ package testSuiteUsage;
 
 import javax.swing.JOptionPane;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -11,7 +13,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import usage.UsageKPITilesActions;
-import usage.UsageTrending;
+
 
 public class UsagePageTestValuesFromFile extends BaseClass{
 
@@ -20,6 +22,11 @@ public class UsagePageTestValuesFromFile extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		login();
+		CommonTestStepActions.switchToContentFrame();
+		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
+		// I've put it here to make sure that it gets initialized and that will not error 
+		//CommonTestStepActions.initializeMonthSelector();
 	}
 	
 	
@@ -30,6 +37,7 @@ public class UsagePageTestValuesFromFile extends BaseClass{
 		String path = "D:/Documents/CMD Dashboard/CreateFilesProgram/";
 		String file = "AT&T Mobility.txt";
 		String completePath = path + file;
+		
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 			
@@ -52,6 +60,7 @@ public class UsagePageTestValuesFromFile extends BaseClass{
 		String monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
 		System.out.println("monthYear: " + monthYear);
 		
+		// #4 Select month on month/year selector
 		CommonTestStepActions.selectMonthYearPulldown(monthYear);
 		
 		Thread.sleep(2000);
@@ -62,6 +71,7 @@ public class UsagePageTestValuesFromFile extends BaseClass{
 		String domesticDataUsage = oneMonthData[5];
 		String roamingDataUsage = oneMonthData[7];
 						
+		// #5 Compare the values displayed on the KPIs to the values from spreadsheet
 		UsageKPITilesActions.verifyKPItileValues(domesticVoiceUsage, domesticVoiceOverageUsage, domesticMessagesUsage, domesticDataUsage, roamingDataUsage);
 		
 	}

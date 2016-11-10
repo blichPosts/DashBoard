@@ -26,7 +26,7 @@ public class CommonTestStepActions extends BaseClass
 	public static String pullDownCss  = ".tbd-flexContainer.tdb-flexContainer--center>select";
 	
 	// put all of the pulldown items in a web list. 
-	public static List<WebElement> webListPulldown = new Select(driver.findElement(By.cssSelector(pullDownCss))).getOptions();
+	public static List<WebElement> webListPulldown; //= new Select(driver.findElement(By.cssSelector(pullDownCss))).getOptions();
 
 
 	public static String errMessage = "";
@@ -513,12 +513,24 @@ public class CommonTestStepActions extends BaseClass
 				
 			}
 			
-			
-			
 		}
-
 		
+	}
+	
+	
+	// Added by Ana - the month selector variable needs to be initialized here
+	public static void initializeMonthSelector(){
 		
+		webListPulldown = new Select(driver.findElement(By.cssSelector(pullDownCss))).getOptions();
+		
+	}
+	
+	
+	// It switches to the frame that contains the PoV, KPIs, charts
+	public static void switchToContentFrame(){
+		
+		WebElement frame = driver.findElement(By.xpath(".//iframe[@id='CONTENT']"));
+		driver.switchTo().frame(frame);
 		
 	}
 	

@@ -33,7 +33,8 @@ public class BaseClass
 	//public static String CMD_baseUrl = "http://dc1qacmdweb04:8080/manage/login/login.trq";
 	//public static String CMD_baseUrl = "https://qa1cmd.tangoe.com/manage/login/login.trq";
 	// public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";	
-	public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense";
+	//public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense";
+	public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:4000/manage/login";
 	// https://qa3.traq.com/manage/login/login.trq
 	
 	public static boolean testCaseStatus = false;
@@ -248,8 +249,8 @@ public class BaseClass
 	// Added by Ana 
 	public static void WaitForViewUsageSelector() throws Exception{
 		
-		String xpathUsageSelector = ".//*[@class='tdb-dashboardToggle']/*[2]";
-		WaitForElementVisible(By.xpath(xpathUsageSelector), ExtremeTimeout);
+		String xpathUsageSelector = ".//*[@class='tdb-dashboardToggle']/*[2]/*";
+		WaitForElementClickable(By.xpath(xpathUsageSelector), ExtremeTimeout, "Element is not clickable.");
 		driver.findElement(By.xpath(xpathUsageSelector)).click();
 		
 	}
@@ -468,5 +469,19 @@ public class BaseClass
 		        //throw new Exception(e.toString());
 	        }	    
 		    return true;
-		}		
+		}
+		
+		
+		
+		// added by Ana - to be able to use http://dc1devmule1.prod.tangoe.com:4000, since it seems to be updated
+		
+		public static void login(){
+			
+			driver.findElement(By.name("username")).sendKeys("admin.vis");
+			driver.findElement(By.name("password")).sendKeys("tangoe");
+			driver.findElement(By.name("submit")).click();
+			
+			
+		}
+		
 }
