@@ -33,8 +33,8 @@ public class BaseClass
 	//public static String CMD_baseUrl = "http://dc1qacmdweb04:8080/manage/login/login.trq";
 	//public static String CMD_baseUrl = "https://qa1cmd.tangoe.com/manage/login/login.trq";
 	// public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";	
-	//public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense";
-	public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:4000/manage/login";
+	public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense";
+	//public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:4000/manage/login";
 	// https://qa3.traq.com/manage/login/login.trq
 	
 	public static boolean testCaseStatus = false;

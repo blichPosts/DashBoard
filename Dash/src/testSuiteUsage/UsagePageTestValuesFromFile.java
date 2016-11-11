@@ -33,8 +33,12 @@ public class UsagePageTestValuesFromFile extends BaseClass{
 	public static void UsagePageTestValuesFromFileTest() throws Exception
 	{
 		
-		String vendor = "Etisalat";
-		//String vendor = "AT&T Mobility";
+		String vendor = "";
+		//vendor = "AT&T Mobility";
+		//vendor = "Etisalat";
+		//vendor = "O2 UK";
+		vendor = "Rogers";
+
 		
 		String path = "D:/Documents/CMD Dashboard/CreateFilesProgram/ ";
 		String file = vendor + ".txt";
@@ -64,7 +68,7 @@ public class UsagePageTestValuesFromFile extends BaseClass{
 		
 		do {
 		
-			String[] oneMonthData = valuesfromFile[i]; 
+			String[] oneMonthData = valuesfromFile[i];   
 			String year =  "";
 			String month = "";
 			
@@ -107,7 +111,7 @@ public class UsagePageTestValuesFromFile extends BaseClass{
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "'Usage Trending - Usage by Vendor' test finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "Test finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}
