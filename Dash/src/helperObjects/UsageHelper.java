@@ -57,6 +57,7 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	
+	// It returns the id of the WebElement chart. E.g.: "highchart-45"
 	public static String getChartId(int num){
 		
 		// Get all the charts listed in the page

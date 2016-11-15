@@ -436,7 +436,7 @@ public class CommonTestStepActions extends BaseClass
 	}
 	
 	
-	// ****CONTINUE HERE  *****
+
 	public static void selectOneVendor(String vendorName) {
 	
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
@@ -497,13 +497,13 @@ public class CommonTestStepActions extends BaseClass
 	}
 	
 	
+	// Set the month selector value to the value specified in the parameter
 	public static void selectMonthYearPulldown(String monthYear){
 		
 		// this list will have ALL the 'Month Year' listed on the pulldown on the Point of View section
 		List<WebElement> listMonthYear = driver.findElements(By.xpath(".//select/option"));
 		
 		
-		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
 		for(int i = 0; i < listMonthYear.size(); i++){
 			
 			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
