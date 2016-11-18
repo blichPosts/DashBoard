@@ -30,7 +30,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	public static void Setupdata()
 	{
 		// this gets legends of spend categories text
-		legendsArray= driver.findElement(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[6]")).getText().split("\n");
+		legendsArray= driver.findElement(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[7]")).getText().split("\n");
 		//ShowArray(legendsArray);
 
 		// build the list of expected spend category legends.
@@ -44,7 +44,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		expectedSpendCategoryLegends.add("Account");
 		
 		// this gets the number of items (legends) shown in the bar charts  
-		List<WebElement> eleList =  driver.findElements(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[5]/*/*/.."));
+		List<WebElement> eleList =  driver.findElements(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[7]/*/*/*"));
 		numberOfLegendsInBarChart = eleList.size();
 		
 		// this gets the expected number of legends.
