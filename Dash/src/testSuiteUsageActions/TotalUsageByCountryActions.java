@@ -11,8 +11,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.UsageHelper;
 import usage.TotalUsageActions;
 
-
-public class TotalUsageByVendorActions extends BaseClass {
+public class TotalUsageByCountryActions extends BaseClass {
 	
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -24,17 +23,17 @@ public class TotalUsageByVendorActions extends BaseClass {
 	
 	
 	@Test
-	public static void TotalUsageByVendorActionsTest() throws Exception
+	public static void TotalUsageByCountryActionsTest() throws Exception
 	{
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 			
 		// #1 Select Vendor View 
-		UsageHelper.selectVendorView();
+		UsageHelper.selectCountryView();
 		
 		
-		// #2 Select vendors from PoV - one by one - and verify that they are added to graphs (tooltip) and legend,
+		// #2 Select vendors from PoV - one by one - and verify that the corresponding countries are added to graphs (tooltip) and legend,
 		// # for Voice, Data and Messages
 		
 		// Set month selector value
@@ -43,14 +42,16 @@ public class TotalUsageByVendorActions extends BaseClass {
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
-
+				
+		
 		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
 		// Voice
-		TotalUsageActions.vendorsAddedToCharts(0, 0);
+		
+		TotalUsageActions.countriesAddedToCharts(0, 0);
 		
 		
 		// Unselect all vendors - so previous test will be run for Roaming usage
-		CommonTestStepActions.UnSelectAllVendors();
+/*		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
 		// Voice
@@ -85,7 +86,7 @@ public class TotalUsageByVendorActions extends BaseClass {
 		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
 		// Messages
 		TotalUsageActions.vendorsAddedToCharts(1, 2);
-		
+		*/
 		
 		// #3 Unselect vendors from PoV - one by one - and verify that they are removed from graphs (tooltip) and legend,
 		// - for Voice, Data and Messages 			
@@ -102,5 +103,5 @@ public class TotalUsageByVendorActions extends BaseClass {
 		driver.close();
 		driver.quit();
 	}
-	
+
 }
