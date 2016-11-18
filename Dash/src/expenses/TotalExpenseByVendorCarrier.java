@@ -29,6 +29,8 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	public static String titleVendor = "Total Expense by Vendor";
 	public static String titlecountry = "Total Expense by Country";	
 	public static String tmpString = "";
+	public static String expensePieDateLocator = "(//h2[@class='tdb-h2'])[1]";
+	
 	
 	public static void setAllLegendsAndPieCount()
 	{
@@ -42,7 +44,6 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		{
 			legendsList.clear();			
 		}
-
 		
 		// store all legend names into web element list.
 		webElementListLegands = driver.findElements(By.xpath("//div[@id='highcharts-0']/*/*[@class='highcharts-legend']/*/*/*[@class='highcharts-legend-item']"));
@@ -82,7 +83,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		String errMessage = "Failed check for vendor text in TotalExpenseByVendorCarrier.VerifyVendorView.";
 		
 		Assert.assertEquals(driver.findElement(By.xpath("//h3[@class='tdb-h3']")).getText(), titleVendor, errMessage);
-		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.cssSelector(".tdb-h2")).getText(), errMessage);
+		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.xpath(expensePieDateLocator)).getText(), errMessage);		
 	}
 	
 	// verify title and month/year are correct - country.
@@ -93,7 +94,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		WaitForElementVisible(By.xpath("//span[text()='Country']"), MainTimeout);
 		
 		Assert.assertEquals(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText(), titlecountry, errMessage);
-		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.cssSelector(".tdb-h2")).getText(), errMessage);
+		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.xpath(expensePieDateLocator)).getText(), errMessage);
 	}	
 
 	public static String ConvertMonthToInt(String monthToConvert) throws ParseException

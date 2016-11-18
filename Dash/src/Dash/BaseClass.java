@@ -241,8 +241,7 @@ public class BaseClass
 		
 		// not sure if these two will always work. maybe the ID will change - beware. 
 		WaitForElementPresent(By.xpath(".//*[@id='highcharts-8']/*/*"), MediumTimeout);
-		WaitForElementVisible(By.xpath("(.//*[@id='highcharts-8']/*/*[@class='highcharts-axis'])[1]"), MediumTimeout);
-
+		WaitForElementVisible(By.xpath(".//*[@id='highcharts-8']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']"), MediumTimeout);
 	}		
 	
 	

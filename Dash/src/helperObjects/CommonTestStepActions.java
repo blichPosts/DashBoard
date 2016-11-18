@@ -24,7 +24,13 @@ public class CommonTestStepActions extends BaseClass
 	public static String []  monthArray = {"January" , "February", "March", "April", "May" , "June", "July", "August", "September", "October", "November", "December"};
 	public static List<String> monthListExpected = new ArrayList<>(); 
 	public static List<String> monthListActual = new ArrayList<>();	
-	public static String pullDownCss  = ".tbd-flexContainer.tdb-flexContainer--center>select";
+	public static String pullDownCss  = ".tdb-flexContainer.tdb-flexContainer--center>select";
+	
+	public static enum ExpensesViewMode
+	{
+		vendor,
+		country
+	}
 	
 	// put all of the pulldown items in a web list. 
 	public static List<WebElement> webListPulldown; //= new Select(driver.findElement(By.cssSelector(pullDownCss))).getOptions();
