@@ -1,6 +1,9 @@
 package helperObjects;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import Dash.BaseClass;
 
@@ -34,7 +37,8 @@ public class UsageHelper extends BaseClass{
 	public final static String usageTrendingByVendor = "Usage by Vendor - ";	
 	public final static String usageTrendingByCountry = "Usage by Country - ";
 	
-
+	public final static String colorLegendEnabled = "color: rgb(51, 51, 51)";
+	public final static String colorLegendDisabled = "color: rgb(204, 204, 204)";
 	
 
 	public static void selectVendorView(){
@@ -52,6 +56,23 @@ public class UsageHelper extends BaseClass{
 		
 	}
 	
-
+	
+	public static String getChartId(int num){
+		
+		// Get all the charts listed in the page
+		List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
+		
+		// Get the id of specified chart 
+		String chartId = charts.get(num).getAttribute("id");
+		
+		return chartId;
+			
+		
+	}
+	
+	
+	
+	
+	
 	
 }

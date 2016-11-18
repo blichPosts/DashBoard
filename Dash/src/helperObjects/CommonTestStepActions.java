@@ -26,7 +26,7 @@ public class CommonTestStepActions extends BaseClass
 	public static String pullDownCss  = ".tbd-flexContainer.tdb-flexContainer--center>select";
 	
 	// put all of the pulldown items in a web list. 
-	public static List<WebElement> webListPulldown = new Select(driver.findElement(By.cssSelector(pullDownCss))).getOptions();
+	public static List<WebElement> webListPulldown; //= new Select(driver.findElement(By.cssSelector(pullDownCss))).getOptions();
 
 
 	public static String errMessage = "";
@@ -79,7 +79,7 @@ public class CommonTestStepActions extends BaseClass
 	public static void SelectAllVendors()
 	{
 		WaitForElementClickable(By.cssSelector(".tdb-povGroup__toggle > a"), MediumTimeout, "Select all is not present in CommonTestStepActions.SelectAllVendors");
-		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("All"))
+		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("ALL"))
 		{
 			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
 		}
@@ -88,7 +88,7 @@ public class CommonTestStepActions extends BaseClass
 	public static void UnSelectAllVendors()
 	{
 		WaitForElementClickable(By.cssSelector(".tdb-povGroup__toggle > a"), MediumTimeout, "Unselect all is not present in CommonTestStepActions.UnSelectAllVendors");
-		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("None"))
+		if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("NONE"))
 		{
 			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
 		}
@@ -332,6 +332,9 @@ public class CommonTestStepActions extends BaseClass
 	    return String.valueOf(cal.get(Calendar.MONTH) + 1);
 	}
 
+	
+	
+	
 	// helpers
 	public static void BobTest()
 	{
@@ -352,7 +355,7 @@ public class CommonTestStepActions extends BaseClass
 		List<String> listVendorsChecked = new ArrayList<String>();
 		
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = driver.findElements(By.cssSelector(".md-checkbox-label"));
+		List<WebElement> listVendorsLabels = getAllVendorNames();   //driver.findElements(By.cssSelector(".md-checkbox-label"));
 		
 		
 		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
@@ -388,7 +391,7 @@ public class CommonTestStepActions extends BaseClass
 		List<String> listCountriesCheckedTemp = new ArrayList<String>();			
 			
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = driver.findElements(By.cssSelector(".md-checkbox-label"));
+		List<WebElement> listVendorsLabels = getAllVendorNames();   //driver.findElements(By.cssSelector(".md-checkbox-label"));
 		
 		
 		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
@@ -423,8 +426,113 @@ public class CommonTestStepActions extends BaseClass
 		return listCountriesChecked;
 		
 	}
+
+	
+	// It returns a list with all the vendor names listed on the Point of View section
+	public static List<WebElement> getAllVendorNames(){
+		
+		return driver.findElements(By.xpath(".//span[@class='md-checkbox-label']"));
+		
+	}
+	
+	
+	// ****CONTINUE HERE  *****
+	public static void selectOneVendor(String vendorName) {
+	
+		// this list will have ALL the names of the vendors LISTED on the Point of View section
+		List<WebElement> listVendorsLabels = getAllVendorNames();   //driver.findElements(By.xpath(".//span[@class='md-checkbox-label']"));
+		
+		
+		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
+		for(int i = 0; i < listVendorsLabels.size(); i++){
+			
+			int num = i + 1;
+			String checkBoxXpath = ".//input[@id='input-md-checkbox-" + num + "']/../..";
+			
+			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
+			if(listVendorsLabels.get(i).getText().equals(vendorName)){
+				
+				driver.findElement(By.xpath(checkBoxXpath)).click();
+				
+			}
+			
+			
+			
+		}
+
+	}
 		
 	
+	public static String convertMonthNumberToName(String month, String year){
+		
+		switch(month){
+			case "1":
+				return ("January " + year);
+			case "2":
+				return ("February " + year);
+			case "3":
+				return ("March " + year);
+			case "4":
+				return ("April " + year);
+			case "5":
+				return ("May " + year);
+			case "6":
+				return ("June " + year);
+			case "7":
+				return ("July " + year);
+			case "8":
+				return ("August " + year);
+			case "9":
+				return ("September " + year);
+			case "10":
+				return ("October " + year);
+			case "11":
+				return ("November " + year);
+			case "12":
+				return ("December " + year);
+			default:
+				return "";
+		}
+		
+	}
+	
+	
+	public static void selectMonthYearPulldown(String monthYear){
+		
+		// this list will have ALL the 'Month Year' listed on the pulldown on the Point of View section
+		List<WebElement> listMonthYear = driver.findElements(By.xpath(".//select/option"));
+		
+		
+		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
+		for(int i = 0; i < listMonthYear.size(); i++){
+			
+			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
+			if(listMonthYear.get(i).getText().equals(monthYear)){
+				
+				listMonthYear.get(i).click();
+				
+			}
+			
+		}
+		
+	}
+	
+	
+	// Added by Ana - the month selector variable needs to be initialized here
+	public static void initializeMonthSelector(){
+		
+		webListPulldown = new Select(driver.findElement(By.cssSelector(pullDownCss))).getOptions();
+		
+	}
+	
+	
+	// It switches to the frame that contains the PoV, KPIs, charts
+	public static void switchToContentFrame(){
+		
+		WebElement frame = driver.findElement(By.xpath(".//iframe[@id='CONTENT']"));
+		driver.switchTo().frame(frame);
+		
+	}
 	
 	
 	

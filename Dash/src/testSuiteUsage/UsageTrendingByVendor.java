@@ -46,7 +46,7 @@ public class UsageTrendingByVendor extends BaseClass{
 		// #5 Verify that 13 months are listed in the Usage Trending charts 
 		UsageTrending.verifyMonthYearInUsageTrendingCharts();
 		
-			
+		
 	}
 	
 	

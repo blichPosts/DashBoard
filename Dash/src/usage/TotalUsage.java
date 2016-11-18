@@ -163,16 +163,17 @@ public class TotalUsage extends BaseClass{
 		
 		// this list will have the names of the vendors that have been SELECTED on the Point of View section
 		List<String> listVendorsChecked = CommonTestStepActions.getVendorsSelectedInPointOfView();
+		String chartId ;
 		
 		// Get the charts to get the id of the chart - I hope this works! -- it worked :) 
-		List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
+		//List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
 		
 		// Get the id of the "Total Usage by Vendor (DOMESTIC)" chart (FIRST chart)
-		String chartId = charts.get(0).getAttribute("id");
+		chartId = UsageHelper.getChartId(0);  //charts.get(0).getAttribute("id");
 		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listVendorsChecked);
 				
 		// Get the id of the "Total Usage by Vendor (ROAMING)" chart (SECOND chart)
-		chartId = charts.get(1).getAttribute("id");
+		chartId = UsageHelper.getChartId(1);  //charts.get(1).getAttribute("id");
 		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listVendorsChecked);
 				
 		
@@ -185,16 +186,17 @@ public class TotalUsage extends BaseClass{
 	
 		// this list will have the names of the countries that have been SELECTED on the Point of View section
 		List<String> listCountriesChecked = CommonTestStepActions.getCountriesSelectedInPointOfView();
+		String chartId;
 		
 		// Get the charts to get the id of the chart - I hope this works! -- it worked :) 
-		List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
+		//List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
 		
 		// Get the id of the "Total Usage by Vendor (DOMESTIC)" chart (FIRST chart)
-		String chartId = charts.get(0).getAttribute("id");
+		chartId = UsageHelper.getChartId(0);  //charts.get(0).getAttribute("id");
 		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listCountriesChecked);
 				
 		// Get the id of the "Total Usage by Vendor (ROAMING)" chart (SECOND chart)
-		chartId = charts.get(1).getAttribute("id");
+		chartId = UsageHelper.getChartId(1);  //charts.get(1).getAttribute("id");
 		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listCountriesChecked);
 		
 	}
