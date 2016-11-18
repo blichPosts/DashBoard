@@ -50,47 +50,7 @@ public class TotalUsageByCountryActions extends BaseClass {
 		TotalUsageActions.countriesAddedToCharts(0, 0);
 		
 		
-		// Unselect all vendors - so previous test will be run for Roaming usage
-/*		CommonTestStepActions.UnSelectAllVendors();
-		
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
-		// Voice
-		TotalUsageActions.vendorsAddedToCharts(1, 0);
-				
 
-		// Unselect all vendors
-		CommonTestStepActions.UnSelectAllVendors();
-
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
-		// Data
-		TotalUsageActions.vendorsAddedToCharts(0, 1);
-		
-		
-		// Unselect all vendors - so previous test will be run for Roaming usage
-		CommonTestStepActions.UnSelectAllVendors();
-		
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
-		// Data
-		TotalUsageActions.vendorsAddedToCharts(1, 1);
-
-		// Unselect all vendors
-		CommonTestStepActions.UnSelectAllVendors();
-
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
-		// Messages
-		TotalUsageActions.vendorsAddedToCharts(0, 2);
-		
-		// Unselect all vendors - so previous test will be run for Roaming usage
-		CommonTestStepActions.UnSelectAllVendors();
-		
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
-		// Messages
-		TotalUsageActions.vendorsAddedToCharts(1, 2);
-		*/
-		
-		// #3 Unselect vendors from PoV - one by one - and verify that they are removed from graphs (tooltip) and legend,
-		// - for Voice, Data and Messages 			
-		
 		
 	}
 	
