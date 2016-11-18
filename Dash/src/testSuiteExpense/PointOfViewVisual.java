@@ -22,6 +22,9 @@ public class PointOfViewVisual extends BaseClass
 	public static void PointOfViewVisualTest() throws Exception
 	{
 		
+		// initialize month selector variable.
+		CommonTestStepActions.initializeMonthSelector(); // bladd
+		
 		// #1 Observe the month selector in the left pane described in the summary - The month is displayed with MMM-YYYY format.		
 		// #2 In the 'Overview Dash board Selector' component, select the 'View Total Expense' tab.
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // #2

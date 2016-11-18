@@ -25,6 +25,9 @@ public class TotalExpensesTrendVisual extends BaseClass
 	@Test
 	public static void TotalExpenseByVendorCarrierVisualTest() throws Exception
 	{
+		// initialize month selector variable.
+		CommonTestStepActions.initializeMonthSelector(); // bladd
+		
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		CommonTestStepActions.SelectAllVendors();

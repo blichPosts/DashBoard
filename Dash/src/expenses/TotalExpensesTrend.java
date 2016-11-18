@@ -102,7 +102,7 @@ public class TotalExpensesTrend extends BaseClass
 		
 		
 		// get actual month(int)/years pulldown
-		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels']/*/*"));
+		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
 		
 		// put actual web list values into a list of strings.
 		for(WebElement ele : webEleListMonthYearActual)
