@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -436,7 +437,7 @@ public class CommonTestStepActions extends BaseClass
 	}
 	
 	
-	// ****CONTINUE HERE  *****
+
 	public static void selectOneVendor(String vendorName) {
 	
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
@@ -497,13 +498,13 @@ public class CommonTestStepActions extends BaseClass
 	}
 	
 	
+	// Set the month selector value to the value specified in the parameter
 	public static void selectMonthYearPulldown(String monthYear){
 		
 		// this list will have ALL the 'Month Year' listed on the pulldown on the Point of View section
 		List<WebElement> listMonthYear = driver.findElements(By.xpath(".//select/option"));
 		
 		
-		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
 		for(int i = 0; i < listMonthYear.size(); i++){
 			
 			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
@@ -532,6 +533,38 @@ public class CommonTestStepActions extends BaseClass
 		WebElement frame = driver.findElement(By.xpath(".//iframe[@id='CONTENT']"));
 		driver.switchTo().frame(frame);
 		
+	}
+
+	
+	public static List<List> getCountriesAndVendors() {
+
+		
+		List<List> countriesAndVendors = new ArrayList<>();
+		
+		List<WebElement> countries = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead"));
+		List<WebElement> vendors = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead~div"));
+		
+		List<WebElement> temp = new ArrayList<WebElement>();
+		
+		for (int i = 0; i < countries.size(); i++){
+			
+			temp.add(countries.get(i));
+			//System.out.println(countries.get(i).getText());
+			
+			List<WebElement> vendorsUnderCountry = vendors.get(i).findElements(By.cssSelector(".tdb-povGroup__label--subhead~div>div>md-checkbox>label>span")); 
+			
+			for (WebElement v : vendorsUnderCountry){
+				temp.add(v);
+				//System.out.println("  " + v.getText());
+			}
+			
+			countriesAndVendors.add(temp);
+			
+		}
+		
+		//System.out.println("countriesAndVendors size: " + countriesAndVendors.size()); 
+			
+		return countriesAndVendors;
 	}
 	
 	
