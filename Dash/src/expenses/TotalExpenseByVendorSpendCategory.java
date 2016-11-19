@@ -3,6 +3,7 @@ package expenses;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jetty.io.ClientConnectionFactory.Helper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -10,6 +11,7 @@ import org.testng.Assert;
 import com.thoughtworks.selenium.webdriven.commands.GetText;
 
 import Dash.BaseClass;
+import helperObjects.UsageHelper;
 
 public class TotalExpenseByVendorSpendCategory extends BaseClass 
 {
@@ -22,16 +24,34 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	public static int numberOfLegendsInBarChart = 0;
 	public static int numberOfLegendsInLegendList = 0;	
 	public static String otherString = "Other";
+	public static String chartId = "";
+	
 	
 	public static String title = "Total Expense by Vendor and Spend Category";
 	static String errMessage = "";
 	
 	
-	public static void Setupdata()
+	public static void Setupdata() throws InterruptedException
 	{
+		chartId = UsageHelper.getChartId(2);
+		
 		// this gets legends of spend categories text
-		legendsArray= driver.findElement(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[7]")).getText().split("\n");
-		//ShowArray(legendsArray);
+		// legendsArray= driver.findElement(By.xpath("(//div[@id='" + chartId + "']/*/*/*/..)[7]")).getText().split("\n");		
+		legendsArray = driver.findElement(By.xpath("//div[@id='" + chartId + "']/*/*[@class='highcharts-legend']/*/*/*")).getText().split("\n");			
+		
+		// List<WebElement> ele = new ArrayList<WebElement>();
+		
+		List<WebElement> eleList = driver.findElements(By.xpath("//div[@id='" + chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));
+
+		for(WebElement ele : eleList)
+		{
+			DebugTimeout(0, ele.getText());
+			// ele.getText();
+		}
+		
+		
+		// DebugTimeout(9999, "Freeze");
+		
 
 		// build the list of expected spend category legends.
 		expectedSpendCategoryLegends.add("Voice");
@@ -44,7 +64,6 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		expectedSpendCategoryLegends.add("Account");
 		
 		// this gets the number of items (legends) shown in the bar charts  
-		List<WebElement> eleList =  driver.findElements(By.xpath("(//div[@id='highcharts-2']/*/*/*/..)[7]/*/*/*"));
 		numberOfLegendsInBarChart = eleList.size();
 		
 		// this gets the expected number of legends.
@@ -101,7 +120,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		*/
 	}	
 	
-	public static void VerifyVendorsCountries()
+	public static void VerifyVendorsCountries() throws InterruptedException
 	{
 		// clear containers if needed.
 		ClearAllContainers();

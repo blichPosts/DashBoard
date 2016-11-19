@@ -2,6 +2,7 @@ package testSuiteExpense;
 
 import java.util.List;
 
+import org.eclipse.jetty.servlets.WelcomeFilter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
@@ -12,6 +13,7 @@ import Dash.BaseClass;
 import expenses.CountOfServiceNumbersTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.UsageHelper;
 
 public class CountOfServiceNumbersTrendVisual extends BaseClass 
 {
@@ -30,26 +32,30 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // test
 		
+		DebugTimeout(5, "Freeze");
+		
+		
 		// The title is 'Count of Service Number by Vendor/Country'
 		CountOfServiceNumbersTrend.VerifyTitle(CommonTestStepActions.ExpensesViewMode.vendor);
 
 
 		// #2 
 		// Add all the vendors in point of view. 
-		
+		CommonTestStepActions.SelectAllVendors();
 		
 		// The component has vertical bar graphs for each month in the month pulldown.
 		// The legends show the same as the legends for the 'Total Expense' control 
+		CountOfServiceNumbersTrend.VerifyLegends();
 		
 		
-		// Get all the charts listed in the page
-		List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
-
-		for(WebElement wEle : charts)
-		{
-			// wEle.
-			
-		}
+		
+		
+		//UsageHelper.getChartId(0);
+		//System.out.println(UsageHelper.getChartId(0));
+		//System.out.println(UsageHelper.getChartId(1));
+		//System.out.println(UsageHelper.getChartId(2));
+		//System.out.println(UsageHelper.getChartId(3));		
+		
 		
 	    //The title is 'Cost per Service Number by Vendor - All Categories'
 	    //The last twelve months are shown.

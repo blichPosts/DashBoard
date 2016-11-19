@@ -16,6 +16,7 @@ import com.sun.jna.StringArray;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.UsageHelper;
 
 public class TotalExpenseByVendorCarrier extends BaseClass
 {
@@ -30,7 +31,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	public static String titlecountry = "Total Expense by Country";	
 	public static String tmpString = "";
 	public static String expensePieDateLocator = "(//h2[@class='tdb-h2'])[1]";
-	
+	public static String chartId = "";	
 	
 	public static void setAllLegendsAndPieCount()
 	{
@@ -45,14 +46,29 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 			legendsList.clear();			
 		}
 		
+		chartId = UsageHelper.getChartId(0); // get current chart Id.
+				
 		// store all legend names into web element list.
-		webElementListLegands = driver.findElements(By.xpath("//div[@id='highcharts-0']/*/*[@class='highcharts-legend']/*/*/*[@class='highcharts-legend-item']"));
+		// webElementListLegands = driver.findElements(By.xpath("//div[@id='highcharts-0']/*/*[@class='highcharts-legend']/*/*/*[@class='highcharts-legend-item']"));
+		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));		
 		
-		// for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
+		
+		int zz = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*")).size();
+		System.out.println("Show number of legends = " + zz);
+		
+		
+		System.out.println("Show legends list");
+		for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
 		
 		// store number of sections in the pie.
-		numPieParts = driver.findElements(By.xpath(".//*[@id='highcharts-0']/*/*/*[@class='highcharts-series highcharts-series-0 highcharts-tracker']/*")).size();
-
+		// numPieParts = driver.findElements(By.xpath("//div[@id='" +  chartId + "'][@class='highcharts-series highcharts-series-0 highcharts-tracker']/*")).size();
+		List<WebElement> myList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-series-group ']/*/*[contains(@class,'highcharts-point highcharts-color')]"));
+		
+		System.out.println("Parts " + myList.size());
+		for(WebElement ele : myList ){System.out.println(ele.getAttribute("class"));}		
+		
+		
+		
 		// store legend names into legend list.
 		for(WebElement ele : webElementListLegands )
 		{
