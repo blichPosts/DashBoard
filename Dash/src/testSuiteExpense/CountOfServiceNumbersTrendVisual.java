@@ -30,14 +30,10 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		// #1
 		// Select vendors view and view the 'Count of Service Numbers' component.
 
-		CommonTestStepActions.GoToExpensePageDetailedWait(); // test
-		
-		DebugTimeout(5, "Freeze");
-		
+		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
 		// The title is 'Count of Service Number by Vendor/Country'
 		CountOfServiceNumbersTrend.VerifyTitle(CommonTestStepActions.ExpensesViewMode.vendor);
-
 
 		// #2 
 		// Add all the vendors in point of view. 
@@ -47,14 +43,6 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		// The legends show the same as the legends for the 'Total Expense' control 
 		CountOfServiceNumbersTrend.VerifyLegends();
 		
-		
-		
-		
-		//UsageHelper.getChartId(0);
-		//System.out.println(UsageHelper.getChartId(0));
-		//System.out.println(UsageHelper.getChartId(1));
-		//System.out.println(UsageHelper.getChartId(2));
-		//System.out.println(UsageHelper.getChartId(3));		
 		
 		
 	    //The title is 'Cost per Service Number by Vendor - All Categories'

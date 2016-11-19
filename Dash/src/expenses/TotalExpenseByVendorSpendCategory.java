@@ -3,6 +3,7 @@ package expenses;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bouncycastle.crypto.tls.LegacyTlsAuthentication;
 import org.eclipse.jetty.io.ClientConnectionFactory.Helper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -16,11 +17,11 @@ import helperObjects.UsageHelper;
 public class TotalExpenseByVendorSpendCategory extends BaseClass 
 {
  
-	public static List<WebElement> eleList; 
+	public static List<WebElement> eleList;   
 	public static List<String> expectedSpendCategoryLegends = new ArrayList<String>();
 	public static List<String> actualSpendCategoryLegends = new ArrayList<String>();
 	public static List<String> vendorsList = new ArrayList<String>();
-	public static String []  legendsArray;
+	public static List<WebElement>  legendsList;
 	public static int numberOfLegendsInBarChart = 0;
 	public static int numberOfLegendsInLegendList = 0;	
 	public static String otherString = "Other";
@@ -31,27 +32,14 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	static String errMessage = "";
 	
 	
-	public static void Setupdata() throws InterruptedException
+	public static void Setupdata() 
 	{
-		chartId = UsageHelper.getChartId(2);
+		chartId = UsageHelper.getChartId(1);
 		
-		// this gets legends of spend categories text
-		// legendsArray= driver.findElement(By.xpath("(//div[@id='" + chartId + "']/*/*/*/..)[7]")).getText().split("\n");		
-		legendsArray = driver.findElement(By.xpath("//div[@id='" + chartId + "']/*/*[@class='highcharts-legend']/*/*/*")).getText().split("\n");			
-		
-		// List<WebElement> ele = new ArrayList<WebElement>();
-		
-		List<WebElement> eleList = driver.findElements(By.xpath("//div[@id='" + chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));
+		// get legend names shown in UI.
+		legendsList = driver.findElements(By.xpath("//div[@id='" + chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));
 
-		for(WebElement ele : eleList)
-		{
-			DebugTimeout(0, ele.getText());
-			// ele.getText();
-		}
-		
-		
-		// DebugTimeout(9999, "Freeze");
-		
+		// for(WebElement ele : legendsList){System.out.println(ele.getText());}
 
 		// build the list of expected spend category legends.
 		expectedSpendCategoryLegends.add("Voice");
@@ -64,7 +52,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		expectedSpendCategoryLegends.add("Account");
 		
 		// this gets the number of items (legends) shown in the bar charts  
-		numberOfLegendsInBarChart = eleList.size();
+		numberOfLegendsInBarChart = legendsList.size();
 		
 		// this gets the expected number of legends.
 		numberOfLegendsInLegendList = expectedSpendCategoryLegends.size();
@@ -85,7 +73,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		// used array for actual, had problems with web element list. 
 		for(int x = 0; x < expectedSpendCategoryLegends.size(); x++)
 		{
-			Assert.assertEquals(legendsArray[x], expectedSpendCategoryLegends.get(x));
+			Assert.assertEquals(legendsList.get(x).getText(), expectedSpendCategoryLegends.get(x));
 		}
 		
 		// verify number of sections in the bar graphs equals number of legends.
@@ -172,6 +160,6 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			vendorsList.clear();			
 		}
 		
-		legendsArray = null;
+		legendsList = null;
 	}
 }

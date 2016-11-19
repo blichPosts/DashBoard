@@ -1,5 +1,6 @@
 package expenses;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -12,6 +13,9 @@ import helperObjects.UsageHelper;
 
 public class CountOfServiceNumbersTrend extends BaseClass 
 {
+	public static List<String> totalExpenseLegends  = new ArrayList<String>(); // this will hold the legend names in the total expanse control.
+	public static List<String> countOfServiceNumsLegends  = new ArrayList<String>(); // this will hold the legend names in the count of service numbers control.	
+	public static List<WebElement> tempList; // this is for temporary values.
 	public static String vendorTitle =  "Count of Service Numbers by Vendor";
 	public static String countryTitle =  "Count of Service Numbers by Country";
 	public static String titleXpath = "//h3[starts-with(text(), 'Count of Service Numbers')]";
@@ -38,17 +42,30 @@ public class CountOfServiceNumbersTrend extends BaseClass
 
 	public static void VerifyLegends()
 	{
-		// get the legends from 'Total Expense' pie control.
-		// .//*[@id='highcharts-0']/*/*[@class='highcharts-legend']/*/*/*
+		errMessage = "Failed test of legends in CountOfServiceNumbersTrend.VerifyLegends"; 
 		
-		 chartId = UsageHelper.getChartId(0);
-		 
-		 List<WebElement> eleList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']/*/*[@class='highcharts-legend']/*/*/*/*"));
-		 
-		 for(WebElement ele : eleList)
-		 {
-			 System.out.println(ele.getText().replaceAll("\\r\\n", "").trim());			 
-		 }
-	}
+		chartId = UsageHelper.getChartId(4); // get dynamic chart id for expenses control.
 
+		 // get the legends from 'Total Expense' pie control and store into totalExpenseLegends.
+		 tempList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']/*/*[@class='highcharts-legend']"));
+		 
+		 for(WebElement ele : tempList)
+		 {
+			 totalExpenseLegends.add(ele.getText());			 
+		 }
+
+		 tempList.removeAll(tempList);
+		 
+		 chartId = UsageHelper.getChartId(0); // get dynamic chart id for count of service numbers control
+		 
+		 // now get the legends in the count of service numbers control.
+		 tempList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']/*/*[@class='highcharts-legend']"));
+		 
+		 for(WebElement ele : tempList)
+		 {
+			 countOfServiceNumsLegends.add(ele.getText());			 
+		 }
+
+		 Assert.assertEquals(countOfServiceNumsLegends, totalExpenseLegends, errMessage);
+	}
 }

@@ -13,6 +13,7 @@ import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.UsageHelper;
 
 
 public class TotalExpensesTrend extends BaseClass 
@@ -33,10 +34,11 @@ public class TotalExpensesTrend extends BaseClass
 	public static String countryTitle = "Expense by Country - All Categories";	
 	
 	// Expense by Country - All Categories
-
 	public static String otherString = "Other";
 	public static String errMessage = "";
 	public static int numberOfLegends = 0; // this is used to save the number of legends found in VerifyVendorsCountries().
+
+	public static String chartId = "";
 	
 	public static void Setupdata()
 	{
@@ -100,9 +102,10 @@ public class TotalExpensesTrend extends BaseClass
 		// get expected month(int)/years pulldown - format is MM-YYYY.
 		expectedYearMonthList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		
+		chartId = UsageHelper.getChartId(3);
 		
-		// get actual month(int)/years pulldown
-		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
+		// get actual month(int)/years pulldown from UI.
+		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='" + chartId + "']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
 		
 		// put actual web list values into a list of strings.
 		for(WebElement ele : webEleListMonthYearActual)

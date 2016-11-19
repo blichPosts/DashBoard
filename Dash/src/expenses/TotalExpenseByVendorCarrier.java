@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.bouncycastle.eac.EACCertificateBuilder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -33,7 +34,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	public static String expensePieDateLocator = "(//h2[@class='tdb-h2'])[1]";
 	public static String chartId = "";	
 	
-	public static void setAllLegendsAndPieCount()
+	public static void setAllLegendsAndPieCount() throws InterruptedException
 	{
 		
 		if(webElementListLegands != null) // clear if already has contents.
@@ -46,41 +47,32 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 			legendsList.clear();			
 		}
 		
-		chartId = UsageHelper.getChartId(0); // get current chart Id.
+		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
 				
 		// store all legend names into web element list.
-		// webElementListLegands = driver.findElements(By.xpath("//div[@id='highcharts-0']/*/*[@class='highcharts-legend']/*/*/*[@class='highcharts-legend-item']"));
 		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));		
-		
-		
-		int zz = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*")).size();
-		System.out.println("Show number of legends = " + zz);
-		
-		
-		System.out.println("Show legends list");
-		for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
-		
-		// store number of sections in the pie.
-		// numPieParts = driver.findElements(By.xpath("//div[@id='" +  chartId + "'][@class='highcharts-series highcharts-series-0 highcharts-tracker']/*")).size();
-		List<WebElement> myList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-series-group ']/*/*[contains(@class,'highcharts-point highcharts-color')]"));
-		
-		System.out.println("Parts " + myList.size());
-		for(WebElement ele : myList ){System.out.println(ele.getAttribute("class"));}		
-		
-		
+		// for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
 		
 		// store legend names into legend list.
 		for(WebElement ele : webElementListLegands )
 		{
 			legendsList.add(ele.getText());
 		} 
+		
+		// show Ana
+		// String temp = ".//*[@id='" +  chartId + "']/*/*[@class='highcharts-series-group ']"; // nope -- this works in fire bug.
+		// String temp = ".//*[@id='" +  chartId + "']/*/*[@class='highcharts-series-group']"; // yes -- works in selenium code.
+		
+		numPieParts = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-series-group']/*/*")).size();		
 	}
 	
-	public static void VerifyLegendsTitleAndPieCount()
+	public static void VerifyLegendsTitleAndPieCount() throws InterruptedException
 	{
 		String errMessage = "Failed checks in TotalExpenseByVendorCarrier.VerifyLegendsAndPieCount";
 		
 		setAllLegendsAndPieCount();
+
+		Assert.assertTrue(legendsList.size() == numPieParts); // the number of legends should equal the number of parts in the expense pie. 
 		
 		if(numPieParts <= 5)
 		{
@@ -89,7 +81,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		else
 		{
 			Assert.assertTrue(legendsList.contains(otherString), errMessage); // verify other legend is there.
-			Assert.assertTrue(numPieParts == maxNumLegends, errMessage); // assert max legends shown.
+			Assert.assertTrue(numPieParts == maxNumLegends, errMessage); // verify no more than max number of legends are shown.
 		}
 	}
 	
