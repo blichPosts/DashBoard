@@ -17,6 +17,7 @@ import com.sun.jna.StringArray;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.ExpenseHelper;
 import helperObjects.UsageHelper;
 
 public class TotalExpenseByVendorCarrier extends BaseClass
@@ -47,17 +48,11 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 			legendsList.clear();			
 		}
 		
-		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
-				
-		// store all legend names into web element list.
-		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));		
-		// for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
-		
-		// store legend names into legend list.
-		for(WebElement ele : webElementListLegands )
-		{
-			legendsList.add(ele.getText());
-		} 
+		// get current chart Id for expense control. NOTE - this is global to this class and is set here
+		chartId = UsageHelper.getChartId(0); 
+
+		// get the legends in the expense control.
+		legendsList = ExpenseHelper.GetTotalExpenseLegends();
 		
 		// show Ana
 		// String temp = ".//*[@id='" +  chartId + "']/*/*[@class='highcharts-series-group ']"; // nope -- this works in fire bug.

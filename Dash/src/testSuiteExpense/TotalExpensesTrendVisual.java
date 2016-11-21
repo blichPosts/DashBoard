@@ -23,7 +23,7 @@ public class TotalExpensesTrendVisual extends BaseClass
 	}
 	
 	@Test
-	public static void TotalExpenseByVendorCarrierVisualTest() throws Exception
+	public static void TotalExpenseTrendVisualTest() throws Exception
 	{
 		// initialize month selector variable.
 		CommonTestStepActions.initializeMonthSelector(); 
@@ -32,6 +32,8 @@ public class TotalExpensesTrendVisual extends BaseClass
 		
 		CommonTestStepActions.SelectAllVendors();
 
+		TotalExpensesTrend.SetupChartId();
+		
 		
 		// #1
 		// In the 'Total Spend By Vendor'  component:
@@ -61,8 +63,6 @@ public class TotalExpensesTrendVisual extends BaseClass
 		TotalExpensesTrend.VerifyMonths();
 	    TotalExpensesTrend.VerifyVendorsCountries();
 		TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections();
-		
-		
 	 	
 		// #3
 		// Un-select all the vendors in the point of view, select 'Country' in the 'Country/ Vendor View Selector', and select a vendor in each country. 

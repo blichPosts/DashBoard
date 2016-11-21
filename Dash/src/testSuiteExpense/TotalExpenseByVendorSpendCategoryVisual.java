@@ -21,7 +21,7 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 	}
 	
 	@Test
-	public static void TotalExpenseByVendorCarrierVisualTest() throws Exception
+	public static void TotalExpenseByVendorSpendVisualTest() throws Exception
 	{
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
@@ -29,8 +29,15 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		// Select all the vendors in the Point of View and select all of the vendor legends.
 		CommonTestStepActions.SelectAllVendors();
 		
-		// It's title says 'Total Expenses by Vendor and Spend Category'.
-		// To the right of the horizontal bar graphs there are legends with these labels
+		// set chart id for this test case's corresponding class 'TotalExpenseByVendorSpendCategory'.
+		TotalExpenseByVendorSpendCategory.SetupChartId();
+
+	    // It's title says 'Total Expenses by Vendor and Spend Category'.
+	    // The vendors and possible 'other' item are listed to the left of the horizontal bar charts.
+	    // The vendors and possible 'other' item match the 'Total Expense' legends.
+		TotalExpenseByVendorSpendCategory.VerifyVendors();
+		
+	    // Below the horizontal bar graphs there are legends with these labels
 	    // Voice
 	    // Data
 	    // Messages
@@ -39,9 +46,14 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 	    // Taxes
 	    // Other - this is shown if there are six or more vendors added. (TBD -  this may be error in test writing).
 	    // Account
-		// Each bar graph is broken into sections. The number of sections in each bar graph is equal to the number of legends 
-		// listed to the right of the bar (all of the legends have been checked).
-		// It there are five or more vendors selected there will be an 'other' vendor type listed.
+	    
+		// NOTE: next three can't be tested in the visual test. 1 and 2 may be tested in actions.
+		// 1) Each bar graph is broken into sections/values when hovered over. The values that aren't = 0 are shown in the bar graph.  
+	    // 2) Each legend has a corresponding section in the hover.
+	    // 3) There is a scale at the bottom of the bar graph.
+
+		// The vendors listed match the vendors listed in the 'Total Expense' pie control.  
+	    // It there are five or more vendors selected there will be an 'other' vendor type listed, the same as in the 'Total Expense' pie control.  
 		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
 		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
 
@@ -49,10 +61,8 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		// In the 'Country/Vendor View Selector' component, select Country.
 		CommonTestStepActions.SelectCountryView();
 		
-	    //All of the countries are listed in the horizontal bar graph.
-	    //The legends listed in the above test case are shown.
-	    //Each bar graph is broken into sections. The number of sections in each bar graph is equal to the number of legends listed to the right of the bar graph (all of the checkboxes have been checked).
-	    //Each legend has a corresponding section in the bar.
+	    // All of the countries are listed next to the horizontal bar graph in the same fashion as they are listed in the 'Total Expense' control.
+	    // The hover behavior matches the behavior in step one.
 		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
 		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
 	}

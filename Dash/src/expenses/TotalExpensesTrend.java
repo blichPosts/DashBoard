@@ -13,6 +13,7 @@ import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.ExpenseHelper;
 import helperObjects.UsageHelper;
 
 
@@ -27,6 +28,7 @@ public class TotalExpensesTrend extends BaseClass
 	public static List<String> expectedYearMonthList = new ArrayList<String>();
 	public static List<String> actualYearMonthList = new ArrayList<String>();
 	public static List<String> vendorsList = new ArrayList<String>();
+	public static List<String> totalExpenseLegendsList = new ArrayList<String>();	
 	public static String [] strArray;
 	
 	public static String mainTitle = "Expense Trending"; 
@@ -102,7 +104,7 @@ public class TotalExpensesTrend extends BaseClass
 		// get expected month(int)/years pulldown - format is MM-YYYY.
 		expectedYearMonthList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		
-		chartId = UsageHelper.getChartId(3);
+		// chartId = UsageHelper.getChartId(2);
 		
 		// get actual month(int)/years pulldown from UI.
 		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='" + chartId + "']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
@@ -124,16 +126,25 @@ public class TotalExpensesTrend extends BaseClass
 	
 	public static void VerifyVendorsCountries()
 	{
+		
+		errMessage = "Failed verification in TotalExpenseTrend.VerifyVendorsCountries";
+		
 		// clear containers if needed.
 		ClearAllContainers();
 
 		// get the list vendors or countries listed under the bar graph.
-		webEleListVendorCountriesLegends = driver.findElements(By.xpath(".//*[@id='highcharts-4']/*/*[@class='highcharts-legend']/*/*/*"));
+		webEleListVendorCountriesLegends = driver.findElements(By.xpath("//div[@id = '" + chartId  + "']/*/*[@class='highcharts-legend']/*/*/*"));
 
 		for(WebElement ele : webEleListVendorCountriesLegends) // put vendor names into a list so can use 'contains'. 
 		{
 			vendorsList.add(ele.getText());
 		}
+		
+		// verify vendors list is the same as the 'total expense' control. 
+		// get the legends in the 'total expense' control.  
+		totalExpenseLegendsList =  ExpenseHelper.GetTotalExpenseLegends();
+		
+		Assert.assertEquals(vendorsList, totalExpenseLegendsList, errMessage);
 		
 		// verify 'other' selection present or not.
 		if(webEleListVendorCountriesLegends.size() < 5)
@@ -151,18 +162,22 @@ public class TotalExpensesTrend extends BaseClass
 	public static void VerifyNumLegendsMatchNumBarSections()
 	{
 		errMessage = "Fail verifying number of legands and number of bar chart parts in TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections";
-		String cntrlPath = ".//*[@id='highcharts-4']/*/*[@class='highcharts-series-group']/*";
+		String cntrlPath = "//div[@id = '" + chartId  + "']/*/*[@class='highcharts-series-group']/*";
 		
 		//System.out.println(driver.findElements(By.xpath(cntrlPath + "[contains(@class,'highcharts-series highcharts')]")).size()); // DEBUG
 		//System.out.println(driver.findElements(By.xpath(cntrlPath + "[contains(@visibility,'hidden')]")).size());  // DEBUG
 	
-		// verify none of the legends are un-selected.
-		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath+ "[contains(@visibility,'hidden')]")).size() == 0,  errMessage);	
+		// verify none of the legends are un-selected. - not needed here - will do in actions.
+		// Assert.assertTrue(driver.findElements(By.xpath(cntrlPath+ "[contains(@visibility,'hidden')]")).size() == 0,  errMessage);	
 		
 		// verify the number of legends equals the number of bar chart slices.  
 		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath + "[contains(@class,'highcharts-series highcharts')]")).size() == numberOfLegends, errMessage);
 	}
 	
+	public static void SetupChartId()
+	{
+		chartId = UsageHelper.getChartId(2);
+	}
 	
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// 										Helpers.
@@ -197,30 +212,32 @@ public class TotalExpensesTrend extends BaseClass
 
 		if(expectedTrends  != null)
 		{
-			expectedTrends .clear();
+			expectedTrends.clear();
 		}		
 	
 		if(actualTrends  != null)
 		{
-			actualTrends .clear();
+			actualTrends.clear();
 		}		
 		
 		if(expectedYearMonthList  != null)
 		{
-			expectedYearMonthList .clear();
+			expectedYearMonthList.clear();
 		}		
 		
 		if(actualYearMonthList  != null)
 		{
-			actualYearMonthList .clear();
+			actualYearMonthList.clear();
 		}		
 		
 		if(vendorsList  != null)
 		{
-			vendorsList .clear();
+			vendorsList.clear();
+		}		
+		
+		if(totalExpenseLegendsList  != null)
+		{
+			totalExpenseLegendsList.clear();
 		}		
 	}
-	
-	
-	
 }

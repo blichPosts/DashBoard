@@ -309,6 +309,8 @@ public class CommonTestStepActions extends BaseClass
 		List<String> tmpList = new ArrayList<String>();
 		String tmpMonthInt = "";
 		
+		initializeMonthSelector();		
+		
 		// get the year/month items from the pulldown and create a list of of month (integer) with year.  
 		for( WebElement ele : CommonTestStepActions.webListPulldown)
 		{

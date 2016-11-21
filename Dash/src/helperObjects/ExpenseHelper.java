@@ -1,5 +1,6 @@
 package helperObjects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -12,6 +13,9 @@ public class ExpenseHelper extends BaseClass
 {
 	public static String tmpStr = "";
 	public static String errMessage = "";	
+	public static String chartId = "";
+	public static List<WebElement> webElementListLegands;	
+	public static List<String> legendsListTotalExpense = new ArrayList<String>();	
 	
 	public static void VerifyThreeComponents()
 	{
@@ -102,6 +106,28 @@ public class ExpenseHelper extends BaseClass
 		
 		VerifyRollingAverageTotalExpense(errMessage, "(//h4[@class='tdb-h4'])[3]/../.."); 
 	}
+	
+	// this gets the legends in the expense control. this is here because all the legends in the other controls are supposed to
+	// match the total expense control. this is called by each control when the control's legends are verified to match the 
+	// total expense control's legends. 
+	public static List<String> GetTotalExpenseLegends()
+	{
+		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
+
+		// store all legend names into web element list.
+		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));		
+		// for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
+		
+		// store legend names into legend list.
+		for(WebElement ele : webElementListLegands )
+		{
+			legendsListTotalExpense.add(ele.getText());
+
+		} 
+		
+		return legendsListTotalExpense;
+	}
+	
 	
 	
 	// //////////////////////////////////////////////////////////////////////	
