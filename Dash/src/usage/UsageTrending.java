@@ -250,16 +250,14 @@ public class UsageTrending extends BaseClass {
 			// ..verify that the legend is not grayed out anymore
 			Assert.assertTrue(legends.get(i).getAttribute("style").startsWith(UsageHelper.colorLegendEnabled));
 			
-			
 		}
-		
 		
 	}
 	
 	
 
-	// It works for the Usage Trending Domestic chart - It doesnt work for the Roaming chart... for now .... :| 
-	// **** SEE THE ROAMING CHART *****
+	// Verifies the content of the tooltips displayed on charts under Usage Trending Domestic and Roaming charts
+	// It does not verify the amounts... yet
 	public static void verifyUsageTrendingChartTooltip(int barChartId) throws AWTException, InterruptedException, ParseException{
 		
 		String chartId = UsageHelper.getChartId(barChartId);
@@ -268,7 +266,7 @@ public class UsageTrending extends BaseClass {
 		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
 
 		int amount = highchartSeries.size();
-		System.out.println("amount of highchart series: " + amount); 
+		//System.out.println("amount: " + amount);
 		
 		int indexHighchart = 1;
 		
@@ -276,35 +274,31 @@ public class UsageTrending extends BaseClass {
 		int indexMonth = monthYearList.size()-1;
 		
 		boolean firstBar = true;
-		boolean firstMonth = true;
-		
-		if(firstMonth && (barChartId == 3)){
-		
-			firstMonth = false;
-			scrollMouseToChart(5);
-			System.out.println("First month of Roaming chart");
-		
+				
+		// If test is run for Roaming chart, scroll down 
+		if(barChartId == 3){
+			scrollMouseToChart(6);
 		}
 		
+		Thread.sleep(2000);
 		
 		// Verify the info contained on each of the tooltips for the 13 months 		
 		while(indexHighchart <= monthYearList.size()){
 			
-			System.out.println("indexHighchart: " + indexHighchart);
+			String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-" + (amount-1) + ">rect:nth-of-type(" + indexHighchart + ")";
+			//System.out.println("cssSelector: " + cssSelector);
 			
-					
 			// The 'bar' WebElement will be used to set the position of the mouse on the chart
-			WebElement bar = driver.findElement(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-" + (amount-1) + ">rect:nth-of-type(" + indexHighchart + ")"));
+			WebElement bar = driver.findElement(By.cssSelector(cssSelector));
 
 			// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
+			
+			int barHeightMiddle = Integer.parseInt(bar.getAttribute("height"));
+			
 			Point coordinates = bar.getLocation();
 			Robot robot = new Robot(); 
-			robot.mouseMove(coordinates.getX() + 5, coordinates.getY());
-			System.out.println("x: " + coordinates.getX() + ", y: " + coordinates.getY());
-			
-			if(barChartId == 3){
-				robot.mouseMove(coordinates.getX(), coordinates.getY() - 750);
-			}
+			robot.mouseMove((coordinates.getX() + 5), (coordinates.getY() - barHeightMiddle));
+		
 			
 			if(firstBar){
 				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
@@ -312,12 +306,9 @@ public class UsageTrending extends BaseClass {
 			}
 				
 			
-			
-						
-			
 			try {
 				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
-				System.out.println("Tooltip present");
+				//System.out.println("Tooltip present");
 			} catch (Exception e) {
 				System.out.println("Tooltip NOT present");
 				e.printStackTrace();
@@ -326,9 +317,6 @@ public class UsageTrending extends BaseClass {
 			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
 			
 			int expectedAmountItemsTooltip = (amount * 3) + 1;
-			
-			
-			
 			
 			
 			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
