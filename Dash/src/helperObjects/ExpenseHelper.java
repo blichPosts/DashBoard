@@ -23,6 +23,18 @@ public class ExpenseHelper extends BaseClass
 	public static List<WebElement> webEleListMonthYearActual;	
 	public static List<String> actualYearMonthList = new ArrayList<String>();
 	
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// The three xpaths below are for locating things in the controls that have a series of bar graphs with months and legends below.    
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// this is the same for all three controls that have a bar chart for each month. this gets the list of months above the legends 
+	public static String partialXpathToMonthListInControls = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
+	
+	// this is the same for all three controls that have a bar chart for each month. this gets the list of legends.
+	public static String partialXpathToLegendsListInControls = "/*/*[@class='highcharts-legend']/*/*/*";
+	
+	// this is the same for all three controls that have a bar chart for each month. this gets the bar graphs.
+	public static String partialXpathToBarGrapghControls = "/*/*[@class='highcharts-series-group']/*[contains(@class,'highcharts-series highcharts')]";
 	
 	public static void VerifyThreeComponents()
 	{
@@ -140,6 +152,7 @@ public class ExpenseHelper extends BaseClass
 		return legendsListTotalExpense;
 	}
 	
+	// this is for the controls that have a bar graph shown for each month. this verifies the months match the months in the pull down.  
 	public static void VerifyMonths(String xpathText) throws ParseException 
 	{
 		ClearAllContainersForVerifyMonths();
@@ -148,14 +161,13 @@ public class ExpenseHelper extends BaseClass
 		expectedYearMonthList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		
 		// get the months shown in the control in the UI.
-		// webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='" + chartId + "']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
 		webEleListMonthYearActual = driver.findElements(By.xpath(xpathText));
 		
 		// put actual web list values into a list of strings.
 		for(WebElement ele : webEleListMonthYearActual)
 		{
 			actualYearMonthList.add(ele.getText());
-			//System.out.println(ele.getText());			
+			//System.out.println(ele.getText()); // DEBUG.			
 		}
 
 		// the actual list is in descending order. the expected list is in ascending order. using sort on actual list didn't correct order, so use x increment and y decrement.  
@@ -163,8 +175,6 @@ public class ExpenseHelper extends BaseClass
 		{
 			Assert.assertEquals(actualYearMonthList.get(y), expectedYearMonthList.get(x), "Failed check of months in TotalExpensesTrend.VerifyMonths");
 		}
-		
-		
 	}	
 	
 	// //////////////////////////////////////////////////////////////////////	
@@ -188,8 +198,6 @@ public class ExpenseHelper extends BaseClass
 			actualYearMonthList.removeAll(expectedYearMonthList);
 		}
 	}
-	
-	
 	
 	public static void VerifyRollingAverageTotalExpense(String errMess, String locator)   
 	{

@@ -56,12 +56,12 @@ public class TotalExpensesTrendVisual extends BaseClass
 		// Select all the vendors in the Point Of View and select all of the legends in the 'Expense by Vendor' section.
 		
 
-	    // There is a vertical bar graph for the last 13 months in time with the months from the pulldown listed.
-	    // The legends below the bar graph show each vendor.
-	    // It there are six or more vendors selected, there is a legend called 'other'.
-	    // Each vertical bar graph has a value for each of  the legends.
+
+	    // The legends show the same as the legends for the 'Total Expense' control 
+	    // The last 13 months are shown across the bottom of a line graph matching the months in the month pulldown.
+	    // There is a section in each bar chart  for each legend.
 		TotalExpensesTrend.VerifyMonths();
-	    TotalExpensesTrend.VerifyVendorsCountries();
+	    TotalExpensesTrend.VerifyVendorsCountriesLegends();
 		TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections();
 	 	
 		// #3
@@ -77,7 +77,7 @@ public class TotalExpensesTrendVisual extends BaseClass
 	    //Each vertical bar graph has a value for each of  the legends.
 		TotalExpensesTrend.VerifyTitlesCountryView();
 		TotalExpensesTrend.VerifyMonths();
-	    TotalExpensesTrend.VerifyVendorsCountries();
+	    TotalExpensesTrend.VerifyVendorsCountriesLegends();
 		TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections();
 	}
 	

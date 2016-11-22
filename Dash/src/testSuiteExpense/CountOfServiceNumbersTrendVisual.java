@@ -32,6 +32,8 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
+		CountOfServiceNumbersTrend.SetupChartId(); // setup unique id for this control test.
+		
 		// The title is 'Count of Service Number by Vendor/Country'
 		CountOfServiceNumbersTrend.VerifyTitle(CommonTestStepActions.ExpensesViewMode.vendor);
 
@@ -39,19 +41,21 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		// Add all the vendors in point of view. 
 		CommonTestStepActions.SelectAllVendors();
 		
-	    // The component has vertical bar graphs for each month in the month pulldown. (NOTE: only verifying the months).
+
+	    // The component has vertical bar graphs for each month in the month pulldown.
 	    // The legends show the same as the legends for the 'Total Expense' control 
-	    // There is a line for each legend (shown in hover). (NOTE: can't do).
+	    // The last 13 months are shown across the bottom of a line graph matching the months in the month pulldown.
+	    // There is a section in each bar chart for each legend.
 		CountOfServiceNumbersTrend.VerifyLegends();
+		CountOfServiceNumbersTrend.VerifyMonths();
+		CountOfServiceNumbersTrend.VerifyNumLegendsMatchNumBarSections();		
+
+		
+		// #3
+		// Switch to the 'Country View'.
+		// The results are the same as the above steps except countries are shown instead of vendors.
 		
 		
-		
-	    //The title is 'Cost per Service Number by Vendor - All Categories'
-	    //The last twelve months are shown.
-		// .//*[@id='highcharts-8']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels']/*/* // for last twelve months.
-		
-		// (//span[text()='Vendor'])[4]  // commit
-		// (//span[text()='Vendor'])[4]  // commit		  
 		
 		
 	}

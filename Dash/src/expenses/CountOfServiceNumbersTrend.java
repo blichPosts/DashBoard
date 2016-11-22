@@ -1,14 +1,17 @@
 package expenses;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.ExpenseHelper;
 import helperObjects.UsageHelper;
 
 public class CountOfServiceNumbersTrend extends BaseClass 
@@ -21,6 +24,8 @@ public class CountOfServiceNumbersTrend extends BaseClass
 	public static String titleXpath = "//h3[starts-with(text(), 'Count of Service Numbers')]";
 	public static String errMessage = "";
 	public static String chartId = "";	
+	public static int numberOfLegends = 0;
+	
 	
 	public static void VerifyTitle(CommonTestStepActions.ExpensesViewMode mode)
 	{
@@ -40,33 +45,44 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		}
 	}
 
+	public static void SetupChartId()
+	{
+		chartId = UsageHelper.getChartId(4);
+	}
+	
 	// verify the legends in the control match legends in the 'total expense' control. 
 	public static void VerifyLegends()
 	{
 		errMessage = "Failed test of legends in CountOfServiceNumbersTrend.VerifyLegends"; 
 		
-		chartId = UsageHelper.getChartId(4); // get dynamic chart id for expenses control.
+		totalExpenseLegends = ExpenseHelper.GetTotalExpenseLegends();
+		
+		// now get the legends in the count of service numbers control and put into list
+		tempList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']" + ExpenseHelper.partialXpathToLegendsListInControls));
+		 
+		for(WebElement ele : tempList)
+		{
+			countOfServiceNumsLegends.add(ele.getText());			 
+		}
 
-		 // get the legends from 'Total Expense' pie control and store into totalExpenseLegends list
-		 tempList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']/*/*[@class='highcharts-legend']"));
-		 
-		 for(WebElement ele : tempList) 
-		 {
-			 totalExpenseLegends.add(ele.getText());			 
-		 }
+		Assert.assertEquals(countOfServiceNumsLegends, totalExpenseLegends, errMessage);
+		
+		numberOfLegends = totalExpenseLegends.size(); // save the number of legends.
+	}
+	
+	// this verifies the months in the control are the same months that are in the months pulldown - need to send xpath to the method.
+	public static void VerifyMonths() throws ParseException 
+	{
+		ExpenseHelper.VerifyMonths(".//*[@id='" + chartId + "']" + ExpenseHelper.partialXpathToMonthListInControls);
+	}
+	
+	// verify number of legends equals number of sections in the bar graphs.
+	public static void VerifyNumLegendsMatchNumBarSections()
+	{
+		errMessage = "Fail verifying number of legands and number of bar chart parts in CountOfServiceNumbersTrend.VerifyNumLegendsMatchNumBarSections";
+		
+		String cntrlPath = "//div[@id = '" + chartId  + "']" + ExpenseHelper.partialXpathToBarGrapghControls;
 
-		 tempList.removeAll(tempList);
-		 
-		 chartId = UsageHelper.getChartId(0); // get dynamic chart id for count of service numbers control
-		 
-		 // now get the legends in the count of service numbers control annd put into list
-		 tempList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']/*/*[@class='highcharts-legend']"));
-		 
-		 for(WebElement ele : tempList)
-		 {
-			 countOfServiceNumsLegends.add(ele.getText());			 
-		 }
-
-		 Assert.assertEquals(countOfServiceNumsLegends, totalExpenseLegends, errMessage);
+		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath)).size() == numberOfLegends, errMessage);
 	}
 }

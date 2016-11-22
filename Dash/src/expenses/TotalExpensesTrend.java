@@ -96,49 +96,22 @@ public class TotalExpensesTrend extends BaseClass
 		Assert.assertEquals(driver.findElement(By.xpath("(//div[@class='tdb-card'])[2]/h2")).getText(), mainTitle, errMessage);
 	}
 	
-	
+	// this verifies the months in the control are the same months that are in the months pulldown - need to send xpath to the method. 	
 	public static void VerifyMonths() throws ParseException 
 	{
-		
-		ClearAllContainers();
-		
-		
-		
-		// get expected month(int)/years pulldown - format is MM-YYYY. 
-		expectedYearMonthList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
-		
-		// get the months shown in the control in the UI.
-		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='" + chartId + "']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
-		
-		// put actual web list values into a list of strings.
-		for(WebElement ele : webEleListMonthYearActual)
-		{
-			actualYearMonthList.add(ele.getText());
-			//System.out.println(ele.getText());			
-		}
-
-		// the actual list is in descending order. the expected list is in ascending order. using sort on actual list didn't correct order, so use x increment and y decrement.  
-		for(int x = 0, y = expectedYearMonthList.size() - 1; x < expectedYearMonthList.size(); x++, y--)
-		{
-			Assert.assertEquals(actualYearMonthList.get(y), expectedYearMonthList.get(x), "Failed check of months in TotalExpensesTrend.VerifyMonths");
-		}
+		ExpenseHelper.VerifyMonths(".//*[@id='" + chartId + "']" + ExpenseHelper.partialXpathToMonthListInControls);
 	}
 	
-	
-	public static void VerifyVendorsCountries() throws ParseException
+	// this verifies the legends under the control match the legends in the 'total expense' control. 
+	public static void VerifyVendorsCountriesLegends() throws ParseException
 	{
-		
-		errMessage = "Failed verification in TotalExpenseTrend.VerifyVendorsCountries";
+		errMessage = "Failed verification in TotalExpenseTrend.VerifyVendorsCountriesLegends";
 		
 		// clear containers if needed.
 		ClearAllContainers();
 
-		ExpenseHelper.VerifyMonths("//div[@id = '" + chartId  + "']/*/*[@class='highcharts-legend']/*/*/*");
+		webEleListVendorCountriesLegends = driver.findElements(By.xpath("//div[@id = '" + chartId  + "']" + ExpenseHelper.partialXpathToLegendsListInControls));
 		
-		
-		// get the list vendors or countries listed under the bar graph.
-		webEleListVendorCountriesLegends = driver.findElements(By.xpath("//div[@id = '" + chartId  + "']/*/*[@class='highcharts-legend']/*/*/*"));
-
 		for(WebElement ele : webEleListVendorCountriesLegends) // put vendor names into a list so can use 'contains'. 
 		{
 			vendorsListActual.add(ele.getText());
@@ -163,19 +136,14 @@ public class TotalExpensesTrend extends BaseClass
 		numberOfLegends = vendorsListActual.size(); // to be used in VerifyNumLegendsMatchNumBarSections().
 	}
 	
+	// verify number of legends equals number of sections in the bar graphs.
 	public static void VerifyNumLegendsMatchNumBarSections()
 	{
 		errMessage = "Fail verifying number of legands and number of bar chart parts in TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections";
-		String cntrlPath = "//div[@id = '" + chartId  + "']/*/*[@class='highcharts-series-group']/*";
 		
-		//System.out.println(driver.findElements(By.xpath(cntrlPath + "[contains(@class,'highcharts-series highcharts')]")).size()); // DEBUG
-		//System.out.println(driver.findElements(By.xpath(cntrlPath + "[contains(@visibility,'hidden')]")).size());  // DEBUG
-	
-		// verify none of the legends are un-selected. - not needed here - will do in actions.
-		// Assert.assertTrue(driver.findElements(By.xpath(cntrlPath+ "[contains(@visibility,'hidden')]")).size() == 0,  errMessage);	
-		
-		// verify the number of legends equals the number of bar chart slices.  
-		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath + "[contains(@class,'highcharts-series highcharts')]")).size() == numberOfLegends, errMessage);
+		String cntrlPath = "//div[@id = '" + chartId  + "']" + ExpenseHelper.partialXpathToBarGrapghControls;
+
+		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath)).size() == numberOfLegends, errMessage);
 	}
 	
 	public static void SetupChartId()
