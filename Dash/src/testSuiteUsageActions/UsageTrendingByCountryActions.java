@@ -1,8 +1,7 @@
-package testSuiteUsage;
+package testSuiteUsageActions;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -12,8 +11,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.UsageHelper;
 import usage.UsageTrending;
 
-
-public class UsageTrendingByVendorActions extends BaseClass{
+public class UsageTrendingByCountryActions extends BaseClass{
 
 	
 	@BeforeClass
@@ -24,13 +22,13 @@ public class UsageTrendingByVendorActions extends BaseClass{
 	
 	
 	@Test
-	public static void UsageTrendingByVendorActionsTest() throws Exception
+	public static void UsageTrendingByCountryActionsTest() throws Exception
 	{
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 			
 		// #1 Select Vendor View 
-		UsageHelper.selectVendorView();
+		UsageHelper.selectCountryView();
 		
 		
 		// #2 Verify the text shown on the tooltip when hovering the mouse over the bar charts, for Usage Trending Domestic chart
@@ -41,14 +39,19 @@ public class UsageTrendingByVendorActions extends BaseClass{
 		UsageTrending.verifyUsageTrendingChartTooltip(3);
 				
 		
-		// #4 Verify that vendors/countries on the legends of Usage Trending charts can be switched on/off. 
+		// #4 Verify that vendors/countries on the legends of Usage Trending Domestic chart can be switched on/off. 
 		// The bars are added/removed from chart according to the vendors/countries selected on the legends.
 		UsageTrending.verifyBarsCanBeSwitchedOnOff(2);
-				
+
+		
+		// #5 Verify that vendors/countries on the legends of Usage Trending Roaming chart can be switched on/off.
+		UsageTrending.verifyBarsCanBeSwitchedOnOff(3);
+		
 		
 		// #4 Select only one vendor
-		CommonTestStepActions.UnSelectAllVendors();
-		CommonTestStepActions.selectOneVendor("AT&T Mobility");
+		//CommonTestStepActions.UnSelectAllVendors(); 
+		//CommonTestStepActions.selectOneVendor("AT&T Mobility");
+		
 		
 		
 	}
@@ -58,11 +61,10 @@ public class UsageTrendingByVendorActions extends BaseClass{
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "'Usage Trending - Usage by Vendor' test finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "'Usage Trending - Usage by Country' test finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}
 
-
-
+	
 }

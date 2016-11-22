@@ -24,6 +24,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import helperObjects.Country;
+import helperObjects.UsageHelper;
 
 public class BaseClass
 {
@@ -232,18 +233,19 @@ public class BaseClass
 	
 	
 
-	public static void WaitForExpensePageDetailedLoad()throws Exception	
-	{
-		WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);
-		WaitForElementVisible(By.xpath("//h3[text()='Count of Service Numbers']"), MediumTimeout);		
-		WaitForElementVisible(By.xpath("//div/h3[text()='Count of Service Numbers']"), MediumTimeout);		
-		WaitForElementClickable(By.xpath("//select"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad"); 	
+	public static void WaitForExpensePageDetailedLoad() throws Exception 
+    {
+           WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);
+           WaitForElementVisible(By.xpath("//h3[text()='Count of Service Numbers']"), MediumTimeout);            
+           WaitForElementVisible(By.xpath("//div/h3[text()='Count of Service Numbers']"), MediumTimeout);            
+           WaitForElementClickable(By.xpath("//select"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");      
+           
+           String chartId = UsageHelper.getChartId(4);
+           WaitForElementPresent(By.xpath(".//*[@id='" + chartId + "']"), MediumTimeout);
+           WaitForElementPresent(By.xpath(".//*[@id='" + chartId + "']/*/*"), MediumTimeout); 
+           WaitForElementPresent(By.xpath(".//*[@id='" + chartId + "']/*/*[@class='highcharts-legend']"), MediumTimeout);       
+    }             
 		
-		// not sure if these two will always work. maybe the ID will change - beware. 
-		WaitForElementPresent(By.xpath(".//*[@id='highcharts-8']/*/*"), MediumTimeout);
-		WaitForElementVisible(By.xpath("(.//*[@id='highcharts-8']/*/*[@class='highcharts-axis'])[1]"), MediumTimeout);
-
-	}		
 	
 	
 	// Added by Ana 

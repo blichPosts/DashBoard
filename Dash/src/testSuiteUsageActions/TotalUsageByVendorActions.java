@@ -18,8 +18,8 @@ public class TotalUsageByVendorActions extends BaseClass {
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		login();
-		CommonTestStepActions.switchToContentFrame();
+		//login();
+		//CommonTestStepActions.switchToContentFrame();
 	}
 	
 	
@@ -41,48 +41,44 @@ public class TotalUsageByVendorActions extends BaseClass {
 		CommonTestStepActions.selectMonthYearPulldown("August 2016");
 				
 		
+		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
+		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
-
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
+		
 		// Voice
 		TotalUsageActions.vendorsAddedToCharts(0, 0);
 		
-		
-		// Unselect all vendors - so previous test will be run for Roaming usage
-		CommonTestStepActions.UnSelectAllVendors();
-		
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
-		// Voice
-		TotalUsageActions.vendorsAddedToCharts(1, 0);
-				
-
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
-
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
+				
 		// Data
 		TotalUsageActions.vendorsAddedToCharts(0, 1);
 		
-		
-		// Unselect all vendors - so previous test will be run for Roaming usage
-		CommonTestStepActions.UnSelectAllVendors();
-		
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
-		// Data
-		TotalUsageActions.vendorsAddedToCharts(1, 1);
-
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
-
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
+				
 		// Messages
 		TotalUsageActions.vendorsAddedToCharts(0, 2);
-		
-		// Unselect all vendors - so previous test will be run for Roaming usage
-		CommonTestStepActions.UnSelectAllVendors();
+			
 		
 		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
+		
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+		
+		// Voice
+		TotalUsageActions.vendorsAddedToCharts(1, 0);
+		
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+				
+		// Data
+		TotalUsageActions.vendorsAddedToCharts(1, 1);
+		
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+				
 		// Messages
 		TotalUsageActions.vendorsAddedToCharts(1, 2);
 		
