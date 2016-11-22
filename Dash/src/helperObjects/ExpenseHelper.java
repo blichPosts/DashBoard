@@ -140,7 +140,7 @@ public class ExpenseHelper extends BaseClass
 		return legendsListTotalExpense;
 	}
 	
-	public static void VerifyMonths(String chartId, String xpathSegment) throws ParseException 
+	public static void VerifyMonths(String xpathText) throws ParseException 
 	{
 		ClearAllContainersForVerifyMonths();
 		
@@ -149,7 +149,7 @@ public class ExpenseHelper extends BaseClass
 		
 		// get the months shown in the control in the UI.
 		// webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='" + chartId + "']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
-		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='" + chartId + "']"  + xpathSegment));
+		webEleListMonthYearActual = driver.findElements(By.xpath(xpathText));
 		
 		// put actual web list values into a list of strings.
 		for(WebElement ele : webEleListMonthYearActual)
@@ -163,6 +163,8 @@ public class ExpenseHelper extends BaseClass
 		{
 			Assert.assertEquals(actualYearMonthList.get(y), expectedYearMonthList.get(x), "Failed check of months in TotalExpensesTrend.VerifyMonths");
 		}
+		
+		
 	}	
 	
 	// //////////////////////////////////////////////////////////////////////	

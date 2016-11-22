@@ -102,6 +102,8 @@ public class TotalExpensesTrend extends BaseClass
 		
 		ClearAllContainers();
 		
+		
+		
 		// get expected month(int)/years pulldown - format is MM-YYYY. 
 		expectedYearMonthList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		
@@ -123,7 +125,7 @@ public class TotalExpensesTrend extends BaseClass
 	}
 	
 	
-	public static void VerifyVendorsCountries()
+	public static void VerifyVendorsCountries() throws ParseException
 	{
 		
 		errMessage = "Failed verification in TotalExpenseTrend.VerifyVendorsCountries";
@@ -131,6 +133,9 @@ public class TotalExpensesTrend extends BaseClass
 		// clear containers if needed.
 		ClearAllContainers();
 
+		ExpenseHelper.VerifyMonths("//div[@id = '" + chartId  + "']/*/*[@class='highcharts-legend']/*/*/*");
+		
+		
 		// get the list vendors or countries listed under the bar graph.
 		webEleListVendorCountriesLegends = driver.findElements(By.xpath("//div[@id = '" + chartId  + "']/*/*[@class='highcharts-legend']/*/*/*"));
 
