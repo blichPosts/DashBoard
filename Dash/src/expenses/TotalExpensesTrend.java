@@ -27,7 +27,8 @@ public class TotalExpensesTrend extends BaseClass
 	public static List<String> actualTrends = new ArrayList<String>();
 	public static List<String> expectedYearMonthList = new ArrayList<String>();
 	public static List<String> actualYearMonthList = new ArrayList<String>();
-	public static List<String> vendorsList = new ArrayList<String>();
+	// public static List<String> vendorsList = new ArrayList<String>();
+	public static List<String> vendorsListActual = new ArrayList<String>();	
 	public static List<String> totalExpenseLegendsList = new ArrayList<String>();	
 	public static String [] strArray;
 	
@@ -96,17 +97,15 @@ public class TotalExpensesTrend extends BaseClass
 	}
 	
 	
-	public static void VerifyMonths() throws ParseException, InterruptedException
+	public static void VerifyMonths() throws ParseException 
 	{
 		
 		ClearAllContainers();
 		
-		// get expected month(int)/years pulldown - format is MM-YYYY.
+		// get expected month(int)/years pulldown - format is MM-YYYY. 
 		expectedYearMonthList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		
-		// chartId = UsageHelper.getChartId(2);
-		
-		// get actual month(int)/years pulldown from UI.
+		// get the months shown in the control in the UI.
 		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='" + chartId + "']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
 		
 		// put actual web list values into a list of strings.
@@ -137,26 +136,26 @@ public class TotalExpensesTrend extends BaseClass
 
 		for(WebElement ele : webEleListVendorCountriesLegends) // put vendor names into a list so can use 'contains'. 
 		{
-			vendorsList.add(ele.getText());
+			vendorsListActual.add(ele.getText());
 		}
 		
 		// verify vendors list is the same as the 'total expense' control. 
 		// get the legends in the 'total expense' control.  
 		totalExpenseLegendsList =  ExpenseHelper.GetTotalExpenseLegends();
 		
-		Assert.assertEquals(vendorsList, totalExpenseLegendsList, errMessage);
+		Assert.assertEquals(vendorsListActual, totalExpenseLegendsList, errMessage); 
 		
 		// verify 'other' selection present or not.
 		if(webEleListVendorCountriesLegends.size() < 5)
 		{
-			Assert.assertFalse(vendorsList.contains(otherString));
+			Assert.assertFalse(vendorsListActual.contains(otherString));
 		}
 		else
 		{
-			Assert.assertTrue(vendorsList.contains(otherString));
+			Assert.assertTrue(vendorsListActual.contains(otherString));
 		}
 
-		numberOfLegends = vendorsList.size(); // to be used in VerifyNumLegendsMatchNumBarSections().
+		numberOfLegends = vendorsListActual.size(); // to be used in VerifyNumLegendsMatchNumBarSections().
 	}
 	
 	public static void VerifyNumLegendsMatchNumBarSections()
@@ -230,14 +229,24 @@ public class TotalExpensesTrend extends BaseClass
 			actualYearMonthList.clear();
 		}		
 		
-		if(vendorsList  != null)
+		if(vendorsListActual  != null)
 		{
-			vendorsList.clear();
+			vendorsListActual.removeAll(vendorsListActual);
 		}		
 		
 		if(totalExpenseLegendsList  != null)
 		{
 			totalExpenseLegendsList.clear();
 		}		
+		
+		if(totalExpenseLegendsList  != null)
+		{
+			totalExpenseLegendsList.clear();
+		}		
+		
+		if(webEleListVendorCountriesLegends  != null)
+		{
+			webEleListVendorCountriesLegends.clear();
+		}				
 	}
 }

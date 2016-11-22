@@ -39,8 +39,9 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		// Add all the vendors in point of view. 
 		CommonTestStepActions.SelectAllVendors();
 		
-		// The component has vertical bar graphs for each month in the month pulldown.
-		// The legends show the same as the legends for the 'Total Expense' control 
+	    // The component has vertical bar graphs for each month in the month pulldown. (NOTE: only verifying the months).
+	    // The legends show the same as the legends for the 'Total Expense' control 
+	    // There is a line for each legend (shown in hover). (NOTE: can't do).
 		CountOfServiceNumbersTrend.VerifyLegends();
 		
 		

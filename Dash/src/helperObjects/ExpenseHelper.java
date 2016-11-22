@@ -1,5 +1,6 @@
 package helperObjects;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,12 @@ public class ExpenseHelper extends BaseClass
 	public static String chartId = "";
 	public static List<WebElement> webElementListLegands;	
 	public static List<String> legendsListTotalExpense = new ArrayList<String>();	
+
+	// these are for VerifyMonths method 
+	public static List<String> expectedYearMonthList = new ArrayList<String>();
+	public static List<WebElement> webEleListMonthYearActual;	
+	public static List<String> actualYearMonthList = new ArrayList<String>();
+	
 	
 	public static void VerifyThreeComponents()
 	{
@@ -118,6 +125,11 @@ public class ExpenseHelper extends BaseClass
 		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));		
 		// for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
 		
+		if(legendsListTotalExpense != null)
+		{
+			legendsListTotalExpense.removeAll(legendsListTotalExpense);
+		}
+		
 		// store legend names into legend list.
 		for(WebElement ele : webElementListLegands )
 		{
@@ -128,11 +140,54 @@ public class ExpenseHelper extends BaseClass
 		return legendsListTotalExpense;
 	}
 	
-	
+	public static void VerifyMonths(String chartId, String xpathSegment) throws ParseException 
+	{
+		ClearAllContainersForVerifyMonths();
+		
+		// get expected month(int)/years pulldown - format is MM-YYYY. 
+		expectedYearMonthList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
+		
+		// get the months shown in the control in the UI.
+		// webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='" + chartId + "']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
+		webEleListMonthYearActual = driver.findElements(By.xpath(".//*[@id='" + chartId + "']"  + xpathSegment));
+		
+		// put actual web list values into a list of strings.
+		for(WebElement ele : webEleListMonthYearActual)
+		{
+			actualYearMonthList.add(ele.getText());
+			//System.out.println(ele.getText());			
+		}
+
+		// the actual list is in descending order. the expected list is in ascending order. using sort on actual list didn't correct order, so use x increment and y decrement.  
+		for(int x = 0, y = expectedYearMonthList.size() - 1; x < expectedYearMonthList.size(); x++, y--)
+		{
+			Assert.assertEquals(actualYearMonthList.get(y), expectedYearMonthList.get(x), "Failed check of months in TotalExpensesTrend.VerifyMonths");
+		}
+	}	
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers
 	// //////////////////////////////////////////////////////////////////////
+	
+	public static void ClearAllContainersForVerifyMonths()
+	{
+		if(expectedYearMonthList != null)
+		{
+			expectedYearMonthList.removeAll(expectedYearMonthList);
+		}
+		
+		if(webEleListMonthYearActual != null)
+		{
+			webEleListMonthYearActual.removeAll(expectedYearMonthList);
+		}		
+		
+		if(actualYearMonthList != null)
+		{
+			actualYearMonthList.removeAll(expectedYearMonthList);
+		}
+	}
+	
+	
 	
 	public static void VerifyRollingAverageTotalExpense(String errMess, String locator)   
 	{

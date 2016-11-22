@@ -40,16 +40,17 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		}
 	}
 
+	// verify the legends in the control match legends in the 'total expense' control. 
 	public static void VerifyLegends()
 	{
 		errMessage = "Failed test of legends in CountOfServiceNumbersTrend.VerifyLegends"; 
 		
 		chartId = UsageHelper.getChartId(4); // get dynamic chart id for expenses control.
 
-		 // get the legends from 'Total Expense' pie control and store into totalExpenseLegends.
+		 // get the legends from 'Total Expense' pie control and store into totalExpenseLegends list
 		 tempList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']/*/*[@class='highcharts-legend']"));
 		 
-		 for(WebElement ele : tempList)
+		 for(WebElement ele : tempList) 
 		 {
 			 totalExpenseLegends.add(ele.getText());			 
 		 }
@@ -58,7 +59,7 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		 
 		 chartId = UsageHelper.getChartId(0); // get dynamic chart id for count of service numbers control
 		 
-		 // now get the legends in the count of service numbers control.
+		 // now get the legends in the count of service numbers control annd put into list
 		 tempList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']/*/*[@class='highcharts-legend']"));
 		 
 		 for(WebElement ele : tempList)
