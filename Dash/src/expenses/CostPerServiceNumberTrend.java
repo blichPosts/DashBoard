@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -14,16 +13,18 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.UsageHelper;
 
-public class CountOfServiceNumbersTrend extends BaseClass 
+public class CostPerServiceNumberTrend extends  BaseClass
 {
+	
+	public static String chartId = "";
+	public static String vendorTitle = "Cost per Service Number by Vendor - All Categories";
+	public static String countryTitle = "Cost per Service Number by Country - All Categories";	
+	
 	public static List<String> totalExpenseLegends  = new ArrayList<String>(); // this will hold the legend names in the total expanse control.
 	public static List<String> countOfServiceNumsLegends  = new ArrayList<String>(); // this will hold the legend names in the count of service numbers control.	
 	public static List<WebElement> tempList; // this is for temporary values.
-	public static String vendorTitle =  "Count of Service Numbers by Vendor";
-	public static String countryTitle =  "Count of Service Numbers by Country";
 	public static String titleXpath = "//h3[starts-with(text(), 'Count of Service Numbers')]";
 	public static String errMessage = "";
-	public static String chartId = "";	
 	public static int numberOfLegends = 0;
 	
 	// this has a wait for element visible in each case statement. this is needed because this can be the first method called after switching to the country view.
@@ -36,31 +37,26 @@ public class CountOfServiceNumbersTrend extends BaseClass
 			case vendor:
 			{
 				WaitForElementVisible(By.xpath("//h3/span[text()='Vendor']"), MediumTimeout);
-				Assert.assertEquals(driver.findElement(By.xpath("(//h3[starts-with(text(), 'Count of Service Numbers')])[2]")).getText(), vendorTitle, errMessage);
+				Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(2)")).getText(), vendorTitle, errMessage);
 				break;
 			}
 			case country:
 			{
 				WaitForElementVisible(By.xpath("//h3/span[text()='Country']"), MediumTimeout);
-				Assert.assertEquals(driver.findElement(By.xpath("(//h3[starts-with(text(), 'Count of Service Numbers')])[2]")).getText(), countryTitle, errMessage);
+				Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(2)")).getText(), countryTitle, errMessage);
 				break;				
 			}
 		}
 	}
-
-	public static void SetupChartId()
-	{
-		chartId = UsageHelper.getChartId(4);
-	}
 	
 	// verify the legends in the control match legends in the 'total expense' control. 
-	public static void VerifyLegends() throws InterruptedException
+	public static void VerifyLegends()
 	{
-		errMessage = "Failed test of legends in CountOfServiceNumbersTrend.VerifyLegends"; 
-		
-		ClearContainers(); 
+		errMessage = "Failed test of legends in CostPerServiceNumberTrend.VerifyLegends"; 
 		
 		totalExpenseLegends = ExpenseHelper.GetTotalExpenseLegends();
+		
+		ClearContainers(); 
 		
 		// now get the legends in the count of service numbers control and put into list
 		tempList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']" + ExpenseHelper.partialXpathToLegendsListInControls));
@@ -87,13 +83,19 @@ public class CountOfServiceNumbersTrend extends BaseClass
 	// verify number of legends equals number of sections in the bar graphs.
 	public static void VerifyNumLegendsMatchNumBarSections()
 	{
-		errMessage = "Fail verifying number of legands and number of bar chart parts in CountOfServiceNumbersTrend.VerifyNumLegendsMatchNumBarSections";
+		errMessage = "Fail verifying number of legands and number of bar chart parts in CostPerServiceNumberTrend.VerifyNumLegendsMatchNumBarSections";
 		
 		String cntrlPath = "//div[@id = '" + chartId  + "']" + ExpenseHelper.partialXpathToBarGrapghControls;
 
 		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath)).size() == numberOfLegends, errMessage);
-	}
+	}	
 	
+	
+	public static void SetupChartId()
+	{
+		chartId = UsageHelper.getChartId(3);
+	}
+
 	// //////////////////////////////// HELPER ///////////////////////////////////////////////////////////
 	
 	public static void ClearContainers()
@@ -102,5 +104,5 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		{
 			countOfServiceNumsLegends.removeAll(countOfServiceNumsLegends);
 		}		
-	}
+	}	
 }

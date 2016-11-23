@@ -40,7 +40,6 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		// #2 
 		// Add all the vendors in point of view. 
 		CommonTestStepActions.SelectAllVendors();
-		
 
 	    // The component has vertical bar graphs for each month in the month pulldown.
 	    // The legends show the same as the legends for the 'Total Expense' control 
@@ -50,14 +49,14 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		CountOfServiceNumbersTrend.VerifyMonths();
 		CountOfServiceNumbersTrend.VerifyNumLegendsMatchNumBarSections();		
 
-		
 		// #3
 		// Switch to the 'Country View'.
 		// The results are the same as the above steps except countries are shown instead of vendors.
-		
-		
-		
-		
+		CommonTestStepActions.SelectCountryView();
+		CountOfServiceNumbersTrend.VerifyTitle(CommonTestStepActions.ExpensesViewMode.country);		
+		CountOfServiceNumbersTrend.VerifyLegends();
+		CountOfServiceNumbersTrend.VerifyMonths();
+		CountOfServiceNumbersTrend.VerifyNumLegendsMatchNumBarSections();		
 	}
 	
 	@AfterClass
