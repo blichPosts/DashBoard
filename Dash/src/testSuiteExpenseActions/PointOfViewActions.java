@@ -1,5 +1,6 @@
 package testSuiteExpenseActions;
 
+import org.bouncycastle.cms.PasswordRecipientInformation;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -28,8 +29,9 @@ public class PointOfViewActions extends BaseClass
 		
 		// #2) Select the none selection to un-select all the vendors, select the recorded vendors one at a time, then select all the vendors.
 		CommonTestStepActions.UnSelectAllVendors();
-		
+
 	    // When the none selector is selected there are no controls shown.
+		PointOfView.VerifyControlsNotPresent();
 
 		
 		// As the vendors are added they show up in each control.

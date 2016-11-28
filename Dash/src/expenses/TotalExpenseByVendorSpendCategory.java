@@ -122,7 +122,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		vendorsListEexpected = ExpenseHelper.GetTotalExpenseLegends();
 		
 		// get the actual vendor list in the control.
-		List<WebElement> tempList = driver.findElements(By.xpath("//div[@id='" + chartId + "']/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*"));
+		List<WebElement> tempList = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory));
 		
 		// add actual vendor list to list of strings. 
 		for(WebElement ele : tempList)

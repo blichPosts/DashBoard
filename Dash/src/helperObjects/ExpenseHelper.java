@@ -30,11 +30,16 @@ public class ExpenseHelper extends BaseClass
 	// this is the same for all three controls that have a bar chart for each month. this gets the list of months above the legends 
 	public static String partialXpathToMonthListInControls = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
 	
-	// this is the same for all three controls that have a bar chart for each month. this gets the list of legends.
+	// this is the same for all three controls that have a bar chart for each month. this gets the list of legends. also can be used for 'expense control'
 	public static String partialXpathToLegendsListInControls = "/*/*[@class='highcharts-legend']/*/*/*";
 	
 	// this is the same for all three controls that have a bar chart for each month. this gets the bar graphs.
 	public static String partialXpathToBarGrapghControls = "/*/*[@class='highcharts-series-group']/*[contains(@class,'highcharts-series highcharts')]";
+	
+	// this is for getting the legends in 'Total Expense by Vendor/Country and Spend Category'.
+	public static String partialXpathForLegendsInTotalSpendCategory = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
+	
+	
 	
 	public static void VerifyThreeComponents()
 	{
@@ -134,7 +139,11 @@ public class ExpenseHelper extends BaseClass
 		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
 
 		// store all legend names into web element list.
-		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));		
+		// webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));		
+		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
+		
+		// 
+		
 		// for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
 		
 		if(legendsListTotalExpense != null)
