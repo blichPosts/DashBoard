@@ -28,6 +28,7 @@ public class KPITilesVisualUsage extends BaseClass
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
+		
 		// #1 Observe the labels above the KPI components - There are two sections, 'Domestic' and 'Roaming'
 		UsageKPITiles.verifyDomesticRoamingLabels();
 		
@@ -42,10 +43,14 @@ public class KPITilesVisualUsage extends BaseClass
 		
 		// #4 Verify the units of measure for the rolling amounts.
 		UsageKPITiles.verifyRollingAveragesAmounts();
-				
+		
 		
 		// #5 Verify that the trending values have the '%' symbol, on all the KPI tiles -- icons cannot be verified
-		UsageKPITiles.verifySymbolOnTrendingValue();
+				
+		CommonTestStepActions.selectMonthYearPulldown("August 2016");
+		//CommonTestStepActions.selectMonthYearPulldown("December 2015");
+		Thread.sleep(2000);
+		UsageKPITiles.verifyTrendingValues();
 		
 		
 	}

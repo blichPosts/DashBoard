@@ -1,5 +1,7 @@
 package helperObjects;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -40,6 +42,18 @@ public class UsageHelper extends BaseClass{
 	public final static String colorLegendEnabled = "color: rgb(51, 51, 51)";
 	public final static String colorLegendDisabled = "color: rgb(204, 204, 204)";
 	
+	public final static int totalUsageSection = 0;
+	public final static int usageTrendingSection = 1;
+	
+	public final static int totalUsageDomesticChart = 0;
+	public final static int totalUsageRoamingChart = 1;
+	public final static int UsageTrendingDomesticChart = 2;
+	public final static int UsageTrendingRoamingChart = 3;
+	
+	public final static int categoryVoice = 0;
+	public final static int categoryData = 1;
+	public final static int categoryMessages = 2;
+	
 
 	public static void selectVendorView(){
 		
@@ -72,7 +86,26 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	 
+	public static void selectCategory(int section, int category){
+		
+		
+		
+	}
 	
+	
+	
+	// Used to scroll down simulating the mouse wheel moves
+	public static void scrollMouseToChart(int num){
+		
+		try{
+			Robot robot = new Robot(); 
+			robot.mouseWheel(num);
+		}catch (AWTException e){
+			e.printStackTrace();
+		}
+		
+		
+	}
 	
 	
 	

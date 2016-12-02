@@ -36,8 +36,8 @@ public class UsageTrending extends BaseClass {
 			categoryLabel = categorySelectors.get(i).getText();
 			totalUsageTitleExpected = titleFirstPart + categoryLabel;
 			
-			System.out.println("Title found:    " + totalUsageTitleFound);
-			System.out.println("Title expected: " + totalUsageTitleExpected);
+			//System.out.println("Title found:    " + totalUsageTitleFound);
+			//System.out.println("Title expected: " + totalUsageTitleExpected);
 			
 			Assert.assertEquals(totalUsageTitleFound, totalUsageTitleExpected, "Title found is different from title expected.");
 			
@@ -61,7 +61,7 @@ public class UsageTrending extends BaseClass {
 			
 			categorySelectors.get(i).click(); 
 			domesticTitleFound = driver.findElement(By.cssSelector(".tdb-charts__label.tdb-text--italic>.tdb-text--bold")).getText(); 
-			roamingTitleFound = driver.findElement(By.cssSelector(".tdb-flexUnit--1.tdb-align--center>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();
+			roamingTitleFound = driver.findElement(By.cssSelector(".tdb-trendingCharts-USAGE>.tdb-flexUnit>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();  //.tdb-flexUnit--1.tdb-align--center>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();
 			
 			System.out.println("usage trending - Domestic title: " + domesticTitleFound);
 			System.out.println("usage trending - Roaming title: " + roamingTitleFound);
@@ -210,7 +210,7 @@ public class UsageTrending extends BaseClass {
 
 
 
-	public static void verifyBarsCanBeSwitchedOnOff(int barChartId) throws Exception {
+	public static void verifyBarsCanBeSwitchedOnOff(int barChartId) {
 		
 		 
 		List<WebElement> legends = new ArrayList<>();
@@ -258,7 +258,7 @@ public class UsageTrending extends BaseClass {
 
 	// Verifies the content of the tooltips displayed on charts under Usage Trending Domestic and Roaming charts
 	// It does not verify the amounts... yet
-	public static void verifyUsageTrendingChartTooltip(int barChartId) throws AWTException, InterruptedException, ParseException{
+	public static void verifyUsageTrendingChartTooltip(int barChartId) throws InterruptedException, ParseException, AWTException{
 		
 		String chartId = UsageHelper.getChartId(barChartId);
 		
@@ -277,7 +277,7 @@ public class UsageTrending extends BaseClass {
 				
 		// If test is run for Roaming chart, scroll down 
 		if(barChartId == 3){
-			scrollMouseToChart(6);
+			UsageHelper.scrollMouseToChart(6);
 		}
 		
 		Thread.sleep(2000);
@@ -355,17 +355,8 @@ public class UsageTrending extends BaseClass {
 			
 		}
 		
-		
 	}
 	
-	
-	
-	public static void scrollMouseToChart(int num) throws AWTException{
-		
-		Robot robot = new Robot(); 
-		robot.mouseWheel(num);
-		
-	}
 	
 	
 }

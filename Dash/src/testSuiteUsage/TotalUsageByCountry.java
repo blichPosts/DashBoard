@@ -38,7 +38,7 @@ public class TotalUsageByCountry extends BaseClass {
 		
 		
 		// #3 Verify that title "Total Usage by Country - ... " changes according to what Category was selected
-		//TotalUsage.verifyTotalUsageTitle(UsageHelper.totalUsageByCountry); //-- this is commented because it fails -- the title is incorrect
+		TotalUsage.verifyTotalUsageTitle(UsageHelper.totalUsageByCountry);
 		
 				
 		// #4 Verify bar charts titles

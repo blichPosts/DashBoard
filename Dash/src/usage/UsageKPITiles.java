@@ -58,8 +58,7 @@ public class UsageKPITiles extends BaseClass{
 	public static void verifyRollingAveragesAmounts() {
 
 		
-		List<WebElement> rollingAmounts = driver.findElements(By.cssSelector(".tdb-inlineBlock.tdb-width--one-half.tdb-align--right"));
-		Assert.assertEquals(rollingAmounts.size(), 8);
+		List<WebElement> rollingAmounts = driver.findElements(By.cssSelector(".tdb-inlineBlock.tdb-width--one-half.tdb-align--right"));	
 				
 		/*
 		 *  for(int i = 0; i < rollingAmounts.size(); i++){
@@ -106,22 +105,136 @@ public class UsageKPITiles extends BaseClass{
 	
 	
 	
-	public static void verifySymbolOnTrendingValue() {
+	public static void verifyTrendingValues() {
 		
-		List<WebElement> trendingElements = driver.findElements(By.cssSelector(".tdb-kpi__trend>span"));
-		Assert.assertEquals(trendingElements.size(), 8);
 		
-		/*
-		 * for(int i = 0; i < trendingElements.size(); i++){
-			System.out.println("Trending element: " + trendingElements.get(i).getText());
+		for(int i = 1; i <= 4; i++){
+			
+			List<WebElement> trendingElementKpi = driver.findElements(By.xpath("(//*[@class='tdb-kpi__trend'])[" + i + "]/span"));
+			
+			WebElement threeMonthValue = null;
+			boolean threeMonthDisplayed = true;
+			
+			try{
+				threeMonthValue = driver.findElement(By.xpath("(//div[text()='3 months'])[" + i +"]/following-sibling::div"));
+			}catch(Exception e){
+				threeMonthDisplayed = false;
+			}
+			
+			
+			// If "3 months" rolling average exists, then the trending percentage can be calculated
+			if(threeMonthDisplayed){
+				
+				String kpiValueString = "";
+				
+				if(i <= 3)
+					kpiValueString = driver.findElement(By.xpath("(//div[@class='tdb-kpi__statistic'])[" + i +"]")).getText();
+				if(i == 4)
+					kpiValueString = driver.findElement(By.cssSelector(".tdb-kpi__statistic.tdb-text--highlight")).getText();
+				
+				String valueWithNoUnits = getNumericValue(kpiValueString);
+				
+				double kpiValue = Double.parseDouble(valueWithNoUnits);
+				
+				String threeMonthString = threeMonthValue.getText();
+				String threeMonthNoUnits = getNumericValue(threeMonthString);
+				
+				double threeMonthAverage = Double.parseDouble(threeMonthNoUnits);
+				
+				
+				// If value on KPI is different from the 3 month rolling average, then trending % will different from 0%.
+				// If trending % is 0%, it won't be displayed
+				if (!kpiValueString.equals(threeMonthString)){
+				
+					System.out.println("kpiValue: "  + kpiValue);
+					System.out.println("threeMonthAverage: "  + threeMonthAverage);
+					
+					long trendCalculated = Math.round((Math.abs((kpiValue - threeMonthAverage)/threeMonthAverage) * 100));
+					
+					System.out.println("Trend calculated: " + trendCalculated);
+					
+					if(trendCalculated > 0){
+						String trend = trendingElementKpi.get(1).getText();
+						int trendValue = getTrendingValueWithNoSymbol(trend); 
+						Assert.assertTrue(trendingElementKpi.size() == 2);
+						
+						///*** I'LL NEED THE ORIGINAL VALUES TO CALCULATE THE % - 
+						// *** THE ROUNDED VALUES DON'T ALWAYS WORK TO CALCULATE AND GET THE EXACT SAME VALUE AS THE ONE DISPLAYED ON THE KPI.
+						
+						//Assert.assertEquals(trendValue, trendCalculated);   
+						Assert.assertTrue(trend.endsWith("%"));
+						System.out.println("Trending element: " + trend);
+					}
+				}
+				
+				//System.out.println("3 months is displayed"); 
+				
+			}else{
+				
+				//System.out.println("3 months is NOT displayed"); 
+				
+			}
+							
 		}
-		*/
 		
-		Assert.assertTrue(trendingElements.get(1).getText().endsWith("%"));
-		Assert.assertTrue(trendingElements.get(3).getText().endsWith("%"));
-		Assert.assertTrue(trendingElements.get(5).getText().endsWith("%"));
-		Assert.assertTrue(trendingElements.get(7).getText().endsWith("%"));
+	}
 
+	
+	
+	
+	private static int getTrendingValueWithNoSymbol(String trend) {
+		
+		String[] trendParts = trend.split("%");
+		return Integer.parseInt(trendParts[0]);
+	}
+
+	
+	
+
+	private static String getNumericValue(String stringValue) {
+		
+		String unitK = "K";
+		String unitM = "M";
+		String unitG = "G";
+		String unitT = "T";
+		
+		String valueNoUnits = "";
+		
+		//System.out.println("Value String: " + stringValue);
+		
+		if (stringValue.contains(unitK)){
+			
+			String[] kpiValueParts = stringValue.split(unitK);
+			valueNoUnits = kpiValueParts[0];
+							
+		}else if (stringValue.contains(unitM)){
+			
+			String[] kpiValueParts = stringValue.split(unitM);
+			valueNoUnits = kpiValueParts[0];
+			
+		}else if (stringValue.contains(unitG)){
+			
+			String[] kpiValueParts = stringValue.split(unitG);
+			valueNoUnits = kpiValueParts[0];
+		
+		}else if (stringValue.contains(unitT)){
+			
+			String[] kpiValueParts = stringValue.split(unitT);
+			valueNoUnits = kpiValueParts[0];
+		
+		}else{
+			valueNoUnits = stringValue;
+			
+		}
+		
+		if(valueNoUnits.endsWith(".0")){
+			String[] tmpValue = valueNoUnits.split(".0"); 
+			valueNoUnits = tmpValue[0];
+		}
+		
+		//System.out.println("Value with no units: " + valueNoUnits);
+		
+		return valueNoUnits;
 		
 	}
 	

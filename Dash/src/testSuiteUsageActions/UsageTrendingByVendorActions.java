@@ -33,20 +33,20 @@ public class UsageTrendingByVendorActions extends BaseClass{
 		
 		
 		// #2 Verify the text shown on the tooltip when hovering the mouse over the bar charts, for Usage Trending Domestic chart
-		UsageTrending.verifyUsageTrendingChartTooltip(2);
+		UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.UsageTrendingDomesticChart);
 		
 		
 		// #3 Verify the text shown on the tooltip when hovering the mouse over the bar charts, for Usage Trending Roaming chart
-		UsageTrending.verifyUsageTrendingChartTooltip(3);
+		UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.UsageTrendingRoamingChart);
 				
 		
-		// #4 Verify that vendors/countries on the legends of Usage Trending Domestic chart can be switched on/off. 
-		// The bars are added/removed from chart according to the vendors/countries selected on the legends.
-		UsageTrending.verifyBarsCanBeSwitchedOnOff(2);
+		// #4 Verify that vendors on the legends of Usage Trending Domestic chart can be switched on/off. 
+		// The bars are added/removed from chart according to the vendors selected on the legends.
+		UsageTrending.verifyBarsCanBeSwitchedOnOff(UsageHelper.UsageTrendingDomesticChart);
 
 		
 		// #5 Verify that vendors/countries on the legends of Usage Trending Roaming chart can be switched on/off.
-		UsageTrending.verifyBarsCanBeSwitchedOnOff(3);
+		UsageTrending.verifyBarsCanBeSwitchedOnOff(UsageHelper.UsageTrendingRoamingChart);
 		
 		
 		// #4 Select only one vendor
