@@ -14,7 +14,9 @@ public class ExpenseHelper extends BaseClass
 {
 	public static String tmpStr = "";
 	public static String errMessage = "";	
+	public static String desiredMonth = "June 2016";	
 	public static String chartId = "";
+	public static String otherText = "Other";
 	public static List<WebElement> webElementListLegands;	
 	public static List<String> legendsListTotalExpense = new ArrayList<String>();	
 
@@ -22,6 +24,18 @@ public class ExpenseHelper extends BaseClass
 	public static List<String> expectedYearMonthList = new ArrayList<String>();
 	public static List<WebElement> webEleListMonthYearActual;	
 	public static List<String> actualYearMonthList = new ArrayList<String>();
+	
+	public static int maxNumberOfLegends = 5; // max number of legends that are not labeled 'other'.
+	
+	// this is for  distinguishing a control type in the expenses page. 
+	public static enum controlType
+	{
+		totalExpense,
+		totalExpenseSpendCatergory,
+		expenseTrending,
+		costPerServiceNumber,
+		countOfServiceNumber,
+	}
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// The three xpaths below are for locating things in the controls that have a series of bar graphs with months and legends below.    
@@ -38,7 +52,7 @@ public class ExpenseHelper extends BaseClass
 	
 	// this is for getting the legends in 'Total Expense by Vendor/Country and Spend Category'.
 	public static String partialXpathForLegendsInTotalSpendCategory = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
-	
+
 	
 	
 	public static void VerifyThreeComponents()
@@ -139,10 +153,7 @@ public class ExpenseHelper extends BaseClass
 		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
 
 		// store all legend names into web element list.
-		// webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-legend']/*/*/*"));		
 		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
-		
-		// 
 		
 		// for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
 		
@@ -185,6 +196,82 @@ public class ExpenseHelper extends BaseClass
 			Assert.assertEquals(actualYearMonthList.get(y), expectedYearMonthList.get(x), "Failed check of months in TotalExpensesTrend.VerifyMonths");
 		}
 	}	
+
+	// this waits for the legends block to be visible in the control type passed in. 
+	public static void WaitForControlLegend(controlType control) throws Exception
+	{
+		switch(control)
+		{
+			case totalExpense:
+			{
+				chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
+				WaitForElementVisible(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls), MediumTimeout);
+			}
+			
+			case totalExpenseSpendCatergory:
+			{
+				chartId = UsageHelper.getChartId(1); // get current chart Id for expense control.
+				WaitForElementVisible(By.xpath("//div[@id='" +  chartId + "']" + partialXpathForLegendsInTotalSpendCategory), MediumTimeout);
+			}
+			
+			case expenseTrending:
+			{
+				chartId = UsageHelper.getChartId(2); // get current chart Id for expense control.
+				WaitForElementVisible(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls), MediumTimeout);
+			}
+			
+			case costPerServiceNumber:
+			{
+				chartId = UsageHelper.getChartId(3); // get current chart Id for expense control.
+				WaitForElementVisible(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls), MediumTimeout);
+			}
+			
+			case countOfServiceNumber:
+			{
+				chartId = UsageHelper.getChartId(4); // get current chart Id for expense control.
+				WaitForElementVisible(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls), MediumTimeout);
+			}			
+		}
+	}
+	
+	//  
+	public static void VerifyControlLegends(controlType control, List<String> addedList) throws Exception
+	{
+		switch(control)
+		{
+			case totalExpense:
+			{
+				chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
+				DebugTimeout(3, "Three");
+				VerifyActualAndExpectedLists(driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)), addedList);
+			}
+			
+			case totalExpenseSpendCatergory:
+			{
+			}
+			
+			case expenseTrending:
+			{
+			}
+			
+			case costPerServiceNumber:
+			{
+			}
+			
+			case countOfServiceNumber:
+			{
+			}			
+
+		}
+	}
+
+	public static void VerifyActualAndExpectedLists(List<WebElement> actualList, List<String> addedList) throws Exception
+	{
+		for(WebElement ele : actualList)
+		{
+			Assert.assertTrue(addedList.contains(ele.getText()));
+		}
+	}
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers

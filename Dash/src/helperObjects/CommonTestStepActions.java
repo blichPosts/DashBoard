@@ -38,6 +38,17 @@ public class CommonTestStepActions extends BaseClass
 
 
 	public static String errMessage = "";
+
+
+	// this disables all of the vendor check-boxes and then clicks the one with the text sent in. 
+	public static void SelectSingleVendor(String vendorName)
+	{
+		// disable all and wait for the 'ALL' selector in point of view.
+		UnSelectAllVendors();
+		WaitForElementClickable(By.cssSelector(".tdb-povGroup__toggle>a"), ShortTimeout, "Failed wait in CommonTestStepActions.SelectSingleVendor.");
+		
+		driver.findElement(By.xpath("//span[text()='" + vendorName + "']")).click(); // click
+	}
 	
 	// loads each country into a country list. it also adds the vendors for each country.
 	public static String GetPulldownTextSelected()
@@ -577,8 +588,4 @@ public class CommonTestStepActions extends BaseClass
 			
 		return countriesAndVendors;
 	}
-	
-	
-	
-	
 }

@@ -482,5 +482,22 @@ public class BaseClass
 			
 			
 		}
+
+		public static void ShowText(String str) 
+		{
+			System.out.println(str);
+		}
 		
+		public static void ShowInt(int intIn) 
+		{
+			System.out.println(intIn);
+		}
+		
+		public static void ShowListOfStrings(List<String> strList) 
+		{
+			for(String str : strList)
+			{
+				ShowText(str);
+			}
+		}			
 }

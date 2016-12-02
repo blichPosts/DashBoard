@@ -54,7 +54,7 @@ public class CountOfServiceNumbersTrend extends BaseClass
 	}
 	
 	// verify the legends in the control match legends in the 'total expense' control. 
-	public static void VerifyLegends() throws InterruptedException
+	public static void VerifyLegends() throws Exception
 	{
 		errMessage = "Failed test of legends in CountOfServiceNumbersTrend.VerifyLegends"; 
 		

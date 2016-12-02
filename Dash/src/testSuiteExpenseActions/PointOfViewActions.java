@@ -8,6 +8,8 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenses.PointOfView;
 import helperObjects.CommonTestStepActions;
+import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 
 public class PointOfViewActions extends BaseClass 
 {
@@ -21,22 +23,24 @@ public class PointOfViewActions extends BaseClass
 	public static void PointOfViewActionsTest() throws Exception
 	{
 		// #1) Select all the vendors using the all selection and record the vendors (and possible 'other legend) in the 'total expense'  control.
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		CommonTestStepActions.SelectAllVendors();
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
 		PointOfView.StoreAllLegendsInTotalExpense();
 		PointOfView.BuildListOfVendorsForVendorSelection();
 
-		
 		// #2) Select the none selection to un-select all the vendors, select the recorded vendors one at a time, then select all the vendors.
 		CommonTestStepActions.UnSelectAllVendors();
 
 	    // When the none selector is selected there are no controls shown.
-		PointOfView.VerifyControlsNotPresent();
-
+		//PointOfView.VerifyControlsNotPresent();
 		
 		// As the vendors are added they show up in each control.
 	    // When all of the vendors are selected, an other legend shows up in all the controls if it existed in step one.
-
+		PointOfView.VerifyAddingVendors();
+		DebugTimeout(9999, "Freeze");
+		
 		
 		// get the legends in the expense control.
 		// legendsList = ExpenseHelper.GetTotalExpenseLegends();

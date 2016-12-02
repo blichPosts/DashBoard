@@ -50,7 +50,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 	}
 	
 	// verify the legends in the control match legends in the 'total expense' control. 
-	public static void VerifyLegends()
+	public static void VerifyLegends() throws Exception
 	{
 		errMessage = "Failed test of legends in CostPerServiceNumberTrend.VerifyLegends"; 
 		
