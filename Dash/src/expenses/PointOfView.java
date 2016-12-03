@@ -63,32 +63,55 @@ public class PointOfView extends BaseClass
 		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
 	}
 
-	// * this will select, using the point of view check boxes, a vendor from the 'expectedLegendsList' list. the 'expectedLegendsList'
-	//   is created when the 'StoreAllLegendsInTotalExpense' method is called from the test suite. 
+	// * this will individually select, using the point of view check boxes, each vendor that is in the 'expectedLegendsList' list. the 'expectedLegendsList'
+	//   is created when the 'StoreAllLegendsInTotalExpense' method is called from the test suite with all vendors selected.   
 	// * each time a vendor is added this will verify the vendor is shown in each control. each vendor that has already been added is 
-	//   verified to still be there when a new vendor is selected.
+	//   verified to still be there when a new vendor is selected and verified to exist in each control.
+	// * if there was an other legend shown when the  'expectedLegendsList' list was created. verify each control has an 'other' legend. 
 	public static void VerifyAddingVendors() throws Exception 
 	{
 		List<String> listOfVendorsAdded = new ArrayList<String>();
-		int expectedLegendsListSize = expectedLegendsList.size();
 		
-		// add the vendors in the 
-		for(int x = 0; x < expectedLegendsListSize; x++)
+		// add the vendors in the expectedLegendsList, one at a time.
+		for(int x = 0; x < expectedLegendsList.size(); x++)
 		{
-			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added.
+			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to ----------------------- FINISH.
 			{
 				CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box	
-				listOfVendorsAdded.add(expectedLegendsList.get(x)); // add selected vendor to the expected list
+				listOfVendorsAdded.add(expectedLegendsList.get(x)); // add selected vendor to the list of vendors selected/added.
 				
-				// this section 
-				ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfVendorsAdded); // verify 
+				// this section verifies the newly added legend and any legends that have already been added for each control type.
+				ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfVendorsAdded); 
+				ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfVendorsAdded); 
+				ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfVendorsAdded);
+				ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfVendorsAdded);				
+				ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfVendorsAdded);
 			}
 		}
 		
-		if(listOfVendorsAdded != null)
+		// if more than the max number of legends were found in the 'expectedLegendsList' list, verify each control contains an 'other' legend.
+		// this is done by adding the 'other' legend to the 'listOfVendorsAdded' list and making the 
+		if(expectedLegendsList.size() > ExpenseHelper.maxNumberOfLegends)
 		{
-			listOfVendorsAdded.removeAll(listOfVendorsAdded);
+			CommonTestStepActions.SelectAllVendors(); // select all vendors to get to the state where the 'expectedLegendsList' list was created.
+			
+			// add the 'other' legend to 'listOfVendorsAdded' list
+			listOfVendorsAdded.add(ExpenseHelper.otherText);
+			ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfVendorsAdded);
+			ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfVendorsAdded); 
+			ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfVendorsAdded);
+			ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfVendorsAdded);				
+			ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfVendorsAdded);
 		}
+		
+		if(listOfVendorsAdded != null) // remove listOfVendorsAdded items.
+		{
+			listOfVendorsAdded.clear();
+		}
+		
+		listOfVendorsAdded = null;
+		
+		
 	}
 	
 	// ///////////////////////////////////////////// HELPER ////////////////////////////////////////////

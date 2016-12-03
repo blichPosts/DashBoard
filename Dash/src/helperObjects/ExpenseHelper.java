@@ -1,6 +1,7 @@
 package helperObjects;
 
 import java.text.ParseException;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class ExpenseHelper extends BaseClass
 	public static String desiredMonth = "June 2016";	
 	public static String chartId = "";
 	public static String otherText = "Other";
+	public static String tempLocator = "";
+	
 	public static List<WebElement> webElementListLegands;	
 	public static List<String> legendsListTotalExpense = new ArrayList<String>();	
 
@@ -34,7 +37,7 @@ public class ExpenseHelper extends BaseClass
 		totalExpenseSpendCatergory,
 		expenseTrending,
 		costPerServiceNumber,
-		countOfServiceNumber,
+		countOfServiceNumbers,
 	}
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +229,7 @@ public class ExpenseHelper extends BaseClass
 				WaitForElementVisible(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls), MediumTimeout);
 			}
 			
-			case countOfServiceNumber:
+			case countOfServiceNumbers:
 			{
 				chartId = UsageHelper.getChartId(4); // get current chart Id for expense control.
 				WaitForElementVisible(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls), MediumTimeout);
@@ -234,7 +237,9 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	//  
+	// this is passed a control type and and a list of legend names (strings) that are expected to be found in the control type passed in.
+	// for each control type passed in a locator is created that will select the control type passed in. 
+	// method 'VerifyActualAndExpectedLists' is called foe the control type passed in.
 	public static void VerifyControlLegends(controlType control, List<String> addedList) throws Exception
 	{
 		switch(control)
@@ -242,29 +247,77 @@ public class ExpenseHelper extends BaseClass
 			case totalExpense:
 			{
 				chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
-				DebugTimeout(3, "Three");
-				VerifyActualAndExpectedLists(driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)), addedList);
+				
+				// build locator and wait section.
+				tempLocator = "(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + addedList.size() +"]" ;
+				WaitForElementVisible(By.xpath(tempLocator), MediumTimeout);
+
+				// do verification. 
+				// this sends a list of web elements that result from doing driver.findelements with the 'tempLocator' created above. the addedList string is also passed.
+				VerifyActualAndExpectedLists(driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)), addedList); 
+				break;
 			}
 			
 			case totalExpenseSpendCatergory:
 			{
+				
+				chartId = UsageHelper.getChartId(1); // get current chart Id for expense spend category control.
+				
+				// build locator and wait section.
+				tempLocator = "(//div[@id='" +  chartId + "']" + partialXpathForLegendsInTotalSpendCategory + ")[" + addedList.size() +"]" ;
+				WaitForElementVisible(By.xpath(tempLocator), MediumTimeout);
+
+				// do verification. 
+				// this sends a list of web elements that result from doing driver.findelements with the 'tempLocator' created above. the addedList string is also passed.
+				VerifyActualAndExpectedLists(driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathForLegendsInTotalSpendCategory)), addedList);				
+				break;
 			}
 			
 			case expenseTrending:
 			{
+				chartId = UsageHelper.getChartId(2); // get current chart Id for expense control.
+				
+				// build locator and wait section.
+				tempLocator = "(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + addedList.size() +"]" ;
+				WaitForElementVisible(By.xpath(tempLocator), MediumTimeout);
+
+				// do verification. 
+				// this sends a list of web elements that result from doing driver.findelements with the 'tempLocator' created above. the addedList string is also passed.
+				VerifyActualAndExpectedLists(driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)), addedList);				
+				break;
 			}
 			
 			case costPerServiceNumber:
 			{
+				chartId = UsageHelper.getChartId(3); // get current chart Id for expense control.
+				
+				// build locator and wait section.
+				tempLocator = "(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + addedList.size() +"]" ;
+				WaitForElementVisible(By.xpath(tempLocator), MediumTimeout);
+
+				// do verification. 
+				// this sends a list of web elements that result from doing driver.findelements with the 'tempLocator' created above. the addedList string is also passed.
+				VerifyActualAndExpectedLists(driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)), addedList);				
+				break;			
 			}
 			
-			case countOfServiceNumber:
+			case countOfServiceNumbers:
 			{
-			}			
+				chartId = UsageHelper.getChartId(4); // get current chart Id for expense control.
+				
+				// build locator and wait section.
+				tempLocator = "(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + addedList.size() +"]" ;
+				WaitForElementVisible(By.xpath(tempLocator), MediumTimeout);
 
+				// do verification. 
+				// this sends a list of web elements that result from doing driver.findelements with the 'tempLocator' created above. the addedList string is also passed.
+				VerifyActualAndExpectedLists(driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)), addedList);				
+				break;			
+			}			
 		}
 	}
 
+	// this receives a list of web element(s) that are the legend(s) in a control and a list of   
 	public static void VerifyActualAndExpectedLists(List<WebElement> actualList, List<String> addedList) throws Exception
 	{
 		for(WebElement ele : actualList)

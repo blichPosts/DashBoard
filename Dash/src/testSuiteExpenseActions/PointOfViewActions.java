@@ -34,12 +34,13 @@ public class PointOfViewActions extends BaseClass
 		CommonTestStepActions.UnSelectAllVendors();
 
 	    // When the none selector is selected there are no controls shown.
-		//PointOfView.VerifyControlsNotPresent();
+		PointOfView.VerifyControlsNotPresent();
 		
 		// As the vendors are added they show up in each control.
-	    // When all of the vendors are selected, an other legend shows up in all the controls if it existed in step one.
 		PointOfView.VerifyAddingVendors();
 		DebugTimeout(9999, "Freeze");
+
+	    // When all of the vendors are selected, an other legend shows up in all the controls if it existed in step one.		
 		
 		
 		// get the legends in the expense control.
