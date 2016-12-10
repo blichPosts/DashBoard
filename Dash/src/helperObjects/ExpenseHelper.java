@@ -27,6 +27,9 @@ public class ExpenseHelper extends BaseClass
 	public static List<String> expectedYearMonthList = new ArrayList<String>();
 	public static List<WebElement> webEleListMonthYearActual;	
 	public static List<String> actualYearMonthList = new ArrayList<String>();
+	public static List<WebElement> ctryList; 
+	public static List<WebElement> vndrList;	
+	public static String errNeedToCallInitializeMethod = "Failed in method call. You first need to call SetupCountryAndVendorData() to use this method.";
 	
 	public static int maxNumberOfLegends = 5; // max number of legends that are not labeled 'other'.
 	
@@ -56,7 +59,6 @@ public class ExpenseHelper extends BaseClass
 	// this is for getting the legends in 'Total Expense by Vendor/Country and Spend Category'.
 	public static String partialXpathForLegendsInTotalSpendCategory = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
 
-	
 	
 	public static void VerifyThreeComponents()
 	{
@@ -320,11 +322,96 @@ public class ExpenseHelper extends BaseClass
 	// this receives a list of web element(s) that are the legend(s) in a control and a list of   
 	public static void VerifyActualAndExpectedLists(List<WebElement> actualList, List<String> addedList) throws Exception
 	{
-		for(WebElement ele : actualList)
+		for(WebElement ele : actualList) 
 		{
 			Assert.assertTrue(addedList.contains(ele.getText()));
 		}
 	}
+
+	public static void Foo()
+	{
+		
+	}
+	
+	
+	// NOTE: this method is also in CommonTestStepActions - it doesn't work there. 
+	// loads each country into a country list. it also adds the vendors to a list in each country.
+	public static void SetupCountryAndVendorData()
+	{
+		countryList.clear(); // make sure it's cleared in case has already been used.  
+		
+		// get all countries
+		ctryList = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead"));
+		
+		// get all vendors
+		vndrList = driver.findElements(By.cssSelector(".md-checkbox-label"));	
+		
+		// for(WebElement ele : vndrList){ShowText(ele.getText());} // DEBUG - show country
+		
+		int y = 0;
+		int numberOfVendorsInCountry = 0;
+
+		// got through the countries
+		for(int x = 1; x <= ctryList.size(); x++)
+		{
+			// create country object and add to list.
+			Country tmpCountry = new Country(ctryList.get(x-1).getText()); 
+			countryList.add(tmpCountry);
+			
+			// add the vendors to the country just added to the list by getting  the number of vendors for the country and add that number of vendors from the vendor list.
+			numberOfVendorsInCountry = driver.findElements(By.xpath("(//div/div[@class='tdb-povGroup__label--subhead'])[" + x + "]/following-sibling ::div/div")).size();
+			
+			Assert.assertTrue(numberOfVendorsInCountry > 0, "Found a country with no vendors."); // verify at least one vendor is found.
+			
+			for(int z = 0; z < numberOfVendorsInCountry; z++) // add vendors to current country.
+			{
+				tmpCountry.AddToVendorList(vndrList.get(y).getText());
+				y++;
+			}
+		}		
+	}
+	
+	// This shows all countries with vendors.
+	// NOTE: you MUST run  SetupCountryAndVendorData() before using this.
+	public static void ShowCountriesVendors()
+	{
+		Assert.assertTrue(countryList.size() > 0, errNeedToCallInitializeMethod); // verify main container have been initialized.
+		for(Country ctry : countryList)
+		{
+			ShowText("Country:" + ctry.name);
+			for(String str :  ctry.vendorList)
+			{
+				ShowText("  " + str);
+			}
+			ShowText("");
+		}
+	}
+	
+	// This gets the country associated a vendor.
+	// NOTE: you MUST run  SetupCountryAndVendorData() before using this.
+	public static String GetCountryForVendor(String vendor)
+	{
+		Assert.assertTrue(countryList.size() > 0, errNeedToCallInitializeMethod); // verify main container have been initialized.
+
+		for(Country ctry : countryList)
+		{
+			if(ctry.vendorList.contains(vendor))
+			{
+				return ctry.name;
+			}
+		}
+
+		// if logic path gets here, the country was not found. throw an error.
+		Assert.fail("Received bad vendor in method ExpenseHelper.GetCountryForVendor. Vendor name is " + vendor  + ". Stopping program.");
+		
+		
+		return"";
+		
+	}
+	
+
+	
+	
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers
