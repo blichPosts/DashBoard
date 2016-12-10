@@ -328,12 +328,6 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 
-	public static void Foo()
-	{
-		
-	}
-	
-	
 	// NOTE: this method is also in CommonTestStepActions - it doesn't work there. 
 	// loads each country into a country list. it also adds the vendors to a list in each country.
 	public static void SetupCountryAndVendorData()
@@ -387,7 +381,7 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	// This gets the country associated a vendor.
+	// This gets the country associated with a vendor.
 	// NOTE: you MUST run  SetupCountryAndVendorData() before using this.
 	public static String GetCountryForVendor(String vendor)
 	{
@@ -408,10 +402,6 @@ public class ExpenseHelper extends BaseClass
 		return"";
 		
 	}
-	
-
-	
-	
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers

@@ -11,6 +11,8 @@ public class Country
 {
 	public String name = "";
 	public List<String> vendorList = new ArrayList<String>();
+	String tempCountry = "";
+	
 	
 	// ctor
 	public Country(String name) 
@@ -45,8 +47,15 @@ public class Country
 	
 	public String VendorByIndexOneBased(int index)
 	{
-		Assert.assertTrue(index <= vendorList.size()); // add Test NG assert
+		Assert.assertTrue(index <= vendorList.size()); 
 		return vendorList.get(index - 1);
+	}
+	
+	public String FindVendor(String vendor)
+	{
+		
+		return "";
+		
 	}
 	
 	public void ShowVendorList()
@@ -56,5 +65,12 @@ public class Country
 			System.out.println(str);
 		}
 	}
-
+	
+	public String CountryThatContainsVendor(String vendor)
+	{
+		
+		
+		
+		return "";
+	}
 }
