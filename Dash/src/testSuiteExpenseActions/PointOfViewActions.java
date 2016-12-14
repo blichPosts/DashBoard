@@ -3,6 +3,7 @@ package testSuiteExpenseActions;
 import javax.swing.JOptionPane;
 
 import org.bouncycastle.cms.PasswordRecipientInformation;
+import org.openqa.jetty.servlet.Debug;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -34,57 +35,60 @@ public class PointOfViewActions extends BaseClass
 		PointOfView.StoreAllLegendsInTotalExpense();
 
 		// #2) Select the none selection to un-select all the vendors, select the recorded vendors one at a time, then select all the vendors.
-		//CommonTestStepActions.UnSelectAllVendors();
+		CommonTestStepActions.UnSelectAllVendors();
 
 	    // When the none selector is selected there are no controls shown.
-		//PointOfView.VerifyControlsNotPresent();
-		
+		PointOfView.VerifyControlsNotPresent();
+
 		// As the vendors are added they show up in each control.
 	    // When all of the vendors are selected, an other legend shows up in all the controls if it existed in step one.
 		// PointOfView.VerifyAddingVendors();
-		//PointOfView.VerifyAddingVendorsTwo(ExpensesViewMode.vendor);
+		PointOfView.VerifyAddingVendorsTwo(ExpensesViewMode.vendor);
 		
 
 		// # 3 
 	    // Un-select all of the vendors
 	    // Add back the ones from step one.
 	    // Un-select each vendor one at a time.
-		//PointOfView.SetupForRemoveVendorsTest();	
+		PointOfView.SetupForRemoveVendorsTest();	
 
-
+		ShowText("start");
 	    // As each vendor is removed the corresponding legend is removed from each control
 	    // When all the vendors are unselected the controls are blank.
-		//PointOfView.RemoveVendorsAndVerify();		
+		PointOfView.RemoveVendorsAndVerify();		
+		ShowText("done");
+		DebugTimeout(9999, "Freeze");
 		
-
 		// # 4
 		// Switch the month pull down through each month.
     	// The Total Expense control shows the selected month/year.
     	// The month/year shown in the title (top-left) is the slected month/year.
-		//PointOfView.VerifyMonthPulldownSelectionsInControls();
-		
+		PointOfView.VerifyMonthPulldownSelectionsInControls();
 	 	
 		// # 5
 		// In the 'Country/Vendor View Selector' component, select Country and repeat the above steps.
 		// Expected results pass.
-		
-		// create container that stores each country object and the vendors inside each country onto a list. 
+
+		// create container that stores each country object and the vendors inside each country onto a list. this is needed to  
 		ExpenseHelper.SetupCountryAndVendorData();
-		
-		// now store the country, for each vendor in the expected vendor list, onto the expected country list. 
-		PointOfView.StoreExpectedCountryLegendsFromExpectedVendorLegends();
 		
 		// switch to the country view, un-select all vendors, and wait for all controls to be empty.  
 		CommonTestStepActions.SelectCountryView();
 		CommonTestStepActions.UnSelectAllVendors();
 		PointOfView.VerifyControlsNotPresent();
 
-		
+		// add vendors one at a time and verify expected country legends. 
 		PointOfView.VerifyAddingVendorsTwo(ExpensesViewMode.country);
 		
-
+		// # 3 
+	    // Un-select all of the vendors
+	    // Add back the ones from step one.
+	    // Un-select each vendor one at a time.
+		PointOfView.SetupForRemoveVendorsTest();	
 		
-		
+	    // As each vendor is removed the corresponding legend is removed from each control
+	    // When all the vendors are unselected the controls are blank.
+		PointOfView.RemoveVendorsAndVerify();		
 		
 		
 		// .md-checkbox-inner-container>#input-md-checkbox-1 /'/ this is css for the first vendor check box css=.md-checkbox-inner-container>#input-md-checkbox-1 
@@ -95,7 +99,7 @@ public class PointOfViewActions extends BaseClass
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
+	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
 		driver.close();
 		driver.quit();
 	}

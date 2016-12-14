@@ -21,11 +21,12 @@ public class PointOfView extends BaseClass
 {
 	
 	public static List<String> expectedLegendsList = new ArrayList<String>(); // this holds vendor legends in expense control.	
-	public static List<String> expectedCountriesList = new ArrayList<String>(); // this holds country legends in expense control.	
-	public static List<String> listOfVendorsAdded = new ArrayList<String>(); // this is used by 'VerifyAddingVendors' and 	
+	public static List<String> expectedCountriesList = new ArrayList<String>(); // this holds country legends in expense control. not currently used.
+	public static List<String> listOfItemsAdded = new ArrayList<String>(); // this is used by 'VerifyAddingVendors' and 	
 	public static List<WebElement> tempWebElementList;
 	public static String chartId = "";
 	public static String tempUrl = "";
+	public static String tempString = "";
 	
 	
 	public static void StoreAllLegendsInTotalExpense() 
@@ -38,7 +39,7 @@ public class PointOfView extends BaseClass
 	{
 		chartId =  UsageHelper.getChartId(0); // total expenses. 
 		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), ShortTimeout));
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
 		
 		chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
 		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
@@ -68,17 +69,17 @@ public class PointOfView extends BaseClass
 		// add the vendors in the expectedLegendsList, one at a time.
 		for(int x = 0; x < expectedLegendsList.size(); x++)
 		{
-			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfVendorsAdded'. it can't be selected in the vendors list.
+			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfItemsAdded'. it can't be selected in the vendors list.
 			{
 				CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box	
-				listOfVendorsAdded.add(expectedLegendsList.get(x)); // add selected vendor to the list of vendors selected/added.
+				listOfItemsAdded.add(expectedLegendsList.get(x)); // add selected vendor to the list of vendors selected/added.
 				
 				// this section verifies the newly added legend and any legends that have already been added for each control type.
-				ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfVendorsAdded); 
-				ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfVendorsAdded); 
-				ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfVendorsAdded);
-				ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfVendorsAdded);				
-				ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfVendorsAdded);
+				ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfItemsAdded); 
+				ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfItemsAdded); 
+				ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);
+				ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfItemsAdded);				
+				ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfItemsAdded);
 			}
 		}
 		
@@ -89,93 +90,92 @@ public class PointOfView extends BaseClass
 			CommonTestStepActions.SelectAllVendors(); // select all vendors to get to the state where the 'expectedLegendsList' list was created.
 			
 			// add the 'other' legend to 'listOfVendorsAdded' list
-			listOfVendorsAdded.add(ExpenseHelper.otherText);
+			listOfItemsAdded.add(ExpenseHelper.otherText);
 			
-			ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfVendorsAdded);
-			ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfVendorsAdded); 
-			ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfVendorsAdded);
-			ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfVendorsAdded);				
-			ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfVendorsAdded);
+			ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfItemsAdded);
+			ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfItemsAdded); 
+			ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);
+			ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfItemsAdded);				
+			ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfItemsAdded);
 		}
 		
-		if(listOfVendorsAdded != null) // clear listOfVendorsAdded items.
+		if(listOfItemsAdded != null) // clear listOfVendorsAdded items.
 		{
-			listOfVendorsAdded.clear();
+			listOfItemsAdded.clear();
 		}
-
 	}
 	
-	// bladdxx
 	// * this will individually select, using the point of view check boxes, each vendor that is in the 'expectedLegendsList' list. the 'expectedLegendsList'
 	//   is created when the 'StoreAllLegendsInTotalExpense' method is called from the test suite with all vendors selected. the other legend can't be added
 	//   using the point of view.  
-	// * each time a vendor is added this will verify the vendor is shown in each control. each vendor that has already been added is 
+    //
+	// * each time a vendor is added this will verify the vendor/country is shown in each control. each vendor/country that has already been added is 
 	//   verified to still be there when a new vendor is selected and verified to exist in each control.
-	// * if there was an other legend shown when the  'expectedLegendsList' list was created. verify each control has an 'other' legend. 
+    //	
+	// * if there was an other legend shown when the 'expectedLegendsList' list was created. verify each control has an 'other' legend.
+    //
+	// * NOTE: this is meant to work for the vendor and country view. The enum passed in tells which view is being tested.
+	// 
 	public static void VerifyAddingVendorsTwo(ExpensesViewMode viewMode) throws Exception 
 	{
-
-		List<String> listOfInterest = new ArrayList<String>();
-		
-		switch (viewMode)
+		// add the vendors/countries in the expectedLegendsList, one at a time, by selecting the vendors check box.
+		for(int x = 0; x < expectedLegendsList.size(); x++)
 		{
-			case country:
-			{
-				listOfInterest = expectedCountriesList;
-				break;
-			}
-			case vendor:
-			{
-				listOfInterest = expectedLegendsList;
-				break;
-			}
-		}
-		
-		// add the vendors/countries in the listOfInterest, one at a time.
-		for(int x = 0; x < listOfInterest.size(); x++)
-		{
-			if(!listOfInterest.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfVendorsAdded'. it can't be selected in the vendors list.
+			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfItemsAdded'. it can't be selected in the vendors list.
 			{
 				CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box	
-				listOfVendorsAdded.add(listOfInterest.get(x)); // add selected vendor to the list of vendors selected/added.
+				
+				if(viewMode == ExpensesViewMode.country) // this section makes sure a country is only added to the 'listOfItemsAdded' list once.  
+				{
+					tempString = ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x)); // get country for the vendor selected
+
+					if(!listOfItemsAdded.contains(tempString)) // add country to the list if country is not already on the list. 
+					{
+						listOfItemsAdded.add(tempString);
+					}
+				}
+				else
+				{
+					listOfItemsAdded.add(expectedLegendsList.get(x)); // add selected vendor to the list of vendors selected/added.					
+				}
 				
 				// this section verifies the newly added legend and any legends that have already been added for each control type.
-				ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfVendorsAdded); 
-				ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfVendorsAdded); 
-				ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfVendorsAdded);
-				ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfVendorsAdded);				
-				ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfVendorsAdded);
+				ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfItemsAdded); 
+				ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfItemsAdded); 
+				ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);
+				ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfItemsAdded);				
+				ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfItemsAdded);
 			}
 		}
 		
 		// if more than the max number of legends were found in the 'expectedLegendsList' list, verify each control contains an 'other' legend.
 		// this is done by adding the 'other' legend to the 'listOfVendorsAdded' list and making the verify call on each control.
-		if(listOfInterest.size() > ExpenseHelper.maxNumberOfLegends)
+		if(expectedLegendsList.size() > ExpenseHelper.maxNumberOfLegends && viewMode == ExpensesViewMode.vendor)
 		{
 			CommonTestStepActions.SelectAllVendors(); // select all vendors to get to the state where the 'expectedLegendsList' list was created.
 			
 			// add the 'other' legend to 'listOfVendorsAdded' list
-			listOfVendorsAdded.add(ExpenseHelper.otherText);
+			listOfItemsAdded.add(ExpenseHelper.otherText);
 			
-			ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfVendorsAdded);
-			ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfVendorsAdded); 
-			ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfVendorsAdded);
-			ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfVendorsAdded);				
-			ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfVendorsAdded);
+			ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfItemsAdded);
+			ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfItemsAdded); 
+			ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);
+			ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfItemsAdded);				
+			ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfItemsAdded);
 		}
 		
-		if(listOfInterest != null) // clear listOfInterest items.
+		
+		if(listOfItemsAdded != null) // clear listOfItemsAdded items.
 		{
-			listOfInterest.clear();
+			listOfItemsAdded.clear();
 		}
-
+		
 	}	
-	
-	
 	
 	// this removes all the selected vendors and then adds back the  
 	public static void SetupForRemoveVendorsTest() throws Exception
 	{
+		CommonTestStepActions.SelectAllVendors();
 		CommonTestStepActions.UnSelectAllVendors();
 		VerifyControlsNotPresent();
 		SelectVendors();
@@ -193,7 +193,7 @@ public class PointOfView extends BaseClass
 			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfVendorsAdded' it can't be selected in the vendors list.
 			{
 				CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box	
-				listOfVendorsAdded.add(expectedLegendsList.get(x)); // add selected vendor to the list of vendors selected/added.
+				listOfItemsAdded.add(expectedLegendsList.get(x)); // add selected vendor to the list of vendors selected/added.
 			}
 		}
 	}
@@ -201,18 +201,22 @@ public class PointOfView extends BaseClass
 	// this un-checks vendors that have been added in the point of view, one at a time. when each one is un-checked it is verified as not being in the control legends.  
 	public static void RemoveVendorsAndVerify() throws Exception
 	{
+	
+		ShowInt(listOfItemsAdded.size());
+		
 		// remove the vendors in the expectedLegendsList, one at a time.
 		for(int x = 0; x < expectedLegendsList.size(); x++)
 		{
 			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfVendorsAdded' it can't be selected in the vendors list.
 			{
-				ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfVendorsAdded);
+				ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);
+				// bladdxx -- add all controls.
 				CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box to remove the vendor that's been added.
-				listOfVendorsAdded.remove(listOfVendorsAdded.remove(expectedLegendsList.get(x))); // remove un-checked vendor from listOfVendorsAdded.               
+				listOfItemsAdded.remove(listOfItemsAdded.remove(expectedLegendsList.get(x))); // remove un-checked vendor from listOfVendorsAdded.               
 
 				chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
 				
-				ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (listOfVendorsAdded.size() + 1) +"]";
+				ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (listOfItemsAdded.size() + 1) +"]";
 				WaitForElementNotVisibleNoThrow(By.xpath(ExpenseHelper.tempLocator), ShortTimeout);
 			}
 		}
@@ -238,6 +242,7 @@ public class PointOfView extends BaseClass
 		}
 	}
 
+	// NOTE: Not currently used. May need in future.
 	// this takes the vendors stored in the 'expectedLegendsList' list and creates a list of corresponding countries called 'expectedCountriesList'.
 	// the 'expectedCountriesList' will hold the corresponding country for each vendor in the 'expectedLegendsList'.  
 	public static void StoreExpectedCountryLegendsFromExpectedVendorLegends()
