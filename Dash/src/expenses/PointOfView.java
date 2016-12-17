@@ -198,11 +198,10 @@ public class PointOfView extends BaseClass
 		}
 	}
 
-	// this un-checks vendors that have been added in the point of view, one at a time. when each one is un-checked it is verified as not being in the control legends.  
+	// this un-checks vendors that have been added in the point of view, one at a time. when each vendor is un-checked it is verified as not being in the control legends.
+	// the legends that are expected to be remaining are also checked.
 	public static void RemoveVendorsAndVerify() throws Exception
 	{
-	
-		ShowInt(listOfItemsAdded.size());
 		
 		// remove the vendors in the expectedLegendsList, one at a time.
 		for(int x = 0; x < expectedLegendsList.size(); x++)
@@ -210,7 +209,11 @@ public class PointOfView extends BaseClass
 			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfVendorsAdded' it can't be selected in the vendors list.
 			{
 				ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);
-				// bladdxx -- add all controls.
+				ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfItemsAdded);
+				ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);				
+				ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfItemsAdded);
+				ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfItemsAdded);				
+				
 				CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box to remove the vendor that's been added.
 				listOfItemsAdded.remove(listOfItemsAdded.remove(expectedLegendsList.get(x))); // remove un-checked vendor from listOfVendorsAdded.               
 
@@ -218,6 +221,54 @@ public class PointOfView extends BaseClass
 				
 				ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (listOfItemsAdded.size() + 1) +"]";
 				WaitForElementNotVisibleNoThrow(By.xpath(ExpenseHelper.tempLocator), ShortTimeout);
+			}
+		}		
+
+	}
+	
+	// this un-checks vendors that have been added in the point of view, one at a time. when each vendor is un-checked it is verified as not being in the control legends.
+	// the legends that are expected to be remaining are also checked.
+	public static void RemoveVendorsAndVerifyTwo(ExpensesViewMode viewMode) throws Exception
+	{
+		ShowInt(listOfItemsAdded.size());
+	
+		switch(viewMode)
+		{
+			case vendor:
+			{
+				// remove the vendors in the expectedLegendsList, one at a time.
+				for(int x = 0; x < expectedLegendsList.size(); x++)
+				{
+					if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfVendorsAdded' it can't be selected in the vendors list.
+					{
+						ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);
+						ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfItemsAdded);
+						ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);				
+						ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfItemsAdded);
+						ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfItemsAdded);				
+						
+						CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box to remove the vendor that's been added.
+						listOfItemsAdded.remove(listOfItemsAdded.remove(expectedLegendsList.get(x))); // remove un-checked vendor from listOfVendorsAdded.               
+
+						chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
+						
+						ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (listOfItemsAdded.size() + 1) +"]";
+						WaitForElementNotVisibleNoThrow(By.xpath(ExpenseHelper.tempLocator), ShortTimeout);
+					}
+				}		
+				break;
+			}
+		
+			case country:
+			{
+				for(int x = 0; x < expectedLegendsList.size(); x++)
+				{
+					if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText))
+					{
+						ShowText(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x)));
+					}
+				}
+				break;
 			}
 		}
 	}

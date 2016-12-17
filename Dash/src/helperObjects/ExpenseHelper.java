@@ -319,7 +319,8 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 
-	// this receives a list of web element(s) that are the legend(s) in a control and a list of   
+	// bladdxx - do assert on size here.
+	// this receives a list of web element(s) that are the legend(s) in a control and a list of items that are supposed to be in the list of web elements.   
 	public static void VerifyActualAndExpectedLists(List<WebElement> actualList, List<String> addedList) throws Exception
 	{
 		for(WebElement ele : actualList) 

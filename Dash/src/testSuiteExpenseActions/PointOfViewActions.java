@@ -34,6 +34,7 @@ public class PointOfViewActions extends BaseClass
 		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
 		PointOfView.StoreAllLegendsInTotalExpense();
 
+		/*
 		// #2) Select the none selection to un-select all the vendors, select the recorded vendors one at a time, then select all the vendors.
 		CommonTestStepActions.UnSelectAllVendors();
 
@@ -45,26 +46,23 @@ public class PointOfViewActions extends BaseClass
 		// PointOfView.VerifyAddingVendors();
 		PointOfView.VerifyAddingVendorsTwo(ExpensesViewMode.vendor);
 		
-
 		// # 3 
 	    // Un-select all of the vendors
 	    // Add back the ones from step one.
 	    // Un-select each vendor one at a time.
 		PointOfView.SetupForRemoveVendorsTest();	
 
-		ShowText("start");
 	    // As each vendor is removed the corresponding legend is removed from each control
 	    // When all the vendors are unselected the controls are blank.
 		PointOfView.RemoveVendorsAndVerify();		
-		ShowText("done");
-		DebugTimeout(9999, "Freeze");
-		
+
 		// # 4
 		// Switch the month pull down through each month.
     	// The Total Expense control shows the selected month/year.
     	// The month/year shown in the title (top-left) is the slected month/year.
 		PointOfView.VerifyMonthPulldownSelectionsInControls();
-	 	
+		*/
+		
 		// # 5
 		// In the 'Country/Vendor View Selector' component, select Country and repeat the above steps.
 		// Expected results pass.
@@ -88,7 +86,7 @@ public class PointOfViewActions extends BaseClass
 		
 	    // As each vendor is removed the corresponding legend is removed from each control
 	    // When all the vendors are unselected the controls are blank.
-		PointOfView.RemoveVendorsAndVerify();		
+		PointOfView.RemoveVendorsAndVerifyTwo(ExpensesViewMode.country);		
 		
 		
 		// .md-checkbox-inner-container>#input-md-checkbox-1 /'/ this is css for the first vendor check box css=.md-checkbox-inner-container>#input-md-checkbox-1 
