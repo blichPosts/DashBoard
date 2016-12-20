@@ -38,8 +38,18 @@ public class TotalUsageByCountryActions extends BaseClass {
 		
 		// Set month selector value
 		CommonTestStepActions.selectMonthYearPulldown("August 2016");
-				
-		// #3 Verify that countries selected are added to the Total Usage by Country chart - "Domestic Usage"
+			
+		Thread.sleep(2000);
+		
+		// #3 Verify the text shown on the tooltip when hovering the mouse over the bar charts.
+		// * Total Usage Domestic chart
+		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart);
+		
+		// * Total Usage Roaming chart
+		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart);
+		
+		
+		// #4 Verify that countries selected are added to the Total Usage by Country chart - "Domestic Usage"
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
@@ -60,7 +70,7 @@ public class TotalUsageByCountryActions extends BaseClass {
 		TotalUsageActions.countriesAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryMessages);
 			
 		
-		// #4 Verify that countries selected are added to the Total Usage by Country chart - "Roaming Usage"
+		// #5 Verify that countries selected are added to the Total Usage by Country chart - "Roaming Usage"
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
@@ -81,14 +91,6 @@ public class TotalUsageByCountryActions extends BaseClass {
 		TotalUsageActions.countriesAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryMessages);
 			
 		 
-		Thread.sleep(2000);
-		
-		// #5 Verify the text shown on the tooltip when hovering the mouse over the bar charts.
-		// * Total Usage Domestic chart
-		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart);
-		
-		// * Total Usage Roaming chart
-		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart);
 		
 		
 		

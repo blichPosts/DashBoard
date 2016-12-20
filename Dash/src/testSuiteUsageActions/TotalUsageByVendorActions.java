@@ -39,8 +39,18 @@ public class TotalUsageByVendorActions extends BaseClass {
 		
 		// Set month selector value
 		CommonTestStepActions.selectMonthYearPulldown("August 2016");
-				
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
+		
+		Thread.sleep(2000);
+		
+		// #3 Verify the text shown on the tooltip when hovering the mouse over the bar charts.
+		// * Total Usage Domestic chart
+		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart);
+		
+		// * Total Usage Roaming chart
+		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart);
+		
+		
+		// #4 Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
@@ -82,18 +92,11 @@ public class TotalUsageByVendorActions extends BaseClass {
 		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryMessages);
 		
 		
-		// #3 Unselect vendors from PoV - one by one - and verify that they are removed from graphs (tooltip) and legend,
+		// # Unselect vendors from PoV - one by one - and verify that they are removed from graphs (tooltip) and legend,
 		// - for Voice, Data and Messages 			
 		
 		
-		Thread.sleep(2000);
 		
-		// #5 Verify the text shown on the tooltip when hovering the mouse over the bar charts.
-		// * Total Usage Domestic chart
-		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart);
-		
-		// * Total Usage Roaming chart
-		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart);
 		
 	}
 	

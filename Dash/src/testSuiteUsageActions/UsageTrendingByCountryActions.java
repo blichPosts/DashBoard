@@ -10,6 +10,7 @@ import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.UsageHelper;
 import usage.UsageTrending;
+import usage.UsageTrendingActions;
 
 public class UsageTrendingByCountryActions extends BaseClass{
 
@@ -27,10 +28,15 @@ public class UsageTrendingByCountryActions extends BaseClass{
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 			
+		// Set month selector value
+		CommonTestStepActions.selectMonthYearPulldown("August 2016");
+				
+		Thread.sleep(2000);
+		
 		// #1 Select Vendor View 
 		UsageHelper.selectCountryView();
 		
-		
+	
 		// #2 Verify the text shown on the tooltip when hovering the mouse over the bar charts, for Usage Trending Domestic chart
 		UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.UsageTrendingDomesticChart);
 		
@@ -46,11 +52,47 @@ public class UsageTrendingByCountryActions extends BaseClass{
 		
 		// #5 Verify that vendors/countries on the legends of Usage Trending Roaming chart can be switched on/off.
 		UsageTrending.verifyBarsCanBeSwitchedOnOff(UsageHelper.UsageTrendingRoamingChart);
+	
 		
+		// #6 Verify that countries selected are added to the Usage Trending by Country chart - "Domestic"
 		
-		// #4 Select only one vendor
-		//CommonTestStepActions.UnSelectAllVendors(); 
-		//CommonTestStepActions.selectOneVendor("AT&T Mobility");
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+		
+		// Voice
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryVoice);
+		
+		// Unselect all vendors
+		//CommonTestStepActions.UnSelectAllVendors();
+		
+		// Messages
+		//UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryMessages);
+				
+		// Unselect all vendors
+		//CommonTestStepActions.UnSelectAllVendors();
+		
+		// Data
+		//UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryData);
+
+		// Unselect all vendors
+		//CommonTestStepActions.UnSelectAllVendors();
+		
+		// Verify that countries selected are added to the Usage Trending by Country chart - "Roaming"
+		
+		// Voice
+		//UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryVoice);
+				
+		// Unselect all vendors
+		//CommonTestStepActions.UnSelectAllVendors();
+		
+		// Messages
+		//UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryMessages);
+				
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+		
+		// Data
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryData);
 		
 		
 	}

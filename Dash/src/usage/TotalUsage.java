@@ -69,6 +69,7 @@ public class TotalUsage extends BaseClass{
 		List<WebElement> categorySelectors = driver.findElements(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option"));
 
 		
+		
 		for (int i = 0; i < 3; i++){
 			
 			categorySelectors.get(i).click(); 
@@ -83,11 +84,17 @@ public class TotalUsage extends BaseClass{
 				
 			} else if (i == 1){
 				
-				boolean domesticTitle = domesticTitleFound.equals(UsageHelper.domesticTitleDataGB) || domesticTitleFound.equals(UsageHelper.domesticTitleDataTB);  
+				/*boolean domesticTitle = domesticTitleFound.equals(UsageHelper.domesticTitleDatak) || domesticTitleFound.equals(UsageHelper.domesticTitleDataGB) 
+						|| domesticTitleFound.equals(UsageHelper.domesticTitleDataGB) ||domesticTitleFound.equals(UsageHelper.domesticTitleDataGB) 
+						|| domesticTitleFound.equals(UsageHelper.domesticTitleDataTB);  
 				Assert.assertTrue(domesticTitle);
-				
 				boolean roamingTitle = roamingTitleFound.equals(UsageHelper.roamingTitleDataGB) || roamingTitleFound.equals(UsageHelper.roamingTitleDataTB);  
-				Assert.assertTrue(roamingTitle);
+				Assert.assertTrue(roamingTitle);  */
+				
+				// In Total Usage charts the data usage is always represented in GB
+				Assert.assertTrue(domesticTitleFound.equals(UsageHelper.domesticTitleDataGB));
+				Assert.assertTrue(roamingTitleFound.equals(UsageHelper.roamingTitleDataGB));
+				
 				System.out.println("Data...");
 								
 			} else if (i == 2){
@@ -203,11 +210,11 @@ public class TotalUsage extends BaseClass{
 		//List<WebElement> charts = driver.findElements(By.cssSelector("chart>div"));
 		
 		// Get the id of the "Total Usage by Vendor (DOMESTIC)" chart (FIRST chart)
-		chartId = UsageHelper.getChartId(0);  //charts.get(0).getAttribute("id");
+		chartId = UsageHelper.getChartId(0);
 		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listCountriesChecked);
 				
 		// Get the id of the "Total Usage by Vendor (ROAMING)" chart (SECOND chart)
-		chartId = UsageHelper.getChartId(1);  //charts.get(1).getAttribute("id");
+		chartId = UsageHelper.getChartId(1);
 		verifyLabelsInVerticalAxisTotalUsageCharts(chartId, listCountriesChecked);
 		
 	}

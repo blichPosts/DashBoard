@@ -45,7 +45,7 @@ public class TotalUsageActions extends BaseClass{
 			
 			// Select one vendor
 			CommonTestStepActions.selectOneVendor(vendorName);
-			System.out.println("Vendor selected: " + vendorName);
+			//System.out.println("Vendor selected: " + vendorName);
 			
 			// Wait 2 seconds to the values to get updated on Dashboard, after the vendor selection
 			Thread.sleep(2000);
@@ -53,15 +53,16 @@ public class TotalUsageActions extends BaseClass{
 			currentKPIvalue = kpiTiles.get(kpiNum).getText(); 
 			//System.out.println("Current KPI tile value: " + currentKPIvalue);
 			
+			List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
+			
+			
 			// For first vendor selected: If KPI tile is zero, vendor will not be listed on the chart. 
 			if(count == 1){
 				
-				System.out.println("First Vendor..");
+				//System.out.println("First Vendor..");
 				
 				// Verify that vendor is listed on chart if value is NOT zero 
 				if(!currentKPIvalue.equals("0")){
-					
-					List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 					
 					boolean vendorInChart = false; 
 					
@@ -82,8 +83,6 @@ public class TotalUsageActions extends BaseClass{
 				// Verify that vendor is listed on chart if value is NOT zero
 				if(!currentKPIvalue.equals(previousKPIvalue)){
 					
-					List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
-					
 					boolean vendorInChart = false; 
 					
 					for (WebElement label: xAxisLabels){
@@ -102,8 +101,6 @@ public class TotalUsageActions extends BaseClass{
 				
 				// Verify that vendor is listed on chart if value is NOT zero
 				if(!currentKPIvalue.equals(previousKPIvalue)){
-					
-					List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 					
 					boolean vendorInChart = false; 
 					
@@ -132,49 +129,13 @@ public class TotalUsageActions extends BaseClass{
 
 	
 	
-	
-	
-	public static List<List<WebElement>> getCountriesAndVendors() {
-
-		
-		List<List<WebElement>> countriesAndVendors = new ArrayList<>();
-		
-		List<WebElement> countries = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead"));
-		List<WebElement> vendors = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead~div"));
-		
-		
-		for (int i = 0; i < countries.size(); i++){
-			
-			List<WebElement> temp = new ArrayList<WebElement>();
-			
-			temp.add(countries.get(i));
-			//System.out.println(countries.get(i).getText());
-			
-			List<WebElement> vendorsUnderCountry = vendors.get(i).findElements(By.cssSelector(".tdb-povGroup__label--subhead~div>div>md-checkbox>label>span")); 
-			
-			for (WebElement v : vendorsUnderCountry){
-				temp.add(v);
-				//System.out.println("  " + v.getText());
-			}
-			//System.out.println("  temp size: " + temp.size());
-			countriesAndVendors.add(temp);
-			
-		}
-		
-		//System.out.println("countriesAndVendors size: " + countriesAndVendors.size()); 
-			
-		return countriesAndVendors;
-	}
-	
-	
-	
 	// Verifies that if a country is selected on the PoV section, and the value to be shown is greater than zero, the country name is listed on the x axis on the chart,
 	// unless there are already 5 countries listed. In this case the value for the selected country may be included under "Other"  
 	public static void countriesAddedToCharts(int chartNum, int kpiNum) throws InterruptedException {
 		
 		List<WebElement> kpiTiles = driver.findElements(By.cssSelector(".tdb-kpi__statistic"));
 		
-		List<List<WebElement>> countriesAndVendors = getCountriesAndVendors();
+		List<List<WebElement>> countriesAndVendors = UsageHelper.getCountriesAndVendors();
 		
 		String currentKPIvalue = "";
 		String previousKPIvalue = "";
@@ -193,7 +154,7 @@ public class TotalUsageActions extends BaseClass{
 			
 			String countryName = c.get(0).getText();
 			
-			System.out.println("Country Name: " + countryName);
+			//System.out.println("Country Name: " + countryName);
 			
 			for (int i = 1; i < c.size(); i++){
 			
@@ -209,13 +170,13 @@ public class TotalUsageActions extends BaseClass{
 				currentKPIvalue = kpiTiles.get(kpiNum).getText(); 
 				//System.out.println("Current KPI tile value: " + currentKPIvalue);
 				
+				List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
+				
 				// For first vendor selected: If KPI tile is zero, vendor will not be listed on the chart. 
 				if(vendorCount == 1 && countryCount == 1){
 					
 					// Verify that vendor is listed on chart if value is NOT zero 
 					if(!currentKPIvalue.equals("0")){
-						
-						List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 						
 						boolean countryInChart = false; 
 						
@@ -236,8 +197,6 @@ public class TotalUsageActions extends BaseClass{
 					// Verify that vendor is listed on chart if value is NOT zero
 					if(!currentKPIvalue.equals(previousKPIvalue)){
 						
-						List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
-						
 						boolean countryInChart = false; 
 						
 						for (WebElement label: xAxisLabels){
@@ -256,8 +215,6 @@ public class TotalUsageActions extends BaseClass{
 					
 					// Verify that vendor is listed on chart if value is NOT zero
 					if(!currentKPIvalue.equals(previousKPIvalue)){
-						
-						List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 						
 						boolean countryInChart = false; 
 						

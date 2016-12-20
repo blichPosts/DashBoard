@@ -9,7 +9,9 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.UsageHelper;
+import usage.TotalUsageActions;
 import usage.UsageTrending;
+import usage.UsageTrendingActions;
 
 
 public class UsageTrendingByVendorActions extends BaseClass{
@@ -27,7 +29,13 @@ public class UsageTrendingByVendorActions extends BaseClass{
 	{
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
-			
+		
+		// Set month selector value
+		CommonTestStepActions.selectMonthYearPulldown("August 2016");
+						
+		Thread.sleep(2000);
+				
+		
 		// #1 Select Vendor View 
 		UsageHelper.selectVendorView();
 		
@@ -49,11 +57,49 @@ public class UsageTrendingByVendorActions extends BaseClass{
 		UsageTrending.verifyBarsCanBeSwitchedOnOff(UsageHelper.UsageTrendingRoamingChart);
 		
 		
-		// #4 Select only one vendor
-		//CommonTestStepActions.UnSelectAllVendors(); 
-		//CommonTestStepActions.selectOneVendor("AT&T Mobility");
+		// #6 Verify that vendors selected are added to the Usage Trending by Vendor chart - "Domestic"
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+		
+		// Voice
+		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryVoice);
+	
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+		
+		// Messages
+		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryMessages);
+				
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+		
+		// Data
+		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryData);
+
+			
+		// Verify that vendors selected are added to the Usage Trending by Vendor chart - "Roaming"
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+		
+		// Voice
+		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryVoice);
+				
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+		
+		// Messages
+		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryMessages);
+				
+		// Unselect all vendors
+		CommonTestStepActions.UnSelectAllVendors();
+		
+		// Data
+		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryData);
 		
 		
+		UsageTrendingActions.vendorsUnselectedRemovedFromChart(UsageHelper.UsageTrendingDomesticChart);
+		
+		UsageTrendingActions.vendorsUnselectedRemovedFromChart(UsageHelper.UsageTrendingRoamingChart);
 		
 	}
 	

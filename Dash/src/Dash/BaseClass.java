@@ -190,7 +190,7 @@ public class BaseClass
 		
 		// maximize and configure timeouts
 		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
 	
 	public static void loginAsAdmin()throws Exception

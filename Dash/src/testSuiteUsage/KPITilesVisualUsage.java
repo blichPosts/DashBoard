@@ -42,7 +42,7 @@ public class KPITilesVisualUsage extends BaseClass
 		
 		
 		// #4 Verify the units of measure for the rolling amounts.
-		UsageKPITiles.verifyRollingAveragesAmounts();
+		UsageKPITiles.verifyRollingAveragesUnits();
 		
 		
 		// #5 Verify that the trending values have the '%' symbol, on all the KPI tiles -- icons cannot be verified

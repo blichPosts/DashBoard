@@ -55,16 +55,15 @@ public class UsageKPITiles extends BaseClass{
 	}
 
 	
-	public static void verifyRollingAveragesAmounts() {
+	public static void verifyRollingAveragesUnits() {
 
 		
 		List<WebElement> rollingAmounts = driver.findElements(By.cssSelector(".tdb-inlineBlock.tdb-width--one-half.tdb-align--right"));	
 				
-		/*
-		 *  for(int i = 0; i < rollingAmounts.size(); i++){
+		  for(int i = 0; i < rollingAmounts.size(); i++){
 			System.out.println("Rolling amounts: " + rollingAmounts.get(i).getText());
 			}
-		*/
+		
 		
 		// Voice
 		Assert.assertEquals(rollingAmounts.get(0).getText().endsWith(UsageHelper.minutes), true);
@@ -127,8 +126,10 @@ public class UsageKPITiles extends BaseClass{
 				
 				String kpiValueString = "";
 				
+				// If KPI tile is one of the Domestic KPI tiles
 				if(i <= 3)
 					kpiValueString = driver.findElement(By.xpath("(//div[@class='tdb-kpi__statistic'])[" + i +"]")).getText();
+				// If KPI tile is the Roaming KPI tile
 				if(i == 4)
 					kpiValueString = driver.findElement(By.cssSelector(".tdb-kpi__statistic.tdb-text--highlight")).getText();
 				
