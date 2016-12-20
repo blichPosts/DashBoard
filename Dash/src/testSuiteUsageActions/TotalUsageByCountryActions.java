@@ -38,49 +38,59 @@ public class TotalUsageByCountryActions extends BaseClass {
 		
 		// Set month selector value
 		CommonTestStepActions.selectMonthYearPulldown("August 2016");
-				
+			
+		Thread.sleep(2000);
 		
-		// Verify that countries selected are added to the Total Usage by Country chart - "Domestic Usage"
+		// #3 Verify the text shown on the tooltip when hovering the mouse over the bar charts.
+		// * Total Usage Domestic chart
+		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart);
+		
+		// * Total Usage Roaming chart
+		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart);
+		
+		
+		// #4 Verify that countries selected are added to the Total Usage by Country chart - "Domestic Usage"
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Voice
-		TotalUsageActions.countriesAddedToCharts(0, 0);
+		TotalUsageActions.countriesAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryVoice);
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 				
 		// Data
-		TotalUsageActions.countriesAddedToCharts(0, 1);
+		TotalUsageActions.countriesAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryData);
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 				
 		// Messages
-		TotalUsageActions.countriesAddedToCharts(0, 2);
+		TotalUsageActions.countriesAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryMessages);
 			
 		
-		// Verify that countries selected are added to the Total Usage by Country chart - "Roaming Usage"
+		// #5 Verify that countries selected are added to the Total Usage by Country chart - "Roaming Usage"
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Voice
-		TotalUsageActions.countriesAddedToCharts(1, 0);
+		TotalUsageActions.countriesAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryVoice);
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 				
 		// Data
-		TotalUsageActions.countriesAddedToCharts(1, 1);
+		TotalUsageActions.countriesAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryData);
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 				
 		// Messages
-		TotalUsageActions.countriesAddedToCharts(1, 2);
-				
+		TotalUsageActions.countriesAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryMessages);
+			
+		 
 		
 		
 		

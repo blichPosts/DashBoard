@@ -2,10 +2,14 @@ package usage;
 
 import org.testng.Assert;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 
 import Dash.BaseClass;
@@ -41,7 +45,7 @@ public class TotalUsageActions extends BaseClass{
 			
 			// Select one vendor
 			CommonTestStepActions.selectOneVendor(vendorName);
-			System.out.println("Vendor selected: " + vendorName);
+			//System.out.println("Vendor selected: " + vendorName);
 			
 			// Wait 2 seconds to the values to get updated on Dashboard, after the vendor selection
 			Thread.sleep(2000);
@@ -49,20 +53,21 @@ public class TotalUsageActions extends BaseClass{
 			currentKPIvalue = kpiTiles.get(kpiNum).getText(); 
 			//System.out.println("Current KPI tile value: " + currentKPIvalue);
 			
+			List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
+			
+			
 			// For first vendor selected: If KPI tile is zero, vendor will not be listed on the chart. 
 			if(count == 1){
 				
-				System.out.println("First Vendor..");
+				//System.out.println("First Vendor..");
 				
 				// Verify that vendor is listed on chart if value is NOT zero 
 				if(!currentKPIvalue.equals("0")){
 					
-					List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
-					
 					boolean vendorInChart = false; 
 					
 					for (WebElement label: xAxisLabels){
-						System.out.println("Label in x axis: " + label.getText());
+						//System.out.println("Label in x axis: " + label.getText());
 						
 						if(label.getText().equals(v.getText())){
 							vendorInChart = true;
@@ -78,12 +83,10 @@ public class TotalUsageActions extends BaseClass{
 				// Verify that vendor is listed on chart if value is NOT zero
 				if(!currentKPIvalue.equals(previousKPIvalue)){
 					
-					List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
-					
 					boolean vendorInChart = false; 
 					
 					for (WebElement label: xAxisLabels){
-						System.out.println("Label in x axis: " + label.getText());
+						//System.out.println("Label in x axis: " + label.getText());
 						
 						if(label.getText().equals(v.getText())){
 							vendorInChart = true;
@@ -99,12 +102,10 @@ public class TotalUsageActions extends BaseClass{
 				// Verify that vendor is listed on chart if value is NOT zero
 				if(!currentKPIvalue.equals(previousKPIvalue)){
 					
-					List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
-					
 					boolean vendorInChart = false; 
 					
 					for (WebElement label: xAxisLabels){
-						System.out.println("Label in x axis: " + label.getText());
+						//System.out.println("Label in x axis: " + label.getText());
 						
 						if(label.getText().equals(v.getText()) || label.getText().equals("Other")){
 							vendorInChart = true;
@@ -128,52 +129,13 @@ public class TotalUsageActions extends BaseClass{
 
 	
 	
-	
-	
-	public static List<List<WebElement>> getCountriesAndVendors() {
-
-		
-		List<List<WebElement>> countriesAndVendors = new ArrayList<>();
-		
-		List<WebElement> countries = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead"));
-		List<WebElement> vendors = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead~div"));
-		
-		
-		for (int i = 0; i < countries.size(); i++){
-			
-			List<WebElement> temp = new ArrayList<WebElement>();
-			
-			temp.add(countries.get(i));
-			//System.out.println(countries.get(i).getText());
-			
-			List<WebElement> vendorsUnderCountry = vendors.get(i).findElements(By.cssSelector(".tdb-povGroup__label--subhead~div>div>md-checkbox>label>span")); 
-			
-			for (WebElement v : vendorsUnderCountry){
-				temp.add(v);
-				//System.out.println("  " + v.getText());
-			}
-			//System.out.println("  temp size: " + temp.size());
-			countriesAndVendors.add(temp);
-			
-		}
-		
-		//System.out.println("countriesAndVendors size: " + countriesAndVendors.size()); 
-			
-		return countriesAndVendors;
-	}
-	
-	
-	//**************************************************************
-	// /**************** HERE ****************************************
-	
-	
 	// Verifies that if a country is selected on the PoV section, and the value to be shown is greater than zero, the country name is listed on the x axis on the chart,
 	// unless there are already 5 countries listed. In this case the value for the selected country may be included under "Other"  
 	public static void countriesAddedToCharts(int chartNum, int kpiNum) throws InterruptedException {
 		
 		List<WebElement> kpiTiles = driver.findElements(By.cssSelector(".tdb-kpi__statistic"));
 		
-		List<List<WebElement>> countriesAndVendors = getCountriesAndVendors();
+		List<List<WebElement>> countriesAndVendors = UsageHelper.getCountriesAndVendors();
 		
 		String currentKPIvalue = "";
 		String previousKPIvalue = "";
@@ -192,7 +154,7 @@ public class TotalUsageActions extends BaseClass{
 			
 			String countryName = c.get(0).getText();
 			
-			System.out.println("Country Name: " + countryName);
+			//System.out.println("Country Name: " + countryName);
 			
 			for (int i = 1; i < c.size(); i++){
 			
@@ -200,7 +162,7 @@ public class TotalUsageActions extends BaseClass{
 				
 				// Select one vendor
 				CommonTestStepActions.selectOneVendor(vendorName);
-				System.out.println("Vendor selected: " + vendorName);
+				//System.out.println("Vendor selected: " + vendorName);
 				
 				// Wait 2 seconds to give time for the values to get updated on Dashboard, after the vendor selection
 				Thread.sleep(2000);
@@ -208,18 +170,18 @@ public class TotalUsageActions extends BaseClass{
 				currentKPIvalue = kpiTiles.get(kpiNum).getText(); 
 				//System.out.println("Current KPI tile value: " + currentKPIvalue);
 				
+				List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
+				
 				// For first vendor selected: If KPI tile is zero, vendor will not be listed on the chart. 
 				if(vendorCount == 1 && countryCount == 1){
 					
 					// Verify that vendor is listed on chart if value is NOT zero 
 					if(!currentKPIvalue.equals("0")){
 						
-						List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
-						
 						boolean countryInChart = false; 
 						
 						for (WebElement label: xAxisLabels){
-							System.out.println("Label in x axis: " + label.getText());
+							//System.out.println("Label in x axis: " + label.getText());
 							
 							if(label.getText().equals(countryName)){
 								countryInChart = true;
@@ -235,12 +197,10 @@ public class TotalUsageActions extends BaseClass{
 					// Verify that vendor is listed on chart if value is NOT zero
 					if(!currentKPIvalue.equals(previousKPIvalue)){
 						
-						List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
-						
 						boolean countryInChart = false; 
 						
 						for (WebElement label: xAxisLabels){
-							System.out.println("Label in x axis: " + label.getText());
+							//System.out.println("Label in x axis: " + label.getText());
 							
 							if(label.getText().equals(countryName)){
 								countryInChart = true;
@@ -256,12 +216,10 @@ public class TotalUsageActions extends BaseClass{
 					// Verify that vendor is listed on chart if value is NOT zero
 					if(!currentKPIvalue.equals(previousKPIvalue)){
 						
-						List<WebElement> xAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
-						
 						boolean countryInChart = false; 
 						
 						for (WebElement label: xAxisLabels){
-							System.out.println("Label in x axis: " + label.getText());
+							//System.out.println("Label in x axis: " + label.getText());
 							
 							if(label.getText().equals(countryInChart) || label.getText().equals("Other")){
 								countryInChart = true;
@@ -284,6 +242,117 @@ public class TotalUsageActions extends BaseClass{
 			
 		}
 
+	}
+
+
+
+
+	// Verifies the content of the tooltips displayed on charts under Total Usage Domestic and Roaming charts
+	// It does not verify the amounts... yet
+	public static void verifyTotalUsageChartTooltip(int barChartId) throws ParseException, InterruptedException, AWTException {
+		
+		String chartId = UsageHelper.getChartId(barChartId);
+		
+		// It gets the legends for "Domestic" and "Domestic Overage" or Roaming
+		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
+		
+		int indexHighchart = 1;
+		
+		List<WebElement> vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
+		List<String> vendorsInChartList = new ArrayList<String>();
+		
+		for(int i = 0; i < vendorsInChart.size(); i++){
+			vendorsInChartList.add(vendorsInChart.get(i).getText());
+		}	
+				
+		boolean firstBar = true;
+				
+		Thread.sleep(2000);
+		
+		// Verify the info contained on each of the tooltips for all the vendors listed in chart 		
+		while(indexHighchart <= vendorsInChartList.size()){
+			
+			String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+			//System.out.println("cssSelector: " + cssSelector);
+			
+			// The 'bar' WebElement will be used to set the position of the mouse on the chart
+			WebElement bar = driver.findElement(By.cssSelector(cssSelector));
+
+			// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
+			Point coordinates = bar.getLocation();
+			Robot robot = new Robot(); 
+			robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work :) 
+			
+			if(firstBar && !(bar.getAttribute("height").toString().equals("0"))){
+				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
+				firstBar = false;
+			}
+				
+			
+			try {
+				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+				//System.out.println("Tooltip present");
+			} catch (Exception e) {
+				System.out.println("Tooltip NOT present");
+				e.printStackTrace();
+			}
+			
+			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
+			
+			int expectedAmountItemsTooltip = 0;
+			
+			if(barChartId == 0)
+				expectedAmountItemsTooltip = 7;
+			else if (barChartId == 1)
+				expectedAmountItemsTooltip = 4;
+			
+			
+			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
+			
+			// For Domestic chart: 
+			// <vendor/country name>
+			// ? -- this is for the bullet
+			// Domestic
+			// <Amount for Domestic>
+			// Domestic Overage
+			// <Amount for Domestic Overage>
+			
+			// For Roaming chart: 
+			// <vendor/country name>
+			// ? -- this is for the bullet
+			// Roaming
+			// <Amount for Roaming>
+			
+			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			
+			// Verify country/vendor shown on the tooltip
+			//System.out.println("Tooltip text: " + tooltip.get(0).getText());
+			Assert.assertEquals(tooltip.get(0).getText(), vendorsInChartList.get(indexHighchart-1));
+						
+			
+			// Verify the vendor's name and the amount shown on the tooltip
+			for(int i = 1; i <= legends.size(); i++){
+			
+				int index =  i * 3 - 1;
+								
+				// Verify the vendor's name on tooltip
+				// Remove colon at the end of legend's name 
+				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+				
+				Assert.assertEquals(labelFound, legends.get(i - 1).getText()); 
+				//System.out.println("Tooltip text: " + labelFound);
+				
+				// Verify the amount shown 
+				// TBD
+				
+
+			}
+			
+			indexHighchart++;
+			
+		}
+		
+		
 	}
 	
 	

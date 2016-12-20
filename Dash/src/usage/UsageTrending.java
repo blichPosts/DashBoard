@@ -2,14 +2,16 @@ package usage;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.message.BasicRequestLine;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
-
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
@@ -36,8 +38,8 @@ public class UsageTrending extends BaseClass {
 			categoryLabel = categorySelectors.get(i).getText();
 			totalUsageTitleExpected = titleFirstPart + categoryLabel;
 			
-			System.out.println("Title found:    " + totalUsageTitleFound);
-			System.out.println("Title expected: " + totalUsageTitleExpected);
+			//System.out.println("Title found:    " + totalUsageTitleFound);
+			//System.out.println("Title expected: " + totalUsageTitleExpected);
 			
 			Assert.assertEquals(totalUsageTitleFound, totalUsageTitleExpected, "Title found is different from title expected.");
 			
@@ -61,7 +63,7 @@ public class UsageTrending extends BaseClass {
 			
 			categorySelectors.get(i).click(); 
 			domesticTitleFound = driver.findElement(By.cssSelector(".tdb-charts__label.tdb-text--italic>.tdb-text--bold")).getText(); 
-			roamingTitleFound = driver.findElement(By.cssSelector(".tdb-flexUnit--1.tdb-align--center>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();
+			roamingTitleFound = driver.findElement(By.cssSelector(".tdb-trendingCharts-USAGE>.tdb-flexUnit>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();  //.tdb-flexUnit--1.tdb-align--center>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();
 			
 			System.out.println("usage trending - Domestic title: " + domesticTitleFound);
 			System.out.println("usage trending - Roaming title: " + roamingTitleFound);
@@ -74,11 +76,16 @@ public class UsageTrending extends BaseClass {
 				
 			} else if (i == 1){
 				
-				boolean domesticTitle = domesticTitleFound.equals(UsageHelper.domesticTitleDataGB) || domesticTitleFound.equals(UsageHelper.domesticTitleDataTB);  
+				/*boolean domesticTitle = domesticTitleFound.equals(UsageHelper.domesticTitleDataGB) || domesticTitleFound.equals(UsageHelper.domesticTitleDataTB);  
 				Assert.assertTrue(domesticTitle);
 				
 				boolean roamingTitle = roamingTitleFound.equals(UsageHelper.roamingTitleDataGB) || roamingTitleFound.equals(UsageHelper.roamingTitleDataTB);  
-				Assert.assertTrue(roamingTitle);
+				Assert.assertTrue(roamingTitle);*/
+				
+				// In Usage Trending charts the data usage is always represented in GB
+				Assert.assertTrue(domesticTitleFound.equals(UsageHelper.domesticTitleDataGB));
+				Assert.assertTrue(roamingTitleFound.equals(UsageHelper.roamingTitleDataGB));
+				
 				System.out.println("Data...");
 								
 			} else if (i == 2){
@@ -136,29 +143,15 @@ public class UsageTrending extends BaseClass {
 		List<WebElement> itemsFoundInLegend = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));
 		
 		System.out.println("# Items: " + itemsFoundInLegend.size());
-		System.out.println(" Chart: " + chartId);
+		//System.out.println(" Chart: " + chartId);
 
-		int amountItemsSelected = listItemsChecked.size();
-		
-		// If amount of vendors/countries selected is > than 5, then "Other" must be listed along other 5 vendors/countries.
-		// Else the amount of vendors/countries listed in the chart's legend must be equal to the amount of vendors/countries selected
-		// and the vendors/countries in the legend must be in the list of selected vendors/countries.
-		if(amountItemsSelected > 5){
 			
-			Assert.assertEquals(itemsFoundInLegend.size(), 6);
+		for(WebElement label: itemsFoundInLegend){
+					
+			if(!label.getText().equals("Other"))
+				Assert.assertTrue(listItemsChecked.contains(label.getText()));
 			
-			for(WebElement label: itemsFoundInLegend){
-						
-				if(!label.getText().equals("Other"))
-					Assert.assertTrue(listItemsChecked.contains(label.getText()));
-				
-				System.out.println("Item in legend: " + label.getText());
-				
-			}
-			
-		}else{
-			
-			Assert.assertEquals(itemsFoundInLegend.size(), amountItemsSelected);
+			System.out.println("Item in legend: " + label.getText());
 			
 		}
 		
@@ -202,7 +195,6 @@ public class UsageTrending extends BaseClass {
 			//System.out.println("Item in legend: " + label.getText());
 			Assert.assertTrue(listMonths.contains(label.getText()));
 			
-			
 		}
 		
 	}
@@ -210,7 +202,7 @@ public class UsageTrending extends BaseClass {
 
 
 
-	public static void verifyBarsCanBeSwitchedOnOff(int barChartId) throws Exception {
+	public static void verifyBarsCanBeSwitchedOnOff(int barChartId) {
 		
 		 
 		List<WebElement> legends = new ArrayList<>();
@@ -258,7 +250,10 @@ public class UsageTrending extends BaseClass {
 
 	// Verifies the content of the tooltips displayed on charts under Usage Trending Domestic and Roaming charts
 	// It does not verify the amounts... yet
-	public static void verifyUsageTrendingChartTooltip(int barChartId) throws AWTException, InterruptedException, ParseException{
+	public static void verifyUsageTrendingChartTooltip(int barChartId) throws InterruptedException, ParseException, AWTException{
+		
+		WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
+		new Actions(driver).moveToElement(usageTrendingSection).perform();
 		
 		String chartId = UsageHelper.getChartId(barChartId);
 		
@@ -273,38 +268,31 @@ public class UsageTrending extends BaseClass {
 		List<String> monthYearList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		int indexMonth = monthYearList.size()-1;
 		
-		boolean firstBar = true;
-				
-		// If test is run for Roaming chart, scroll down 
-		if(barChartId == 3){
-			scrollMouseToChart(6);
-		}
 		
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 		
 		// Verify the info contained on each of the tooltips for the 13 months 		
 		while(indexHighchart <= monthYearList.size()){
 			
-			String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-" + (amount-1) + ">rect:nth-of-type(" + indexHighchart + ")";
-			//System.out.println("cssSelector: " + cssSelector);
+			//String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-" + (amount-1) + ">rect:nth-of-type(" + indexHighchart + ")";
+			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+			String cssLine = "#" + chartId + ">svg>g>path:nth-of-type(2)";
 			
-			// The 'bar' WebElement will be used to set the position of the mouse on the chart
-			WebElement bar = driver.findElement(By.cssSelector(cssSelector));
-
-			// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
+			// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
+			WebElement bar = driver.findElement(By.cssSelector(cssBar));
+			WebElement line = driver.findElement(By.cssSelector(cssLine));
 			
-			int barHeightMiddle = Integer.parseInt(bar.getAttribute("height"));
+			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+			// Get the location of the second line of the chart -> to get the "y" coordinate
+			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+			Point barCoordinates = bar.getLocation();
+			Point lineCoordinates = line.getLocation();
 			
-			Point coordinates = bar.getLocation();
 			Robot robot = new Robot(); 
-			robot.mouseMove((coordinates.getX() + 5), (coordinates.getY() - barHeightMiddle));
-		
+			robot.mouseMove((barCoordinates.getX() + 5), lineCoordinates.getY());
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 			
-			if(firstBar){
-				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-				firstBar = false;
-			}
-				
 			
 			try {
 				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
@@ -355,17 +343,8 @@ public class UsageTrending extends BaseClass {
 			
 		}
 		
-		
 	}
 	
-	
-	
-	public static void scrollMouseToChart(int num) throws AWTException{
-		
-		Robot robot = new Robot(); 
-		robot.mouseWheel(num);
-		
-	}
 	
 	
 }

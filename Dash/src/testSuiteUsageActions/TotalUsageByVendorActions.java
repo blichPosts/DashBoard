@@ -39,27 +39,36 @@ public class TotalUsageByVendorActions extends BaseClass {
 		
 		// Set month selector value
 		CommonTestStepActions.selectMonthYearPulldown("August 2016");
-				
 		
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
+		Thread.sleep(2000);
+		
+		// #3 Verify the text shown on the tooltip when hovering the mouse over the bar charts.
+		// * Total Usage Domestic chart
+		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart);
+		
+		// * Total Usage Roaming chart
+		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart);
+		
+		
+		// #4 Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Voice
-		TotalUsageActions.vendorsAddedToCharts(0, 0);
+		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryVoice);
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 				
 		// Data
-		TotalUsageActions.vendorsAddedToCharts(0, 1);
+		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryData);
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 				
 		// Messages
-		TotalUsageActions.vendorsAddedToCharts(0, 2);
+		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryMessages);
 			
 		
 		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
@@ -68,23 +77,25 @@ public class TotalUsageByVendorActions extends BaseClass {
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Voice
-		TotalUsageActions.vendorsAddedToCharts(1, 0);
+		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryVoice);
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 				
 		// Data
-		TotalUsageActions.vendorsAddedToCharts(1, 1);
+		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryData);
 		
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 				
 		// Messages
-		TotalUsageActions.vendorsAddedToCharts(1, 2);
+		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryMessages);
 		
 		
-		// #3 Unselect vendors from PoV - one by one - and verify that they are removed from graphs (tooltip) and legend,
+		// # Unselect vendors from PoV - one by one - and verify that they are removed from graphs (tooltip) and legend,
 		// - for Voice, Data and Messages 			
+		
+		
 		
 		
 	}

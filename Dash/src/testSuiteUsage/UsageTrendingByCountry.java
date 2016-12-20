@@ -32,7 +32,7 @@ public class UsageTrendingByCountry extends BaseClass{
 		
 		
 		// #2 Verify that title "Usage by Country - ... " changes according to what Category was selected
-		//UsageTrending.verifyUsageTrendingTitle(UsageHelper.usageTrendingByCountry);  // commented because it fails
+		UsageTrending.verifyUsageTrendingTitle(UsageHelper.usageTrendingByCountry);
 		
 					
 		// #3 Verify bar charts titles

@@ -50,7 +50,9 @@ public class TotalUsageByVendor extends BaseClass {
 			
 			
 			// #6 Verify that Vendors selected are listed in charts 
-			TotalUsage.verifyVendorsInUsageByVendorCharts();
+			// Not valid test and the same functionality is tested from TotalUsageByCountryActions test
+			// The test does not take into account that the amount for the selected country can be zero and in that case the country won't be listed on the chart
+			// TotalUsage.verifyVendorsInUsageByVendorCharts();
 			
 			
 		}
