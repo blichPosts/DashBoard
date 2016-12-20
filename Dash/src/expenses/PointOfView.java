@@ -21,7 +21,8 @@ public class PointOfView extends BaseClass
 {
 	
 	public static List<String> expectedLegendsList = new ArrayList<String>(); // this holds vendor legends in expense control.	
-	public static List<String> expectedCountriesList = new ArrayList<String>(); // this holds country legends in expense control. not currently used.
+	public static List<String> expectedCountriesList = new ArrayList<String>(); // 
+	public static List<String> expectedCountriesListUnigue = new ArrayList<String>(); //
 	public static List<String> listOfItemsAdded = new ArrayList<String>(); // this is used by 'VerifyAddingVendors' and 	
 	public static List<WebElement> tempWebElementList;
 	public static String chartId = "";
@@ -230,7 +231,6 @@ public class PointOfView extends BaseClass
 	// the legends that are expected to be remaining are also checked.
 	public static void RemoveVendorsAndVerifyTwo(ExpensesViewMode viewMode) throws Exception
 	{
-		ShowInt(listOfItemsAdded.size());
 	
 		switch(viewMode)
 		{
@@ -241,7 +241,7 @@ public class PointOfView extends BaseClass
 				{
 					if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfVendorsAdded' it can't be selected in the vendors list.
 					{
-						ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);
+						ExpenseHelper.VerifyControlLegends(controlType.totalExpense, listOfItemsAdded);
 						ExpenseHelper.VerifyControlLegends(controlType.totalExpenseSpendCatergory, listOfItemsAdded);
 						ExpenseHelper.VerifyControlLegends(controlType.expenseTrending, listOfItemsAdded);				
 						ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfItemsAdded);
@@ -261,13 +261,31 @@ public class PointOfView extends BaseClass
 		
 			case country:
 			{
+				//   Method BuildCountryListsFromVendors():
+				// * store the country name for each vendor. the list that holds the country names, 'expectedCountriesList', can have the same 
+				//   country name listed more than once and can also contain the 'other' legend.   
+				// * store the unique country names for the vendors. the list that holds the country names, 'expectedCountriesListUnique' has the 
+				//   unique countries associated with the the vendors in 'expectedLegendsList', 
+				BuildCountryListsFromVendors();  
+
+				ExpenseHelper.VerifyControlLegends(controlType.totalExpense, expectedCountriesListUnigue); 
+				
 				for(int x = 0; x < expectedLegendsList.size(); x++)
 				{
-					if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText))
+					if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfVendorsAdded' it can't be selected in the vendors list.					
 					{
-						ShowText(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x)));
+						ShowText("loop");
+						expectedCountriesList.remove(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x)));
+						if(!expectedCountriesList.contains(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x))))
+						{
+							ShowText("Remove "  +  ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x)));
+							expectedCountriesListUnigue.remove(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x)));
+						}
+						
+						CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // 
 					}
 				}
+
 				break;
 			}
 		}
@@ -326,4 +344,31 @@ public class PointOfView extends BaseClass
 			tempWebElementList.removeAll(expectedLegendsList);
 		}
 	}
+	
+	public static void BuildCountryListsFromVendors()
+	{
+		for(int x = 0; x < expectedLegendsList.size(); x++)
+		{
+			// create a countries list that holds a country for each vendor in expectedLegendsList. this means the list can contain a country more than once. 
+			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText))
+			{
+				expectedCountriesList.add(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x)));
+			}
+
+			// create a countries list that holds a unique country for each vendor in expectedLegendsList. this means if the vendors list has 
+			// two vendors that are in the same country. the country will only be listed once in this list. 
+			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText))
+			{
+				if(!expectedCountriesListUnigue.contains(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x))))
+				{
+					expectedCountriesListUnigue.add(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x)));					
+				}
+			}
+		}
+		
+		//ShowListOfStrings(expectedCountriesList); // DEBUG
+		//ShowText("------------"); // DEBUG
+		//ShowListOfStrings(expectedCountriesListUnigue); // DEBUG
+	}
+	
 }

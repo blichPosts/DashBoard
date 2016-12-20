@@ -319,10 +319,11 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 
-	// bladdxx - do assert on size here.
 	// this receives a list of web element(s) that are the legend(s) in a control and a list of items that are supposed to be in the list of web elements.   
 	public static void VerifyActualAndExpectedLists(List<WebElement> actualList, List<String> addedList) throws Exception
 	{
+		Assert.assertTrue(actualList.size() == addedList.size(), "Fail in ExpenseHelper.VerifyActualAndExpectedLists. The two list passed in should have the same size."); 
+		
 		for(WebElement ele : actualList) 
 		{
 			Assert.assertTrue(addedList.contains(ele.getText()));
