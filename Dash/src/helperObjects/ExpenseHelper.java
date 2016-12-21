@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -19,6 +20,7 @@ public class ExpenseHelper extends BaseClass
 	public static String chartId = "";
 	public static String otherText = "Other";
 	public static String tempLocator = "";
+	public static String tempUrl = "";
 	
 	public static List<WebElement> webElementListLegands;	
 	public static List<String> legendsListTotalExpense = new ArrayList<String>();	
@@ -404,6 +406,47 @@ public class ExpenseHelper extends BaseClass
 		return"";
 		
 	}
+
+	public static void SetWaitDefault()
+	{
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS); 		
+	}
+	
+	// this is used when waiting for element not present.
+	public static void SetWaitShort()
+	{
+		driver.manage().timeouts().implicitlyWait(300, TimeUnit.MILLISECONDS); 		
+	}
+
+	// this verifies that each control is not visible by looking for the first legend in each control being not visible.
+	public static void VerifyControlsNotPresent() throws Exception
+	{
+		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
+		
+		chartId =  UsageHelper.getChartId(0); // total expenses. 
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+		
+		chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		chartId =  UsageHelper.getChartId(2); // expense trending.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		chartId =  UsageHelper.getChartId(3); // cost per service number.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		chartId =  UsageHelper.getChartId(4); // cost per service number.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		ExpenseHelper.SetWaitDefault(); // back to default.
+	}	
+	
+	
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers

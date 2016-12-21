@@ -2,6 +2,7 @@ package expenses;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.bouncycastle.asn1.cms.OtherRecipientInfo;
 import org.openqa.selenium.By;
@@ -26,37 +27,13 @@ public class PointOfView extends BaseClass
 	public static List<String> listOfItemsAdded = new ArrayList<String>(); // this is used by 'VerifyAddingVendors' and 	
 	public static List<WebElement> tempWebElementList;
 	public static String chartId = "";
-	public static String tempUrl = "";
+	// public static String tempUrl = "";
 	public static String tempString = "";
 	
 	
 	public static void StoreAllLegendsInTotalExpense() 
 	{
 		expectedLegendsList =  ExpenseHelper.GetTotalExpenseLegends();
-	}
-
-	// this verifies that each control is not visible by looking for the first legend in each control being not visible.
-	public static void VerifyControlsNotPresent() throws Exception
-	{
-		chartId =  UsageHelper.getChartId(0); // total expenses. 
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-		
-		chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		
-		chartId =  UsageHelper.getChartId(2); // expense trending.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		
-		chartId =  UsageHelper.getChartId(3); // cost per service number.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		
-		chartId =  UsageHelper.getChartId(4); // cost per service number.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
 	}
 
 	// * this will individually select, using the point of view check boxes, each vendor that is in the 'expectedLegendsList' list. the 'expectedLegendsList'
@@ -131,7 +108,7 @@ public class PointOfView extends BaseClass
 	{
 		CommonTestStepActions.SelectAllVendors();
 		CommonTestStepActions.UnSelectAllVendors();
-		VerifyControlsNotPresent();
+		ExpenseHelper.VerifyControlsNotPresent();
 		SelectVendors();
 	}
 	
@@ -156,7 +133,8 @@ public class PointOfView extends BaseClass
 	// the legends that are expected to be remaining are also checked.
 	public static void RemoveVendorsAndVerifyTwo(ExpensesViewMode viewMode) throws Exception
 	{
-	
+		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
+		
 		switch(viewMode)
 		{
 			case vendor:
@@ -175,15 +153,9 @@ public class PointOfView extends BaseClass
 						CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box to remove the vendor that's been added.
 						listOfItemsAdded.remove(listOfItemsAdded.remove(expectedLegendsList.get(x))); // remove un-checked vendor from listOfVendorsAdded.               
 
-						// this section waits for the removed item to show up removed in the first and last controls. in the case of countries view, a country is not always removed. 
-						// in that case, this will just make sure the last removed country is still not there.
-						
+						// this section waits for the removed item to show up removed in the first control.  
 						chartId = UsageHelper.getChartId(0); 
-						ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (expectedCountriesListUnigue.size() + 1) +"]";
-						WaitForElementNotVisibleNoThrow(By.xpath(ExpenseHelper.tempLocator), ShortTimeout);
-						
-						chartId = UsageHelper.getChartId(4); 
-						ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (expectedCountriesListUnigue.size() + 1) +"]";
+						ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (listOfItemsAdded.size() + 1) +"]";
 						WaitForElementNotVisibleNoThrow(By.xpath(ExpenseHelper.tempLocator), ShortTimeout);
 					}
 				}		
@@ -225,37 +197,29 @@ public class PointOfView extends BaseClass
 							expectedCountriesListUnigue.remove(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x)));
 						}
 
-						// this section waits for the removed item to show up removed in the expense control. in the case of countries view, a country is not always removed. 
-						// in that case, this will just make sure the last removed country is still not there.  
-						
+						// this section waits for the removed item to show up removed in the expense control.  
 						chartId = UsageHelper.getChartId(0); 
-						ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (listOfItemsAdded.size() + 1) +"]";
+						ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (expectedCountriesListUnigue.size() + 1) +"]";
 						WaitForElementNotVisibleNoThrow(By.xpath(ExpenseHelper.tempLocator), ShortTimeout);
-						
-						chartId = UsageHelper.getChartId(4); 
-						ExpenseHelper.tempLocator = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[" + (listOfItemsAdded.size() + 1) +"]";
-						WaitForElementNotVisibleNoThrow(By.xpath(ExpenseHelper.tempLocator), ShortTimeout);						
-						
-						//DebugTimeout(5, "Wait 5");
-						
 					}
 				}
 
 				break;
 			}
 		}
+		ExpenseHelper.SetWaitDefault(); // set back to default
 	}
 	
-	// this un-checks, vendors that have been added, in the point of view. 
+	// this goes through each month in months pulldown and verifies the month text is in the top left corner and the expense control.
 	public static void VerifyMonthPulldownSelectionsInControls() throws Exception
 	{
-		List<WebElement> monthYearList; //  = new ArrayList<WebElement>();
+		List<WebElement> monthYearList;
 		
 		CommonTestStepActions.initializeMonthSelector();
 		
 		CommonTestStepActions.SelectAllVendors();
 		
-		for(WebElement ele : CommonTestStepActions.webListPulldown)
+		for(WebElement ele : CommonTestStepActions.webListPulldown) // go through each month.
 		{
 			//  ShowText(ele.getText()); // DEBUG.
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
