@@ -41,9 +41,13 @@ public class KpiTiles extends BaseClass
 		// ShowText(driver.findElement(By.xpath(xpathTotalExpenseKpi)).getText()); // DEBUG to see a KPI value.
 	}
 	
-	// this takes the xpath to the KPI to verify.
+	//
+	// this takes the xpath to the KPI to verify and an enum to tell the method whether it's testing <=  or >=.
+	// 
 	// * select each month, one at a time.
-	// * after each month is selected, verify the numeric value shown in the KPI of interest is >=  to the value before the month is selected. 
+	// * after each month is selected, verify the numeric value shown in the KPI of interest is >=  or <= to the value before the month is selected.
+	// * The use of >=  or <= depends on what enum is passed into this method.
+	// * The <= is used after the >=  test is done.
 	public static void VerifyAddingEachVendor(String xpath, AscendDescend ascendDescend) throws InterruptedException
 	{
 		for(Country ctr : countryList)
@@ -54,13 +58,8 @@ public class KpiTiles extends BaseClass
 				Thread.sleep(1500); // have to do a hard coded wait. there is no element on the dash board page that consistently changes each time a new vendor is added.  
 				latest = GetNumericValue(driver.findElement(By.xpath(xpath)).getText()); // get the latest
 				
-				//System.out.println(latest);
-				//System.out.println(previous);
-				//ShowText("===========");
-				
-				ShowLatestPrevious(latest, previous); // DEBUG
+				// ShowLatestPrevious(latest, previous); // DEBUG
 
-				
 				switch (ascendDescend)
 				{
 					case ascending:
@@ -75,7 +74,6 @@ public class KpiTiles extends BaseClass
 						break;
 					}
 				}
-				
 				previous = latest;
 			}
 		}

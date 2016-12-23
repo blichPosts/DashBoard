@@ -1,16 +1,20 @@
 package testSuiteExpenseActions;
 
+import org.openqa.jetty.servlet.Debug;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import expenses.KpiTiles;
+import expenses.TotalExpenseByVendorCarrier;
 import helperObjects.CommonTestStepActions;
+import helperObjects.Country;
 import helperObjects.ExpenseHelper;
 
-public class KPITilesActions extends BaseClass 
+public class TotalExpenseByVendorCountryActions extends BaseClass 
 {
+
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
@@ -21,13 +25,23 @@ public class KPITilesActions extends BaseClass
 	public static void KpiTilesActionsTest() throws Exception
 	{
 
-		// #1
 		// Un-select all of the vendors in the Point of View.
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
-		CommonTestStepActions.UnSelectAllVendors();
-		ExpenseHelper.VerifyControlsNotPresent(); // wait for all controls to be empty.
+		//CommonTestStepActions.UnSelectAllVendors();
+		//ExpenseHelper.VerifyControlsNotPresent(); // wait for all controls to be empty.
 
-	    // All of the controls are blank.
+		// create container that stores each country object and the vendors inside each country onto a list.   
+		ExpenseHelper.SetupCountryAndVendorData();
+		
+		ExpenseHelper.FindMonthWithMostVendors();
+		
+		DebugTimeout(9999, "Freeze");
+		
+		
+		
+		
+		/*
+		// All of the controls are blank.
 	    // The values in the KPI tiles are 0.
 	    // 'Total Expense and 'Cost per Service Number' have leading dollar signs.
 		KpiTiles.VerifyInitialValues();
@@ -74,6 +88,7 @@ public class KPITilesActions extends BaseClass
 		
 		KpiTiles.VerifyAddingEachVendor(KpiTiles.xpathCountOfServiceNumbersKpi, KpiTiles.AscendDescend.descending);
 		ExpenseHelper.VerifyControlsNotPresent(); // wait for all controls to be empty.
+		*/
 	}
 	
 	@AfterClass
@@ -83,6 +98,7 @@ public class KPITilesActions extends BaseClass
 	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
 		driver.close();
 		driver.quit();
-	}
-
+	}	
+	
+	
 }

@@ -16,7 +16,8 @@ public class ExpenseHelper extends BaseClass
 {
 	public static String tmpStr = "";
 	public static String errMessage = "";	
-	public static String desiredMonth = "June 2016";	
+	public static String desiredMonth = "June 2016";
+	public static String impericalDesiredMonth = ""; // this is found by going through the months and finding the month(s) with the most amount of vendors showing in the expense control. 
 	public static String chartId = "";
 	public static String otherText = "Other";
 	public static String tempLocator = "";
@@ -446,7 +447,38 @@ public class ExpenseHelper extends BaseClass
 		ExpenseHelper.SetWaitDefault(); // back to default.
 	}	
 	
-	
+	// bladdxx
+	public static String FindMonthWithMostVendors() throws Exception
+	{
+		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
+		int largestNumOfVendors = 0;
+		int currentNumOfVendors = 0; 
+		
+		String locator = "//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls;
+		
+		CommonTestStepActions.initializeMonthSelector();
+
+		// loop through selecting each month the find the month with the most amount of vendors using the expense control.
+		for(WebElement ele : CommonTestStepActions.webListPulldown) // go through each month.
+		{
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
+			WaitForElementVisible(By.xpath("//h1[text()='" +   ele.getText()  + "']"), MediumTimeout);
+			Assert.assertEquals(driver.findElement(By.xpath("//h1[text()='" +   ele.getText()  + "']")).getText(), ele.getText(), "");
+			WaitForElementVisible(By.xpath("//h2[text()='" +   ele.getText()  + "']"), MediumTimeout);
+			Assert.assertEquals(driver.findElement(By.xpath("//h2[text()='" +   ele.getText()  + "']")).getText(), ele.getText(), "");
+
+			currentNumOfVendors = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)).size();
+			if(largestNumOfVendors > currentNumOfVendors)
+			{
+				impericalDesiredMonth = ele.getText();
+			}
+			
+		}
+		
+		ShowText(impericalDesiredMonth);
+		
+		return"";
+	}
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers
