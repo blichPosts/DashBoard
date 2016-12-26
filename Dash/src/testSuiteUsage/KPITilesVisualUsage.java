@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import usage.UsageKPITiles;
+import usage.UsageKPITilesActions;
 
 
 
@@ -50,7 +51,7 @@ public class KPITilesVisualUsage extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown("August 2016");
 		//CommonTestStepActions.selectMonthYearPulldown("December 2015");
 		Thread.sleep(2000);
-		UsageKPITiles.verifyTrendingValues();
+		//UsageKPITilesActions.verifyTrendingValues();
 		
 		
 	}

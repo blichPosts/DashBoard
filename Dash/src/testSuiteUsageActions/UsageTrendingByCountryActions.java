@@ -35,8 +35,7 @@ public class UsageTrendingByCountryActions extends BaseClass{
 		
 		// #1 Select Vendor View 
 		UsageHelper.selectCountryView();
-		
-	
+
 		// #2 Verify the text shown on the tooltip when hovering the mouse over the bar charts, for Usage Trending Domestic chart
 		UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.UsageTrendingDomesticChart);
 		
@@ -61,38 +60,43 @@ public class UsageTrendingByCountryActions extends BaseClass{
 		
 		// Voice
 		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryVoice);
-		
+	
 		// Unselect all vendors
-		//CommonTestStepActions.UnSelectAllVendors();
+		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Messages
-		//UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryMessages);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryMessages);
 				
 		// Unselect all vendors
-		//CommonTestStepActions.UnSelectAllVendors();
+		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Data
-		//UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryData);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryData);
 
 		// Unselect all vendors
-		//CommonTestStepActions.UnSelectAllVendors();
+		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Verify that countries selected are added to the Usage Trending by Country chart - "Roaming"
 		
 		// Voice
-		//UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryVoice);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryVoice);
 				
 		// Unselect all vendors
-		//CommonTestStepActions.UnSelectAllVendors();
+		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Messages
-		//UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryMessages);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryMessages);
 				
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Data
 		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryData);
+	
+		// #7 Verify that countries that are removed from the PoV section are removed from the charts
+		UsageTrendingActions.countriesUnselectedRemovedFromChart(UsageHelper.UsageTrendingDomesticChart);
+		
+		UsageTrendingActions.countriesUnselectedRemovedFromChart(UsageHelper.UsageTrendingRoamingChart);
 		
 		
 	}

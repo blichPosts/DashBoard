@@ -6,6 +6,8 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import Dash.BaseClass;
@@ -29,7 +31,7 @@ public class UsageTrendingActions extends BaseClass{
 		//new Actions(driver).moveToElement(usageTrendingSection).perform();
 		
 		String chartId = UsageHelper.getChartId(chartNum);
-		UsageHelper.moveToChart(chartId);
+		UsageHelper.moveToUsageTrending();
 		
 		List<WebElement> categorySelectors = driver.findElements(By.cssSelector(".tdb-boxSelector.tdb-align--right:nth-child(odd)>div"));
 		
@@ -43,7 +45,9 @@ public class UsageTrendingActions extends BaseClass{
 			
 			// Select one vendor
 			CommonTestStepActions.selectOneVendor(vendorName);
-			//System.out.println("Vendor selected: " + vendorName);
+			System.out.println("Vendor selected: " + vendorName);
+			
+			UsageHelper.moveToUsageTrending();
 			
 			// Wait 2 seconds to the values to get updated on Dashboard, after the vendor selection
 			Thread.sleep(2000);
@@ -51,8 +55,21 @@ public class UsageTrendingActions extends BaseClass{
 			currentKPIvalue = kpiTiles.get(kpiNum).getText(); 
 			//System.out.println("Current KPI tile value: " + currentKPIvalue);
 			
-			List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));
+			/* ********* TEST .....************ */
+			//WebDriverWait wait = new WebDriverWait(driver, 10);
+			//wait.until(ExpectedConditions.stalenessOf((WebElement) driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"))));
+			//wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text")));
 			
+			
+			
+			List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));
+			List<String> legendsStrings = new ArrayList<String>();
+			
+			// ..this is to try to avoid the 'stale element reference: element is not attached to the page document' error 
+			for(WebElement w: legends){
+				System.out.println("legend: " + w.getText());
+				legendsStrings.add(w.getText());
+			}
 			
 			// For first vendor selected: If KPI tile is zero, vendor will not be listed on the chart. 
 			if(count == 1){
@@ -101,10 +118,15 @@ public class UsageTrendingActions extends BaseClass{
 					
 					boolean vendorInChart = false; 
 					
-					for (WebElement label: legends){
+					//for (WebElement label: legends){
+					for (String label: legendsStrings){
 						//System.out.println("Label in legend: " + label.getText());
 						
-						if(label.getText().equals(vendorName) || label.getText().equals("Other")){
+						//if(label.getText().equals(vendorName) || label.getText().equals("Other")){
+						if(label.equals(vendorName) || label.equals("Other")){
+							System.out.println("Count: " + count);
+							System.out.println("Label: " + label);
+							System.out.println("Vendor name: " + vendorName);
 							vendorInChart = true;							
 						}
 						
@@ -125,6 +147,155 @@ public class UsageTrendingActions extends BaseClass{
 	}
 
 
+	
+	
+	
+	
+	
+	public static void allVendorsAddedToCharts(int chartNum, int kpiNum) throws InterruptedException {
+		
+		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames(); 
+		List<WebElement> kpiTiles = driver.findElements(By.cssSelector(".tdb-kpi__statistic"));
+		
+		String currentKPIvalue = "";
+		String previousKPIvalue = "";
+		
+		//WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
+		//new Actions(driver).moveToElement(usageTrendingSection).perform();
+		
+		String chartId = UsageHelper.getChartId(chartNum);
+		UsageHelper.moveToUsageTrending();
+		
+		List<WebElement> categorySelectors = driver.findElements(By.cssSelector(".tdb-boxSelector.tdb-align--right:nth-child(odd)>div"));
+		
+		//categorySelectors.get(kpiNum).click();
+		
+		int count = 12;
+		
+		for (WebElement v : vendors){
+		
+			String vendorName = v.getText();
+			
+			// Select one vendor
+			//CommonTestStepActions.selectOneVendor(vendorName);
+			System.out.println("Vendor selected: " + vendorName);
+			
+			UsageHelper.moveToUsageTrending();
+			
+			// Wait 2 seconds to the values to get updated on Dashboard, after the vendor selection
+			//Thread.sleep(2000);
+			
+			//currentKPIvalue = kpiTiles.get(kpiNum).getText(); 
+			//System.out.println("Current KPI tile value: " + currentKPIvalue);
+			
+			/* ********* TEST .....************ */
+			//WebDriverWait wait = new WebDriverWait(driver, 10);
+			//wait.until(ExpectedConditions.stalenessOf((WebElement) driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"))));
+			//wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text")));
+			
+			
+			
+			List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));
+			List<String> legendsStrings = new ArrayList<String>();
+			
+			// ..this is to try to avoid the 'stale element reference: element is not attached to the page document' error 
+			for(WebElement w: legends){
+				System.out.println("legend: " + w.getText());
+				legendsStrings.add(w.getText());
+			}
+			
+			// For first vendor selected: If KPI tile is zero, vendor will not be listed on the chart. 
+			/*if(count == 1){
+				
+				//System.out.println("First Vendor..");
+				
+				// Verify that vendor is listed on chart's legend if value is NOT zero 
+				if(!currentKPIvalue.equals("0")){
+					
+					boolean vendorInChart = false; 
+					
+					for (WebElement label: legends){
+						System.out.println("Label in legend: " + label.getText());
+						
+						if(label.getText().equals(vendorName)){
+							vendorInChart = true;
+						}
+					}
+					
+					Assert.assertTrue(vendorInChart);
+				}
+				
+				
+			} else if (count > 1 && count < 6) { // From second vendor. If KPI value doesn't change, it means value for the last selected vendor is zero and it won't be listed on the chart.
+				
+				// Verify that vendor is listed on chart if value is NOT zero
+				if(!currentKPIvalue.equals(previousKPIvalue)){
+					
+					boolean vendorInChart = false; 
+					
+					for (WebElement label: legends){
+						System.out.println("Label in legend: " + label.getText());
+						if(label.getText().equals(vendorName)){
+							vendorInChart = true;
+						}
+					}
+					
+					Assert.assertTrue(vendorInChart);
+					
+				}
+				
+			} else */
+				
+			if (count >= 6) {
+				
+				// Verify that vendor is listed on chart if value is NOT zero
+				if(!currentKPIvalue.equals(previousKPIvalue)){
+					
+
+					
+						boolean vendorInChart = false; 
+						
+						//for (WebElement label: legends){
+						for (String label: legendsStrings){
+							//System.out.println("Label in legend: " + label.getText());
+							
+							//if(label.getText().equals(vendorName) || label.getText().equals("Other")){
+							if(label.equals(vendorName) || label.equals("Other")){
+								System.out.println("Count: " + count);
+								System.out.println("Label: " + label);
+								System.out.println("Vendor name: " + vendorName);
+								vendorInChart = true;							
+							}
+							
+						}
+						
+						Assert.assertTrue(vendorInChart);
+					
+				}
+				
+			}
+  
+			//previousKPIvalue = currentKPIvalue;
+			//count++;
+			
+		}
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// Verifies that if a country is selected on the PoV section, and the value to be shown is greater than zero, the country name is listed on the legend's chart,
 	// unless there are already 5 countries listed. In this case the value for the selected country may be included under "Other"  
@@ -183,7 +354,7 @@ public class UsageTrendingActions extends BaseClass{
 						boolean countryInChart = false; 
 						
 						for (WebElement label: legends){
-							System.out.println("Label in legend: " + label.getText());
+							//System.out.println("Label in legend: " + label.getText());
 							
 							if(label.getText().equals(countryName)){
 								countryInChart = true;
@@ -202,7 +373,7 @@ public class UsageTrendingActions extends BaseClass{
 						boolean countryInChart = false; 
 						
 						for (WebElement label: legends){
-							System.out.println("Label in legend: " + label.getText());
+							//System.out.println("Label in legend: " + label.getText());
 							
 							if(label.getText().equals(countryName)){
 								countryInChart = true;
@@ -221,7 +392,7 @@ public class UsageTrendingActions extends BaseClass{
 						boolean countryInChart = false; 
 						
 						for (WebElement label: legends){
-							System.out.println("Label in legend: " + label.getText());
+							//System.out.println("Label in legend: " + label.getText());
 							
 							if(label.getText().equals(countryName) || label.getText().equals("Other")){
 								countryInChart = true;
@@ -252,7 +423,7 @@ public class UsageTrendingActions extends BaseClass{
 	public static void vendorsUnselectedRemovedFromChart(int chartNum) throws InterruptedException{
 	
 		String chartId = UsageHelper.getChartId(chartNum);
-		UsageHelper.moveToChart(chartId);
+		UsageHelper.moveToUsageTrending();
 		
 		// Just to make sure all the vendors are selected
 		CommonTestStepActions.SelectAllVendors();
@@ -272,7 +443,7 @@ public class UsageTrendingActions extends BaseClass{
 		}
 		
 		
-		for(int i = 0; i < vendors.size(); i++){
+		for(int i = 0; i < checkboxes.size(); i++){
 			
 			// Unselect vendor from Point of View section
 			checkboxes.get(i).click();
@@ -294,7 +465,7 @@ public class UsageTrendingActions extends BaseClass{
 					
 					String legend = le.getText();
 					
-					System.out.println("Vendor in legend: " + legend);
+					//System.out.println("Vendor in legend: " + legend);
 					
 					// Verify that the vendor that was unselected, is removed from the chart's legends
 					Assert.assertNotEquals(legend, vendorUnselected);
@@ -309,18 +480,17 @@ public class UsageTrendingActions extends BaseClass{
 	
 	
 	
-	/// *** CONTINUE HERE *** 
+
 	// Verify that if all the vendors of a country are unselected from the Point of View section, then the country is removed from the Usage Trending chart
 	public static void countriesUnselectedRemovedFromChart(int chartNum) throws InterruptedException{
 	
 		String chartId = UsageHelper.getChartId(chartNum);
-		UsageHelper.moveToChart(chartId);
+		UsageHelper.moveToUsageTrending();
 		
 		// Just to make sure all the vendors are selected
 		CommonTestStepActions.SelectAllVendors();
 		
-		// All the countries listed on the Point of View section
-		List<WebElement> countries = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead"));
+		// All the countries and vendors listed on the Point of View section
 		List<List<WebElement>> countriesAndVendors = UsageHelper.getCountriesAndVendors();
 		
 		
@@ -336,41 +506,57 @@ public class UsageTrendingActions extends BaseClass{
 		}
 		
 		
-		for(int i = 0; i < countries.size(); i++){
+		int index = 0;
+		
+		for(int i = 0; i < countriesAndVendors.size(); i++){
 			
-			// Unselect vendor from Point of View section
-			checkboxes.get(i).click();
+			List<WebElement> oneCountryAndItsVendors = countriesAndVendors.get(i);
 			
-			// Get name of unselected vendor
-			String vendorUnselected = countries.get(i).getText();
+			int amountVendorsForCountry = oneCountryAndItsVendors.size() - 1;
 			
-			System.out.println("Vendor unselected: " + vendorUnselected);
-			
-			// If the vendor unselected was included in the legends of the Usage Trending chart
-			if(legendStrings.contains(vendorUnselected)){
+			for(int j = 1; j < oneCountryAndItsVendors.size(); j++){
 				
-				Thread.sleep(2000);
+				//System.out.println("amount of vendors: " + amountVendorsForCountry + "   - Index: " + index);
 				
-				// Get the vendors listed on legends after the vendor was unselected
-				List<WebElement> currentLegends = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));
-			
-				for(WebElement le: currentLegends){
+				// Unselect vendor from Point of View section
+				checkboxes.get(index).click();
+				
+				// Get name of unselected country
+				String countryUnselected = countriesAndVendors.get(i).get(0).getText();
+				
+				//System.out.println("Country unselected: " + countryUnselected);
+				
+				if(amountVendorsForCountry == 1){
 					
-					String legend = le.getText();
+					if(legendStrings.contains(countryUnselected)){
+						
+						// It waits to give time for the charts to be re-rendered on screen
+						Thread.sleep(2000); 
+						
+						// Get the vendors listed on legends after the vendor was unselected
+						List<WebElement> currentLegends = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));
 					
-					System.out.println("Vendor in legend: " + legend);
+						for(WebElement le: currentLegends){
+							
+							String legend = le.getText();
+							
+							//System.out.println("Vendor in legend: " + legend);
+							
+							// Verify that the vendor that was unselected, is removed from the chart's legends
+							Assert.assertNotEquals(legend, countryUnselected);
+							
+						}
+						
+					}
 					
-					// Verify that the vendor that was unselected, is removed from the chart's legends
-					Assert.assertNotEquals(legend, vendorUnselected);
-					
-				}
+				} 
+				
+				amountVendorsForCountry--;
+				index++;
 				
 			}
-			
-			
-			
+				
 		}
-		
 		
 		
 	}

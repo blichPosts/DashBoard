@@ -131,10 +131,10 @@ public class UsageHelper extends BaseClass{
 	
 	
 	// Move to chart in parameters
-	public static void moveToChart(String chartId){
+	public static void moveToUsageTrending(){
 		
-		WebElement chart = driver.findElement(By.cssSelector("#" + chartId));
-		new Actions(driver).moveToElement(chart).perform();
+		WebElement section = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
+		new Actions(driver).moveToElement(section).perform();
 		
 	}
 	

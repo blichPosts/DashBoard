@@ -39,7 +39,7 @@ public class UsageTrendingByVendorActions extends BaseClass{
 		// #1 Select Vendor View 
 		UsageHelper.selectVendorView();
 		
-		
+/*		
 		// #2 Verify the text shown on the tooltip when hovering the mouse over the bar charts, for Usage Trending Domestic chart
 		UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.UsageTrendingDomesticChart);
 		
@@ -56,14 +56,14 @@ public class UsageTrendingByVendorActions extends BaseClass{
 		// #5 Verify that vendors/countries on the legends of Usage Trending Roaming chart can be switched on/off.
 		UsageTrending.verifyBarsCanBeSwitchedOnOff(UsageHelper.UsageTrendingRoamingChart);
 		
-		
+	
 		// #6 Verify that vendors selected are added to the Usage Trending by Vendor chart - "Domestic"
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
-		
+			
 		// Voice
 		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryVoice);
-	
+
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
@@ -83,7 +83,7 @@ public class UsageTrendingByVendorActions extends BaseClass{
 		
 		// Voice
 		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryVoice);
-				
+					
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
@@ -95,8 +95,11 @@ public class UsageTrendingByVendorActions extends BaseClass{
 		
 		// Data
 		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryData);
+*/		
+
+		UsageTrendingActions.allVendorsAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryVoice);
 		
-		
+		// #7 Verify that vendors that are removed from the PoV section are removed from the charts
 		UsageTrendingActions.vendorsUnselectedRemovedFromChart(UsageHelper.UsageTrendingDomesticChart);
 		
 		UsageTrendingActions.vendorsUnselectedRemovedFromChart(UsageHelper.UsageTrendingRoamingChart);
