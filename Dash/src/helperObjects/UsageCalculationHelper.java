@@ -64,7 +64,6 @@ public class UsageCalculationHelper extends BaseClass{
 						
 		}
 		
-		
 		//System.out.println("Value rounded for KPI: " + amountConverted);
 		
 		return amountConverted;
@@ -127,8 +126,7 @@ public class UsageCalculationHelper extends BaseClass{
 			amountConverted = Long.toString(roundedValue) + unit;
 						
 		}
-		
-		
+				
 		//System.out.println("Value rounded for KPI: " + amountConverted);
 		
 		return amountConverted;

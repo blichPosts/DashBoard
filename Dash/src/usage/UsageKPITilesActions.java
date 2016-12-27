@@ -1,5 +1,6 @@
 package usage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -50,22 +51,39 @@ public class UsageKPITilesActions extends BaseClass{
 	}
 
 	
-	//  ***** CONTINUE HERE ***********
-	// ************** rolling averages need to be rounded in order to be compared -- DONE!!
-	// Trend Percentage Change = ABS[(KPI- KPI3Mavg)/ KPI3Mavg]
-	public static void verifyTrendingValues(List<UsageOneMonth> valuesForRollingAvg) {
+	
+	
+	public static void verifyThreeMonthRollingAverageAndTrendingValues(List<UsageOneMonth> valuesForRollingAvg) {
+	
+		List<String> voiceValues = new ArrayList<String>();
+		List<String> dataValues = new ArrayList<String>();
+		List<String> messagesValues = new ArrayList<String>();
+		List<String> roamingDataValues = new ArrayList<String>();
 		
+		for(UsageOneMonth monthValues: valuesForRollingAvg){
+			
+			voiceValues.add(Double.toString(Double.parseDouble(monthValues.getDomesticVoice()) + Double.parseDouble(monthValues.getDomesticOverageVoice())));
+			dataValues.add(monthValues.getDomesticDataUsageKb());
+			messagesValues.add(monthValues.getDomesticMessages());
+			roamingDataValues.add(monthValues.getRoamingDataUsageKb());
+			
+		}
 		
-		double rollingAvgVoice = calculateRollingAverage(valuesForRollingAvg.get(0).getDomesticVoice(), valuesForRollingAvg.get(1).getDomesticVoice(), valuesForRollingAvg.get(2).getDomesticVoice());
-		double rollingAvgMsg = calculateRollingAverage(valuesForRollingAvg.get(0).getDomesticMessages(), valuesForRollingAvg.get(1).getDomesticMessages(), valuesForRollingAvg.get(2).getDomesticMessages());
-		double rollingAvgData = calculateRollingAverage(valuesForRollingAvg.get(0).getDomesticDataUsageKb(), valuesForRollingAvg.get(1).getDomesticDataUsageKb(), valuesForRollingAvg.get(2).getDomesticDataUsageKb());
-		double rollingAvgRoamingData = calculateRollingAverage(valuesForRollingAvg.get(0).getRoamingDataUsageKb(), valuesForRollingAvg.get(1).getRoamingDataUsageKb(), valuesForRollingAvg.get(2).getRoamingDataUsageKb());
+		double rollingAvgVoice = calculateRollingAverage(voiceValues);
+		double rollingAvgData = calculateRollingAverage(dataValues);
+		double rollingAvgMsg = calculateRollingAverage(messagesValues);
+		double rollingAvgRoamingData = calculateRollingAverage(roamingDataValues);
 		
-		/*System.out.println("rollingAvgVoice: " + rollingAvgVoice);
+		/*
+		System.out.println("rollingAvgVoice: " + rollingAvgVoice);
 		System.out.println("rollingAvgMsg: " + rollingAvgMsg);
 		System.out.println("rollingAvgData: " + rollingAvgData);
 		System.out.println("rollingAvgRoamingData: " + rollingAvgRoamingData);
 		*/
+		
+		// Round up rolling averages for Voice and Messages, since they cannot have decimal points (minutes and messages units must be integers) 
+		long avgTmpVoice = Math.round(rollingAvgVoice); 
+		long avgTmpMsg = Math.round(rollingAvgMsg); 
 		
 		
 		for(int i = 1; i <= 4; i++){
@@ -88,81 +106,70 @@ public class UsageKPITilesActions extends BaseClass{
 			// If "3 months" rolling average exists, then the trending percentage can be calculated
 			if(threeMonthDisplayed){
 				
-				String kpiValueString = "";
-				
-				// If KPI tile is one of the Domestic KPI tiles
-				if(i <= 3)
-					kpiValueString = driver.findElement(By.xpath("(//div[@class='tdb-kpi__statistic'])[" + i +"]")).getText();
-				// If KPI tile is the Roaming KPI tile
-				if(i == 4)
-					kpiValueString = driver.findElement(By.cssSelector(".tdb-kpi__statistic.tdb-text--highlight")).getText();
-				
-				String kpiWithNoUnits = UsageCalculationHelper.getNumericValue(kpiValueString);
-				
-				double kpiValue = Double.parseDouble(kpiWithNoUnits);
-				
 				// Get the 3 month value displayed on the KPI tile
 				String threeMonthAvgActual = UsageCalculationHelper.getNumericValueWithPrefixes(threeMonthValue.getText());
-				System.out.println("threeMonthAvgActual: " + threeMonthAvgActual);
+				// System.out.println("threeMonthAvgActual: " + threeMonthAvgActual);
 				
 				String threeMonthAvgExpected = "";
 				
+				double rollingAverage = 0;
+				double kpiValue = 0;
+				
 				switch(i){
-					case 1:
-						threeMonthAvgExpected = UsageCalculationHelper.convertUnits(rollingAvgVoice);
-						//System.out.println("case 1 - avg: " + rollingAvgVoice);
-						//System.out.println("threeMonthAvgExpected: " + threeMonthAvgExpected);
+					case 1:  // Voice
+						// Amount of minutes must be an integer. This rounding is needed in case the amount of minutes is < 10, 
+						// since the rolling average most likely will have a decimal point if it's < 10, and this is incorrect. 
+						threeMonthAvgExpected = UsageCalculationHelper.convertUnits(avgTmpVoice);
+						rollingAverage = rollingAvgVoice;
+						kpiValue = Double.parseDouble(valuesForRollingAvg.get(0).getDomesticVoice()) + Double.parseDouble(valuesForRollingAvg.get(0).getDomesticOverageVoice());
 						break;
-					case 2:
+					case 2:  // Data
 						threeMonthAvgExpected = UsageCalculationHelper.convertDataUnitsAndAddPrefix(rollingAvgData);
-						//System.out.println("case 2 - avg: " + rollingAvgData);
-						//System.out.println("threeMonthAvgExpected: " + threeMonthAvgExpected);
+						rollingAverage = rollingAvgData;
+						kpiValue = Double.parseDouble(valuesForRollingAvg.get(0).getDomesticDataUsageKb());
 						break;
-					case 3:
-						threeMonthAvgExpected = UsageCalculationHelper.convertUnits(rollingAvgMsg);
-						//System.out.println("case 3 - avg: " + rollingAvgMsg);
-						//System.out.println("threeMonthAvgExpected: " + threeMonthAvgExpected);
+					case 3:  // Messages
+						// Amount of messages must be an integer. This rounding is needed in case the amount of messages is < 10, 
+						// since the rolling average most likely will have a decimal point if it's < 10, and this is incorrect. 
+						threeMonthAvgExpected = UsageCalculationHelper.convertUnits(avgTmpMsg);
+						rollingAverage = rollingAvgMsg;
+						kpiValue = Double.parseDouble(valuesForRollingAvg.get(0).getDomesticMessages());
 						break;
-					case 4:
+					case 4:  // Roaming Data
 						threeMonthAvgExpected = UsageCalculationHelper.convertDataUnitsAndAddPrefix(rollingAvgRoamingData);
-						//System.out.println("case 4 - avg: " + rollingAvgRoamingData);
-						//System.out.println("threeMonthAvgExpected: " + threeMonthAvgExpected);
+						rollingAverage = rollingAvgRoamingData;
+						kpiValue = Double.parseDouble(valuesForRollingAvg.get(0).getRoamingDataUsageKb());
 						break;
 				}
-				System.out.println("threeMonthAvgExpected: " + threeMonthAvgExpected);
+				
+				//System.out.println("threeMonthAvgExpected: " + threeMonthAvgExpected);
 				
 				// Verifies that the '3 month rolling average' displayed equals to the '3 month rolling average' calculated
 				Assert.assertEquals(threeMonthAvgActual, threeMonthAvgExpected);
 				
-				/*
-				String threeMonthNoUnits = UsageCalculationHelper.getNumericValue(threeMonthAvgActual);
-				double threeMonthAverage = Double.parseDouble(threeMonthNoUnits);
-				
-				
-				// If value on KPI is different from the 3 month rolling average, then trending % will different from 0%.
-				// If trending % is 0%, it won't be displayed
-				if (!kpiValueString.equals(threeMonthAvgActual)){
+				// If KPI value is different from the 3 month rolling average, then trending % will be different from 0%.
+				// --> If trending % is 0%, it won't be displayed
+				if(kpiValue != rollingAverage){
 				  
-					System.out.println("kpiValue: "  + kpiValue);
-					System.out.println("threeMonthAverage: "  + threeMonthAverage);
+					// System.out.println("kpiValue: "  + kpiValue);
+					// System.out.println("rollingAverage: "  + rollingAverage);
 					
-					long trendCalculated = Math.round((Math.abs((kpiValue - threeMonthAverage)/threeMonthAverage) * 100));
+					long trendCalculated = calculateTrendingPercentage(kpiValue, rollingAverage);
 					
-					System.out.println("Trend calculated: " + trendCalculated);
+					// System.out.println("Trend calculated: " + trendCalculated);
 					
 					if(trendCalculated > 0){
+						
 						String trend = trendingElementKpi.get(1).getText();
 						int trendValue = getTrendingValueWithNoSymbol(trend); 
+						
 						Assert.assertTrue(trendingElementKpi.size() == 2);
+						Assert.assertEquals(trendValue, trendCalculated);   
+						Assert.assertTrue(trend.endsWith("%"));
+						// System.out.println("Trending element: " + trend);
 						
-						///*** I'LL NEED THE ORIGINAL VALUES TO CALCULATE THE % - 
-						// *** THE ROUNDED VALUES DON'T ALWAYS WORK TO CALCULATE AND GET THE EXACT SAME VALUE AS THE ONE DISPLAYED ON THE KPI.
-						
-						//Assert.assertEquals(trendValue, trendCalculated);   
-						//Assert.assertTrue(trend.endsWith("%"));
-						System.out.println("Trending element: " + trend);
 					}
-				}*/
+				}
 				
 				//System.out.println("3 months is displayed"); 
 				
@@ -173,31 +180,132 @@ public class UsageKPITilesActions extends BaseClass{
 			}
 							
 		}
-		
-		
-		
+	
 	}
 
 	
 	
-	// 3 month rolling average = (KPI n + KPI n-1 + KPI n-2)/3
-	private static double calculateRollingAverage(String valueCurrentMonth, String valuePreviousMonth, String valueTwoMonthsBefore) {
+	public static void verifySixMonthRollingAverage(List<UsageOneMonth> valuesForRollingAvg) {
 		
-		double average = (Double.parseDouble(valueCurrentMonth) + Double.parseDouble(valuePreviousMonth) + Double.parseDouble(valueTwoMonthsBefore))/3;
-		return average;		
+		
+		List<String> voiceValues = new ArrayList<String>();
+		List<String> dataValues = new ArrayList<String>();
+		List<String> messagesValues = new ArrayList<String>();
+		List<String> roamingDataValues = new ArrayList<String>();
+		
+		for(UsageOneMonth monthValues: valuesForRollingAvg){
+			
+			voiceValues.add(Double.toString(Double.parseDouble(monthValues.getDomesticVoice()) + Double.parseDouble(monthValues.getDomesticOverageVoice())));
+			dataValues.add(monthValues.getDomesticDataUsageKb());
+			messagesValues.add(monthValues.getDomesticMessages());
+			roamingDataValues.add(monthValues.getRoamingDataUsageKb());
+			
+		}
+		
+		double rollingAvgVoice = calculateRollingAverage(voiceValues);
+		double rollingAvgData = calculateRollingAverage(dataValues);
+		double rollingAvgMsg = calculateRollingAverage(messagesValues);
+		double rollingAvgRoamingData = calculateRollingAverage(roamingDataValues);
+		
+		/*System.out.println("rollingAvgVoice: " + rollingAvgVoice);
+		System.out.println("rollingAvgMsg: " + rollingAvgMsg);
+		System.out.println("rollingAvgData: " + rollingAvgData);
+		System.out.println("rollingAvgRoamingData: " + rollingAvgRoamingData);
+		*/
+		
+		// Round up rolling averages for Voice and Messages, since they cannot have decimal points (minutes and messages units must be integers) 
+		long avgTmpVoice = Math.round(rollingAvgVoice); 
+		long avgTmpMsg = Math.round(rollingAvgMsg); 
+		
+		for(int i = 1; i <= 4; i++){
+			
+			WebElement sixMonthValue = null;
+			boolean sixMonthDisplayed = true;
+			
+			try{
+				sixMonthValue = driver.findElement(By.xpath("(//div[text()='6 months'])[" + i +"]/following-sibling::div"));
+				//System.out.println("threeMonthDisplayed true");
+			}catch(Exception e){
+				// If 6 month rolling average is not displayed, set the variable to false
+				//System.out.println("threeMonthDisplayed false");
+				sixMonthDisplayed = false;
+			}
+			
+			
+			// If "6 months" rolling average exists
+			if(sixMonthDisplayed){
+							
+				// Get the 6 months rolling average value displayed on the KPI tile
+				String sixMonthAvgActual = UsageCalculationHelper.getNumericValueWithPrefixes(sixMonthValue.getText());
+				// System.out.println("sixMonthAvgActual: " + sixMonthAvgActual);
+				
+				String sixMonthAvgExpected = "";
+				
+				switch(i){
+					case 1: // Voice
+						// Amount of minutes must be an integer. This rounding is needed in case the amount of minutes is < 10, 
+						// since the rolling average most likely will have a decimal point if it's < 10, and this is incorrect. 
+						sixMonthAvgExpected = UsageCalculationHelper.convertUnits(avgTmpVoice);
+						break;
+					case 2: // Data
+						sixMonthAvgExpected = UsageCalculationHelper.convertDataUnitsAndAddPrefix(rollingAvgData);
+						break;
+					case 3: // Messages
+						// Amount of messages must be an integer. This rounding is needed in case the amount of messages is < 10, 
+						// since the rolling average most likely will have a decimal point if it's < 10, and this is incorrect. 
+						sixMonthAvgExpected = UsageCalculationHelper.convertUnits(avgTmpMsg);
+						break;
+					case 4: // Roaming Data
+						sixMonthAvgExpected = UsageCalculationHelper.convertDataUnitsAndAddPrefix(rollingAvgRoamingData);
+						break;
+				}
+				
+				// System.out.println("sixMonthAvgExpected: " + sixMonthAvgExpected);
+				
+				// Verifies that the '6 months rolling average' displayed equals to the '6 months rolling average' calculated
+				Assert.assertEquals(sixMonthAvgActual, sixMonthAvgExpected);
+				
+			}
+			
+		}
+		
+	}
+	
+	
+	
+	// 3 month rolling average = (KPI n + KPI n-1 + KPI n-2) / 3
+	// 6 month rolling average = (KPI n + KPI n-1 + KPI n-2++ KPI n-3 + KPI n-4++ KPI n-5) / 6
+	private static double calculateRollingAverage(List<String> values) {
+		
+		double sum = 0;
+		
+		for(String v: values){
+			sum += Double.parseDouble(v);
+		}
+		
+		double average = sum / values.size();
+		return average;
 		
 	}
 
 
+	// Trend Percentage Change = ABS[(KPI- KPI3Mavg) / KPI3Mavg]
+	public static long calculateTrendingPercentage(double kpiValue, double rollingAverage){
+		
+		return Math.round((Math.abs((kpiValue - rollingAverage)/rollingAverage) * 100));
+		
+	}
+	
+	
 	private static int getTrendingValueWithNoSymbol(String trend) {
 		
 		String[] trendParts = trend.split("%");
 		return Integer.parseInt(trendParts[0]);
 	}
 
+
 	
-	
-	
+
 	
 	
 }

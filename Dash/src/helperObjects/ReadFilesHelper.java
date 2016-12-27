@@ -19,9 +19,7 @@ public class ReadFilesHelper {
 	*/
 	
 	
-	
-	
-	// path "D:/Documents/CMD Dashboard/CreateFilesProgram/AT&T Mobility.txt"
+	// E.g. path: "D:/Documents/CMD Dashboard/CreateFilesProgram/AT&T Mobility.txt"
 	
 	public static List<UsageOneMonth> getDataFromSpreadsheet(String filePath) throws IOException{
 		
@@ -29,11 +27,10 @@ public class ReadFilesHelper {
 		
 		int linesAmount = linesOfFile.size() - 2; 
 		
-		//String [][] values = new String[linesAmount][9]; // # rows it's variable for each vendor - one for each line found in the file
-												 		 // 9 columns - one for each value needed for Usage page tests 	
-		
+		// This list will contain one UsageOneMonth object per month 
 		List<UsageOneMonth> listValues = new ArrayList<UsageOneMonth>();
 		
+		System.out.println("         Year  Month   dom_mou   overage_mou   dom_msgs   dom_data   roam_mou   roam_data  roam_msgs");
 		
 		for (int i = 0; i < linesAmount; i++){
 			
@@ -43,57 +40,31 @@ public class ReadFilesHelper {
 			String[] splitedline = splitLine(lineToBeSplited);
 		
 			UsageOneMonth usageOneMonth = new UsageOneMonth();
-			usageOneMonth.setOrdinalYear(splitedline[4]);   // ordinal_year
-			usageOneMonth.setOrdinalMonth(splitedline[5]);   // ordinal_month
-			usageOneMonth.setDomesticVoice(splitedline[19]);  // domestic_mou
+			usageOneMonth.setOrdinalYear(splitedline[4]);            // ordinal_year
+			usageOneMonth.setOrdinalMonth(splitedline[5]);           // ordinal_month
+			usageOneMonth.setDomesticVoice(splitedline[19]);         // domestic_mou
 			usageOneMonth.setDomesticOverageVoice(splitedline[20]);  // domestic_overage_mou
-			usageOneMonth.setDomesticMessages(splitedline[21]);  // domestic_messages
-			usageOneMonth.setDomesticDataUsageKb(splitedline[22]);  // domestic_data_usage_kb
-			usageOneMonth.setRoamingVoice(splitedline[23]);  // roaming_mou
-			usageOneMonth.setRoamingDataUsageKb(splitedline[24]);  // roaming_data_usage_kb
-			usageOneMonth.setRoamingMessages(splitedline[25]);  // roaming_messages
+			usageOneMonth.setDomesticMessages(splitedline[21]);      // domestic_messages
+			usageOneMonth.setDomesticDataUsageKb(splitedline[22]);   // domestic_data_usage_kb
+			usageOneMonth.setRoamingVoice(splitedline[23]);          // roaming_mou
+			usageOneMonth.setRoamingDataUsageKb(splitedline[24]);    // roaming_data_usage_kb
+			usageOneMonth.setRoamingMessages(splitedline[25]);       // roaming_messages
 			
 			listValues.add(usageOneMonth);
 			
-			System.out.print("Row " + (i+1) + ": ");
-			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");   // ordinal_year
-			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");   // ordinal_month
-			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");  // domestic_mou
+			System.out.print("Row " + (i+1) + ":  | ");
+			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");           // ordinal_year
+			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");          // ordinal_month
+			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");         // domestic_mou
 			System.out.print(listValues.get(i).getDomesticOverageVoice() + "  | ");  // domestic_overage_mou
-			System.out.print(listValues.get(i).getDomesticMessages() + "  | ");  // domestic_messages
-			System.out.print(listValues.get(i).getDomesticDataUsageKb() + "  | ");  // domestic_data_usage_kb
-			System.out.print(listValues.get(i).getRoamingVoice() + "  | ");  // roaming_mou
-			System.out.print(listValues.get(i).getRoamingDataUsageKb() + "  | ");  // roaming_data_usage_kb
-			System.out.print(listValues.get(i).getRoamingMessages() + "  | ");  // roaming_messages
+			System.out.print(listValues.get(i).getDomesticMessages() + "  | ");      // domestic_messages
+			System.out.print(listValues.get(i).getDomesticDataUsageKb() + "  | ");   // domestic_data_usage_kb
+			System.out.print(listValues.get(i).getRoamingVoice() + "  | ");          // roaming_mou
+			System.out.print(listValues.get(i).getRoamingDataUsageKb() + "  | ");    // roaming_data_usage_kb
+			System.out.print(listValues.get(i).getRoamingMessages() + "  | ");       // roaming_messages
 			System.out.println("");
 			
-			/*
-			values[i][0] = splitedline[4];   // ordinal_year
-			values[i][1] = splitedline[5];   // ordinal_month
-			values[i][2] = splitedline[19];  // domestic_mou
-			values[i][3] = splitedline[20];  // domestic_overage_mou
-			values[i][4] = splitedline[21];  // domestic_messages
-			values[i][5] = splitedline[22];  // domestic_data_usage_kb
-			values[i][6] = splitedline[23];  // roaming_mou
-			values[i][7] = splitedline[24];  // roaming_data_usage_kb
-			values[i][8] = splitedline[25];  // roaming_messages 
-			*/
 		}
-		
-		
-		/*for (int i = 0; i < linesAmount; i++){
-			System.out.print("Row " + (i+1) + ": ");
-			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");   // ordinal_year
-			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");   // ordinal_month
-			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");  // domestic_mou
-			System.out.print(listValues.get(i).getDomesticOverageVoice() + "  | ");  // domestic_overage_mou
-			System.out.print(listValues.get(i).getDomesticMessages() + "  | ");  // domestic_messages
-			System.out.print(listValues.get(i).getDomesticDataUsageKb() + "  | ");  // domestic_data_usage_kb
-			System.out.print(listValues.get(i).getRoamingVoice() + "  | ");  // roaming_mou
-			System.out.print(listValues.get(i).getRoamingDataUsageKb() + "  | ");  // roaming_data_usage_kb
-			System.out.print(listValues.get(i).getRoamingMessages() + "  | ");  // roaming_messages
-			System.out.println("");
-		}*/
 		
 		return listValues;
 		
@@ -109,12 +80,10 @@ public class ReadFilesHelper {
 		List<String> lines = new ArrayList<String>();
 		
 		rows.forEach(s ->lines.add((String)s));
-		
 					
 		//System.out.println("count: " +  lines.size());
 		
-		for(String line: lines){
-			
+		for(String line: lines){	
 			//System.out.println("line: " + line);
 		}
 		

@@ -14,7 +14,7 @@ import Dash.BaseClass;
 
 public class UsageHelper extends BaseClass{
 
-	
+	public final static String path = "D:/Documents/CMD Dashboard/CreateFilesProgram/ ";
 	public final static String minutes = "min";
 	public final static String messages = "msg";
 	public final static String dataB = "B";
@@ -151,6 +151,14 @@ public class UsageHelper extends BaseClass{
 		
 		
 	}
+	
+	
+	public static String removePunctuationCharacters(String string){
+		
+		return string.replace(".", "").replace("\"", "").replace(",",""); 
+		
+	}
+	
 	
 	
 	
