@@ -453,6 +453,23 @@ public class BaseClass
 		    return true;
 		}		
 
+		public static boolean WaitForElementPresentNoThrow(By by, int timeOut) throws Exception 
+		{
+		    try
+		    {
+				WebDriverWait wait = new WebDriverWait(driver, timeOut);
+			    wait.until(ExpectedConditions.presenceOfElementLocated(by));
+		    }
+	        catch (Exception e)
+	        {
+		        //System.out.println(e.toString());
+		        // throw new Exception(e.toString());
+	        	return false;
+	        }	    
+		    return true;
+		}		
+		
+		
 		public static boolean WaitForElementNotPresentNoThrow(By by, int timeOut) throws Exception 
 		{
 		    try

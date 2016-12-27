@@ -16,14 +16,14 @@ public class ExpenseHelper extends BaseClass
 {
 	public static String tmpStr = "";
 	public static String errMessage = "";	
-	public static String desiredMonth = "June 2016";
+	public static String desiredMonth = "October 2016";
 	public static String impericalDesiredMonth = ""; // this is found by going through the months and finding the month(s) with the most amount of vendors showing in the expense control. 
 	public static String chartId = "";
 	public static String otherText = "Other";
 	public static String tempLocator = "";
 	public static String tempUrl = "";
 	
-	public static List<WebElement> webElementListLegands;	
+	public static List<WebElement> webElementListLegends;	
 	public static List<String> legendsListTotalExpense = new ArrayList<String>();	
 
 	// these are for VerifyMonths method 
@@ -53,7 +53,8 @@ public class ExpenseHelper extends BaseClass
 	// this is the same for all three controls that have a bar chart for each month. this gets the list of months above the legends 
 	public static String partialXpathToMonthListInControls = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
 	
-	// this is the same for all three controls that have a bar chart for each month. this gets the list of legends. also can be used for 'expense control'
+	// this is the same for all three controls that have a bar chart for each month. this gets the list of legends. 
+	// also can be used for 'expense control'
 	public static String partialXpathToLegendsListInControls = "/*/*[@class='highcharts-legend']/*/*/*";
 	
 	// this is the same for all three controls that have a bar chart for each month. this gets the bar graphs.
@@ -161,7 +162,7 @@ public class ExpenseHelper extends BaseClass
 		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
 
 		// store all legend names into web element list.
-		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
+		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
 		
 		// for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
 		
@@ -171,7 +172,7 @@ public class ExpenseHelper extends BaseClass
 		}
 		
 		// store legend names into legend list.
-		for(WebElement ele : webElementListLegands )
+		for(WebElement ele : webElementListLegends )
 		{
 			legendsListTotalExpense.add(ele.getText());
 
@@ -418,6 +419,13 @@ public class ExpenseHelper extends BaseClass
 	{
 		driver.manage().timeouts().implicitlyWait(300, TimeUnit.MILLISECONDS); 		
 	}
+	
+	// this is used when waiting for element not present.
+	public static void SetWaitTiny()
+	{
+		driver.manage().timeouts().implicitlyWait(200, TimeUnit.MILLISECONDS); 		
+	}
+	
 
 	// this verifies that each control is not visible by looking for the first legend in each control being not visible.
 	public static void VerifyControlsNotPresent() throws Exception
@@ -447,8 +455,9 @@ public class ExpenseHelper extends BaseClass
 		ExpenseHelper.SetWaitDefault(); // back to default.
 	}	
 	
-	// bladdxx
-	public static String FindMonthWithMostVendors() throws Exception
+	// this is meant to be run once to get the first month (using the expense control) that has the max number of vendors and the other legend. 
+	// if that combination is not found it will find the moth with the most amount of legends in the expense control. 
+	public static void FindMonthWithMostVendors() throws Exception
 	{
 		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
 		int largestNumOfVendors = 0;
@@ -458,26 +467,124 @@ public class ExpenseHelper extends BaseClass
 		
 		CommonTestStepActions.initializeMonthSelector();
 
-		// loop through selecting each month the find the month with the most amount of vendors using the expense control.
-		for(WebElement ele : CommonTestStepActions.webListPulldown) // go through each month.
+		// loop through selecting each month to find the month to find the combination described above.
+		for(WebElement ele : CommonTestStepActions.webListPulldown) 
 		{
-			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
-			WaitForElementVisible(By.xpath("//h1[text()='" +   ele.getText()  + "']"), MediumTimeout);
-			Assert.assertEquals(driver.findElement(By.xpath("//h1[text()='" +   ele.getText()  + "']")).getText(), ele.getText(), "");
-			WaitForElementVisible(By.xpath("//h2[text()='" +   ele.getText()  + "']"), MediumTimeout);
-			Assert.assertEquals(driver.findElement(By.xpath("//h2[text()='" +   ele.getText()  + "']")).getText(), ele.getText(), "");
-
-			currentNumOfVendors = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)).size();
-			if(largestNumOfVendors > currentNumOfVendors)
-			{
-				impericalDesiredMonth = ele.getText();
-			}
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText()); 
 			
+			// wait for the selected month to show up in the top left of page and the expense control. 
+			WaitForElementVisible(By.xpath("//h1[text()='" +   ele.getText()  + "']"), MediumTimeout);
+			WaitForElementVisible(By.xpath("//h2[text()='" +   ele.getText()  + "']"), MediumTimeout);
+
+			// get the number of legends shown in the total expense control with current month.
+			currentNumOfVendors = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)).size();
+			
+			if(currentNumOfVendors > largestNumOfVendors) // if number legends shown for this month is greater than others, store the number of legends
+			{
+				largestNumOfVendors = currentNumOfVendors;
+				
+				if(largestNumOfVendors == ExpenseHelper.maxNumberOfLegends + 1) // this is the max number of legends that can be shown. show and leave.
+				{
+					impericalDesiredMonth = ele.getText();
+					ShowText("Desired month is " + impericalDesiredMonth);
+					return;
+				}
+				else
+				{
+					impericalDesiredMonth = ele.getText();					
+				}
+			}
 		}
 		
-		ShowText(impericalDesiredMonth);
+		ShowText("Desired month is " + impericalDesiredMonth);
+	}
+	
+	public static void VerifyUnselectingLegendsDisables() throws Exception // bladdxx
+	{
+		int cntr = 1; // used to keep track of how many legends should be disabled.
 		
-		return"";
+		// the wait to verify a legend, in 'VerifyLegendListStates' method, that doesn't contain "[contains(@class,'item-hidden')]" needs to be short or things get slow.  
+		// i did force an error in the case where "[contains(@class,'item-hidden')]" is present and is not supposed to be present, and a fail was found.
+		// this sets up the default timeout for method 'Assert.assertFalse' in method 'VerifyLegendListStates'. 
+		SetWaitTiny();  
+		
+		chartId = UsageHelper.getChartId(0);// get chart id for total expense
+		
+		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)); // store all the web elements for the legends.   
+		
+		// go through the legends and select one at time. verify all states (enabled/disabled) of the legends are correct after each legend is selected.
+		for(WebElement ele : webElementListLegends) 
+		{
+			driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + cntr +  "]")).click(); // select current web element's legend. 
+			
+			// DEBUG - this shows not able to use isEnabled() to tell if a legend is disabled. isEnabled() always shows true here.
+			//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]")).isEnabled());
+			//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]/*")).isEnabled());			
+			//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]/*/*")).isEnabled());
+			
+			VerifyLegendListStates(webElementListLegends, chartId, cntr, partialXpathToLegendsListInControls); // this does the verification of all legend states.
+			cntr++;
+		}
+		
+		webElementListLegends.clear();
+		
+		SetWaitDefault();
+		
+	}
+
+	
+	public static void VerifyUnselectingLegendsEnables() throws Exception // bladdxx
+	{
+		int cntr = 1;
+		
+		// the wait to verify a legend, in 'VerifyLegendListStates' method, that doesn't contain "[contains(@class,'item-hidden')]" needs to be short or things get slow.  
+		// i did force an error in the case where "[contains(@class,'item-hidden')]" is present and is not supposed to be present, and a fail was found.
+		// this sets up the default timeout for method 'Assert.assertFalse' in method 'VerifyLegendListStates'. 
+		SetWaitTiny();  
+		
+		chartId = UsageHelper.getChartId(0);// get chart id for total expense
+		
+		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)); // store all the web elements for the legends.   
+
+		// go through the legends and select one at time. verify all states (enabled/disabled) of the legends are correct after each legend is selected.
+		for(WebElement ele : webElementListLegends) 
+		{
+			driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + cntr +  "]")).click(); // select current web element's legend. 
+			
+			VerifyLegendListStates(webElementListLegends, chartId, cntr, partialXpathToLegendsListInControls); // this does the verification of all legend states.
+			cntr--;
+		}
+		
+		webElementListLegends.clear();
+		
+		SetWaitDefault();
+		
+	}
+	
+	
+	// this verifies the elements that are to be enabled and the elements that are to be disabled. 
+	// 
+	// Inputs:
+	// webElementList - this is a list of the legends to test for enabled/disabled
+	// chartId - chart id of control being tested.
+	// numSelected - number of legends that should be disabled
+	// legendXpath - xpath the control's legend.
+	public static void VerifyLegendListStates(List<WebElement> webElementList, String chartId, int numSelected, String legendXpath) throws Exception // bladdxx
+	{
+		for(int x = 1; x <= webElementList.size(); x++)
+		{
+			if(x <= numSelected) // this element is expected to be disabled. it should have the "[contains(@class,'item-hidden')]" in its xpath.  
+			{
+				errMessage = "Failed to verify this legend is present.";
+				Assert.assertTrue(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), ShortTimeout), errMessage);
+			}
+			else // this element is not expected to be enabled. there should be no "[contains(@class,'item-hidden')]" in its xpath. 
+			{
+				// zero wait time here will default wait to the current implicit wait setting.
+				errMessage = "Failed to verify this legend is NOT present.";
+				Assert.assertFalse(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), 0), errMessage);				
+			}
+		}
 	}
 	
 	// //////////////////////////////////////////////////////////////////////	
@@ -486,6 +593,9 @@ public class ExpenseHelper extends BaseClass
 	
 	public static void ClearAllContainersForVerifyMonths()
 	{
+
+		ExpenseHelper.SetWaitShort();
+		
 		if(expectedYearMonthList != null)
 		{
 			expectedYearMonthList.removeAll(expectedYearMonthList);

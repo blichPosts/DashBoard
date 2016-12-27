@@ -111,6 +111,13 @@ public class CommonTestStepActions extends BaseClass
 		{
 			driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click();
 		}
+        // If at least one vendor is selected, the button's label will be = "ALL", so two clicks will be needed: 
+        // one to select all vendors; so the label will change to "NONE", and the second to unselect all the vendors at once
+        else if(driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).getText().equals("ALL"))
+        {
+               driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click(); // First click so  the label changes to NONE
+               driver.findElement(By.cssSelector(".tdb-povGroup__toggle > a")).click(); // Second click will definitely unselect all the vendors
+        }
 	}	
 
 	public static void SelectVendorView()

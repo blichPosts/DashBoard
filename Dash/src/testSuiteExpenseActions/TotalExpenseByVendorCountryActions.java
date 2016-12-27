@@ -22,24 +22,41 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 	}
 	
 	@Test
-	public static void KpiTilesActionsTest() throws Exception
+	public static void TotalExpenseByVendorCountryActionsTest() throws Exception
 	{
 
-		// Un-select all of the vendors in the Point of View.
-		CommonTestStepActions.GoToExpensePageDetailedWait(); 
+		//ShowText("Start finding desired month." );
+		//CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
+		//ExpenseHelper.FindMonthWithMostVendors(); 
+		//DebugTimeout(9999,"Desired month has been found. Stop Program" );
+		
+		
+		// #1 - this step isn't done because the spread sheet is needed. 
+		
+		// setup page for test.
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
+		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
+		
+
+		// #2
+		// Un-select the legends one at a time.
+		// The legend that is un-selected is disabled.
+		// The corresponding slice for the legend is removed from the pie.
+
+		
+
+		
+		ExpenseHelper.VerifyUnselectingLegendsDisables();
+		ExpenseHelper.VerifyUnselectingLegendsEnables();
+		
+		DebugTimeout(9999,"Freeze");
+		
 		//CommonTestStepActions.UnSelectAllVendors();
 		//ExpenseHelper.VerifyControlsNotPresent(); // wait for all controls to be empty.
-
-		// create container that stores each country object and the vendors inside each country onto a list.   
-		ExpenseHelper.SetupCountryAndVendorData();
-		
-		ExpenseHelper.FindMonthWithMostVendors();
-		
-		DebugTimeout(9999, "Freeze");
 		
 		
 		
-		
+		//       OLD KPI code.
 		/*
 		// All of the controls are blank.
 	    // The values in the KPI tiles are 0.
@@ -94,7 +111,8 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 	@AfterClass
 	public static void closeDriver() throws Exception
 	{
-		System.out.println("Close Browser.");		
+		System.out.println("Close Browser.");	
+		ExpenseHelper.SetWaitDefault();
 	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
 		driver.close();
 		driver.quit();

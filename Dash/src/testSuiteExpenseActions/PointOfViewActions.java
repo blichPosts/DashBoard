@@ -89,7 +89,7 @@ public class PointOfViewActions extends BaseClass
 		
 		// # 4
 		// Switch the month pull down through each month.
-		PointOfView.VerifyMonthPulldownSelectionsInControls(); // bladdxx
+		PointOfView.VerifyMonthPulldownSelectionsInControls();
 		
 		// .md-checkbox-inner-container>#input-md-checkbox-1 /'/ this is css for the first vendor check box css=.md-checkbox-inner-container>#input-md-checkbox-1 
 	}
