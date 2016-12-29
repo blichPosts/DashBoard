@@ -168,7 +168,7 @@ public class UsageTrendingActions extends BaseClass{
 		
 		List<WebElement> categorySelectors = driver.findElements(By.cssSelector(".tdb-boxSelector.tdb-align--right:nth-child(odd)>div"));
 		
-		//categorySelectors.get(kpiNum).click();
+		//categorySelectors.get(kpiNum-1).click();
 		
 		int count = 12;
 		
@@ -185,7 +185,7 @@ public class UsageTrendingActions extends BaseClass{
 			// Wait 2 seconds to the values to get updated on Dashboard, after the vendor selection
 			//Thread.sleep(2000);
 			
-			//currentKPIvalue = kpiTiles.get(kpiNum).getText(); 
+			//currentKPIvalue = kpiTiles.get(kpiNum-1).getText(); 
 			//System.out.println("Current KPI tile value: " + currentKPIvalue);
 			
 			/* ********* TEST .....************ */
@@ -312,7 +312,7 @@ public class UsageTrendingActions extends BaseClass{
 		
 		List<WebElement> categorySelectors = driver.findElements(By.cssSelector(".tdb-boxSelector.tdb-align--right:nth-child(odd)>div"));
 		
-		categorySelectors.get(kpiNum).click();
+		categorySelectors.get(kpiNum-1).click();
 		
 		int vendorCount = 1;
 		int countryCount = 1;
@@ -335,7 +335,7 @@ public class UsageTrendingActions extends BaseClass{
 				// Wait 2 seconds to give time for the values to get updated on Dashboard, after the vendor selection
 				Thread.sleep(2000);
 				
-				currentKPIvalue = kpiTiles.get(kpiNum).getText(); 
+				currentKPIvalue = kpiTiles.get(kpiNum-1).getText(); 
 				//System.out.println("Current KPI tile value: " + currentKPIvalue);
 				
 				List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));

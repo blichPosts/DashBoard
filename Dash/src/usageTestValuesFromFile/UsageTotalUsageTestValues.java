@@ -16,10 +16,10 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
-import usage.UsageKPITilesActions;
+import usage.TotalUsageActions;
 
 
-public class UsageKPITilesTestValues extends BaseClass{
+public class UsageTotalUsageTestValues extends BaseClass{
 
 	
 	@BeforeClass
@@ -34,9 +34,9 @@ public class UsageKPITilesTestValues extends BaseClass{
 	
 	
 	@Test
-	public static void UsageKPITilesTestValuesTest() throws Exception
+	public static void UsageTotalUsageTestValuesTest() throws Exception
 	{
-		
+
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -47,7 +47,7 @@ public class UsageKPITilesTestValues extends BaseClass{
 		//vendor = "AT&T Mobility";
 		//vendor = "Etisalat";
 		//vendor = "O2 UK";
-		//vendor = "Rogers";
+		//String vendor = "Rogers";
 		
 		String path = UsageHelper.path;
 
@@ -55,7 +55,7 @@ public class UsageKPITilesTestValues extends BaseClass{
 		for(String vendorSelected: vendorNames){
 			
 			String vendor = vendorSelected;
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendorSelected);
+			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);  //(vendorSelected);
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
@@ -84,12 +84,7 @@ public class UsageKPITilesTestValues extends BaseClass{
 			String year =  "";
 			String month = "";
 			String monthYear = "";
-			String domesticVoiceUsage;
-			String domesticVoiceOverageUsage;
-			String domesticMessagesUsage;
-			String domesticDataUsage;
-			String roamingDataUsage;
-			
+						
 			int indexMonth = 0;
 			
 			do {
@@ -119,70 +114,27 @@ public class UsageKPITilesTestValues extends BaseClass{
 				
 				Thread.sleep(2000);
 				
-				domesticVoiceUsage = oneMonthData.getDomesticVoice();
-				domesticVoiceOverageUsage = oneMonthData.getDomesticOverageVoice();
-				domesticMessagesUsage = oneMonthData.getDomesticMessages();
-				domesticDataUsage = oneMonthData.getDomesticDataUsageKb();
-				roamingDataUsage = oneMonthData.getRoamingDataUsageKb();
+				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
+				
+				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryVoice);
+				Thread.sleep(2000);
+				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryVoice);
+				Thread.sleep(2000);				
+				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryData);
+				Thread.sleep(2000);
+				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryData);
+				Thread.sleep(2000);				
+				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
+				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
 								
-				// #5 Compare the values displayed on the KPIs to the values from spreadsheet
-				UsageKPITilesActions.verifyKPItileValues(domesticVoiceUsage, domesticVoiceOverageUsage, domesticMessagesUsage, domesticDataUsage, roamingDataUsage);
-				
-				
-				// #6 Calculate 3 Month Rolling Averages and Trending Percentage
-				// Get the values needed to calculate the 3 month Rolling Averages, and the Trending values
-				// ONLY if there's data for two months before the current month. 
-				// E.g.: Last month with data: January 2016, then March 2016 is the last month that will have the 3 month rolling average and trending values calculated
-				if(indexMonth < valuesFromFile.size()-2){
-					
-					List<UsageOneMonth> valuesForTrendingValue = new ArrayList<UsageOneMonth>();
-					
-					// Adds the current month values to the list
-					valuesForTrendingValue.add(valuesFromFile.get(indexMonth));
-					// Adds the previous month values to the list
-					valuesForTrendingValue.add(valuesFromFile.get(indexMonth+1));
-					// Adds values from 2 months ago to the list
-					valuesForTrendingValue.add(valuesFromFile.get(indexMonth+2));
-				 
-					UsageKPITilesActions.verifyThreeMonthRollingAverageAndTrendingValues(valuesForTrendingValue);
-					
-				}
-				
-				
-				// #7 Calculate 6 Month Rolling Averages
-				// Get the values needed to calculate the 6 month Rolling Averages
-				// ONLY if there's data for five months before the current month. 
-				// E.g.: Last month with data: January 2016, then June 2016 is the last month that will have the 6 month rolling average calculated
-				if(indexMonth < valuesFromFile.size()-5){
-					
-					List<UsageOneMonth> valuesForSixMonthAverage = new ArrayList<UsageOneMonth>();
-					
-					// Adds the current month values to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth));
-					// Adds the previous month values to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+1));
-					// Adds values from 2 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+2));
-					// Adds values from 3 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+3));
-					// Adds values from 4 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+4));
-					// Adds values from 5 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+5));
-					
-					UsageKPITilesActions.verifySixMonthRollingAverage(valuesForSixMonthAverage);
-					
-				}
-				
 				indexMonth++;
 				
 			} while (!monthYear.equals(lastMonthListedMonthSelector));
-			
-			Thread.sleep(2000);
-			
+						
 		}
-		
-		
+	
 	}
 	
 	
@@ -190,7 +142,7 @@ public class UsageKPITilesTestValues extends BaseClass{
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Test for KPI tiles values finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "Test for Total Usage values finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}

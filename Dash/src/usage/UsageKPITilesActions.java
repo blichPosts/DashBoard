@@ -155,6 +155,8 @@ public class UsageKPITilesActions extends BaseClass{
 					// System.out.println("rollingAverage: "  + rollingAverage);
 					
 					long trendCalculated = calculateTrendingPercentage(kpiValue, rollingAverage);
+					//int trendTemp = calculateTrendingPercentage(kpiValue, rollingAverage);
+					//int trendCalculated = Math.abs(trendTemp);
 					
 					// System.out.println("Trend calculated: " + trendCalculated);
 					
@@ -166,19 +168,23 @@ public class UsageKPITilesActions extends BaseClass{
 						Assert.assertTrue(trendingElementKpi.size() == 2);
 						Assert.assertEquals(trendValue, trendCalculated);   
 						Assert.assertTrue(trend.endsWith("%"));
-						// System.out.println("Trending element: " + trend);
 						
+						/*String arrowIcon = trendingElementKpi.get(0).getText();
+						if(trendTemp < 0){
+							Assert.assertEquals(arrowIcon, "");
+						} else if (trendTemp > 0){
+							Assert.assertEquals(arrowIcon, "");
+						}*/
+						
+						// System.out.println("Trending element: " + trend);
+						System.out.println("value: " + trend);
+						//System.out.println("arrow: " + trendingElementKpi.get(0).getText()); 
 					}
+					
 				}
 				
-				//System.out.println("3 months is displayed"); 
-				
-			}else{
-				
-				//System.out.println("3 months is NOT displayed"); 
-				
 			}
-							
+			
 		}
 	
 	}
@@ -290,9 +296,10 @@ public class UsageKPITilesActions extends BaseClass{
 
 
 	// Trend Percentage Change = ABS[(KPI- KPI3Mavg) / KPI3Mavg]
-	public static long calculateTrendingPercentage(double kpiValue, double rollingAverage){
+	public static int calculateTrendingPercentage(double kpiValue, double rollingAverage){
 		
-		return Math.round((Math.abs((kpiValue - rollingAverage)/rollingAverage) * 100));
+		return (int) Math.round((Math.abs((kpiValue - rollingAverage)/rollingAverage) * 100));
+		//return (int) Math.round(((kpiValue - rollingAverage)/rollingAverage) * 100);
 		
 	}
 	

@@ -50,9 +50,9 @@ public class UsageHelper extends BaseClass{
 	public final static int UsageTrendingDomesticChart = 2;
 	public final static int UsageTrendingRoamingChart = 3;
 	
-	public final static int categoryVoice = 0;
-	public final static int categoryData = 1;
-	public final static int categoryMessages = 2;
+	public final static int categoryVoice = 1;
+	public final static int categoryData = 2;
+	public final static int categoryMessages = 3;
 	
 
 	public static void selectVendorView(){
@@ -125,7 +125,12 @@ public class UsageHelper extends BaseClass{
 	
 	public static void selectCategory(int section, int category){
 		
+		String sectionToSelect = "";
+		if(section == totalUsageSection) sectionToSelect = "odd"; 
+		if(section == usageTrendingSection) sectionToSelect = "even";
 		
+		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-boxSelector.tdb-align--right:nth-child(" + sectionToSelect + ")>div:nth-of-type(" + category + ")"));
+		categoryToSelect.click();
 		
 	}
 	

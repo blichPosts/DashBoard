@@ -10,7 +10,7 @@ public class UsageCalculationHelper extends BaseClass{
 	
 	// Used to convert *Data* units
 	// E.g.: Given a value for Data of 20236954 bytes or Kb??? , the shortened and rounded value 
-	// that fits the format to be displayed on the KPI tile will be  
+	// that fits the format to be displayed on the KPI tile will be "19"
 	public static String convertDataUnits(double amount) {
 		
 		String amountConverted = "";
@@ -39,7 +39,6 @@ public class UsageCalculationHelper extends BaseClass{
 			tmpAmount = amount / Math.pow(1024, 4);
 			//unit = "T";
 		}
-		
 		
 		//System.out.println("Temp amount: " + tmpAmount);
 		
@@ -71,6 +70,33 @@ public class UsageCalculationHelper extends BaseClass{
 	}
 
 
+	// Used to convert *Data* units from KB to GB. The amount returned will be an integer; no decimal point.
+	// It's used in tests that verify the data usage displayed on tooltips of charts 
+	// E.g.: Given a value for Data of 20236954 KB , the shortened and rounded value 
+	// that fits the format to be displayed on the tooltip will be 19 (expressed in GB)
+	public static String convertDataUnitToGbNoDecimalPoint(double amount) {
+		
+		double tmpAmount = amount / Math.pow(1024, 2);
+		String amountConverted = roundNoDecimalDigits(tmpAmount);
+		//System.out.println("Original amount: " + amount + ", Converted from KB to GB: " + tmpAmount + ", Value rounded: " + amountConverted);
+		
+		return amountConverted;
+		
+	}
+	
+		
+	// Round value, no decimal digits
+	public static String roundNoDecimalDigits(double notRoundedValue){
+		
+		long roundedValue = Math.round(notRoundedValue);
+		String amountConverted = Long.toString(roundedValue);
+		//System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
+		
+		return amountConverted;
+		
+	}
+	
+	
 	// Used to convert *Voice* and *Messages* values to different units
 	// E.g.: Given a value for Voice of 15236 minutes, the shortened and rounded value 
 	// that fits the format to be displayed on the KPI tile will be 15K 

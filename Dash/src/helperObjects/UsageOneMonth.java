@@ -2,6 +2,7 @@ package helperObjects;
 
 public class UsageOneMonth {
 
+	private String vendorName;
 	private String ordinalYear;
 	private String ordinalMonth;
 	private String domesticVoice;
@@ -13,6 +14,12 @@ public class UsageOneMonth {
 	private String roamingMessages; 
 	
 	
+	public String getVendorName() {
+		return vendorName;
+	}
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
 	public String getOrdinalYear() {
 		return ordinalYear;
 	}

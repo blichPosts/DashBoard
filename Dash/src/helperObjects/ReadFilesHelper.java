@@ -30,7 +30,7 @@ public class ReadFilesHelper {
 		// This list will contain one UsageOneMonth object per month 
 		List<UsageOneMonth> listValues = new ArrayList<UsageOneMonth>();
 		
-		System.out.println("         Year  Month   dom_mou   overage_mou   dom_msgs   dom_data   roam_mou   roam_data  roam_msgs");
+		System.out.println("         vendor_name year month  dom_mou   overage_mou   dom_msgs   dom_data   roam_mou   roam_data  roam_msgs");
 		
 		for (int i = 0; i < linesAmount; i++){
 			
@@ -40,6 +40,7 @@ public class ReadFilesHelper {
 			String[] splitedline = splitLine(lineToBeSplited);
 		
 			UsageOneMonth usageOneMonth = new UsageOneMonth();
+			usageOneMonth.setVendorName(linesOfFile.get(0));         // vendor_name 
 			usageOneMonth.setOrdinalYear(splitedline[4]);            // ordinal_year
 			usageOneMonth.setOrdinalMonth(splitedline[5]);           // ordinal_month
 			usageOneMonth.setDomesticVoice(splitedline[19]);         // domestic_mou
@@ -53,6 +54,7 @@ public class ReadFilesHelper {
 			listValues.add(usageOneMonth);
 			
 			System.out.print("Row " + (i+1) + ":  | ");
+			System.out.print(listValues.get(i).getVendorName() + "  | ");            // vendor_name 
 			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");           // ordinal_year
 			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");          // ordinal_month
 			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");         // domestic_mou
