@@ -11,6 +11,7 @@ import expenses.TotalExpenseByVendorCarrier;
 import helperObjects.CommonTestStepActions;
 import helperObjects.Country;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.enableDisableActionsType;
 
 public class TotalExpenseByVendorCountryActions extends BaseClass 
 {
@@ -25,6 +26,7 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 	public static void TotalExpenseByVendorCountryActionsTest() throws Exception
 	{
 
+		// NOTE: - this is for finding a month with the largest number of legends.  this month should be what 'ExpenseHelper.desiredMonth' is set to.
 		//ShowText("Start finding desired month." );
 		//CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		//ExpenseHelper.FindMonthWithMostVendors(); 
@@ -37,17 +39,68 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
+		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);		
+		
+		// CommonTestStepActions.UnSelectAllVendors();
+		
+		ExpenseHelper.Hack();
 
 		// #2
 		// Un-select the legends one at a time.
 		// The legend that is un-selected is disabled.
 		// The corresponding slice for the legend is removed from the pie.
 
+		// this takes care of the enable/disable testing for legends.
+		/*
+		ExpenseHelper.SetChartId(0);
+		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);
+		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); 
+		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling);
 		
+		CommonTestStepActions.SelectCountryView();
+		
+		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); 
+		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling);
+		*/
+		// this is for clicking legends and verifying slice section names.
+		
+		
+		
+		
+		/*		
+		CommonTestStepActions.SelectVendorView();
+		
+		ExpenseHelper.SetChartId(1);
+		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathForLegendsInTotalSpendCategoryCategories);
 
+		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); 
+		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling);
 		
-		ExpenseHelper.VerifyUnselectingLegendsDisables();
-		ExpenseHelper.VerifyUnselectingLegendsEnables();
+		CommonTestStepActions.SelectCountryView();
+		
+		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); 
+		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling);
+		*/
+		
+		
+		
+		
+		//CommonTestStepActions.SelectVendorView();
+
+		//ExpenseHelper.SetChartId(2);
+		//ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);
+
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); 
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling);
+		
+		//CommonTestStepActions.SelectCountryView();
+		
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); 
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling);
+		
+		
+		
+		
 		
 		DebugTimeout(9999,"Freeze");
 		

@@ -45,6 +45,14 @@ public class ExpenseHelper extends BaseClass
 		costPerServiceNumber,
 		countOfServiceNumbers,
 	}
+
+	// this is for testing legend clicks and verifying if legends are enabled or disabled. 
+	public static enum enableDisableActionsType
+	{
+		enabling,
+		disabling,
+	}
+	
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// The three xpaths below are for locating things in the controls that have a series of bar graphs with months and legends below.    
@@ -60,9 +68,60 @@ public class ExpenseHelper extends BaseClass
 	// this is the same for all three controls that have a bar chart for each month. this gets the bar graphs.
 	public static String partialXpathToBarGrapghControls = "/*/*[@class='highcharts-series-group']/*[contains(@class,'highcharts-series highcharts')]";
 	
-	// this is for getting the legends in 'Total Expense by Vendor/Country and Spend Category'.
+	// this is for getting the vendors in 'Total Expense by Vendor/Country and Spend Category'.
 	public static String partialXpathForLegendsInTotalSpendCategory = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
+	
+	// this is for getting the vendors in 'Total Expense by Vendor/Country and Spend Category'.
+	public static String partialXpathForLegendsInTotalSpendCategoryCategories = "/*/*[@class='highcharts-legend']/*/*/*";
 
+	
+	
+	// HACK
+	public static void Hack() throws Exception
+	{
+		List<String> strLocalList = new ArrayList<String>();
+		
+		chartId = UsageHelper.getChartId(0);
+		
+		WaitForElementPresent(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls), ShortTimeout);
+		
+		// get the list of legends in the expense control.
+		List<WebElement> eleList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));
+		
+		// get the text names of the legends.
+		strLocalList =  ExpenseHelper.GetTotalExpenseLegends();
+		
+		// go through the text names and select them one at a time.
+		for(String str : strLocalList)
+		{
+			SelectLegendByText(eleList, str);
+			Thread.sleep(1000);
+			
+			// right here need to wait for expense control to settle. // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
+			
+			
+		}
+		
+		DebugTimeout(9999, "Freeze");
+			
+	}
+	
+	public static void SelectLegendByText(List<WebElement> eleList, String desired)
+	{
+		for(WebElement ele : eleList)
+		{
+			if(ele.getText().equals(desired))
+			{
+				ele.click();
+			}
+		}
+		
+	}
+	
+	
+	
+// 	.//*[@id='highcharts-ejp1hdz-408']/*/*[@class='highcharts-legend']
 	
 	public static void VerifyThreeComponents()
 	{
@@ -426,6 +485,19 @@ public class ExpenseHelper extends BaseClass
 		driver.manage().timeouts().implicitlyWait(200, TimeUnit.MILLISECONDS); 		
 	}
 	
+	
+	// this sets the global chartId (global to this class).
+	public static void SetChartId(int id)
+	{
+		chartId = UsageHelper.getChartId(id);
+	}
+	
+	// this sets the global chartId (global to this class).
+	public static void SetTempLocator(String tmpLocator)
+	{
+		tempLocator = tmpLocator;
+	}
+	
 
 	// this verifies that each control is not visible by looking for the first legend in each control being not visible.
 	public static void VerifyControlsNotPresent() throws Exception
@@ -499,7 +571,7 @@ public class ExpenseHelper extends BaseClass
 		ShowText("Desired month is " + impericalDesiredMonth);
 	}
 	
-	public static void VerifyUnselectingLegendsDisables() throws Exception // bladdxx
+	public static void VerifySelectUnselect(enableDisableActionsType actionType) throws Exception 
 	{
 		int cntr = 1; // used to keep track of how many legends should be disabled.
 		
@@ -508,59 +580,28 @@ public class ExpenseHelper extends BaseClass
 		// this sets up the default timeout for method 'Assert.assertFalse' in method 'VerifyLegendListStates'. 
 		SetWaitTiny();  
 		
-		chartId = UsageHelper.getChartId(0);// get chart id for total expense
+		// chartId = UsageHelper.getChartId(1);// get chart id for total expense
 		
-		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)); // store all the web elements for the legends.   
+		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + tempLocator)); // store all the web elements for the legends.   
 		
 		// go through the legends and select one at time. verify all states (enabled/disabled) of the legends are correct after each legend is selected.
 		for(WebElement ele : webElementListLegends) 
 		{
-			driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + cntr +  "]")).click(); // select current web element's legend. 
-			
-			// DEBUG - this shows not able to use isEnabled() to tell if a legend is disabled. isEnabled() always shows true here.
-			//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]")).isEnabled());
-			//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]/*")).isEnabled());			
-			//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]/*/*")).isEnabled());
-			
-			VerifyLegendListStates(webElementListLegends, chartId, cntr, partialXpathToLegendsListInControls); // this does the verification of all legend states.
+			driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + tempLocator + ")[" + cntr +  "]")).click(); // select current web element's legend. 
+			VerifyLegendListStates(webElementListLegends, chartId, cntr, tempLocator, actionType); // this does the verification of all legend states.
 			cntr++;
 		}
 		
 		webElementListLegends.clear();
 		
 		SetWaitDefault();
-		
+
+		// DEBUG - this shows not able to use isEnabled() to tell if a legend is disabled. isEnabled() always shows true here.
+		//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]")).isEnabled());
+		//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]/*")).isEnabled());			
+		//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]/*/*")).isEnabled());
 	}
 
-	
-	public static void VerifyUnselectingLegendsEnables() throws Exception // bladdxx
-	{
-		int cntr = 1;
-		
-		// the wait to verify a legend, in 'VerifyLegendListStates' method, that doesn't contain "[contains(@class,'item-hidden')]" needs to be short or things get slow.  
-		// i did force an error in the case where "[contains(@class,'item-hidden')]" is present and is not supposed to be present, and a fail was found.
-		// this sets up the default timeout for method 'Assert.assertFalse' in method 'VerifyLegendListStates'. 
-		SetWaitTiny();  
-		
-		chartId = UsageHelper.getChartId(0);// get chart id for total expense
-		
-		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)); // store all the web elements for the legends.   
-
-		// go through the legends and select one at time. verify all states (enabled/disabled) of the legends are correct after each legend is selected.
-		for(WebElement ele : webElementListLegends) 
-		{
-			driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + cntr +  "]")).click(); // select current web element's legend. 
-			
-			VerifyLegendListStates(webElementListLegends, chartId, cntr, partialXpathToLegendsListInControls); // this does the verification of all legend states.
-			cntr--;
-		}
-		
-		webElementListLegends.clear();
-		
-		SetWaitDefault();
-		
-	}
-	
 	
 	// this verifies the elements that are to be enabled and the elements that are to be disabled. 
 	// 
@@ -569,20 +610,35 @@ public class ExpenseHelper extends BaseClass
 	// chartId - chart id of control being tested.
 	// numSelected - number of legends that should be disabled
 	// legendXpath - xpath the control's legend.
-	public static void VerifyLegendListStates(List<WebElement> webElementList, String chartId, int numSelected, String legendXpath) throws Exception // bladdxx
+	// enableDisable - this (enum) tells the method whether the legends are being disabled or enabled.
+	public static void VerifyLegendListStates(List<WebElement> webElementList, String chartId, int numSelected, String legendXpath, enableDisableActionsType enableDisable) throws Exception 
 	{
-		for(int x = 1; x <= webElementList.size(); x++)
+		for(int x = 1; x <= webElementList.size(); x++) // go through all the legends and verify if they are in correct state (enabled/disabled).
 		{
-			if(x <= numSelected) // this element is expected to be disabled. it should have the "[contains(@class,'item-hidden')]" in its xpath.  
+			if(x <= numSelected) 
 			{
-				errMessage = "Failed to verify this legend is present.";
-				Assert.assertTrue(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), ShortTimeout), errMessage);
+				errMessage = "Failed to verify this legend is enabled.";
+				if(enableDisable ==  enableDisableActionsType.disabling) // this element is expected to be disabled. it should have the "[contains(@class,'item-hidden')]" in its xpath.  
+				{
+					Assert.assertTrue(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), ShortTimeout), errMessage);
+				}
+				else // this element is not expected to be enabled. there should be no "[contains(@class,'item-hidden')]" in its xpath. 
+				{
+					Assert.assertFalse(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), 0), errMessage);					
+				}
+
 			}
-			else // this element is not expected to be enabled. there should be no "[contains(@class,'item-hidden')]" in its xpath. 
+			else 
 			{
-				// zero wait time here will default wait to the current implicit wait setting.
-				errMessage = "Failed to verify this legend is NOT present.";
-				Assert.assertFalse(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), 0), errMessage);				
+				errMessage = "Failed to verify this legend is disabled.";
+				if(enableDisable ==  enableDisableActionsType.disabling) // this element is expected to be disabled. it should have the "[contains(@class,'item-hidden')]" in its xpath.
+				{
+					Assert.assertFalse(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), 0), errMessage);
+				}
+				else // this element is not expected to be enabled. there should be no "[contains(@class,'item-hidden')]" in its xpath.
+				{
+					Assert.assertTrue(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), ShortTimeout), errMessage);					
+				}
 			}
 		}
 	}
