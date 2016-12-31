@@ -3,6 +3,7 @@ package helperObjects;
 import java.text.ParseException;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -33,8 +34,11 @@ public class ExpenseHelper extends BaseClass
 	public static List<WebElement> ctryList; 
 	public static List<WebElement> vndrList;	
 	public static String errNeedToCallInitializeMethod = "Failed in method call. You first need to call SetupCountryAndVendorData() to use this method.";
-	
 	public static int maxNumberOfLegends = 5; // max number of legends that are not labeled 'other'.
+
+	public static List<WebElement> expenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control. 	
+	public static HashMap<String, String> expenseControlHMap; // this holds a hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
+
 	
 	// this is for  distinguishing a control type in the expenses page. 
 	public static enum controlType
@@ -55,7 +59,7 @@ public class ExpenseHelper extends BaseClass
 	
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// The three xpaths below are for locating things in the controls that have a series of bar graphs with months and legends below.    
+	// The xpaths below help in locating legend info in the controls.     
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	// this is the same for all three controls that have a bar chart for each month. this gets the list of months above the legends 
@@ -75,9 +79,20 @@ public class ExpenseHelper extends BaseClass
 	public static String partialXpathForLegendsInTotalSpendCategoryCategories = "/*/*[@class='highcharts-legend']/*/*/*";
 
 	
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// The xpaths below help in getting hover values in the controls and selecting elements in controls (some controls).    
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// this is for getting the hover info in expense control 
+	public static String partialXpathForHoverInfo = "/*/*[contains(@class,'highcharts-tooltip')]/*/*";	
+	
+	// this is for selecting slices in the expense control 
+	public static String partialXpathForSliceSelections = "/*/*[@class='highcharts-series-group']/*/*";	
+	
+
 	
 	// HACK
-	public static void Hack() throws Exception
+	public static void HackSmall() throws Exception
 	{
 		List<String> strLocalList = new ArrayList<String>();
 		
@@ -94,31 +109,126 @@ public class ExpenseHelper extends BaseClass
 		// go through the text names and select them one at a time.
 		for(String str : strLocalList)
 		{
-			SelectLegendByText(eleList, str);
+			// SelectLegendByText(eleList, str); // commeted
 			Thread.sleep(1000);
 			
 			// right here need to wait for expense control to settle. // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			
-			
-			
+			// need to set an path variable for expense control hover section.
 		}
 		
 		DebugTimeout(9999, "Freeze");
-			
+
 	}
 	
-	public static void SelectLegendByText(List<WebElement> eleList, String desired)
+	// HACK
+	public static void Hack() throws Exception
 	{
+
+		chartId = UsageHelper.getChartId(0);
+		
+		WaitForElementPresent(By.xpath("(//div[@id='" +  chartId + "']/*/*[@class='highcharts-series-group']/*/*)[2]"), ShortTimeout);
+
+		DebugTimeout(2, "2");
+
+		chartId = UsageHelper.getChartId(0);
+		List<WebElement> eleList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathForSliceSelections));
+
+		//DebugTimeout(1, "Do click");		
+		//driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + tempLocator + ")[" + 1 +  "]")).click(); // select current web element's legend.
+		DebugTimeout(1, "pause after click");
+		
+		ShowInt(eleList.size());
+		
+		String foo = "";
+		
 		for(WebElement ele : eleList)
 		{
-			if(ele.getText().equals(desired))
+			//ShowText(ele.getAttribute("fill"));
+
+			if(ele.getAttribute("visibility") != null)
+			{
+				ShowText("no");
+			}
+			else
 			{
 				ele.click();
+				Thread.sleep(1000);
+				foo = driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText();
+				ShowText(foo);
+				foo = driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-weight')]")).getText();
+				ShowText(foo);
 			}
+			
+
 		}
-		
+		DebugTimeout(9999, "Freeze");
+	}
+
+	
+	public static void SetupExpenseControSliceTesting()
+	{
+		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathForSliceSelections)); // web list holding slices in 'total expense' control. 
+		expenseControlHMap = new HashMap<String, String>(); // hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
 	}
 	
+	// this takes in a web list that contains the slices in the 'total expense' control.
+	// for each slice that does not have the value 'visibility=hidden' store the vendor and value onto a hash map list.
+	public static void GetvaluesInExpenseControl(List<WebElement> eleList, HashMap<String, String> expenseControlHMap) throws Exception
+	{
+		String foo = "";
+		
+		for(WebElement ele : eleList) // go through the list of control slices.
+		{
+			if(ele.getAttribute("visibility") != null) //  if the current slice has a 'visibility' attribute, this means the control is not shown in the control. ignore it.   
+			{
+				Assert.assertTrue(ele.getAttribute("visibility").equals("hidden"), ""); // make sure the attribute value is hiddedn.
+			}
+			else // the control slice is clickable. select it and put the vendor/value onto the hash map. 
+			{
+				ele.click();
+				Thread.sleep(1000);
+				//foo = driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText();
+				//ShowText(foo);
+				//foo = driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-weight')]")).getText();
+				//ShowText(foo);
+				
+				
+				expenseControlHMap.put(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText(),
+									   driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-weight')]")).getText());
+			}
+		}
+	}
+	
+	// parameters: 
+	// expenseLegendsList - this is need to be able to select a legend by its text name.
+	// desiredLegendname - this is the text name of the legend to select.
+	// expectedVendorNamesList - this has the vendor names that are expected to be shown in the 'total expense' control slices.
+	public static void SelectLegendByTextAndDoVerification(List<WebElement> expenseLegendsList, String desiredLegendname, List<String> expectedVendorNamesList) throws Exception
+	{
+		expenseControlHMap.clear();
+		
+		if(desiredLegendname.equals(""))
+		{
+			GetvaluesInExpenseControl(expenseControlSlicesElemntsList, expenseControlHMap);
+			ShowText("MAP ------------------");
+			for (String value : expenseControlHMap.keySet()) {ShowText(value);}			
+
+		}
+
+		
+		for(WebElement ele : expenseLegendsList)
+		{
+			if(ele.getText().equals(desiredLegendname))
+			{
+					ele.click();
+					Thread.sleep(1000); // wait after the click 
+					GetvaluesInExpenseControl(expenseControlSlicesElemntsList, expenseControlHMap);
+					ShowText("MAP ------------------");
+					for (String value : expenseControlHMap.keySet()) {ShowText(value);}			
+			}
+		}
+	}
 	
 	
 // 	.//*[@id='highcharts-ejp1hdz-408']/*/*[@class='highcharts-legend']
@@ -236,6 +346,8 @@ public class ExpenseHelper extends BaseClass
 			legendsListTotalExpense.add(ele.getText());
 
 		} 
+		
+		webElementListLegends.clear();
 		
 		return legendsListTotalExpense;
 	}

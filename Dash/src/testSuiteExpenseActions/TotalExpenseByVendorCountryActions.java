@@ -38,17 +38,44 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
-		
-		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);		
-		
-		// CommonTestStepActions.UnSelectAllVendors();
-		
-		ExpenseHelper.Hack();
 
 		// #2
 		// Un-select the legends one at a time.
 		// The legend that is un-selected is disabled.
 		// The corresponding slice for the legend is removed from the pie.
+		
+		// this takes care of the enable/disable testing for legends.
+		ExpenseHelper.SetChartId(0);
+		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls); // set temporary locator to point to the expense control legends.
+
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // vendor 
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // vendor
+		
+		//CommonTestStepActions.SelectCountryView();
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // country 
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // country
+
+
+		// this verifies selecting/un-selecting legends and the correct slices shown on each selection.
+		ExpenseHelper.SetupExpenseControSliceTesting(); // set up containers in expense helper to be used for testing 'total expense' control slices. 
+		
+		TotalExpenseByVendorCarrier.StoreAllLegendsInTotalExpense(); // setup containers in 'TotalExpenseByVendorCarrier' for testing 'total expense' control slices.
+		TotalExpenseByVendorCarrier.VerifySelectingLegendsAddSlices();		
+
+		
+		//ExpenseHelper.Hack();
+		
+		//ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);		// 
+		
+		// CommonTestStepActions.UnSelectAllVendors();
+		
+		// ExpenseHelper.Hack();
+		
+		
+		
+		
+		
+
 
 		// this takes care of the enable/disable testing for legends.
 		/*

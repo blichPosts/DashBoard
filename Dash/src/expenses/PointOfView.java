@@ -54,7 +54,7 @@ public class PointOfView extends BaseClass
 		{
 			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfItemsAdded'. it can't be selected in the vendors list.
 			{
-				CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box	
+				CommonTestStepActions.selectOneVendor(expectedLegendsList.get(x)); // select vendor check box	
 				
 				if(viewMode == ExpensesViewMode.country) // this section makes sure a country is only added to the 'listOfItemsAdded' list once.  
 				{
@@ -123,7 +123,7 @@ public class PointOfView extends BaseClass
 		{
 			if(!expectedLegendsList.get(x).contains(ExpenseHelper.otherText)) // the 'other' legend is not added to 'listOfVendorsAdded' it can't be selected in the vendors list.
 			{
-				CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box	
+				CommonTestStepActions.selectOneVendor(expectedLegendsList.get(x)); // select vendor check box	
 				listOfItemsAdded.add(expectedLegendsList.get(x)); // add selected vendor to the list of vendors selected/added.
 			}
 		}
@@ -150,7 +150,7 @@ public class PointOfView extends BaseClass
 						ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, listOfItemsAdded);
 						ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, listOfItemsAdded);				
 						
-						CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // select vendor check box to remove the vendor that's been added.
+						CommonTestStepActions.selectOneVendor(expectedLegendsList.get(x)); // select vendor check box to remove the vendor that's been added.
 						listOfItemsAdded.remove(listOfItemsAdded.remove(expectedLegendsList.get(x))); // remove un-checked vendor from listOfVendorsAdded.               
 
 						// this section waits for the removed item to show up removed in the first control.  
@@ -184,7 +184,7 @@ public class PointOfView extends BaseClass
 						ExpenseHelper.VerifyControlLegends(controlType.costPerServiceNumber, expectedCountriesListUnigue); 
 						ExpenseHelper.VerifyControlLegends(controlType.countOfServiceNumbers, expectedCountriesListUnigue);						
 						
-						CommonTestStepActions.SelectSingleVendor(expectedLegendsList.get(x)); // un-select the vendor.
+						CommonTestStepActions.selectOneVendor(expectedLegendsList.get(x)); // un-select the vendor.
 						
 						// remove the country associated with the vendor from the  'expectedCountriesList'.
 						expectedCountriesList.remove(ExpenseHelper.GetCountryForVendor(expectedLegendsList.get(x))); 

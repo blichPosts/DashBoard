@@ -17,6 +17,7 @@ import com.sun.jna.StringArray;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
 import helperObjects.UsageHelper;
 
@@ -34,6 +35,55 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	public static String tmpString = "";
 	public static String expensePieDateLocator = "(//h2[@class='tdb-h2'])[1]";
 	public static String chartId = "";	
+	
+	// variables for actions
+	
+	// this holds vendor legend names in expense control (string).
+	public static List<String> totalExpenseLegendsList = new ArrayList<String>(); 
+	
+	// this holds what vendors are currently selected in the expense control legends. 
+	public static List<String> totalExpenseExpectedLegendsList = new ArrayList<String>(); 
+	
+	// this holds the list of the web elements for each expense legend.	
+	public static List<WebElement> totalExpenseExpectedLegendsWebList = new ArrayList<WebElement>();   	
+	
+	// this creates a list that holds the string names of the total expense legends and also creates a list (strings) with the same names that is used in testing.
+	public static void StoreAllLegendsInTotalExpense() 
+	{
+		totalExpenseLegendsList =  ExpenseHelper.GetTotalExpenseLegends(); // get string list of legends in expense control.
+		
+		ShowListOfStrings(totalExpenseLegendsList);
+		
+		for(String str : totalExpenseLegendsList) // setup 'totalExpenseExpectedLegendsList' to have each legend name that is in 'totalExpenseLegendsList'.
+		{
+			totalExpenseExpectedLegendsList.add(str);
+		}
+		
+		// get a web element for each legend in expense control.  
+		totalExpenseExpectedLegendsWebList = driver.findElements(By.xpath("//div[@id='" +  ExpenseHelper.chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls));
+	}
+	
+	// * this goes through each legend name in the 'totalExpenseLegendsList' and sends the name and the 'totalExpenseExpectedLegendsWebList' web element list 
+	//   to method 'ExpenseHelper.SelectLegendByText'.
+	// 
+	// 
+	public static void VerifySelectingLegendsAddSlices() throws Exception
+	{
+
+		ShowListOfStrings(totalExpenseExpectedLegendsList);
+		
+		// first verify all the pie slices are present.
+		ExpenseHelper.SelectLegendByTextAndDoVerification(totalExpenseExpectedLegendsWebList, "", totalExpenseExpectedLegendsList);
+		
+		// now go through each legend and select it one at a time.
+		for(String str : totalExpenseLegendsList)
+		{
+			totalExpenseExpectedLegendsList.remove(str);
+			ExpenseHelper.SelectLegendByTextAndDoVerification(totalExpenseExpectedLegendsWebList, str, totalExpenseExpectedLegendsList); 
+		}
+	}
+	
+	
 	
 	public static void setAllLegendsAndPieCount() throws InterruptedException
 	{
