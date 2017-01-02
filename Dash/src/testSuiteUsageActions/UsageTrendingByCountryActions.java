@@ -37,20 +37,20 @@ public class UsageTrendingByCountryActions extends BaseClass{
 		UsageHelper.selectCountryView();
 
 		// #2 Verify the text shown on the tooltip when hovering the mouse over the bar charts, for Usage Trending Domestic chart
-		UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.UsageTrendingDomesticChart);
+		UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart);
 		
 		
 		// #3 Verify the text shown on the tooltip when hovering the mouse over the bar charts, for Usage Trending Roaming chart
-		UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.UsageTrendingRoamingChart);
+		UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart);
 				
 		
 		// #4 Verify that countries on the legends of Usage Trending Domestic chart can be switched on/off. 
 		// The bars are added/removed from chart according to the countries selected on the legends.
-		UsageTrending.verifyBarsCanBeSwitchedOnOff(UsageHelper.UsageTrendingDomesticChart);
+		UsageTrending.verifyBarsCanBeSwitchedOnOff(UsageHelper.usageTrendingDomesticChart);
 
 		
 		// #5 Verify that vendors/countries on the legends of Usage Trending Roaming chart can be switched on/off.
-		UsageTrending.verifyBarsCanBeSwitchedOnOff(UsageHelper.UsageTrendingRoamingChart);
+		UsageTrending.verifyBarsCanBeSwitchedOnOff(UsageHelper.usageTrendingRoamingChart);
 	
 		
 		// #6 Verify that countries selected are added to the Usage Trending by Country chart - "Domestic"
@@ -59,19 +59,19 @@ public class UsageTrendingByCountryActions extends BaseClass{
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Voice
-		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryVoice);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryVoice);
 	
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Messages
-		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryMessages);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryMessages);
 				
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Data
-		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingDomesticChart, UsageHelper.categoryData);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryData);
 
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
@@ -79,24 +79,24 @@ public class UsageTrendingByCountryActions extends BaseClass{
 		// Verify that countries selected are added to the Usage Trending by Country chart - "Roaming"
 		
 		// Voice
-		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryVoice);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.usageTrendingRoamingChart, UsageHelper.categoryVoice);
 				
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Messages
-		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryMessages);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.usageTrendingRoamingChart, UsageHelper.categoryMessages);
 				
 		// Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// Data
-		UsageTrendingActions.countriesAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryData);
+		UsageTrendingActions.countriesAddedToCharts(UsageHelper.usageTrendingRoamingChart, UsageHelper.categoryData);
 	
 		// #7 Verify that countries that are removed from the PoV section are removed from the charts
-		UsageTrendingActions.countriesUnselectedRemovedFromChart(UsageHelper.UsageTrendingDomesticChart);
+		UsageTrendingActions.countriesUnselectedRemovedFromChart(UsageHelper.usageTrendingDomesticChart);
 		
-		UsageTrendingActions.countriesUnselectedRemovedFromChart(UsageHelper.UsageTrendingRoamingChart);
+		UsageTrendingActions.countriesUnselectedRemovedFromChart(UsageHelper.usageTrendingRoamingChart);
 		
 		
 	}

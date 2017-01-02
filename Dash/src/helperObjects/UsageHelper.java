@@ -2,6 +2,7 @@ package helperObjects;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +48,8 @@ public class UsageHelper extends BaseClass{
 	
 	public final static int totalUsageDomesticChart = 0;
 	public final static int totalUsageRoamingChart = 1;
-	public final static int UsageTrendingDomesticChart = 2;
-	public final static int UsageTrendingRoamingChart = 3;
+	public final static int usageTrendingDomesticChart = 2;
+	public final static int usageTrendingRoamingChart = 3;
 	
 	public final static int categoryVoice = 1;
 	public final static int categoryData = 2;
@@ -163,6 +164,113 @@ public class UsageHelper extends BaseClass{
 		return string.replace(".", "").replace("\"", "").replace(",",""); 
 		
 	}
+
+
+	public static List<UsageOneMonth> addMissingMonthsForVendor(List<UsageOneMonth> valuesFromFileTmp) throws ParseException {
+		
+		List<UsageOneMonth> valuesFromFileNew = new ArrayList<>();
+		List<WebElement> monthsList;
+		
+		
+		CommonTestStepActions.initializeMonthSelector();
+		monthsList = CommonTestStepActions.webListPulldown;
+		
+		boolean previousMonthExisted = true;
+		UsageOneMonth currentMonth;
+		String month = "";
+		String year =  "";
+		String monthYear = "";
+		String vendorName = valuesFromFileTmp.get(0).getVendorName();
+		int fileIndex = 0;
+		
+		for(int i = 0; i < 13; i++){
+			
+			if(previousMonthExisted){
+				
+				currentMonth = valuesFromFileTmp.get(fileIndex);
+				month = currentMonth.getOrdinalMonth();
+				year =  currentMonth.getOrdinalYear();
+				monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
+				
+			} 
+			
+			if (!monthYear.equals(monthsList.get(i).getText())){
+				/*System.out.println("fileIndex: " + (fileIndex));
+				System.out.println("month from monthsList: " + monthsList.get(i).getText());
+				System.out.println("monthYear from file: " + monthYear);  
+				*/
+				String[] monthYearParts = monthsList.get(i).getText().split(" "); 
+				String monthNum = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
+				if(monthNum.length() == 1){
+					monthNum = "0" + monthNum;
+				}
+				
+				UsageOneMonth usageMonth = new UsageOneMonth(vendorName, monthYearParts[1], monthNum);
+				valuesFromFileNew.add(i, usageMonth);
+				previousMonthExisted = false;
+				
+			} else {
+				
+				String monthTmp = valuesFromFileTmp.get(fileIndex).getOrdinalMonth();
+				if(monthTmp.length() == 1){
+					monthTmp = "0" + monthTmp;
+				}
+				
+				UsageOneMonth usageMonthTmp = valuesFromFileTmp.get(fileIndex);
+				usageMonthTmp.setOrdinalMonth(monthTmp);
+				
+				valuesFromFileNew.add(i, usageMonthTmp);
+				//System.out.println("monthYear from file: " + valuesFromFileNew.get(i).getOrdinalMonth() + " " + valuesFromFileNew.get(i).getOrdinalYear());
+				previousMonthExisted = true;
+				fileIndex++;
+			}
+			
+		}
+		
+		/*for(UsageOneMonth m: valuesFromFileNew){
+			System.out.println("month: " + m.getOrdinalMonth() + " " + m.getOrdinalYear());
+		}*/
+		
+		return valuesFromFileNew;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

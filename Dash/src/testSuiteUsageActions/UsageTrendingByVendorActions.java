@@ -97,12 +97,12 @@ public class UsageTrendingByVendorActions extends BaseClass{
 		UsageTrendingActions.vendorsAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryData);
 */		
 
-		UsageTrendingActions.allVendorsAddedToCharts(UsageHelper.UsageTrendingRoamingChart, UsageHelper.categoryVoice);
+		UsageTrendingActions.allVendorsAddedToCharts(UsageHelper.usageTrendingRoamingChart, UsageHelper.categoryVoice);
 		
 		// #7 Verify that vendors that are removed from the PoV section are removed from the charts
-		UsageTrendingActions.vendorsUnselectedRemovedFromChart(UsageHelper.UsageTrendingDomesticChart);
+		UsageTrendingActions.vendorsUnselectedRemovedFromChart(UsageHelper.usageTrendingDomesticChart);
 		
-		UsageTrendingActions.vendorsUnselectedRemovedFromChart(UsageHelper.UsageTrendingRoamingChart);
+		UsageTrendingActions.vendorsUnselectedRemovedFromChart(UsageHelper.usageTrendingRoamingChart);
 		
 	}
 	

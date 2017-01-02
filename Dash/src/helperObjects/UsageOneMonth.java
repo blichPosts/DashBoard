@@ -14,6 +14,27 @@ public class UsageOneMonth {
 	private String roamingMessages; 
 	
 	
+	// this constructor will be used to create and initialize the months that are missing on the file for the vendor selected 
+	public UsageOneMonth(String vendorName, String ordinalYear, String ordinalMonth){
+		this.vendorName = vendorName;
+		this.ordinalYear = ordinalYear;
+		this.ordinalMonth = ordinalMonth;
+		this.domesticVoice = "0";
+		this.domesticOverageVoice = "0";
+		this.domesticMessages = "0";
+		this.domesticDataUsageKb = "0";
+		this.roamingVoice = "0";
+		this.roamingDataUsageKb = "0";
+		this.roamingMessages = "0"; 
+		
+	}
+	
+	
+	public UsageOneMonth() {
+		// TODO Auto-generated constructor stub
+	}
+
+
 	public String getVendorName() {
 		return vendorName;
 	}

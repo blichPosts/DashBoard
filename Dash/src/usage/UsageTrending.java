@@ -16,7 +16,9 @@ import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
+import helperObjects.UsageOneMonth;
 
 
 public class UsageTrending extends BaseClass {
@@ -249,7 +251,7 @@ public class UsageTrending extends BaseClass {
 	
 
 	// Verifies the content of the tooltips displayed on charts under Usage Trending Domestic and Roaming charts
-	// It does not verify the amounts... yet
+	// It does not verify the amounts... SEE following method
 	public static void verifyUsageTrendingChartTooltip(int barChartId) throws InterruptedException, ParseException, AWTException{
 		
 		WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
@@ -343,6 +345,182 @@ public class UsageTrending extends BaseClass {
 			
 		}
 		
+	}
+
+
+
+	// Verifies the content of the tooltips displayed on charts under Usage Trending Domestic and Roaming charts
+	public static void verifyUsageTrendingChartTooltip(int barChartId, List<UsageOneMonth> allValuesFromFile, int categorySelector) throws ParseException, InterruptedException, AWTException {
+		
+		// List "allValuesFromFile" has all 13 months listed on pulldown. 
+		
+		WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
+		new Actions(driver).moveToElement(usageTrendingSection).perform();
+		
+		String chartId = UsageHelper.getChartId(barChartId);
+		
+		UsageHelper.selectCategory(UsageHelper.usageTrendingSection, categorySelector);
+		
+		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
+		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
+
+		int amount = highchartSeries.size();
+		//System.out.println("amount: " + amount);
+		
+		int indexHighchart = 1;
+		
+		List<String> monthYearList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
+		int indexMonth = monthYearList.size()-1;
+		
+		Thread.sleep(2000);
+		
+		List<String> domesticValue = new ArrayList<>();
+		List<String> roamingValue = new ArrayList<>();
+		
+
+		if (barChartId == UsageHelper.usageTrendingDomesticChart) {
+		
+			if(categorySelector == UsageHelper.categoryVoice){
+				
+				for(UsageOneMonth usage: allValuesFromFile){
+					domesticValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getDomesticVoice()) + Double.parseDouble(usage.getDomesticOverageVoice())));
+				}
+
+			} else if (categorySelector == UsageHelper.categoryData){
+				
+				for(UsageOneMonth usage: allValuesFromFile){
+					domesticValue.add(UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(Double.parseDouble(usage.getDomesticDataUsageKb())));
+				}
+				
+			} else if (categorySelector == UsageHelper.categoryMessages){
+				
+				for(UsageOneMonth usage: allValuesFromFile){
+					domesticValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getDomesticMessages())));
+				}
+				
+				
+			}
+			
+		} else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
+			
+			if(categorySelector == UsageHelper.categoryVoice){
+				
+				for(UsageOneMonth usage: allValuesFromFile){
+					roamingValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getRoamingVoice())));
+				}
+				
+			} else if (categorySelector == UsageHelper.categoryData){
+				
+				for(UsageOneMonth usage: allValuesFromFile){
+					roamingValue.add(UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(Double.parseDouble(usage.getRoamingDataUsageKb())));
+				}
+				
+			} else if (categorySelector == UsageHelper.categoryMessages){
+				
+				for(UsageOneMonth usage: allValuesFromFile){
+					roamingValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getRoamingMessages())));
+				}
+				
+			}
+			
+		}
+		
+		
+		// Verify the info contained on each of the tooltips for the 13 months 		
+		while(indexHighchart <= monthYearList.size()){
+			
+			//String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-" + (amount-1) + ">rect:nth-of-type(" + indexHighchart + ")";
+			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(1)";    //svg>g>path:nth-of-type(2)";
+			
+			// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
+			WebElement bar = driver.findElement(By.cssSelector(cssBar));
+			WebElement line = driver.findElement(By.cssSelector(cssLine));
+			
+			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+			// Get the location of the second line of the chart -> to get the "y" coordinate
+			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+			Point barCoordinates = bar.getLocation();
+			Point lineCoordinates = line.getLocation();
+			
+			Robot robot = new Robot(); 
+			int x = barCoordinates.getX() + 10;
+			int y = lineCoordinates.getY();
+			
+			robot.mouseMove(x, y);
+			//System.out.println("coordinates - x: " + x + "  y: " + y);
+			
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+			
+			
+			try {
+				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+				//System.out.println("Tooltip present");
+			} catch (Exception e) {
+				System.out.println("Tooltip NOT present");
+				e.printStackTrace();
+			}
+			
+			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
+			
+			int expectedAmountItemsTooltip = (amount * 3) + 1;
+			
+			
+			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
+			// 0 MM-YYYY -- month and year appears once
+			// 1 ? -- this is for the bullet
+			// 2 <vendor's name>
+			// 3 <amount shown for the vendor>
+			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			
+			//System.out.println("Index month : " + indexMonth + "  --Month-year from tooltip: " + tooltip.get(0).getText());
+			
+			// Verify the vendor's name and the amount shown on the tooltip
+			for(int i = 1; i <= legends.size(); i++){
+			
+				int index =  i * 3 - 1;
+				
+				// Get the label and remove colon at the end of its text
+				//System.out.println("tooltip.get(index).getText(): " + tooltip.get(index).getText());
+				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+
+				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: 15 256 985. Value needed is: 15256985
+				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+				
+				//System.out.println("label: " + labelFound + ", value: " + valueFound); 
+							
+				// Verify the labels' text and amounts shown on the tooltip
+				String labelExpected = allValuesFromFile.get(indexMonth).getVendorName();
+				Assert.assertEquals(labelFound, labelExpected); 
+				
+				if (barChartId == UsageHelper.usageTrendingDomesticChart) {
+					
+					String valueExpected = domesticValue.get(indexMonth);
+					System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+					System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+					Assert.assertEquals(valueFound, valueExpected);
+					
+				} else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
+					
+					String valueExpected = roamingValue.get(indexMonth);
+					System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+					System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+					Assert.assertEquals(valueFound, valueExpected);
+					
+				}
+				
+			}
+			
+			// Verify month and year shown on the tooltip
+			Assert.assertEquals(tooltip.get(0).getText(), monthYearList.get(indexMonth));
+			System.out.println("First line found: " + tooltip.get(0).getText() + ", First line expected: " + monthYearList.get(indexMonth));
+			
+			indexHighchart++;
+			indexMonth--;
+			
+		}
+
 	}
 	
 	

@@ -492,27 +492,45 @@ public class CommonTestStepActions extends BaseClass
 
 	}
 		
-	
+	// 1/2/17 - added the version of the numbers that start with "0", like "01", in case the month number received is in that format (Ana) 
 	public static String convertMonthNumberToName(String month, String year){
 		
 		switch(month){
 			case "1":
 				return ("January " + year);
+			case "01":
+				return ("January " + year);
 			case "2":
+				return ("February " + year);
+			case "02":
 				return ("February " + year);
 			case "3":
 				return ("March " + year);
+			case "03":
+				return ("March " + year);
 			case "4":
+				return ("April " + year);
+			case "04":
 				return ("April " + year);
 			case "5":
 				return ("May " + year);
+			case "05":
+				return ("May " + year);
 			case "6":
+				return ("June " + year);
+			case "06":
 				return ("June " + year);
 			case "7":
 				return ("July " + year);
+			case "07":
+				return ("July " + year);
 			case "8":
 				return ("August " + year);
+			case "08":
+				return ("August " + year);
 			case "9":
+				return ("September " + year);
+			case "09":
 				return ("September " + year);
 			case "10":
 				return ("October " + year);

@@ -495,7 +495,7 @@ public class TotalUsageActions extends BaseClass{
 				System.out.println("label: " + labelFound + ", value: " + valueFound); 
 							
 				// Verify the labels' text and amounts shown on the tooltip 					
-				if (barChartId == 0) {
+				if (barChartId == UsageHelper.totalUsageDomesticChart) {
 					
 					if (index == 2) {
 						Assert.assertEquals(labelFound, "Domestic");
@@ -508,7 +508,7 @@ public class TotalUsageActions extends BaseClass{
 						Assert.assertEquals(valueFound, overageValue);
 					}
 					
-				} else if (barChartId == 1) {
+				} else if (barChartId == UsageHelper.totalUsageRoamingChart) {
 					
 					Assert.assertEquals(labelFound, "Roaming"); 
 					Assert.assertEquals(valueFound, roamingValue);
