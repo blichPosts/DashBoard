@@ -26,10 +26,10 @@ public class UsageTotalUsageTestValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
- 		//CommonTestStepActions.switchToContentFrame();
+ 		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
-		//CommonTestStepActions.initializeMonthSelector();
+		// CommonTestStepActions.initializeMonthSelector();
 	}
 	
 	
@@ -44,10 +44,17 @@ public class UsageTotalUsageTestValues extends BaseClass{
 			vendorNames.add(vendor.getText());
 		}
 		
-		//vendor = "AT&T Mobility";
-		//vendor = "Etisalat";
-		//vendor = "O2 UK";
+		//String vendor = "Telstra Australia";
+		//String vendor = "Vivo Brazil";
 		//String vendor = "Rogers";
+		//String vendor = "Telcel Mexico";
+		//String vendor = "SingTel Singapore";
+		//String vendor = "Etisalat";
+		//String vendor = "O2 UK";
+		//String vendor = "Vodafone United Kingdom";
+		//String vendor = "AT&T Mobility";
+		//String vendor = "Tangoe, Inc.";
+		//String vendor = "Verizon Wireless";
 		
 		String path = UsageHelper.path;
 
@@ -55,14 +62,14 @@ public class UsageTotalUsageTestValues extends BaseClass{
 		for(String vendorSelected: vendorNames){
 			
 			String vendor = vendorSelected;
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);  //(vendorSelected);
+			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
 			
 			System.out.println("Path: " + completePath);
 			
-			System.out.println("  **  RUNNING KPI TILE TEST FOR VENDOR: " + vendor + "  **");
+			System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
 			
 			CommonTestStepActions.GoToUsagePageDetailedWait();
 				
@@ -115,19 +122,29 @@ public class UsageTotalUsageTestValues extends BaseClass{
 				Thread.sleep(2000);
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
+				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryVoice);
-				Thread.sleep(2000);
+				Thread.sleep(1000);
+				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryVoice);
-				Thread.sleep(2000);				
+				Thread.sleep(1000);				
+				
+				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
+				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryData);
-				Thread.sleep(2000);
+				Thread.sleep(1000);
+				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryData);
-				Thread.sleep(2000);				
+				Thread.sleep(1000);				
+				
+				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
+				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryMessages);
-				Thread.sleep(2000);
+				Thread.sleep(1000);
+				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryMessages);
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 								
 				indexMonth++;
 				

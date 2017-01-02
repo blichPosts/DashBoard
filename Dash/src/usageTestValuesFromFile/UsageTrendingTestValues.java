@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -25,10 +24,10 @@ public class UsageTrendingTestValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		//CommonTestStepActions.switchToContentFrame();
+		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
-		CommonTestStepActions.initializeMonthSelector();
+		// CommonTestStepActions.initializeMonthSelector();
 	}
 
 
@@ -42,7 +41,6 @@ public class UsageTrendingTestValues extends BaseClass{
 		for(WebElement vendor: vendors){
 			vendorNames.add(vendor.getText());
 		}
-		
 
 		//String vendor = "Telstra Australia";
 		//String vendor = "Vivo Brazil";
@@ -52,17 +50,17 @@ public class UsageTrendingTestValues extends BaseClass{
 		//String vendor = "Etisalat";
 		//String vendor = "O2 UK";
 		//String vendor = "Vodafone United Kingdom";
-		String vendor = "AT&T Mobility";
+		//String vendor = "AT&T Mobility";
 		//String vendor = "Tangoe, Inc.";
 		//String vendor = "Verizon Wireless";
 		
 		String path = UsageHelper.path;
 
 		// Run the test for each vendor 
-		//for(String vendorSelected: vendorNames){
+		for(String vendorSelected: vendorNames){
 			
-		//	String vendor = vendorSelected;
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);  //(vendorSelected);
+			String vendor = vendorSelected;
+			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
@@ -94,75 +92,75 @@ public class UsageTrendingTestValues extends BaseClass{
 			CommonTestStepActions.UnSelectAllVendors();
 			CommonTestStepActions.selectOneVendor(vendor);
 			
-			String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 			
+			// #4 Select month on month/year selector
+			// Month to be selected on pulldown needs to be one of the months for which there's data in the source file
 			String year =  "";
 			String month = "";
 			String monthYear = "";
 						
-			int indexMonth = 0;
+			/*
+			 * This has been modified on the source file. Month is the month listed on the file, it doesn't refer to the previous month.
+			 * E.g.: “9/1/2016” now refers to September instead of August  
+			 * if(oneMonthData[1].equals("1")){
+				month = "12";
+				year = Integer.toString(Integer.parseInt(oneMonthData[0]) - 1);
+			}else{
+				month = Integer.toString((Integer.parseInt(oneMonthData[1]) - 1));
+				year =  oneMonthData[0];
+			}*/
 			
-			// for each vendor repeat the test 3 times, (for 3 different months) just in case. There's no point on verifying all the months
-			// since the chart already shows the data for 13 months, no matter which month has been selected. 
-			//do {
+			// The following two lines replace the commented above. Will need to find out which version is the correct....
+			month = oneMonthData.getOrdinalMonth();
+			year =  oneMonthData.getOrdinalYear();
+							
+			monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
+			System.out.println("Month Year: " + monthYear);
 			
+			CommonTestStepActions.selectMonthYearPulldown(monthYear);
+			Thread.sleep(2000);
+			
+			
+			// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
+			// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
+			// will be displayed on the Usage Trending charts 
+			
+			try{
 				
-				/*
-				 * This has been modified on the source file. Month is the month listed on the file, it doesn't refer to the previous month.
-				 * E.g.: “9/1/2016” now refers to September instead of August  
-				 * if(oneMonthData[1].equals("1")){
-					month = "12";
-					year = Integer.toString(Integer.parseInt(oneMonthData[0]) - 1);
-				}else{
-					month = Integer.toString((Integer.parseInt(oneMonthData[1]) - 1));
-					year =  oneMonthData[0];
-				}*/
+				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				// The following two lines replace the commented above. Will need to find out which version is the correct....
-				month = oneMonthData.getOrdinalMonth();
-				year =  oneMonthData.getOrdinalYear();
-								
-				monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
-				System.out.println("Month Year: " + monthYear);
-				
-				// #4 Select month on month/year selector
-				// Month to be selected on pulldown needs to be one of the months for which there's data in the source file
-				CommonTestStepActions.selectMonthYearPulldown(monthYear);
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryVoice);
+				Thread.sleep(2000);				
 				
+				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryData);
+				Thread.sleep(2000);
 				
-				// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file 
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryData);
+				Thread.sleep(2000);				
 				
-				try{
-					
-					UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryVoice);
-					Thread.sleep(2000);
-					UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryVoice);
-					Thread.sleep(2000);				
-					/*UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryData);
-					Thread.sleep(2000);
-					UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryData);
-					Thread.sleep(2000);				
-					UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryMessages);
-					Thread.sleep(2000);
-					UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryMessages);
-					Thread.sleep(2000);
-					*/
-				} catch(NullPointerException e){
-					
-					System.out.println("chart not found");
-					
-				}
+				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				indexMonth++;
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
 				
-			//} while (indexMonth < 3 && !monthYear.equals(lastMonthListedMonthSelector));
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
+				
+			} catch(NullPointerException e){
+				
+				System.out.println("chart not found");
+				
+			}
 						
-		//}
+		}
 	
 	}
+	
 	
 	
 	@AfterClass

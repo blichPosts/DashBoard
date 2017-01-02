@@ -171,7 +171,6 @@ public class UsageHelper extends BaseClass{
 		List<UsageOneMonth> valuesFromFileNew = new ArrayList<>();
 		List<WebElement> monthsList;
 		
-		
 		CommonTestStepActions.initializeMonthSelector();
 		monthsList = CommonTestStepActions.webListPulldown;
 		
@@ -234,41 +233,6 @@ public class UsageHelper extends BaseClass{
 		return valuesFromFileNew;
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

@@ -362,9 +362,7 @@ public class TotalUsageActions extends BaseClass{
 		
 		String chartId = UsageHelper.getChartId(barChartId);
 		
-		UsageHelper.selectCategory(UsageHelper.totalUsageSection, categorySelector);
-		
-		// It gets the legends for "Domestic" and "Domestic Overage" or Roaming
+		// It gets the legends for "Domestic" and "Domestic Overage" or "Roaming"
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		
 		int indexHighchart = 1;
@@ -520,7 +518,6 @@ public class TotalUsageActions extends BaseClass{
 			indexHighchart++;
 			
 		}
-		
 		
 	}
 

@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.message.BasicRequestLine;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
@@ -359,7 +358,7 @@ public class UsageTrending extends BaseClass {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
 		
-		UsageHelper.selectCategory(UsageHelper.usageTrendingSection, categorySelector);
+		//UsageHelper.selectCategory(UsageHelper.usageTrendingSection, categorySelector);
 		
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
@@ -429,9 +428,8 @@ public class UsageTrending extends BaseClass {
 		// Verify the info contained on each of the tooltips for the 13 months 		
 		while(indexHighchart <= monthYearList.size()){
 			
-			//String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-" + (amount-1) + ">rect:nth-of-type(" + indexHighchart + ")";
 			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(1)";    //svg>g>path:nth-of-type(2)";
+			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(1)";
 			
 			// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
 			WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -449,6 +447,8 @@ public class UsageTrending extends BaseClass {
 			
 			robot.mouseMove(x, y);
 			//System.out.println("coordinates - x: " + x + "  y: " + y);
+			
+			Thread.sleep(1000);
 			
 			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);

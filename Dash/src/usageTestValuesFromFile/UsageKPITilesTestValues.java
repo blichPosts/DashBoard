@@ -26,10 +26,10 @@ public class UsageKPITilesTestValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
- 		//CommonTestStepActions.switchToContentFrame();
+ 		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
-		//CommonTestStepActions.initializeMonthSelector();
+		// CommonTestStepActions.initializeMonthSelector();
 	}
 	
 	
@@ -44,10 +44,17 @@ public class UsageKPITilesTestValues extends BaseClass{
 			vendorNames.add(vendor.getText());
 		}
 		
-		//vendor = "AT&T Mobility";
-		//vendor = "Etisalat";
-		//vendor = "O2 UK";
-		//vendor = "Rogers";
+		//String vendor = "Telstra Australia";
+		//String vendor = "Vivo Brazil";
+		//String vendor = "Rogers";
+		//String vendor = "Telcel Mexico";
+		//String vendor = "SingTel Singapore";
+		//String vendor = "Etisalat";
+		//String vendor = "O2 UK";
+		//String vendor = "Vodafone United Kingdom";
+		//String vendor = "AT&T Mobility";
+		//String vendor = "Tangoe, Inc.";
+		//String vendor = "Verizon Wireless";
 		
 		String path = UsageHelper.path;
 
