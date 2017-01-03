@@ -29,6 +29,7 @@ public class ExpenseHelper extends BaseClass
 
 	// these are for VerifyMonths method 
 	public static List<String> expectedYearMonthList = new ArrayList<String>();
+	public static List<String> tempStringList = new ArrayList<String>();
 	public static List<WebElement> webEleListMonthYearActual;	
 	public static List<String> actualYearMonthList = new ArrayList<String>();
 	public static List<WebElement> ctryList; 
@@ -36,6 +37,7 @@ public class ExpenseHelper extends BaseClass
 	public static String errNeedToCallInitializeMethod = "Failed in method call. You first need to call SetupCountryAndVendorData() to use this method.";
 	public static int maxNumberOfLegends = 5; // max number of legends that are not labeled 'other'.
 
+	
 	public static List<WebElement> expenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control. 	
 	public static HashMap<String, String> expenseControlHMap; // this holds a hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
 
@@ -89,113 +91,35 @@ public class ExpenseHelper extends BaseClass
 	// this is for selecting slices in the expense control 
 	public static String partialXpathForSliceSelections = "/*/*[@class='highcharts-series-group']/*/*";	
 	
-
-	
-	// HACK
-	public static void HackSmall() throws Exception
-	{
-		List<String> strLocalList = new ArrayList<String>();
-		
-		chartId = UsageHelper.getChartId(0);
-		
-		WaitForElementPresent(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls), ShortTimeout);
-		
-		// get the list of legends in the expense control.
-		List<WebElement> eleList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));
-		
-		// get the text names of the legends.
-		strLocalList =  ExpenseHelper.GetTotalExpenseLegends();
-		
-		// go through the text names and select them one at a time.
-		for(String str : strLocalList)
-		{
-			// SelectLegendByText(eleList, str); // commeted
-			Thread.sleep(1000);
-			
-			// right here need to wait for expense control to settle. // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			
-			// need to set an path variable for expense control hover section.
-		}
-		
-		DebugTimeout(9999, "Freeze");
-
-	}
-	
-	// HACK
-	public static void Hack() throws Exception
-	{
-
-		chartId = UsageHelper.getChartId(0);
-		
-		WaitForElementPresent(By.xpath("(//div[@id='" +  chartId + "']/*/*[@class='highcharts-series-group']/*/*)[2]"), ShortTimeout);
-
-		DebugTimeout(2, "2");
-
-		chartId = UsageHelper.getChartId(0);
-		List<WebElement> eleList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathForSliceSelections));
-
-		//DebugTimeout(1, "Do click");		
-		//driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + tempLocator + ")[" + 1 +  "]")).click(); // select current web element's legend.
-		DebugTimeout(1, "pause after click");
-		
-		ShowInt(eleList.size());
-		
-		String foo = "";
-		
-		for(WebElement ele : eleList)
-		{
-			//ShowText(ele.getAttribute("fill"));
-
-			if(ele.getAttribute("visibility") != null)
-			{
-				ShowText("no");
-			}
-			else
-			{
-				ele.click();
-				Thread.sleep(1000);
-				foo = driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText();
-				ShowText(foo);
-				foo = driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-weight')]")).getText();
-				ShowText(foo);
-			}
-			
-
-		}
-		DebugTimeout(9999, "Freeze");
-	}
-
-	
+	// setup - read comments below.
 	public static void SetupExpenseControSliceTesting()
 	{
 		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathForSliceSelections)); // web list holding slices in 'total expense' control. 
 		expenseControlHMap = new HashMap<String, String>(); // hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
 	}
 	
-	// this takes in a web list that contains the slices in the 'total expense' control.
-	// for each slice that does not have the value 'visibility=hidden' store the vendor and value onto a hash map list.
-	public static void GetvaluesInExpenseControl(List<WebElement> eleList, HashMap<String, String> expenseControlHMap) throws Exception
+	// this uses the 'expenseControlSlicesElemntsList' list  (global in this object) that contains the slices in the 'total expense' control.
+	// for each slice that does not have the DOM value 'visibility=hidden', store the vendor and numeric value onto a hash map list.
+	public static void GetvaluesInExpenseControlAndStore() throws Exception
 	{
-		String foo = "";
+		ExpenseHelper.SetWaitDefault();
 		
-		for(WebElement ele : eleList) // go through the list of control slices.
+		ShowText("Start All");
+		
+		for(WebElement ele : expenseControlSlicesElemntsList) // go through the list of control slices.
 		{
 			if(ele.getAttribute("visibility") != null) //  if the current slice has a 'visibility' attribute, this means the control is not shown in the control. ignore it.   
 			{
-				Assert.assertTrue(ele.getAttribute("visibility").equals("hidden"), ""); // make sure the attribute value is hiddedn.
+				Assert.assertTrue(ele.getAttribute("visibility").equals("hidden"), ""); // make sure the attribute value 'visibility' has value 'hidden'.
 			}
 			else // the control slice is clickable. select it and put the vendor/value onto the hash map. 
 			{
 				ele.click();
 				Thread.sleep(1000);
-				//foo = driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText();
-				//ShowText(foo);
-				//foo = driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-weight')]")).getText();
-				//ShowText(foo);
-				
-				
 				expenseControlHMap.put(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText(),
 									   driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-weight')]")).getText());
+				ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText());
+				ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'ont-weight')]")).getText());				
 			}
 		}
 	}
@@ -203,31 +127,51 @@ public class ExpenseHelper extends BaseClass
 	// parameters: 
 	// expenseLegendsList - this is need to be able to select a legend by its text name.
 	// desiredLegendname - this is the text name of the legend to select.
-	// expectedVendorNamesList - this has the vendor names that are expected to be shown in the 'total expense' control slices.
+	// expectedVendorNamesList - this has the vendor names that are expected to be shown in the 'total expense' control slices after a legend is clicked.
+	// * if an empty string is passed in this is telling this method to not click a legend. 
+	// * whether an empty string is passed in or not, calling method 'GetvaluesInExpenseControlAndStore' will load a hash map with the actual values in the expense control.
+	// * method 'VerifyCorrectControlSlices' will verify the vendor names in the hash map and the vendor names in input parameter 'expectedVendorNamesList' are equal.
 	public static void SelectLegendByTextAndDoVerification(List<WebElement> expenseLegendsList, String desiredLegendname, List<String> expectedVendorNamesList) throws Exception
 	{
-		expenseControlHMap.clear();
+		expenseControlHMap.clear(); // this map should be empty at start.
 		
-		if(desiredLegendname.equals(""))
+		if(desiredLegendname.equals("")) // if 'desiredLegendname' is "", don't select any legends. this is how all legends selected is verified.
 		{
-			GetvaluesInExpenseControl(expenseControlSlicesElemntsList, expenseControlHMap);
-			ShowText("MAP ------------------");
-			for (String value : expenseControlHMap.keySet()) {ShowText(value);}			
-
+			GetvaluesInExpenseControlAndStore(); // store vendor and value for each enabled slice. 
+			VerifyCorrectControlSlices(expectedVendorNamesList); // verify actual/expected are equal. 
 		}
-
-		
-		for(WebElement ele : expenseLegendsList)
+		else
 		{
-			if(ele.getText().equals(desiredLegendname))
+			for(WebElement ele : expenseLegendsList)
 			{
-					ele.click();
-					Thread.sleep(1000); // wait after the click 
-					GetvaluesInExpenseControl(expenseControlSlicesElemntsList, expenseControlHMap);
-					ShowText("MAP ------------------");
-					for (String value : expenseControlHMap.keySet()) {ShowText(value);}			
-			}
+				if(ele.getText().equals(desiredLegendname))
+				{
+						ele.click(); // select a slice legend.
+						Thread.sleep(1000); // wait after the click 
+						GetvaluesInExpenseControlAndStore(); // store vendor and value for each enabled slice into hash map.
+						VerifyCorrectControlSlices(expectedVendorNamesList); // verify actual/expected are equal.
+				}
+			}			
 		}
+	}
+	
+	
+	public static void VerifyCorrectControlSlices(List<String> expectedVendorNamesList)
+	{
+		tempStringList.clear();
+		
+		for (String key : expenseControlHMap.keySet()) 
+		{	
+			tempStringList.add(key);
+		}
+
+		java.util.Collections.sort(expectedVendorNamesList);
+		java.util.Collections.sort(tempStringList);
+		
+		//ShowText("EXPECT");	ShowListOfStrings(expectedVendorNamesList); // DEBUG
+		//ShowText("ACTUAL");	ShowListOfStrings(tempStringList); // DEBUG
+		
+		Assert.assertEquals(tempStringList, expectedVendorNamesList, "Failed verifying actual versus expected in ExpenseHelpser.VerifyCorrectControlSlices.");
 	}
 	
 	

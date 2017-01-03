@@ -39,37 +39,35 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 
+
 		// #2
+		// #3
 		// Un-select the legends one at a time.
+		// Select the legends one at a time.
 		// The legend that is un-selected is disabled.
 		// The corresponding slice for the legend is removed from the pie.
 		
-		// this takes care of the enable/disable testing for legends.
+
+		// setup for tests.
 		ExpenseHelper.SetChartId(0);
-		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls); // set temporary locator to point to the expense control legends.
-
-		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // vendor 
-		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // vendor
 		
-		//CommonTestStepActions.SelectCountryView();
-		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // country 
-		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // country
-
-
 		// this verifies selecting/un-selecting legends and the correct slices shown on each selection.
 		ExpenseHelper.SetupExpenseControSliceTesting(); // set up containers in expense helper to be used for testing 'total expense' control slices. 
-		
 		TotalExpenseByVendorCarrier.StoreAllLegendsInTotalExpense(); // setup containers in 'TotalExpenseByVendorCarrier' for testing 'total expense' control slices.
-		TotalExpenseByVendorCarrier.VerifySelectingLegendsAddSlices();		
+		//TotalExpenseByVendorCarrier.VerifyUnSelectingLegendsAndSlices();
+		// TotalExpenseByVendorCarrier.VerifySelectingLegendsAndSlices();
+		
+		//ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // vendor
+		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // vendor 
 
 		
-		//ExpenseHelper.Hack();
+		ExpenseHelper.SetupCountryAndVendorData();
+		TotalExpenseByVendorCarrier.SetupCountryListFromVendorList();
 		
-		//ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);		// 
 		
-		// CommonTestStepActions.UnSelectAllVendors();
-		
-		// ExpenseHelper.Hack();
+
+
 		
 		
 		
@@ -129,7 +127,7 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 		
 		
 		
-		DebugTimeout(9999,"Freeze");
+
 		
 		//CommonTestStepActions.UnSelectAllVendors();
 		//ExpenseHelper.VerifyControlsNotPresent(); // wait for all controls to be empty.
