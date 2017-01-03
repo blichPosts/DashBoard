@@ -212,12 +212,13 @@ public class UsageCalculationHelper extends BaseClass{
 			}
 			
 		}else{
+			
 			long roundedValue = Math.round(tmpAmount);
 			amountConverted = Long.toString(roundedValue) + unit;
 						
 		}
 		
-		//System.out.println("Value rounded for KPI: " + amountConverted);
+		//System.out.println("Value rounded for Data KPI: " + amountConverted);
 		
 		return amountConverted;
 		

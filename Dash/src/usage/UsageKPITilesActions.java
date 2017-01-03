@@ -26,25 +26,25 @@ public class UsageKPITilesActions extends BaseClass{
 		String voiceAmountKPICalculated = UsageCalculationHelper.convertUnits(domesticVoice);
 		String voiceAmountKPIFromDash = kpiTileValues.get(0).getText();
 		
-		//System.out.println("KPI Tile Voice From Dash: " + voiceAmountKPIFromDash + ",  KPI Tile Voice Calculated (from spreadsheet): " + voiceAmountKPICalculated); 
+		//System.out.println("KPI Tile Voice Actual: " + voiceAmountKPIFromDash + ",  KPI Tile Voice Expected: " + voiceAmountKPICalculated); 
 		Assert.assertEquals(voiceAmountKPIFromDash, voiceAmountKPICalculated);
 		
 		String dataAmountKPICalculated = UsageCalculationHelper.convertDataUnits(domesticData);
 		String dataAmountKPIFromDash = kpiTileValues.get(1).getText();
 		
-		//System.out.println("KPI Tile Data From Dash: " + dataAmountKPIFromDash + ",  KPI Tile Data Calculated (from spreadsheet): " + dataAmountKPICalculated); 
+		//System.out.println("KPI Tile Data Actual: " + dataAmountKPIFromDash + ",  KPI Tile Data Expected: " + dataAmountKPICalculated); 
 		Assert.assertEquals(dataAmountKPIFromDash, dataAmountKPICalculated);
 		
 		String msgAmountKPICalculated = UsageCalculationHelper.convertUnits(domesticMessages);
 		String msgAmountKPIFromDash = kpiTileValues.get(2).getText();
 		
-		//System.out.println("KPI Tile Mesages From Dash: " + msgAmountKPIFromDash + ",  KPI Tile Messages Calculated (from spreadsheet): " + msgAmountKPICalculated); 
+		//System.out.println("KPI Tile Mesages Actual: " + msgAmountKPIFromDash + ",  KPI Tile Messages Expected: " + msgAmountKPICalculated); 
 		Assert.assertEquals(msgAmountKPIFromDash, msgAmountKPICalculated);
 		
 		String roamingDataAmountKPICalculated = UsageCalculationHelper.convertDataUnits(roamingData);
 		String roamingDataAmountKPIFromDash = kpiTileValues.get(3).getText();
 		
-		//System.out.println("KPI Tile Roaming Data From Dash: " + roamingDataAmountKPIFromDash + ",  KPI Tile Roaming Data Calculated (from spreadsheet): " + roamingDataAmountKPICalculated); 
+		//System.out.println("KPI Tile Roaming Data Actual: " + roamingDataAmountKPIFromDash + ",  KPI Tile Roaming Data Expected: " + roamingDataAmountKPICalculated); 
 		Assert.assertEquals(roamingDataAmountKPIFromDash, roamingDataAmountKPICalculated);
 		
 		
@@ -108,7 +108,6 @@ public class UsageKPITilesActions extends BaseClass{
 				
 				// Get the 3 month value displayed on the KPI tile
 				String threeMonthAvgActual = UsageCalculationHelper.getNumericValueWithPrefixes(threeMonthValue.getText());
-				// System.out.println("threeMonthAvgActual: " + threeMonthAvgActual);
 				
 				String threeMonthAvgExpected = "";
 				
@@ -142,7 +141,7 @@ public class UsageKPITilesActions extends BaseClass{
 						break;
 				}
 				
-				//System.out.println("threeMonthAvgExpected: " + threeMonthAvgExpected);
+				//System.out.println("3 Month Avg Actual: " + threeMonthAvgActual + ", 3 Month Avg Expected: " + threeMonthAvgExpected);
 				
 				// Verifies that the '3 month rolling average' displayed equals to the '3 month rolling average' calculated
 				Assert.assertEquals(threeMonthAvgActual, threeMonthAvgExpected);
@@ -154,19 +153,19 @@ public class UsageKPITilesActions extends BaseClass{
 					// System.out.println("kpiValue: "  + kpiValue);
 					// System.out.println("rollingAverage: "  + rollingAverage);
 					
-					long trendCalculated = calculateTrendingPercentage(kpiValue, rollingAverage);
+					int trendValueExpected = calculateTrendingPercentage(kpiValue, rollingAverage);
 					//int trendTemp = calculateTrendingPercentage(kpiValue, rollingAverage);
 					//int trendCalculated = Math.abs(trendTemp);
 					
 					// System.out.println("Trend calculated: " + trendCalculated);
 					
-					if(trendCalculated > 0){
+					if(trendValueExpected > 0){
 						
 						String trend = trendingElementKpi.get(1).getText();
-						int trendValue = getTrendingValueWithNoSymbol(trend); 
+						int trendValueActual = getTrendingValueWithNoSymbol(trend); 
 						
 						Assert.assertTrue(trendingElementKpi.size() == 2);
-						Assert.assertEquals(trendValue, trendCalculated);   
+						Assert.assertEquals(trendValueActual, trendValueExpected);   
 						Assert.assertTrue(trend.endsWith("%"));
 						
 						/*String arrowIcon = trendingElementKpi.get(0).getText();
@@ -176,8 +175,8 @@ public class UsageKPITilesActions extends BaseClass{
 							Assert.assertEquals(arrowIcon, "");
 						}*/
 						
-						// System.out.println("Trending element: " + trend);
-						System.out.println("value: " + trend);
+												
+						//System.out.println("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
 						//System.out.println("arrow: " + trendingElementKpi.get(0).getText()); 
 					}
 					
@@ -230,10 +229,10 @@ public class UsageKPITilesActions extends BaseClass{
 			
 			try{
 				sixMonthValue = driver.findElement(By.xpath("(//div[text()='6 months'])[" + i +"]/following-sibling::div"));
-				//System.out.println("threeMonthDisplayed true");
+				
 			}catch(Exception e){
 				// If 6 month rolling average is not displayed, set the variable to false
-				//System.out.println("threeMonthDisplayed false");
+				//System.out.println("Six Month Displayed false");
 				sixMonthDisplayed = false;
 			}
 			
@@ -243,7 +242,6 @@ public class UsageKPITilesActions extends BaseClass{
 							
 				// Get the 6 months rolling average value displayed on the KPI tile
 				String sixMonthAvgActual = UsageCalculationHelper.getNumericValueWithPrefixes(sixMonthValue.getText());
-				// System.out.println("sixMonthAvgActual: " + sixMonthAvgActual);
 				
 				String sixMonthAvgExpected = "";
 				
@@ -266,7 +264,7 @@ public class UsageKPITilesActions extends BaseClass{
 						break;
 				}
 				
-				// System.out.println("sixMonthAvgExpected: " + sixMonthAvgExpected);
+				//System.out.println("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
 				
 				// Verifies that the '6 months rolling average' displayed equals to the '6 months rolling average' calculated
 				Assert.assertEquals(sixMonthAvgActual, sixMonthAvgExpected);
@@ -308,6 +306,7 @@ public class UsageKPITilesActions extends BaseClass{
 		
 		String[] trendParts = trend.split("%");
 		return Integer.parseInt(trendParts[0]);
+		
 	}
 
 

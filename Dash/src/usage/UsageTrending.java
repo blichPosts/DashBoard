@@ -357,9 +357,7 @@ public class UsageTrending extends BaseClass {
 		new Actions(driver).moveToElement(usageTrendingSection).perform();
 		
 		String chartId = UsageHelper.getChartId(barChartId);
-		
-		//UsageHelper.selectCategory(UsageHelper.usageTrendingSection, categorySelector);
-		
+			
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
 
@@ -497,15 +495,15 @@ public class UsageTrending extends BaseClass {
 				if (barChartId == UsageHelper.usageTrendingDomesticChart) {
 					
 					String valueExpected = domesticValue.get(indexMonth);
-					System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-					System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+					//System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+					//System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 					Assert.assertEquals(valueFound, valueExpected);
 					
 				} else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
 					
 					String valueExpected = roamingValue.get(indexMonth);
-					System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-					System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+					//System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+					//System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 					Assert.assertEquals(valueFound, valueExpected);
 					
 				}
@@ -514,7 +512,7 @@ public class UsageTrending extends BaseClass {
 			
 			// Verify month and year shown on the tooltip
 			Assert.assertEquals(tooltip.get(0).getText(), monthYearList.get(indexMonth));
-			System.out.println("First line found: " + tooltip.get(0).getText() + ", First line expected: " + monthYearList.get(indexMonth));
+			//System.out.println("First line found: " + tooltip.get(0).getText() + ", First line expected: " + monthYearList.get(indexMonth));
 			
 			indexHighchart++;
 			indexMonth--;

@@ -233,9 +233,99 @@ public class UsageHelper extends BaseClass{
 		return valuesFromFileNew;
 		
 	}
+
+
+	public static List<UsageOneMonth> summarizeDataVendorsSelected(List<List<UsageOneMonth>> data) throws ParseException {
+		
+		List<UsageOneMonth> dataSummarized = new ArrayList<>();
+		
+		CommonTestStepActions.initializeMonthSelector();
+		List<String> months = CommonTestStepActions.YearMonthIntergerFromPulldown(); 
+		
+		for(int i = 0; i < months.size(); i++){
+		
+			String[] monthYear = getMonthYearSeparated(months.get(i));
+			String month = monthYear[0];
+			String year = monthYear[1];
+			
+			UsageOneMonth usageSummarized = new UsageOneMonth("", year, month);
+	
+			//System.out.println("Month: " + month + ", Year: " + year);
+			
+			for(int j = 0; j < data.size(); j++){
+				
+				//System.out.println("j: " + j);
+				//System.out.println("data " + j + " size: " + data.get(j).size()); 
+				
+				for(UsageOneMonth usage: data.get(j)){
+					
+					if(month.equals(usage.getOrdinalMonth()) && year.equals(usage.getOrdinalYear())){
+						
+						usageSummarized.setDomesticVoice(Double.toString(Double.parseDouble(usageSummarized.getDomesticVoice()) + Double.parseDouble(usage.getDomesticVoice())));
+						
+						usageSummarized.setDomesticOverageVoice(Double.toString(Double.parseDouble(usageSummarized.getDomesticOverageVoice()) + Double.parseDouble(usage.getDomesticOverageVoice())));
+						
+						usageSummarized.setDomesticMessages(Double.toString(Double.parseDouble(usageSummarized.getDomesticMessages()) + Double.parseDouble(usage.getDomesticMessages())));
+						
+						usageSummarized.setDomesticDataUsageKb(Double.toString(Double.parseDouble(usageSummarized.getDomesticDataUsageKb()) + Double.parseDouble(usage.getDomesticDataUsageKb())));
+						
+						usageSummarized.setRoamingVoice(Double.toString(Double.parseDouble(usageSummarized.getRoamingVoice()) + Double.parseDouble(usage.getRoamingVoice())));
+						
+						usageSummarized.setRoamingMessages(Double.toString(Double.parseDouble(usageSummarized.getRoamingMessages()) + Double.parseDouble(usage.getRoamingMessages())));
+						
+						usageSummarized.setRoamingDataUsageKb(Double.toString(Double.parseDouble(usageSummarized.getRoamingDataUsageKb()) + Double.parseDouble(usage.getRoamingDataUsageKb())));
+						
+						/*System.out.println("Domestic Voice previous value: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticVoice())));
+						System.out.println("Domestic Voice value to be added: " + Double.toString(Double.parseDouble(usage.getDomesticVoice())));
+						System.out.println("Domestic Voice summarized: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticVoice()) + Double.parseDouble(usage.getDomesticVoice())));
+						
+						System.out.println("Domestic Overage Voice previous value: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticOverageVoice())));
+						System.out.println("Domestic Overage Voice value to be added: " + Double.toString(Double.parseDouble(usage.getDomesticOverageVoice())));
+						System.out.println("Domestic Overage Voice summarized: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticOverageVoice()) + Double.parseDouble(usage.getDomesticOverageVoice())));
+						
+						System.out.println("Domestic Messages previous value: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticMessages())));
+						System.out.println("Domestic Messages value to be added: " + Double.toString(Double.parseDouble(usage.getDomesticMessages())));
+						System.out.println("Domestic Messages summarized: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticMessages()) + Double.parseDouble(usage.getDomesticMessages())));
+						
+						System.out.println("Domestic Data previous value: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticDataUsageKb())));
+						System.out.println("Domestic Data value to be added: " + Double.toString(Double.parseDouble(usage.getDomesticDataUsageKb())));
+						System.out.println("Domestic Data summarized: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticDataUsageKb()) + Double.parseDouble(usage.getDomesticDataUsageKb())));
+						
+						System.out.println("Roaming Voice previous value: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingVoice())));
+						System.out.println("Roaming Voice value to be added: " + Double.toString(Double.parseDouble(usage.getRoamingVoice())));
+						System.out.println("Roaming Voice summarized: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingVoice()) + Double.parseDouble(usage.getRoamingVoice())));
+						
+						System.out.println("Roaming Messages previous value: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingMessages())));
+						System.out.println("Roaming Messages value to be added: " + Double.toString(Double.parseDouble(usage.getRoamingMessages())));
+						System.out.println("Roaming Messages summarized: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingMessages()) + Double.parseDouble(usage.getRoamingMessages())));
+						
+						System.out.println("Roaming Data previous value: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingDataUsageKb())));
+						System.out.println("Roaming Data value to be added: " + Double.toString(Double.parseDouble(usage.getRoamingDataUsageKb())));
+						System.out.println("Roaming Data summarized: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingDataUsageKb()) + Double.parseDouble(usage.getRoamingDataUsageKb())));
+				*/		
+					}
+						
+				}
+				
+			}
+			
+			dataSummarized.add(usageSummarized);
+			
+		}
+		
+		//System.out.println("data summarized size: " + dataSummarized.size());
+		
+		return dataSummarized;
+		
+	}
 	
 	
-	
+	private static String[] getMonthYearSeparated(String date){
+		
+		String [] dateParts = date.split("-");
+		return dateParts;
+		
+	}
 	
 	
 	
