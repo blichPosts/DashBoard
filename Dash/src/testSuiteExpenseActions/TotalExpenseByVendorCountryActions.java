@@ -56,7 +56,7 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 
 		driver.navigate().refresh();
 
-		DebugTimeout(10, "wait ten");
+		DebugTimeout(10, "wait ten seconds");
 		
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
