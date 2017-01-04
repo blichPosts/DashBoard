@@ -19,6 +19,7 @@ import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 import helperObjects.UsageHelper;
 
 public class TotalExpenseByVendorCarrier extends BaseClass
@@ -50,7 +51,10 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	// this holds the list of the web elements for each expense legend.	
 	public static List<WebElement> totalExpenseExpectedLegendsWebList = new ArrayList<WebElement>();   	
 	
-	public static String CountryForVendor(String vendor) // bladdxx
+	public static List<WebElement> tempExpenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control.
+	
+	
+	public static String CountryForVendor(String vendor) // can be used later
 	{
 		for(helperObjects.Country  cntry : countryList)
 		{
@@ -62,7 +66,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		return "";
 	}
 	
-	public static void SetupCountryListFromVendorList() // bladdxx
+	public static void SetupCountryListFromVendorList() // can be used later
 	{
 		for(String str: totalExpenseExpectedLegendsList)
 		{
@@ -75,11 +79,18 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	// it also creates a web list that contains a web element for each legend.
 	public static void StoreAllLegendsInTotalExpense() 
 	{
+		totalExpenseLegendsList.clear();
 		totalExpenseLegendsList =  ExpenseHelper.GetTotalExpenseLegends(); // get string list of legends in expense control.
-		
+
+		totalExpenseExpectedLegendsList.clear();
 		for(String str : totalExpenseLegendsList) // setup 'totalExpenseExpectedLegendsList' to have each legend name that is in 'totalExpenseLegendsList'.
 		{
 			totalExpenseExpectedLegendsList.add(str);
+		}
+
+		if(totalExpenseExpectedLegendsWebList != null)
+		{
+			totalExpenseExpectedLegendsWebList.clear();
 		}
 		
 		// get a web element for each legend in expense control.  
@@ -102,6 +113,37 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 			totalExpenseExpectedLegendsList.remove(str);
 			ShowText(str);
 			ExpenseHelper.SelectLegendByTextAndDoVerification(totalExpenseExpectedLegendsWebList, str, totalExpenseExpectedLegendsList); 
+		}
+	}
+	
+	public static void VerifySelectUnselectVendors() throws Exception
+	{
+		chartId = ExpenseHelper.chartId;
+		
+		for(String str : totalExpenseLegendsList)
+		{
+			if(!str.equals("Other"))
+			{
+				CommonTestStepActions.selectOneVendor(str);
+				ExpenseHelper.WaitForControlLegend(controlType.expenseTrending);
+				
+				DebugTimeout(2, "Two -- Size " + chartId);
+
+				if(ExpenseHelper.expenseControlSlicesElemntsList != null)
+				{
+					ExpenseHelper.expenseControlSlicesElemntsList.clear();
+				}
+				
+				ExpenseHelper.expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections)); // web list holding slices in 'total expense' control. 
+
+				ShowInt(ExpenseHelper.expenseControlSlicesElemntsList.size());
+				
+				ShowText(ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice());
+				
+				
+				CommonTestStepActions.selectOneVendor(str);
+				ExpenseHelper.VerifyControlsNotPresent();
+			}
 		}
 	}
 	

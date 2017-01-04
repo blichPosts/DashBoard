@@ -50,29 +50,51 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 
 		// setup for tests.
 		ExpenseHelper.SetChartId(0);
+
+		
+		
 		
 		// this verifies selecting/un-selecting legends and the correct slices shown on each selection.
 		ExpenseHelper.SetupExpenseControSliceTesting(); // set up containers in expense helper to be used for testing 'total expense' control slices. 
 		TotalExpenseByVendorCarrier.StoreAllLegendsInTotalExpense(); // setup containers in 'TotalExpenseByVendorCarrier' for testing 'total expense' control slices.
 		//TotalExpenseByVendorCarrier.VerifyUnSelectingLegendsAndSlices();
-		// TotalExpenseByVendorCarrier.VerifySelectingLegendsAndSlices();
+		//DebugTimeout(9999, "Freeze");
 		
+		CommonTestStepActions.UnSelectAllVendors();
+		ExpenseHelper.VerifyControlsNotPresent();
+		
+		ExpenseHelper.SetChartId(0);
+		
+		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors();		
+
+		
+		
+		//TotalExpenseByVendorCarrier.VerifySelectingLegendsAndSlices();
+		
+
+		DebugTimeout(9999, "Freeze");
 		//ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);
 		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // vendor
 		//ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // vendor 
 
-		
-		ExpenseHelper.SetupCountryAndVendorData();
-		TotalExpenseByVendorCarrier.SetupCountryListFromVendorList();
-		
-		
+		// example of how to  
+		//ExpenseHelper.SetupCountryAndVendorData();
+		// TotalExpenseByVendorCarrier.SetupCountryListFromVendorList();
 
-
+		// clear all legends and switch to country view.
+		//CommonTestStepActions.UnSelectAllVendors();
+		//ExpenseHelper.VerifyControlsNotPresent();
+		//CommonTestStepActions.SelectCountryView();
+		//CommonTestStepActions.SelectAllVendors();
+		//DebugTimeout(5, "Five");
+		//ExpenseHelper.SetChartId(0);
+		//ExpenseHelper.SetupExpenseControSliceTesting(); // set up containers in expense helper to be used for testing 'total expense' control slices. 
+		//TotalExpenseByVendorCarrier.StoreAllLegendsInTotalExpense(); // setup containers in 'TotalExpenseByVendorCarrier' for testing 'total expense' control slices.
+		//TotalExpenseByVendorCarrier.VerifyUnSelectingLegendsAndSlices();
 		
 		
 		
-		
-		
+		DebugTimeout(9999, "Freeze");
 
 
 		// this takes care of the enable/disable testing for legends.

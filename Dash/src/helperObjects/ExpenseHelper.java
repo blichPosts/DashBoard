@@ -94,18 +94,22 @@ public class ExpenseHelper extends BaseClass
 	// setup - read comments below.
 	public static void SetupExpenseControSliceTesting()
 	{
+		if(expenseControlSlicesElemntsList != null)
+		{
+			expenseControlSlicesElemntsList.clear();
+		}
 		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathForSliceSelections)); // web list holding slices in 'total expense' control. 
-		expenseControlHMap = new HashMap<String, String>(); // hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
+
+		if(expenseControlHMap == null)
+		{
+			expenseControlHMap = new HashMap<String, String>(); // hash map list that holds the vendor/value for each visible slice in the 'total expense' control.			
+		}
 	}
 	
 	// this uses the 'expenseControlSlicesElemntsList' list  (global in this object) that contains the slices in the 'total expense' control.
 	// for each slice that does not have the DOM value 'visibility=hidden', store the vendor and numeric value onto a hash map list.
 	public static void GetvaluesInExpenseControlAndStore() throws Exception
 	{
-		ExpenseHelper.SetWaitDefault();
-		
-		ShowText("Start All");
-		
 		for(WebElement ele : expenseControlSlicesElemntsList) // go through the list of control slices.
 		{
 			if(ele.getAttribute("visibility") != null) //  if the current slice has a 'visibility' attribute, this means the control is not shown in the control. ignore it.   
@@ -118,11 +122,36 @@ public class ExpenseHelper extends BaseClass
 				Thread.sleep(1000);
 				expenseControlHMap.put(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText(),
 									   driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-weight')]")).getText());
-				ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText());
-				ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'ont-weight')]")).getText());				
+				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText());
+				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'ont-weight')]")).getText());				
 			}
 		}
 	}
+	
+	// 
+	public static String GetvaluesInExpenseControlAndStoreOneSlice() throws Exception
+	{
+		for(WebElement ele : expenseControlSlicesElemntsList) // go through the list of control slices.
+		{
+			ExpenseHelper.SetChartId(0);
+			
+			if(ele.getAttribute("visibility") != null) //  if the current slice has a 'visibility' attribute, this means the control is not shown in the control. ignore it.   
+			{
+				Assert.assertTrue(ele.getAttribute("visibility").equals("hidden"), ""); // make sure the attribute value 'visibility' has value 'hidden'.
+			}
+			else // the control slice is clickable. select it and put the vendor/value onto the hash map. 
+			{
+				ele.click();
+				Thread.sleep(1000);
+				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText());
+				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'ont-weight')]")).getText());
+				return driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText();
+			}
+		}
+		return "";
+	}
+	
+	
 	
 	// parameters: 
 	// expenseLegendsList - this is need to be able to select a legend by its text name.
