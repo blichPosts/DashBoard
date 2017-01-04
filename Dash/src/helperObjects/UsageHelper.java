@@ -242,6 +242,13 @@ public class UsageHelper extends BaseClass{
 		CommonTestStepActions.initializeMonthSelector();
 		List<String> months = CommonTestStepActions.YearMonthIntergerFromPulldown(); 
 		
+		boolean monthEqualToInvoiceMonth = false;
+		
+		if(data.get(0).get(0).getOrdinalMonth().equals(getMonthOfInvoiceMonth(data.get(0).get(0).getInvoiceMonth()))){
+			monthEqualToInvoiceMonth = true;
+		}
+		
+				
 		for(int i = 0; i < months.size(); i++){
 		
 			String[] monthYear = getMonthYearSeparated(months.get(i));
@@ -249,18 +256,20 @@ public class UsageHelper extends BaseClass{
 			String year = monthYear[1];
 			
 			UsageOneMonth usageSummarized = new UsageOneMonth("", year, month);
-	
+						
 			//System.out.println("Month: " + month + ", Year: " + year);
 			
 			for(int j = 0; j < data.size(); j++){
-				
+			
 				//System.out.println("j: " + j);
 				//System.out.println("data " + j + " size: " + data.get(j).size()); 
+				
+				boolean invoiceMonthAssigned = false;
 				
 				for(UsageOneMonth usage: data.get(j)){
 					
 					if(month.equals(usage.getOrdinalMonth()) && year.equals(usage.getOrdinalYear())){
-						
+												
 						usageSummarized.setDomesticVoice(Double.toString(Double.parseDouble(usageSummarized.getDomesticVoice()) + Double.parseDouble(usage.getDomesticVoice())));
 						
 						usageSummarized.setDomesticOverageVoice(Double.toString(Double.parseDouble(usageSummarized.getDomesticOverageVoice()) + Double.parseDouble(usage.getDomesticOverageVoice())));
@@ -274,6 +283,11 @@ public class UsageHelper extends BaseClass{
 						usageSummarized.setRoamingMessages(Double.toString(Double.parseDouble(usageSummarized.getRoamingMessages()) + Double.parseDouble(usage.getRoamingMessages())));
 						
 						usageSummarized.setRoamingDataUsageKb(Double.toString(Double.parseDouble(usageSummarized.getRoamingDataUsageKb()) + Double.parseDouble(usage.getRoamingDataUsageKb())));
+						
+						if(!invoiceMonthAssigned){
+							usageSummarized.setInvoiceMonth(usage.getInvoiceMonth());
+							invoiceMonthAssigned = true;
+						}
 						
 						/*System.out.println("Domestic Voice previous value: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticVoice())));
 						System.out.println("Domestic Voice value to be added: " + Double.toString(Double.parseDouble(usage.getDomesticVoice())));
@@ -304,20 +318,21 @@ public class UsageHelper extends BaseClass{
 						System.out.println("Roaming Data summarized: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingDataUsageKb()) + Double.parseDouble(usage.getRoamingDataUsageKb())));
 				*/		
 					}
-						
+			
 				}
-				
+			
 			}
 			
 			dataSummarized.add(usageSummarized);
-			
+			 
 		}
 		
-		//System.out.println("data summarized size: " + dataSummarized.size());
-		
+		dataSummarized = addMissingInvoiceMonths(dataSummarized, monthEqualToInvoiceMonth);
+				
 		return dataSummarized;
 		
 	}
+	
 	
 	
 	private static String[] getMonthYearSeparated(String date){
@@ -326,7 +341,95 @@ public class UsageHelper extends BaseClass{
 		return dateParts;
 		
 	}
+
+
+	public static String[] getMonthYearToSelect(UsageOneMonth oneMonthData) {
+
+		String[] monthAndYear = new String[2];
+		String[] invoiceMonthParts = oneMonthData.getInvoiceMonth().split("/");
+		//System.out.println("invoiceMonth: " + oneMonthData.getInvoiceMonth()); 
+		//System.out.println("invoiceMonthParts[0]: " + invoiceMonthParts[0]); 
+		
+		// If the month in invoice_month is the month before ordinal_month
+		// E.g.: invoice_month = 9/1/2016 and ordinal_month = 8
+		if(!invoiceMonthParts[0].equals(oneMonthData.getOrdinalMonth()) && !oneMonthData.getInvoiceMonth().equals("")){
+			
+			if(oneMonthData.getOrdinalMonth().equals("1")){
+				monthAndYear[0] = "12"; // month
+				monthAndYear[1] = Integer.toString(Integer.parseInt(oneMonthData.getOrdinalYear()) - 1);  // year
+			}else{
+				monthAndYear[0] = Integer.toString((Integer.parseInt(oneMonthData.getOrdinalMonth()) - 1));  // month
+				monthAndYear[1] =  oneMonthData.getOrdinalYear();  // year
+			}
+			//System.out.println("Invoice Month - option 1: " + oneMonthData.getInvoiceMonth());
+			
+		} 
+		
+		// Else if the month in invoice_month is the same as ordinal_month
+		// E.g.: invoice_month = 9/1/2016 and ordinal_month = 9
+		else if(invoiceMonthParts[0].equals(oneMonthData.getOrdinalMonth()) && !oneMonthData.getInvoiceMonth().equals("")){
+		
+			monthAndYear[0] = oneMonthData.getOrdinalMonth();
+			monthAndYear[1] =  oneMonthData.getOrdinalYear();
+			//System.out.println("Invoice Month - option 2: " + oneMonthData.getInvoiceMonth());
+		}
+		
+		//System.out.println("InvoiceMonth: " + oneMonthData.getInvoiceMonth());
+		//System.out.println("month: " + monthAndYear[0] + ", year: " + monthAndYear[1]);
+		
+		return monthAndYear;
+		
+	}
 	
+	
+	public static String getMonthOfInvoiceMonth(String invoiceMonth){
+		
+		String[] invoiceMonthParts = invoiceMonth.split("/");
+		return invoiceMonthParts[0];
+		
+	}
+	
+	
+	public static List<UsageOneMonth> addMissingInvoiceMonths(List<UsageOneMonth> usageList, boolean monthEqualToInvoiceMonth){
+		
+		if(monthEqualToInvoiceMonth){
+			
+			for(UsageOneMonth u: usageList){
+				
+				if(u.getInvoiceMonth().equals("")){
+					
+					String date = u.getOrdinalMonth() + "/1/" + u.getOrdinalYear();
+					u.setInvoiceMonth(date);
+					
+				}
+				
+			}
+			
+		} else {
+			
+			for(UsageOneMonth u: usageList){
+			
+				String month;
+				String year;
+				
+				if(u.getOrdinalMonth().equals("1")){
+					month = "12";
+					year = Integer.toString(Integer.parseInt(u.getOrdinalYear()) - 1); 
+				} else {
+					month = Integer.toString(Integer.parseInt(u.getOrdinalMonth()) - 1);
+					year = u.getOrdinalYear();
+				}
+				
+				String date = month + "/1/" + year; 
+				u.setInvoiceMonth(date);
+			}
+			
+			
+		}
+		
+		return usageList;
+		
+	}
 	
 	
 }

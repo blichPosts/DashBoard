@@ -141,7 +141,7 @@ public class UsageKPITilesActions extends BaseClass{
 						break;
 				}
 				
-				//System.out.println("3 Month Avg Actual: " + threeMonthAvgActual + ", 3 Month Avg Expected: " + threeMonthAvgExpected);
+				System.out.println("3 Month Avg Actual: " + threeMonthAvgActual + ", 3 Month Avg Expected: " + threeMonthAvgExpected);
 				
 				// Verifies that the '3 month rolling average' displayed equals to the '3 month rolling average' calculated
 				Assert.assertEquals(threeMonthAvgActual, threeMonthAvgExpected);
@@ -176,7 +176,7 @@ public class UsageKPITilesActions extends BaseClass{
 						}*/
 						
 												
-						//System.out.println("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
+						System.out.println("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
 						//System.out.println("arrow: " + trendingElementKpi.get(0).getText()); 
 					}
 					
@@ -264,7 +264,7 @@ public class UsageKPITilesActions extends BaseClass{
 						break;
 				}
 				
-				//System.out.println("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
+				System.out.println("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
 				
 				// Verifies that the '6 months rolling average' displayed equals to the '6 months rolling average' calculated
 				Assert.assertEquals(sixMonthAvgActual, sixMonthAvgExpected);

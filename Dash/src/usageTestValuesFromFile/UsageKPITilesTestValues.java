@@ -90,7 +90,7 @@ public class UsageKPITilesTestValues extends BaseClass{
 			UsageOneMonth oneMonthData;
 			String year =  "";
 			String month = "";
-			String monthYear = "";
+			String monthYearToSelect = "";
 			String domesticVoiceUsage;
 			String domesticVoiceOverageUsage;
 			String domesticMessagesUsage;
@@ -115,14 +115,19 @@ public class UsageKPITilesTestValues extends BaseClass{
 				}*/
 				
 				// The following two lines replace the commented above. Will need to find out which version is the correct....
-				month = oneMonthData.getOrdinalMonth();
-				year =  oneMonthData.getOrdinalYear();
+				//month = oneMonthData.getOrdinalMonth();
+				//year =  oneMonthData.getOrdinalYear();
 				
-				monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
-				System.out.println("Month Year: " + monthYear);
+				// Code above replaced by the following 3 lines: 
+				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
+				month = monthYear[0];
+				year = monthYear[1];
+				
+				monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
+				System.out.println("Month Year: " + monthYearToSelect);
 				
 				// #4 Select month on month/year selector
-				CommonTestStepActions.selectMonthYearPulldown(monthYear);
+				CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 				
 				Thread.sleep(2000);
 				
@@ -183,7 +188,7 @@ public class UsageKPITilesTestValues extends BaseClass{
 				
 				indexMonth++;
 				
-			} while (!monthYear.equals(lastMonthListedMonthSelector));
+			} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
 			
 			Thread.sleep(2000);
 			

@@ -5,6 +5,7 @@ public class UsageOneMonth {
 	private String vendorName;
 	private String ordinalYear;
 	private String ordinalMonth;
+	private String invoiceMonth;
 	private String domesticVoice;
 	private String domesticOverageVoice;
 	private String domesticMessages;
@@ -16,9 +17,11 @@ public class UsageOneMonth {
 	
 	// this constructor will be used to create and initialize the months that are missing on the file for the vendor selected 
 	public UsageOneMonth(String vendorName, String ordinalYear, String ordinalMonth){
+		
 		this.vendorName = vendorName;
 		this.ordinalYear = ordinalYear;
 		this.ordinalMonth = ordinalMonth;
+		this.invoiceMonth = "";
 		this.domesticVoice = "0";
 		this.domesticOverageVoice = "0";
 		this.domesticMessages = "0";
@@ -52,6 +55,12 @@ public class UsageOneMonth {
 	}
 	public void setOrdinalMonth(String ordinalMonth) {
 		this.ordinalMonth = ordinalMonth;
+	}
+	public String getInvoiceMonth() {
+		return invoiceMonth;
+	}
+	public void setInvoiceMonth(String invoiceMonth) {
+		this.invoiceMonth = invoiceMonth;
 	}
 	public String getDomesticVoice() {
 		return domesticVoice;
@@ -95,5 +104,5 @@ public class UsageOneMonth {
 	public void setRoamingMessages(String roamingMessages) {
 		this.roamingMessages = roamingMessages;
 	}
-	
+
 }

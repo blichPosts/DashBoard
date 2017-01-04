@@ -97,7 +97,7 @@ public class UsageTrendingTestValues extends BaseClass{
 			// Month to be selected on pulldown needs to be one of the months for which there's data in the source file
 			String year =  "";
 			String month = "";
-			String monthYear = "";
+			String monthYearToSelect = "";
 						
 			/*
 			 * This has been modified on the source file. Month is the month listed on the file, it doesn't refer to the previous month.
@@ -111,13 +111,18 @@ public class UsageTrendingTestValues extends BaseClass{
 			}*/
 			
 			// The following two lines replace the commented above. Will need to find out which version is the correct....
-			month = oneMonthData.getOrdinalMonth();
-			year =  oneMonthData.getOrdinalYear();
-							
-			monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
-			System.out.println("Month Year: " + monthYear);
+			//month = oneMonthData.getOrdinalMonth();
+			//year =  oneMonthData.getOrdinalYear();
+				
+			// Code above replaced by the following 3 lines: 
+			String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
+			month = monthYear[0];
+			year = monthYear[1];
 			
-			CommonTestStepActions.selectMonthYearPulldown(monthYear);
+			monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
+			System.out.println("Month Year: " + monthYearToSelect);
+			
+			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 			Thread.sleep(2000);
 			
 			
