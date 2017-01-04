@@ -38,11 +38,10 @@ public class PointOfViewActions extends BaseClass
 		CommonTestStepActions.UnSelectAllVendors();
 
 	    // When the none selector is selected there are no controls shown.
-		PointOfView.VerifyControlsNotPresent();
+		ExpenseHelper.VerifyControlsNotPresent();
 
 		// As the vendors are added they show up in each control.
 	    // When all of the vendors are selected, an other legend shows up in all the controls if it existed in step one.
-		// PointOfView.VerifyAddingVendors();
 		PointOfView.VerifyAddingVendorsTwo(ExpensesViewMode.vendor);
 		
 		// # 3 
@@ -59,23 +58,25 @@ public class PointOfViewActions extends BaseClass
 		// Switch the month pull down through each month.
     	// The Total Expense control shows the selected month/year.
     	// The month/year shown in the title (top-left) is the selected month/year.
-		PointOfView.VerifyMonthPulldownSelectionsInControls();
+		PointOfView.VerifyMonthPulldownSelectionsInControls(); 
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth); // set month back to desired month.
 		
 		// # 5
 		// In the 'Country/Vendor View Selector' component, select Country and repeat the above steps.
 		// Expected results pass.
-
+		
 		// create container that stores each country object and the vendors inside each country onto a list. this is needed to  
 		ExpenseHelper.SetupCountryAndVendorData();
 		
 		// switch to the country view, un-select all vendors, and wait for all controls to be empty.  
 		CommonTestStepActions.SelectCountryView();
 		CommonTestStepActions.UnSelectAllVendors();
-		PointOfView.VerifyControlsNotPresent();
+		ExpenseHelper.VerifyControlsNotPresent();
 
+		// # 2 
 		// add vendors one at a time and verify expected country legends. 
 		PointOfView.VerifyAddingVendorsTwo(ExpensesViewMode.country);
-		
+
 		// # 3 
 	    // Un-select all of the vendors
 	    // Add back the ones from step one.
@@ -86,8 +87,11 @@ public class PointOfViewActions extends BaseClass
 	    // When all the vendors are unselected the controls are blank.
 		PointOfView.RemoveVendorsAndVerifyTwo(ExpensesViewMode.country);		
 		
+		// # 4
+		// Switch the month pull down through each month.
+		PointOfView.VerifyMonthPulldownSelectionsInControls();
+		
 		// .md-checkbox-inner-container>#input-md-checkbox-1 /'/ this is css for the first vendor check box css=.md-checkbox-inner-container>#input-md-checkbox-1 
-
 	}
 	
 	@AfterClass

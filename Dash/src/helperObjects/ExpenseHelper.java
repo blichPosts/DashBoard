@@ -3,7 +3,9 @@ package helperObjects;
 import java.text.ParseException;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -15,23 +17,30 @@ public class ExpenseHelper extends BaseClass
 {
 	public static String tmpStr = "";
 	public static String errMessage = "";	
-	public static String desiredMonth = "June 2016";	
+	public static String desiredMonth = "October 2016";
+	public static String impericalDesiredMonth = ""; // this is found by going through the months and finding the month(s) with the most amount of vendors showing in the expense control. 
 	public static String chartId = "";
 	public static String otherText = "Other";
 	public static String tempLocator = "";
+	public static String tempUrl = "";
 	
-	public static List<WebElement> webElementListLegands;	
+	public static List<WebElement> webElementListLegends;	
 	public static List<String> legendsListTotalExpense = new ArrayList<String>();	
 
 	// these are for VerifyMonths method 
 	public static List<String> expectedYearMonthList = new ArrayList<String>();
+	public static List<String> tempStringList = new ArrayList<String>();
 	public static List<WebElement> webEleListMonthYearActual;	
 	public static List<String> actualYearMonthList = new ArrayList<String>();
 	public static List<WebElement> ctryList; 
 	public static List<WebElement> vndrList;	
 	public static String errNeedToCallInitializeMethod = "Failed in method call. You first need to call SetupCountryAndVendorData() to use this method.";
-	
 	public static int maxNumberOfLegends = 5; // max number of legends that are not labeled 'other'.
+
+	
+	public static List<WebElement> expenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control. 	
+	public static HashMap<String, String> expenseControlHMap; // this holds a hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
+
 	
 	// this is for  distinguishing a control type in the expenses page. 
 	public static enum controlType
@@ -42,23 +51,160 @@ public class ExpenseHelper extends BaseClass
 		costPerServiceNumber,
 		countOfServiceNumbers,
 	}
+
+	// this is for testing legend clicks and verifying if legends are enabled or disabled. 
+	public static enum enableDisableActionsType
+	{
+		enabling,
+		disabling,
+	}
+	
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// The three xpaths below are for locating things in the controls that have a series of bar graphs with months and legends below.    
+	// The xpaths below help in locating legend info in the controls.     
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	// this is the same for all three controls that have a bar chart for each month. this gets the list of months above the legends 
 	public static String partialXpathToMonthListInControls = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
 	
-	// this is the same for all three controls that have a bar chart for each month. this gets the list of legends. also can be used for 'expense control'
+	// this is the same for all three controls that have a bar chart for each month. this gets the list of legends. 
+	// also can be used for 'expense control'
 	public static String partialXpathToLegendsListInControls = "/*/*[@class='highcharts-legend']/*/*/*";
 	
 	// this is the same for all three controls that have a bar chart for each month. this gets the bar graphs.
 	public static String partialXpathToBarGrapghControls = "/*/*[@class='highcharts-series-group']/*[contains(@class,'highcharts-series highcharts')]";
 	
-	// this is for getting the legends in 'Total Expense by Vendor/Country and Spend Category'.
+	// this is for getting the vendors in 'Total Expense by Vendor/Country and Spend Category'.
 	public static String partialXpathForLegendsInTotalSpendCategory = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
+	
+	// this is for getting the vendors in 'Total Expense by Vendor/Country and Spend Category'.
+	public static String partialXpathForLegendsInTotalSpendCategoryCategories = "/*/*[@class='highcharts-legend']/*/*/*";
 
+	
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// The xpaths below help in getting hover values in the controls and selecting elements in controls (some controls).    
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// this is for getting the hover info in expense control 
+	public static String partialXpathForHoverInfo = "/*/*[contains(@class,'highcharts-tooltip')]/*/*";	
+	
+	// this is for selecting slices in the expense control 
+	public static String partialXpathForSliceSelections = "/*/*[@class='highcharts-series-group']/*/*";	
+	
+	// setup - read comments below.
+	public static void SetupExpenseControSliceTesting()
+	{
+		if(expenseControlSlicesElemntsList != null)
+		{
+			expenseControlSlicesElemntsList.clear();
+		}
+		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathForSliceSelections)); // web list holding slices in 'total expense' control. 
+
+		if(expenseControlHMap == null)
+		{
+			expenseControlHMap = new HashMap<String, String>(); // hash map list that holds the vendor/value for each visible slice in the 'total expense' control.			
+		}
+	}
+	
+	// this uses the 'expenseControlSlicesElemntsList' list  (global in this object) that contains the slices in the 'total expense' control.
+	// for each slice that does not have the DOM value 'visibility=hidden', store the vendor and numeric value onto a hash map list.
+	public static void GetvaluesInExpenseControlAndStore() throws Exception
+	{
+		for(WebElement ele : expenseControlSlicesElemntsList) // go through the list of control slices.
+		{
+			if(ele.getAttribute("visibility") != null) //  if the current slice has a 'visibility' attribute, this means the control is not shown in the control. ignore it.   
+			{
+				Assert.assertTrue(ele.getAttribute("visibility").equals("hidden"), ""); // make sure the attribute value 'visibility' has value 'hidden'.
+			}
+			else // the control slice is clickable. select it and put the vendor/value onto the hash map. 
+			{
+				ele.click();
+				Thread.sleep(1000);
+				expenseControlHMap.put(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText(),
+									   driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-weight')]")).getText());
+				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText());
+				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'ont-weight')]")).getText());				
+			}
+		}
+	}
+	
+	// 
+	public static String GetvaluesInExpenseControlAndStoreOneSlice() throws Exception
+	{
+		for(WebElement ele : expenseControlSlicesElemntsList) // go through the list of control slices.
+		{
+			ExpenseHelper.SetChartId(0);
+			
+			if(ele.getAttribute("visibility") != null) //  if the current slice has a 'visibility' attribute, this means the control is not shown in the control. ignore it.   
+			{
+				Assert.assertTrue(ele.getAttribute("visibility").equals("hidden"), ""); // make sure the attribute value 'visibility' has value 'hidden'.
+			}
+			else // the control slice is clickable. select it and put the vendor/value onto the hash map. 
+			{
+				ele.click();
+				Thread.sleep(1000);
+				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText());
+				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'ont-weight')]")).getText());
+				return driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText();
+			}
+		}
+		return "";
+	}
+	
+	
+	
+	// parameters: 
+	// expenseLegendsList - this is need to be able to select a legend by its text name.
+	// desiredLegendname - this is the text name of the legend to select.
+	// expectedVendorNamesList - this has the vendor names that are expected to be shown in the 'total expense' control slices after a legend is clicked.
+	// * if an empty string is passed in this is telling this method to not click a legend. 
+	// * whether an empty string is passed in or not, calling method 'GetvaluesInExpenseControlAndStore' will load a hash map with the actual values in the expense control.
+	// * method 'VerifyCorrectControlSlices' will verify the vendor names in the hash map and the vendor names in input parameter 'expectedVendorNamesList' are equal.
+	public static void SelectLegendByTextAndDoVerification(List<WebElement> expenseLegendsList, String desiredLegendname, List<String> expectedVendorNamesList) throws Exception
+	{
+		expenseControlHMap.clear(); // this map should be empty at start.
+		
+		if(desiredLegendname.equals("")) // if 'desiredLegendname' is "", don't select any legends. this is how all legends selected is verified.
+		{
+			GetvaluesInExpenseControlAndStore(); // store vendor and value for each enabled slice. 
+			VerifyCorrectControlSlices(expectedVendorNamesList); // verify actual/expected are equal. 
+		}
+		else
+		{
+			for(WebElement ele : expenseLegendsList)
+			{
+				if(ele.getText().equals(desiredLegendname))
+				{
+						ele.click(); // select a slice legend.
+						Thread.sleep(1000); // wait after the click 
+						GetvaluesInExpenseControlAndStore(); // store vendor and value for each enabled slice into hash map.
+						VerifyCorrectControlSlices(expectedVendorNamesList); // verify actual/expected are equal.
+				}
+			}			
+		}
+	}
+	
+	
+	public static void VerifyCorrectControlSlices(List<String> expectedVendorNamesList)
+	{
+		tempStringList.clear();
+		
+		for (String key : expenseControlHMap.keySet()) 
+		{	
+			tempStringList.add(key);
+		}
+
+		java.util.Collections.sort(expectedVendorNamesList);
+		java.util.Collections.sort(tempStringList);
+		
+		//ShowText("EXPECT");	ShowListOfStrings(expectedVendorNamesList); // DEBUG
+		//ShowText("ACTUAL");	ShowListOfStrings(tempStringList); // DEBUG
+		
+		Assert.assertEquals(tempStringList, expectedVendorNamesList, "Failed verifying actual versus expected in ExpenseHelpser.VerifyCorrectControlSlices.");
+	}
+	
+	
+// 	.//*[@id='highcharts-ejp1hdz-408']/*/*[@class='highcharts-legend']
 	
 	public static void VerifyThreeComponents()
 	{
@@ -158,7 +304,7 @@ public class ExpenseHelper extends BaseClass
 		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
 
 		// store all legend names into web element list.
-		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
+		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
 		
 		// for(WebElement ele : webElementListLegands ){System.out.println(ele.getText());} // DEBUG
 		
@@ -168,11 +314,13 @@ public class ExpenseHelper extends BaseClass
 		}
 		
 		// store legend names into legend list.
-		for(WebElement ele : webElementListLegands )
+		for(WebElement ele : webElementListLegends )
 		{
 			legendsListTotalExpense.add(ele.getText());
 
 		} 
+		
+		webElementListLegends.clear();
 		
 		return legendsListTotalExpense;
 	}
@@ -404,6 +552,181 @@ public class ExpenseHelper extends BaseClass
 		return"";
 		
 	}
+
+	public static void SetWaitDefault()
+	{
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS); 		
+	}
+	
+	// this is used when waiting for element not present.
+	public static void SetWaitShort()
+	{
+		driver.manage().timeouts().implicitlyWait(300, TimeUnit.MILLISECONDS); 		
+	}
+	
+	// this is used when waiting for element not present.
+	public static void SetWaitTiny()
+	{
+		driver.manage().timeouts().implicitlyWait(200, TimeUnit.MILLISECONDS); 		
+	}
+	
+	
+	// this sets the global chartId (global to this class).
+	public static void SetChartId(int id)
+	{
+		chartId = UsageHelper.getChartId(id);
+	}
+	
+	// this sets the global chartId (global to this class).
+	public static void SetTempLocator(String tmpLocator)
+	{
+		tempLocator = tmpLocator;
+	}
+	
+
+	// this verifies that each control is not visible by looking for the first legend in each control being not visible.
+	public static void VerifyControlsNotPresent() throws Exception
+	{
+		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
+		
+		chartId =  UsageHelper.getChartId(0); // total expenses. 
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+		
+		chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		chartId =  UsageHelper.getChartId(2); // expense trending.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		chartId =  UsageHelper.getChartId(3); // cost per service number.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		chartId =  UsageHelper.getChartId(4); // cost per service number.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		ExpenseHelper.SetWaitDefault(); // back to default.
+	}	
+	
+	// this is meant to be run once to get the first month (using the expense control) that has the max number of vendors and the other legend. 
+	// if that combination is not found it will find the moth with the most amount of legends in the expense control. 
+	public static void FindMonthWithMostVendors() throws Exception
+	{
+		chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
+		int largestNumOfVendors = 0;
+		int currentNumOfVendors = 0; 
+		
+		String locator = "//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls;
+		
+		CommonTestStepActions.initializeMonthSelector();
+
+		// loop through selecting each month to find the month to find the combination described above.
+		for(WebElement ele : CommonTestStepActions.webListPulldown) 
+		{
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText()); 
+			
+			// wait for the selected month to show up in the top left of page and the expense control. 
+			WaitForElementVisible(By.xpath("//h1[text()='" +   ele.getText()  + "']"), MediumTimeout);
+			WaitForElementVisible(By.xpath("//h2[text()='" +   ele.getText()  + "']"), MediumTimeout);
+
+			// get the number of legends shown in the total expense control with current month.
+			currentNumOfVendors = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls)).size();
+			
+			if(currentNumOfVendors > largestNumOfVendors) // if number legends shown for this month is greater than others, store the number of legends
+			{
+				largestNumOfVendors = currentNumOfVendors;
+				
+				if(largestNumOfVendors == ExpenseHelper.maxNumberOfLegends + 1) // this is the max number of legends that can be shown. show and leave.
+				{
+					impericalDesiredMonth = ele.getText();
+					ShowText("Desired month is " + impericalDesiredMonth);
+					return;
+				}
+				else
+				{
+					impericalDesiredMonth = ele.getText();					
+				}
+			}
+		}
+		
+		ShowText("Desired month is " + impericalDesiredMonth);
+	}
+	
+	public static void VerifySelectUnselect(enableDisableActionsType actionType) throws Exception 
+	{
+		int cntr = 1; // used to keep track of how many legends should be disabled.
+		
+		// the wait to verify a legend, in 'VerifyLegendListStates' method, that doesn't contain "[contains(@class,'item-hidden')]" needs to be short or things get slow.  
+		// i did force an error in the case where "[contains(@class,'item-hidden')]" is present and is not supposed to be present, and a fail was found.
+		// this sets up the default timeout for method 'Assert.assertFalse' in method 'VerifyLegendListStates'. 
+		SetWaitTiny();  
+		
+		// chartId = UsageHelper.getChartId(1);// get chart id for total expense
+		
+		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + tempLocator)); // store all the web elements for the legends.   
+		
+		// go through the legends and select one at time. verify all states (enabled/disabled) of the legends are correct after each legend is selected.
+		for(WebElement ele : webElementListLegends) 
+		{
+			driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + tempLocator + ")[" + cntr +  "]")).click(); // select current web element's legend. 
+			VerifyLegendListStates(webElementListLegends, chartId, cntr, tempLocator, actionType); // this does the verification of all legend states.
+			cntr++;
+		}
+		
+		webElementListLegends.clear();
+		
+		SetWaitDefault();
+
+		// DEBUG - this shows not able to use isEnabled() to tell if a legend is disabled. isEnabled() always shows true here.
+		//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]")).isEnabled());
+		//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]/*")).isEnabled());			
+		//System.out.println(driver.findElement(By.xpath("(//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + ")[" + 1 +  "]/*/*")).isEnabled());
+	}
+
+	
+	// this verifies the elements that are to be enabled and the elements that are to be disabled. 
+	// 
+	// Inputs:
+	// webElementList - this is a list of the legends to test for enabled/disabled
+	// chartId - chart id of control being tested.
+	// numSelected - number of legends that should be disabled
+	// legendXpath - xpath the control's legend.
+	// enableDisable - this (enum) tells the method whether the legends are being disabled or enabled.
+	public static void VerifyLegendListStates(List<WebElement> webElementList, String chartId, int numSelected, String legendXpath, enableDisableActionsType enableDisable) throws Exception 
+	{
+		for(int x = 1; x <= webElementList.size(); x++) // go through all the legends and verify if they are in correct state (enabled/disabled).
+		{
+			if(x <= numSelected) 
+			{
+				errMessage = "Failed to verify this legend is enabled.";
+				if(enableDisable ==  enableDisableActionsType.disabling) // this element is expected to be disabled. it should have the "[contains(@class,'item-hidden')]" in its xpath.  
+				{
+					Assert.assertTrue(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), ShortTimeout), errMessage);
+				}
+				else // this element is not expected to be enabled. there should be no "[contains(@class,'item-hidden')]" in its xpath. 
+				{
+					Assert.assertFalse(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), 0), errMessage);					
+				}
+
+			}
+			else 
+			{
+				errMessage = "Failed to verify this legend is disabled.";
+				if(enableDisable ==  enableDisableActionsType.disabling) // this element is expected to be disabled. it should have the "[contains(@class,'item-hidden')]" in its xpath.
+				{
+					Assert.assertFalse(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), 0), errMessage);
+				}
+				else // this element is not expected to be enabled. there should be no "[contains(@class,'item-hidden')]" in its xpath.
+				{
+					Assert.assertTrue(WaitForElementPresentNoThrow(By.xpath("(//div[@id='" +  chartId + "']" + legendXpath + ")[" + x + "][contains(@class,'item-hidden')]"), ShortTimeout), errMessage);					
+				}
+			}
+		}
+	}
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers
@@ -411,6 +734,9 @@ public class ExpenseHelper extends BaseClass
 	
 	public static void ClearAllContainersForVerifyMonths()
 	{
+
+		ExpenseHelper.SetWaitShort();
+		
 		if(expectedYearMonthList != null)
 		{
 			expectedYearMonthList.removeAll(expectedYearMonthList);

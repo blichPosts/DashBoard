@@ -17,7 +17,9 @@ import com.sun.jna.StringArray;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 import helperObjects.UsageHelper;
 
 public class TotalExpenseByVendorCarrier extends BaseClass
@@ -34,6 +36,142 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	public static String tmpString = "";
 	public static String expensePieDateLocator = "(//h2[@class='tdb-h2'])[1]";
 	public static String chartId = "";	
+	
+	// variables for actions
+	
+	// this holds vendor legend names in expense control (string).
+	public static List<String> totalExpenseLegendsList = new ArrayList<String>(); 
+	
+	// this is used to hold the expected countries when switching from vendor view to country view.
+	public static List<String> expectedCountryList = new ArrayList<String>(); 
+	
+	// this is used to hold what vendors are currently selected in the expense control legends. 
+	public static List<String> totalExpenseExpectedLegendsList = new ArrayList<String>(); 	
+	
+	// this holds the list of the web elements for each expense legend.	
+	public static List<WebElement> totalExpenseExpectedLegendsWebList = new ArrayList<WebElement>();   	
+	
+	public static List<WebElement> tempExpenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control.
+	
+	
+	public static String CountryForVendor(String vendor) // can be used later
+	{
+		for(helperObjects.Country  cntry : countryList)
+		{
+			if(cntry.vendorList.contains(vendor))
+			{
+				return cntry.name;
+			}
+		}
+		return "";
+	}
+	
+	public static void SetupCountryListFromVendorList() // can be used later
+	{
+		for(String str: totalExpenseExpectedLegendsList)
+		{
+			ShowText(CountryForVendor(str));
+		}
+	}
+	
+	
+	// this creates a list that holds the string names of the total expense legends and also creates a list (strings) with the same names to be used used in testing removal of legends.
+	// it also creates a web list that contains a web element for each legend.
+	public static void StoreAllLegendsInTotalExpense() 
+	{
+		totalExpenseLegendsList.clear();
+		totalExpenseLegendsList =  ExpenseHelper.GetTotalExpenseLegends(); // get string list of legends in expense control.
+
+		totalExpenseExpectedLegendsList.clear();
+		for(String str : totalExpenseLegendsList) // setup 'totalExpenseExpectedLegendsList' to have each legend name that is in 'totalExpenseLegendsList'.
+		{
+			totalExpenseExpectedLegendsList.add(str);
+		}
+
+		if(totalExpenseExpectedLegendsWebList != null)
+		{
+			totalExpenseExpectedLegendsWebList.clear();
+		}
+		
+		// get a web element for each legend in expense control.  
+		totalExpenseExpectedLegendsWebList = driver.findElements(By.xpath("//div[@id='" +  ExpenseHelper.chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls));
+	}
+	
+	// * this goes through each legend name in the 'totalExpenseLegendsList' and sends the name and the 'totalExpenseExpectedLegendsWebList' web element list 
+	//   to method 'ExpenseHelper.SelectLegendByText'.
+	// * sending the web list is done so a legend can be selected by the legend name (text) in  'totalExpenseExpectedLegendsList'SelectLegendByTextAndDoVerification' method.  
+	// 
+	public static void VerifyUnSelectingLegendsAndSlices() throws Exception
+	{
+		// first, before selecting any legends, verify all the pie slices are present by calling 'totalExpenseExpectedLegendsList'SelectLegendByTextAndDoVerification' and pass an empty string.
+		ExpenseHelper.SelectLegendByTextAndDoVerification(totalExpenseExpectedLegendsWebList, "", totalExpenseExpectedLegendsList);
+		
+		// now go through each legend and select them one at a time. before calling 'ExpenseHelper.SelectLegendByTextAndDoVerification', remove the item to be selected from 
+		// the 'totalExpenseExpectedLegendsList' list. this tells the method being called what legends will be enabled after the legend related to the 'str' parameter is selected.
+		for(String str : totalExpenseLegendsList)
+		{
+			totalExpenseExpectedLegendsList.remove(str);
+			ShowText(str);
+			ExpenseHelper.SelectLegendByTextAndDoVerification(totalExpenseExpectedLegendsWebList, str, totalExpenseExpectedLegendsList); 
+		}
+	}
+	
+	public static void VerifySelectUnselectVendors() throws Exception
+	{
+		chartId = ExpenseHelper.chartId;
+		
+		for(String str : totalExpenseLegendsList)
+		{
+			if(!str.equals("Other"))
+			{
+				CommonTestStepActions.selectOneVendor(str);
+				ExpenseHelper.WaitForControlLegend(controlType.expenseTrending);
+				
+				DebugTimeout(2, "Two -- Size " + chartId);
+
+				if(ExpenseHelper.expenseControlSlicesElemntsList != null)
+				{
+					ExpenseHelper.expenseControlSlicesElemntsList.clear();
+				}
+				
+				ExpenseHelper.expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections)); // web list holding slices in 'total expense' control. 
+
+				ShowInt(ExpenseHelper.expenseControlSlicesElemntsList.size());
+				
+				ShowText(ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice());
+				
+				
+				CommonTestStepActions.selectOneVendor(str);
+				ExpenseHelper.VerifyControlsNotPresent();
+			}
+		}
+	}
+	
+	public static void VerifySelectingLegendsAndSlices() throws Exception
+	{
+		int cntr = 0;
+
+		ExpenseHelper.SetWaitDefault(); 
+		
+		
+		// totalExpenseExpectedLegendsList.clear(); // force for debug only. 
+		
+		// now go through each legend and select them one at a time. before calling 'ExpenseHelper.SelectLegendByTextAndDoVerification', remove the item to be selected from 
+		// the 'totalExpenseExpectedLegendsList' list. this tells the method being called what legends will be enabled after the legend related to the 'str' parameter is selected.
+		for(String str : totalExpenseLegendsList)
+		{
+			totalExpenseExpectedLegendsList.add(totalExpenseExpectedLegendsWebList.get(cntr).getText());
+
+			ExpenseHelper.SelectLegendByTextAndDoVerification(totalExpenseExpectedLegendsWebList, str, totalExpenseExpectedLegendsList); 
+			
+			cntr++;
+			
+			if(cntr > 3)
+			{
+				break;
+			}
+		}
+	}
 	
 	public static void setAllLegendsAndPieCount() throws InterruptedException
 	{
