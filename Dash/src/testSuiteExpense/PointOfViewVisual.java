@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.ExpenseHelper;
 
 
 public class PointOfViewVisual extends BaseClass
@@ -23,7 +24,12 @@ public class PointOfViewVisual extends BaseClass
 	{
 		
 		// initialize month selector variable.
-		CommonTestStepActions.initializeMonthSelector(); // bladd
+		CommonTestStepActions.initializeMonthSelector(); 
+		
+		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
+		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
+
 		
 		// #1 Observe the month selector in the left pane described in the summary - The month is displayed with MMM-YYYY format.		
 		// #2 In the 'Overview Dash board Selector' component, select the 'View Total Expense' tab.

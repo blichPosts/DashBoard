@@ -111,37 +111,41 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		for(String str : totalExpenseLegendsList)
 		{
 			totalExpenseExpectedLegendsList.remove(str);
-			ShowText(str);
 			ExpenseHelper.SelectLegendByTextAndDoVerification(totalExpenseExpectedLegendsWebList, str, totalExpenseExpectedLegendsList); 
 		}
 	}
 	
-	public static void VerifySelectUnselectVendors() throws Exception
+	public static void VerifySelectUnselectVendors(ViewType vendor) throws Exception
 	{
-		chartId = ExpenseHelper.chartId;
-		
 		for(String str : totalExpenseLegendsList)
 		{
 			if(!str.equals("Other"))
 			{
 				CommonTestStepActions.selectOneVendor(str);
 				ExpenseHelper.WaitForControlLegend(controlType.expenseTrending);
-				
-				DebugTimeout(2, "Two -- Size " + chartId);
 
 				if(ExpenseHelper.expenseControlSlicesElemntsList != null)
 				{
 					ExpenseHelper.expenseControlSlicesElemntsList.clear();
 				}
 				
-				ExpenseHelper.expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections)); // web list holding slices in 'total expense' control. 
+				ExpenseHelper.SetChartId(0);
 
+				ExpenseHelper.expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  ExpenseHelper.chartId + "']" + ExpenseHelper.partialXpathForSliceSelections)); // web list holding slices in 'total expense' control. 
 				ShowInt(ExpenseHelper.expenseControlSlicesElemntsList.size());
 				
-				ShowText(ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice());
+				if(ViewType.vendor == vendor)
+				{
+					ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice();
+					Assert.assertEquals(ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice(), str);
+				}
+				else
+				{
+					ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice();
+					Assert.assertEquals(ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice(), CountryForVendor(str));
+				}
 				
-				
-				CommonTestStepActions.selectOneVendor(str);
+				CommonTestStepActions.UnSelectAllVendors();
 				ExpenseHelper.VerifyControlsNotPresent();
 			}
 		}
@@ -152,7 +156,6 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		int cntr = 0;
 
 		ExpenseHelper.SetWaitDefault(); 
-		
 		
 		// totalExpenseExpectedLegendsList.clear(); // force for debug only. 
 		

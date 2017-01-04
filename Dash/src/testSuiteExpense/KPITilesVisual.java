@@ -22,6 +22,10 @@ public class KPITilesVisual extends BaseClass
 	public static void KpiTilesVisualTest() throws Exception
 	{
 		
+		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
+		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
+		
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// prereq - select all of the vendors. - this is already done in dev instance 

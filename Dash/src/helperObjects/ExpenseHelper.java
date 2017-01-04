@@ -128,9 +128,11 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	// 
+	// this is for testing one vendor at a time. 
 	public static String GetvaluesInExpenseControlAndStoreOneSlice() throws Exception
 	{
+		int x = 1;
+		
 		for(WebElement ele : expenseControlSlicesElemntsList) // go through the list of control slices.
 		{
 			ExpenseHelper.SetChartId(0);
@@ -141,17 +143,22 @@ public class ExpenseHelper extends BaseClass
 			}
 			else // the control slice is clickable. select it and put the vendor/value onto the hash map. 
 			{
+				if(x > 1)
+				{
+					break;
+				}
+				//ShowText("pre click");
 				ele.click();
 				Thread.sleep(1000);
+				x++;
 				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText());
 				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'ont-weight')]")).getText());
+				
 				return driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText();
 			}
 		}
 		return "";
 	}
-	
-	
 	
 	// parameters: 
 	// expenseLegendsList - this is need to be able to select a legend by its text name.

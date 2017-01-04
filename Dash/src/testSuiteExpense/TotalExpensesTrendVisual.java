@@ -12,6 +12,7 @@ import expenses.TotalExpenseByVendorCarrier;
 import expenses.TotalExpenseByVendorSpendCategory;
 import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
+import helperObjects.ExpenseHelper;
 
 public class TotalExpensesTrendVisual extends BaseClass 
 {
@@ -27,6 +28,10 @@ public class TotalExpensesTrendVisual extends BaseClass
 	{
 		// initialize month selector variable.
 		CommonTestStepActions.initializeMonthSelector(); 
+		
+		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
+		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
 		
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		

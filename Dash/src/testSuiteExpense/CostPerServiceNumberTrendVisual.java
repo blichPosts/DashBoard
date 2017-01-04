@@ -8,6 +8,7 @@ import Dash.BaseClass;
 import expenses.CostPerServiceNumberTrend;
 import expenses.CountOfServiceNumbersTrend;
 import helperObjects.CommonTestStepActions;
+import helperObjects.ExpenseHelper;
 
 public class CostPerServiceNumberTrendVisual extends BaseClass 
 {
@@ -24,6 +25,10 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 		// #1
 		// Select vendors view and view the 'Count of Service Numbers' component.
 
+		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
+		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
+		
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
 		CostPerServiceNumberTrend.SetupChartId(); // setup unique id for this control test.

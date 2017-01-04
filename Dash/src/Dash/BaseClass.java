@@ -83,6 +83,13 @@ public class BaseClass
 		Remove
 	}
 
+	public enum ViewType // needed for base class methods. // bladdxx 
+	{
+		vendor,
+		country
+	}
+	
+	
 	// ctor
 	public BaseClass()  
 	{

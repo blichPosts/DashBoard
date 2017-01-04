@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenses.TotalExpenseByVendorCarrier;
 import helperObjects.CommonTestStepActions;
+import helperObjects.ExpenseHelper;
 
 
 public class TotalExpenseByVendorCarrierVisual extends BaseClass
@@ -23,6 +24,11 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 	@Test
 	public static void TotalExpenseByVendorCarrierVisualTest() throws Exception
 	{
+		
+		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
+		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
+
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// #1

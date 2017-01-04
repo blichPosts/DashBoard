@@ -10,6 +10,7 @@ import Dash.BaseClass;
 import expenses.TotalExpenseByVendorCarrier;
 import expenses.TotalExpenseByVendorSpendCategory;
 import helperObjects.CommonTestStepActions;
+import helperObjects.ExpenseHelper;
 
 public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 {
@@ -23,6 +24,11 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 	@Test
 	public static void TotalExpenseByVendorSpendVisualTest() throws Exception
 	{
+
+		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
+		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
+		
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// #1
