@@ -36,6 +36,7 @@ public class ExpenseHelper extends BaseClass
 	public static List<WebElement> vndrList;	
 	public static String errNeedToCallInitializeMethod = "Failed in method call. You first need to call SetupCountryAndVendorData() to use this method.";
 	public static int maxNumberOfLegends = 5; // max number of legends that are not labeled 'other'.
+	public static int numOfLegendsInExpenseSpendCategory = 8; // number of legends in the spend category
 
 	
 	public static List<WebElement> expenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control. 	
@@ -68,7 +69,7 @@ public class ExpenseHelper extends BaseClass
 	public static String partialXpathToMonthListInControls = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
 	
 	// this is the same for all three controls that have a bar chart for each month. this gets the list of legends. 
-	// also can be used for 'expense control'
+	// also can be used for 'expense control' and 'expense by category control'.
 	public static String partialXpathToLegendsListInControls = "/*/*[@class='highcharts-legend']/*/*/*";
 	
 	// this is the same for all three controls that have a bar chart for each month. this gets the bar graphs.
@@ -105,6 +106,8 @@ public class ExpenseHelper extends BaseClass
 			expenseControlHMap = new HashMap<String, String>(); // hash map list that holds the vendor/value for each visible slice in the 'total expense' control.			
 		}
 	}
+	
+	
 	
 	// this uses the 'expenseControlSlicesElemntsList' list  (global in this object) that contains the slices in the 'total expense' control.
 	// for each slice that does not have the DOM value 'visibility=hidden', store the vendor and numeric value onto a hash map list.
@@ -190,7 +193,6 @@ public class ExpenseHelper extends BaseClass
 			}			
 		}
 	}
-	
 	
 	public static void VerifyCorrectControlSlices(List<String> expectedVendorNamesList)
 	{
@@ -331,6 +333,53 @@ public class ExpenseHelper extends BaseClass
 		
 		return legendsListTotalExpense;
 	}
+	
+	// this gets the legends in the expense control . it is a list of web elements.
+	public static List<WebElement> GetTotalExpenseCatergoryLegends() throws Exception // bladdxx
+	{
+		chartId = UsageHelper.getChartId(1); // get current chart Id for expense control.
+
+		if(webElementListLegends != null)
+		{
+			webElementListLegends.clear();
+		}
+		
+		// store all legend names into web element list.
+		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
+		
+		//String aa = "//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + "/*";
+		
+		//ShowText(aa);
+
+		/*
+		//for(WebElement ele : webElementListLegends )
+		//{
+		//	System.out.println(ele.getText().trim());
+		//	ele.click();
+		//	DebugTimeout(1, "One");
+		//}DEBUG
+		
+		DebugTimeout(9999, "Freeze");
+		
+		if(legendsListTotalExpense != null)
+		{
+			legendsListTotalExpense.removeAll(legendsListTotalExpense);
+		}
+		
+		// store legend names into legend list.
+		for(WebElement ele : webElementListLegends )
+		{
+			legendsListTotalExpense.add(ele.getText());
+
+		} 
+		
+		webElementListLegends.clear();
+		*/
+		
+		return webElementListLegends;
+	}
+	
+	
 	
 	// this is for the controls that have a bar graph shown for each month. this verifies the months match the months in the pull down.  
 	public static void VerifyMonths(String xpathText) throws ParseException 

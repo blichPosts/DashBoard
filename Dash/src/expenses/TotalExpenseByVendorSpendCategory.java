@@ -14,6 +14,7 @@ import com.thoughtworks.selenium.webdriven.commands.GetText;
 import Dash.BaseClass;
 import helperObjects.ExpenseHelper;
 import helperObjects.UsageHelper;
+import helperObjects.ExpenseHelper.controlType;
 
 public class TotalExpenseByVendorSpendCategory extends BaseClass 
 {
@@ -31,11 +32,95 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	public static int numberOfLegendsInLegendList = 0;	
 	public static String otherString = "Other";
 	public static String chartId = "";
-	
+	public static String tempString = "";
 	
 	public static String title = "Total Expense by Vendor and Spend Category";
 	static String errMessage = "";
 	
+	// variables for actions
+	
+	// this holds vendor legend names in expense spend category control (string).
+	public static List<String> totalExpenseLegendsList = new ArrayList<String>(); 
+	
+	// this holds web elements containing the bar graph sections in the 'expense by vendor category' control.
+	public static List<WebElement> expenseControlSlicesElemntsList; 
+	
+	// this is used  
+	public static List<String> totalExpenseExpectedLegendsList = new ArrayList<String>(); 	
+	
+	//  
+	public static List<WebElement> totalExpenseLegendsElementList; 	
+	
+	
+	// this sets the global chartId (global to this class).
+	public static void SetChartId(int id)
+	{
+		chartId = UsageHelper.getChartId(id);
+	}
+	
+	public static void StoreAllLegendsInTotalExpenseSpendCategory() throws Exception 
+	{
+		totalExpenseExpectedLegendsList = ExpenseHelper.GetTotalExpenseLegends();
+	}
+	
+	
+	// PROTOTYPE
+	public static void VerifyRemovingCategories() throws Exception // bladdxx
+	{
+
+		DebugTimeout(1, "Start");
+		
+		List<WebElement> tempList;
+ 				
+		// get web element  list of legends in expense spend category. this is for clicking 
+		totalExpenseLegendsElementList =  ExpenseHelper.GetTotalExpenseCatergoryLegends();  
+		
+		if(expenseControlSlicesElemntsList != null)
+		{
+			expenseControlSlicesElemntsList.clear();
+		}
+		
+		WaitForElementPresent(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory), ShortTimeout);
+		
+		ExpenseHelper.WaitForControlLegend(controlType.expenseTrending);
+		
+		Thread.sleep(500);
+		
+		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections));  
+
+		
+		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
+		{
+			DebugTimeout(1, "starting click");
+			
+			// these two clicks make the hover visible.
+			expenseControlSlicesElemntsList.get(x).click();
+			expenseControlSlicesElemntsList.get(x).click();
+
+			Thread.sleep(1000);
+
+			tempList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + "/*/*[@class='highcharts-label highcharts-tooltip highcharts-color-undefined']/*/*"));
+
+			ToolTipInfo(tempList);
+			
+			// Thread.sleep(1000);
+			
+			ShowInt(tempList.size());
+			
+			Thread.sleep(1000);
+
+			DebugTimeout(1, "Select Now");
+			totalExpenseLegendsElementList.get(x).click();
+		}
+		
+
+		DebugTimeout(9999, "Freeze");
+		
+		
+		DebugTimeout(2, "start click");
+		
+
+	}
 	
 	public static void Setupdata() 
 	{
@@ -191,5 +276,21 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		}
 		
 		legendsList = null;
+	}
+	
+	
+	public static void ToolTipInfo(List<WebElement> list)
+	{
+		List<String> localList= new ArrayList<String>(); 
+
+		for(WebElement ele : list)
+		{
+			if(ele.getText().contains(":"))
+			{
+				localList.add(ele.getText().replace(":", ""));				
+			}
+		}
+		
+		ShowListOfStrings(localList);
 	}
 }

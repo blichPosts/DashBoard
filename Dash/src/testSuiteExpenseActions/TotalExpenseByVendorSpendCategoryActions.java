@@ -1,19 +1,18 @@
 package testSuiteExpenseActions;
 
-import org.openqa.jetty.servlet.Debug;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
-import expenses.KpiTiles;
+import Dash.BaseClass.ViewType;
 import expenses.TotalExpenseByVendorCarrier;
+import expenses.TotalExpenseByVendorSpendCategory;
 import helperObjects.CommonTestStepActions;
-import helperObjects.Country;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.enableDisableActionsType;
 
-public class TotalExpenseByVendorCountryActions extends BaseClass 
+public class TotalExpenseByVendorSpendCategoryActions extends BaseClass 
 {
 
 	@BeforeClass
@@ -23,30 +22,30 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 	}
 	
 	@Test
-	public static void TotalExpenseByVendorCountryActionsTest() throws Exception
+	public static void TotalExpenseByVendorSpendCategoryActionsTest() throws Exception
 	{
-		
-		// #1 - this step isn't done because the spread sheet is needed. 
 		
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 
-		// #2
-		// #3
-		// Un-select the legends one at a time.
-		// Select the legends one at a time.
-		// The legend that is un-selected is disabled.
-		// The corresponding slice for the legend is removed from the pie.
+		// need to
+		ExpenseHelper.SetChartId(1);
 		
-		// setup for tests.
-		ExpenseHelper.SetChartId(0);
+		// store vendors currently shown. 
+		TotalExpenseByVendorSpendCategory.StoreAllLegendsInTotalExpenseSpendCategory(); 
 		
-		// this verifies selecting/un-selecting legends and the correct slices shown on each selection.
-		ExpenseHelper.SetupExpenseControSliceTesting(); // set up containers in expense helper to be used for testing 'total expense' control slices. 
-		TotalExpenseByVendorCarrier.StoreAllLegendsInTotalExpense(); // setup containers in 'TotalExpenseByVendorCarrier' for testing 'total expense' control slices.
-		TotalExpenseByVendorCarrier.VerifyUnSelectingLegendsAndSlices();
-
+		CommonTestStepActions.UnSelectAllVendors();
+		ExpenseHelper.VerifyControlsNotPresent();
+		
+		CommonTestStepActions.selectOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
+		
+		// need to 
+		TotalExpenseByVendorSpendCategory.SetChartId(1);
+		
+		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(); 
+		
+		/*
 		driver.navigate().refresh();
 
 		DebugTimeout(10, "wait ten seconds wait.");
@@ -104,6 +103,8 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);
 		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // country
 		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // country
+		*/
+
 	}
 	
 	@AfterClass
@@ -115,6 +116,7 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 		driver.close();
 		driver.quit();
 	}	
+
 	
 	
 }
