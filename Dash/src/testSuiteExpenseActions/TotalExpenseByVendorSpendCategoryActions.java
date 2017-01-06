@@ -32,8 +32,8 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		// need to
 		ExpenseHelper.SetChartId(1);
 		
-		// store vendors currently shown. 
-		TotalExpenseByVendorSpendCategory.StoreAllLegendsInTotalExpenseSpendCategory(); 
+		// store vendor names currently shown in expense control. 
+		TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest(); 
 		
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();
@@ -44,67 +44,6 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
 		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(); 
-		
-		/*
-		driver.navigate().refresh();
-
-		DebugTimeout(10, "wait ten seconds wait.");
-		
-		// setup page for test.
-		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
-		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
-		
-		ExpenseHelper.SetupExpenseControSliceTesting(); // set up containers in expense helper to be used for testing 'total expense' control slices. 
-		TotalExpenseByVendorCarrier.StoreAllLegendsInTotalExpense(); // setup containers in 'TotalExpenseByVendorCarrier' for testing 'total expense' control slices.
-		
-		CommonTestStepActions.GoToExpensePageDetailedWait();
-		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);		
-		
-		CommonTestStepActions.UnSelectAllVendors();
-		ExpenseHelper.VerifyControlsNotPresent();
-		
-		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors(ViewType.vendor); // vendors		
-		
-		CommonTestStepActions.SelectCountryView();
-		CommonTestStepActions.UnSelectAllVendors();
-		ExpenseHelper.VerifyControlsNotPresent();
-
-		ExpenseHelper.SetupCountryAndVendorData(); // this sets up 
-		
-		ExpenseHelper.SetChartId(0);
-		
-		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors(ViewType.country); // countries		
-		
-		CommonTestStepActions.SelectAllVendors();
-		CommonTestStepActions.GoToExpensePageDetailedWait();
-		
-		Thread.sleep(3000); // saving time. spent too much time on this test already. wait for six vendors in each control needs written.
-
-		ExpenseHelper.SetChartId(0);
-
-		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);
-		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // vendor
-		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // vendor
-
-		CommonTestStepActions.SelectAllVendors();
-		CommonTestStepActions.GoToExpensePageDetailedWait();
-
-		CommonTestStepActions.SelectVendorView();
-		CommonTestStepActions.UnSelectAllVendors();
-		ExpenseHelper.VerifyControlsNotPresent();
-		
-		CommonTestStepActions.SelectAllVendors();
-		CommonTestStepActions.GoToExpensePageDetailedWait();
-		
-		Thread.sleep(3000); // saving time. spent too much time on this test already. wait for six vendors in each control needs written.
-
-		ExpenseHelper.SetChartId(0);
-		
-		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);
-		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // country
-		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // country
-		*/
-
 	}
 	
 	@AfterClass

@@ -34,7 +34,7 @@ public class PointOfViewVisual extends BaseClass
 		// #1 Observe the month selector in the left pane described in the summary - The month is displayed with MMM-YYYY format.		
 		// #2 In the 'Overview Dash board Selector' component, select the 'View Total Expense' tab.
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // #2
-		CommonTestStepActions.VerifyMonthPullDownFormat(); // #1
+		ExpenseHelper.VerifyMonthPullDownFormatExpense(); // #1
 		
 		// #3  Switch the month selector through various selections - Thirteen descending months are available for selection, starting with the current month/year. 
 		CommonTestStepActions.VerifyMonthPullDownSelectionsAndContent();

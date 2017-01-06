@@ -53,8 +53,8 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	
 	public static List<WebElement> tempExpenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control.
 	
-	
-	public static String CountryForVendor(String vendor) // can be used later
+	// 
+	public static String CountryForVendor(String vendor) 
 	{
 		for(helperObjects.Country  cntry : countryList)
 		{
@@ -132,7 +132,6 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 				ExpenseHelper.SetChartId(0);
 
 				ExpenseHelper.expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  ExpenseHelper.chartId + "']" + ExpenseHelper.partialXpathForSliceSelections)); // web list holding slices in 'total expense' control. 
-				ShowInt(ExpenseHelper.expenseControlSlicesElemntsList.size());
 				
 				if(ViewType.vendor == vendor)
 				{

@@ -3,13 +3,9 @@ package expenses;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bouncycastle.crypto.tls.LegacyTlsAuthentication;
-import org.eclipse.jetty.io.ClientConnectionFactory.Helper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-
-import com.thoughtworks.selenium.webdriven.commands.GetText;
 
 import Dash.BaseClass;
 import helperObjects.ExpenseHelper;
@@ -18,7 +14,6 @@ import helperObjects.ExpenseHelper.controlType;
 
 public class TotalExpenseByVendorSpendCategory extends BaseClass 
 {
- 
 	public static List<WebElement> eleList;   
 	public static List<String> expectedSpendCategoryLegends = new ArrayList<String>();
 	public static List<String> actualSpendCategoryLegends = new ArrayList<String>();
@@ -51,6 +46,13 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	//  
 	public static List<WebElement> totalExpenseLegendsElementList; 	
 	
+	//
+	public static List<String> expectedlList= new ArrayList<String>();
+	public static List<String> actuallList= new ArrayList<String>();
+	
+	public static String tempCategory = "";
+	public static String tempCost = "";
+	
 	
 	// this sets the global chartId (global to this class).
 	public static void SetChartId(int id)
@@ -58,7 +60,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		chartId = UsageHelper.getChartId(id);
 	}
 	
-	public static void StoreAllLegendsInTotalExpenseSpendCategory() throws Exception 
+	public static void InitializeTotalExpenseSpendCategoryTest() throws Exception 
 	{
 		totalExpenseExpectedLegendsList = ExpenseHelper.GetTotalExpenseLegends();
 	}
@@ -67,12 +69,12 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	// PROTOTYPE
 	public static void VerifyRemovingCategories() throws Exception // bladdxx
 	{
-
-		DebugTimeout(1, "Start");
+		// DebugTimeout(1, "Start");
+		Thread.sleep(1000);
 		
 		List<WebElement> tempList;
  				
-		// get web element  list of legends in expense spend category. this is for clicking 
+		// get web element  list of legends in expense spend category. this is for clicking legends. 
 		totalExpenseLegendsElementList =  ExpenseHelper.GetTotalExpenseCatergoryLegends();  
 		
 		if(expenseControlSlicesElemntsList != null)
@@ -88,38 +90,30 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		
 		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections));  
 
-		
 		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
 		{
-			DebugTimeout(1, "starting click");
+			//DebugTimeout(1, "starting click");
+			Thread.sleep(500);
 			
 			// these two clicks make the hover visible.
 			expenseControlSlicesElemntsList.get(x).click();
 			expenseControlSlicesElemntsList.get(x).click();
 
-			Thread.sleep(1000);
+			Thread.sleep(500);
 
-			tempList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + "/*/*[@class='highcharts-label highcharts-tooltip highcharts-color-undefined']/*/*"));
+			tempList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+			
+			VerifyToolTipInfo(tempList, x);
+			
+			// ShowInt(tempList.size()); // DEBUG
+			
+			Thread.sleep(500);
 
-			ToolTipInfo(tempList);
-			
-			// Thread.sleep(1000);
-			
-			ShowInt(tempList.size());
-			
-			Thread.sleep(1000);
-
-			DebugTimeout(1, "Select Now");
-			totalExpenseLegendsElementList.get(x).click();
+			//DebugTimeout(1, "Click legend");
+			totalExpenseLegendsElementList.get(x).click(); // click legend.
 		}
 		
-
-		DebugTimeout(9999, "Freeze");
-		
-		
-		DebugTimeout(2, "start click");
-		
-
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category. 
 	}
 	
 	public static void Setupdata() 
@@ -277,20 +271,97 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		
 		legendsList = null;
 	}
-	
-	
-	public static void ToolTipInfo(List<WebElement> list)
+
+	public static void VerifyToolTipInfo(List<WebElement> list, int eventNumber) throws Exception // bladdxx
 	{
-		List<String> localList= new ArrayList<String>(); 
+
+		int x = 0;
+		boolean foundFirstItem = false;
+		boolean foundSecondItem = false;
+
+		if(eventNumber == 0)
+		{
+			BuildListOfAllSpendCatergoryHoverItems(list);
+		}
+		else
+		{
+			for(WebElement ele : list)
+			{
+				if(x == 0) // this should always be the vendor name that was selected previously. 
+				{
+					Assert.assertEquals(ele.getText(), TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0), 
+							            "Vendor name appears wrong in TotalExpenseByVendorSpendCategoryVisual.ToolTipInfo.");
+					x++;
+				}
+				if(ele.getText().contains(":"))
+				{
+					tempCategory = ele.getText();
+					foundFirstItem = true;
+				}
+				
+				if(ele.getText().contains("$"))
+				{
+					tempCost = ele.getText();
+					foundSecondItem = true;
+				}
+				
+				if(foundFirstItem && foundSecondItem)
+				{
+					foundFirstItem = false;
+					foundSecondItem = false;
+					actuallList.add(tempCategory + tempCost);
+				}
+			}
+			
+			for(int y = 0, z = eventNumber; z < expectedlList.size(); y++, z++)
+			{
+
+				//ShowText(actuallList.get(y)); // DEBUG
+				//ShowText(expectedlList.get(z)); // DEBUG
+				Assert.assertEquals(actuallList.get(y), expectedlList.get(z));	
+			}
+
+			actuallList.clear();
+		}
+	}
+
+	public static void BuildListOfAllSpendCatergoryHoverItems(List<WebElement> list)
+	{
+		int x = 0;
+		boolean foundFirstItem = false;
+		boolean foundSecondItem = false;
 
 		for(WebElement ele : list)
 		{
+			if(x == 0) // this should always be the vendor name that was selected previously. 
+			{
+				Assert.assertEquals(ele.getText(), TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0), 
+						            "Vendor name appears wrong in TotalExpenseByVendorSpendCategoryVisual.ToolTipInfo.");
+				x++;
+			}
+
 			if(ele.getText().contains(":"))
 			{
-				localList.add(ele.getText().replace(":", ""));				
+				tempCategory = ele.getText();
+				foundFirstItem = true;
+			}
+			
+			if(ele.getText().contains("$"))
+			{
+				tempCost = ele.getText();
+				foundSecondItem = true;
+			}
+			
+			if(foundFirstItem && foundSecondItem)
+			{
+				foundFirstItem = false;
+				foundSecondItem = false;
+				expectedlList.add(tempCategory + tempCost);
 			}
 		}
-		
-		ShowListOfStrings(localList);
 	}
+
 }
+
+
+

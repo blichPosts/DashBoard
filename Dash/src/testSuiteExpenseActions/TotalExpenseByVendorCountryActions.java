@@ -64,17 +64,17 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();
 		
-		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors(ViewType.vendor); // vendors		
+		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors(CommonTestStepActions.ViewType.vendor); // vendors		
 		
 		CommonTestStepActions.SelectCountryView();
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();
 
-		ExpenseHelper.SetupCountryAndVendorData(); // this sets up 
+		ExpenseHelper.SetupCountryAndVendorData(); // this sets up data so 'CountryForVendor' method can be used.
 		
 		ExpenseHelper.SetChartId(0);
 		
-		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors(ViewType.country); // countries		
+		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors(CommonTestStepActions.ViewType.country); // countries		
 		
 		CommonTestStepActions.SelectAllVendors();
 		CommonTestStepActions.GoToExpensePageDetailedWait();

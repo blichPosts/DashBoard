@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 import Dash.BaseClass;
@@ -89,7 +90,7 @@ public class ExpenseHelper extends BaseClass
 	// this is for getting the hover info in expense control 
 	public static String partialXpathForHoverInfo = "/*/*[contains(@class,'highcharts-tooltip')]/*/*";	
 	
-	// this is for selecting slices in the expense control 
+	// this is for selecting slices in the expense control and expense control spend category.
 	public static String partialXpathForSliceSelections = "/*/*[@class='highcharts-series-group']/*/*";	
 	
 	// setup - read comments below.
@@ -335,7 +336,7 @@ public class ExpenseHelper extends BaseClass
 	}
 	
 	// this gets the legends in the expense control . it is a list of web elements.
-	public static List<WebElement> GetTotalExpenseCatergoryLegends() throws Exception // bladdxx
+	public static List<WebElement> GetTotalExpenseCatergoryLegends()
 	{
 		chartId = UsageHelper.getChartId(1); // get current chart Id for expense control.
 
@@ -346,35 +347,6 @@ public class ExpenseHelper extends BaseClass
 		
 		// store all legend names into web element list.
 		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
-		
-		//String aa = "//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls + "/*";
-		
-		//ShowText(aa);
-
-		/*
-		//for(WebElement ele : webElementListLegends )
-		//{
-		//	System.out.println(ele.getText().trim());
-		//	ele.click();
-		//	DebugTimeout(1, "One");
-		//}DEBUG
-		
-		DebugTimeout(9999, "Freeze");
-		
-		if(legendsListTotalExpense != null)
-		{
-			legendsListTotalExpense.removeAll(legendsListTotalExpense);
-		}
-		
-		// store legend names into legend list.
-		for(WebElement ele : webElementListLegends )
-		{
-			legendsListTotalExpense.add(ele.getText());
-
-		} 
-		
-		webElementListLegends.clear();
-		*/
 		
 		return webElementListLegends;
 	}
@@ -668,6 +640,48 @@ public class ExpenseHelper extends BaseClass
 		ExpenseHelper.SetWaitDefault(); // back to default.
 	}	
 	
+	// this verifies one control is not visible by looking for the first legend in each control being not visible.
+	// NOTE --- needs finished.
+	public static void VerifyOneControlNotPresent(controlType cntrlType) throws Exception
+	{
+		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
+		
+		
+		switch(cntrlType)
+		{
+			case totalExpenseSpendCatergory:
+			{
+				chartId =  UsageHelper.getChartId(2); // total expenses. 
+				tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections + ")[1]/*";		
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+			}
+		}
+		
+		/*
+		chartId =  UsageHelper.getChartId(0); // total expenses. 
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+		
+		chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		chartId =  UsageHelper.getChartId(2); // expense trending.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		chartId =  UsageHelper.getChartId(3); // cost per service number.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		
+		chartId =  UsageHelper.getChartId(4); // cost per service number.
+		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		*/
+		ExpenseHelper.SetWaitDefault(); // back to default.
+	}	
+	
+	
 	// this is meant to be run once to get the first month (using the expense control) that has the max number of vendors and the other legend. 
 	// if that combination is not found it will find the moth with the most amount of legends in the expense control. 
 	public static void FindMonthWithMostVendors() throws Exception
@@ -782,6 +796,13 @@ public class ExpenseHelper extends BaseClass
 				}
 			}
 		}
+	}
+
+	// this is unique to expense page. desired month is the month setting that has the most amount of legends for actions testing. 
+	public static void VerifyMonthPullDownFormatExpense()
+	{
+		Assert.assertEquals(new Select(driver.findElement(By.cssSelector(CommonTestStepActions.pullDownCss))).getFirstSelectedOption().getText(), ExpenseHelper.desiredMonth, 
+				                       "Failed test for verifying correct month in month pulldown in CommonTestStepActions.VerifyMonthPullDownFormatExpense.");
 	}
 	
 	// //////////////////////////////////////////////////////////////////////	
