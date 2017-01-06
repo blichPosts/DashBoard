@@ -432,4 +432,166 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	
+	// ******* CONTINUE HERE ************
+	public static List<String> getMonthListUnifiedForVendorsSelected(List<List<UsageOneMonth>> listUsageVendorsSelected) throws ParseException{
+		
+		
+		List<String> monthsWithData = new ArrayList<>();
+		
+		for(int i = 0; i < 13; i++){
+			monthsWithData.add("");
+		}
+		
+		CommonTestStepActions.initializeMonthSelector();
+		List<String> months = CommonTestStepActions.YearMonthIntergerFromPulldown(); 
+		
+		boolean monthEqualToInvoiceMonth = false;
+		
+		if(listUsageVendorsSelected.get(0).get(0).getOrdinalMonth().equals(getMonthOfInvoiceMonth(listUsageVendorsSelected.get(0).get(0).getInvoiceMonth()))){
+			monthEqualToInvoiceMonth = true;
+		}
+		
+				
+		for(int i = 0; i < months.size(); i++){
+		
+			String[] monthYear = getMonthYearSeparated(months.get(i));
+			String month = monthYear[0]; // month in the format "M" 
+			String year = monthYear[1]; // year in the format "YYYY"
+			
+			//System.out.println("Month: " + month + ", Year: " + year);
+			
+			for(int j = 0; j < listUsageVendorsSelected.size(); j++){
+			
+				//System.out.println("j: " + j);
+				List<UsageOneMonth> listOneVendor = listUsageVendorsSelected.get(j);
+				
+				for(int k = 0; k < listUsageVendorsSelected.get(j).size(); k++){
+				
+					if(monthEqualToInvoiceMonth){
+						
+						if(month.equals(listOneVendor.get(k).getOrdinalMonth()) && year.equals(listOneVendor.get(k).getOrdinalYear())){
+							
+							String monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
+							
+							if(!monthsWithData.get(i).equals(monthYearToSelect)){
+								 
+								//System.out.println("1-Month Added: " + monthsWithData.get(i)); 
+								monthsWithData.add(i, monthYearToSelect);
+									
+							}
+									
+						} 
+						
+					} else {
+						
+						String monthTmp;
+						String yearTmp;
+						
+						if(month.equals("12")){
+							monthTmp = "1"; 
+							yearTmp = Integer.toString(Integer.parseInt(year) - 1);
+						} else { 
+							monthTmp = Integer.toString(Integer.parseInt(month) - 1);
+							yearTmp = year;
+						}
+						
+						if(monthTmp.equals(listOneVendor.get(k).getOrdinalMonth()) && yearTmp.equals(listOneVendor.get(k).getOrdinalYear())){
+							
+							String monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(monthTmp, yearTmp);
+							
+							if(!monthsWithData.get(i).equals(monthYearToSelect)){
+								
+								//System.out.println("2-Month Added: " + monthsWithData.get(i));
+								monthsWithData.add(i, monthYearToSelect);
+								
+							}
+									
+						}
+						
+					}
+				
+				}
+
+			}
+			 
+		}
+		
+		List<String> monthsToSelectPulldown = new ArrayList<>();
+		
+		for(int i = 0; i < 13; i++){
+			if(!monthsWithData.get(i).equals("")){
+				monthsToSelectPulldown.add(monthsWithData.get(i));
+				//System.out.println("Month to select: " + monthsWithData.get(i));
+			}
+				
+		}
+		
+		//System.out.println("monthsToSelectPulldown.size(): " + monthsToSelectPulldown.size());
+		
+		return monthsToSelectPulldown;
+		
+	}
+
+
+	// In the Total Usage charts the vendors are sorted in alphabetical order. 
+	public static List<UsageOneMonth> sortVendorsAlphabetically(List<UsageOneMonth> listVendorsSelectedData) {
+	
+		UsageOneMonth[] vendorsSortedTmp = new UsageOneMonth[listVendorsSelectedData.size()];
+		String[] vendorNames = new String[listVendorsSelectedData.size()];
+		//System.out.println("Unsorted list:");
+		
+		for (int i = 0; i < listVendorsSelectedData.size(); i++){
+			vendorNames[i] = listVendorsSelectedData.get(i).getVendorName();
+			vendorsSortedTmp[i] = listVendorsSelectedData.get(i);
+			//System.out.println(vendorNames[i]);
+		}
+		
+		int limit = vendorNames.length;
+		
+		
+		for (int index = 0; index < limit-1; index++){
+			
+			int j = 1;
+			
+			for (int i = 0; i < limit-1; i++){
+				
+				//System.out.println("VendorsName size: " + vendorNames.length);
+							
+				if(vendorNames[i].compareTo(vendorNames[j]) > 1){
+					
+					//System.out.println("i: " + i + ", j:" + j);
+					//System.out.println("Vendors not sorted : " + vendorNames[i] + ", " + vendorNames[j]);
+					String vendorTmp = vendorNames[i];
+					vendorNames[i] = vendorNames[j];
+					vendorNames[j] = vendorTmp;
+					//System.out.println("Vendors sorted ?: " + vendorNames[i] + ", " + vendorNames[j]);
+					UsageOneMonth usageTmp = vendorsSortedTmp[i];
+					vendorsSortedTmp[i] = vendorsSortedTmp[j];
+					vendorsSortedTmp[j] = usageTmp;
+					
+				}
+				j++;
+				
+			}
+		
+		}
+			
+		System.out.println("Sorted list:");
+		
+		List<UsageOneMonth> listUsageVendorsSorted = new ArrayList<>();
+		
+		for (int i = 0; i < vendorsSortedTmp.length; i++){
+			System.out.println(vendorsSortedTmp[i].getVendorName());
+			listUsageVendorsSorted.add(vendorsSortedTmp[i]);
+		}
+		
+		return listUsageVendorsSorted;
+		
+	}
+	
+	
+	
+	
+	
+	
 }

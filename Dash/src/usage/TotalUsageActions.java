@@ -523,5 +523,226 @@ public class TotalUsageActions extends BaseClass{
 
 
 
+	public static void verifyTotalUsageChartTooltip(int barChartId, List<UsageOneMonth> listOneMonthData, int categorySelector) throws ParseException, InterruptedException, AWTException {
+		
+		String chartId = UsageHelper.getChartId(barChartId);
+		
+		List<WebElement> vendorsSelectedCheckBox = driver.findElements(By.cssSelector("md-checkbox.md-checkbox-checked>label>span"));
+		
+		// It gets the legends for "Domestic" and "Domestic Overage" or "Roaming"
+		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
+		
+		
+		List<WebElement> vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
+		List<String> vendorsInChartList = new ArrayList<String>();
+		
+		for(int i = 0; i < vendorsInChart.size(); i++){
+			vendorsInChartList.add(vendorsInChart.get(i).getText());
+		}	
+							
+		Thread.sleep(2000);
+		
+		List<String> domesticValue = new ArrayList<>();
+		List<String> overageValue = new ArrayList<>();
+		List<String> roamingValue = new ArrayList<>();
+		
+		int expectedAmountItemsTooltip = 4;
+		
+		for(int i = 0; i < listOneMonthData.size(); i++){
+			
+			if (barChartId == 0) {
+				
+				if(categorySelector == UsageHelper.categoryVoice){
+					
+					domesticValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticVoice())));
+					overageValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticOverageVoice())));
+					expectedAmountItemsTooltip = 7;  // The amount of items expected in the tooltip is 7 only if chart is Domestic and category is Voice 
+					
+				} else if (categorySelector == UsageHelper.categoryData){
+					
+					domesticValue.add(UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(Double.parseDouble(listOneMonthData.get(i).getDomesticDataUsageKb())));
+					
+				} else if (categorySelector == UsageHelper.categoryMessages){
+					
+					domesticValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticMessages())));
+					
+				}
+				
+			} else if (barChartId == 1) {
+				
+				if(categorySelector == UsageHelper.categoryVoice){
+					
+					roamingValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingVoice())));
+					
+				} else if (categorySelector == UsageHelper.categoryData){
+					
+					roamingValue.add(UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(Double.parseDouble(listOneMonthData.get(i).getRoamingDataUsageKb())));
+					
+				} else if (categorySelector == UsageHelper.categoryMessages){
+					
+					roamingValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingMessages())));
+					
+				}
+				
+			}
+			
+		}
+		
+		//System.out.println("domestic list size: " + domesticValue.size());
+		//System.out.println("vendorsInChartList: " + vendorsInChartList.size()); 
+		for(String s: vendorsInChartList){
+//			System.out.println("*** " + s);
+		}
+		
+		//System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
+		for(WebElement w: vendorsSelectedCheckBox){
+//			System.out.println("*** " + w.getText());
+		}
+
+		
+		int indexVendorSelected = 0;
+		int indexVendorInChart = 0;
+		int indexHighchart = 1;
+		
+		// Verify the info contained on each of the tooltips for all the vendors listed in chart 		
+		while(indexVendorSelected < vendorsSelectedCheckBox.size() && indexVendorInChart < vendorsInChartList.size()){
+			
+//			System.out.println("indexVendorSelected: " + indexVendorSelected);
+//		    System.out.println("indexVendorInChart: " + indexVendorInChart); 
+//			System.out.println("Vendor name chart: " +  vendorsInChartList.get(indexVendorInChart));
+//			System.out.println("Vendor name checkbox: " +  vendorsSelectedCheckBox.get(indexVendorSelected).getText());
+//			System.out.println("Condition is: " +  vendorsInChartList.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()));
+			
+			// If the vendor in vendorsSelectedCheckBox list is present in the vendorsInChartList, run the test, if it's not there, move to the next vendor
+			if(vendorsInChartList.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText())){
+			
+			//	System.out.println("Inside if");
+				
+				String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+				//System.out.println("cssSelector: " + cssSelector);
+				
+				// The 'bar' WebElement will be used to set the position of the mouse on the chart
+				WebElement bar = driver.findElement(By.cssSelector(cssSelector));
+	
+				// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
+				Point coordinates = bar.getLocation();
+				Robot robot = new Robot(); 
+				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work :) 
+				
+				if (!(bar.getAttribute("height").toString().equals("0"))){
+					bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
+					//firstBar = false;
+				}
+				
+				if (bar.getAttribute("height").toString().equals("0")){
+					robot.mousePress(InputEvent.BUTTON1_MASK);
+					robot.mouseRelease(InputEvent.BUTTON1_MASK);
+				}
+					
+				
+				try {
+					WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+					//System.out.println("Tooltip present");
+				} catch (Exception e) {
+					System.out.println("Tooltip NOT present");
+					e.printStackTrace();
+				}
+				
+				List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
+				
+				// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
+				
+				// For Domestic chart: 
+				// 0 <vendor/country name>
+				// 1 ? -- this is for the bullet
+				// 2 Domestic:
+				// 3 <Amount for Domestic>
+				// 4 ? --> bullet
+				// 5 Domestic Overage:
+				// 6 <Amount for Domestic Overage>
+				
+				// For Roaming chart: 
+				// 0 <vendor/country name>
+				// 1 ? -- this is for the bullet
+				// 2 Roaming:
+				// 3 <Amount for Roaming>
+				
+				Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+				
+				// Verify country/vendor shown on the tooltip
+				String tooltip1stLine = tooltip.get(0).getText();
+//				System.out.println("Tooltip 1st line: " + tooltip1stLine);
+				Assert.assertEquals(tooltip1stLine, listOneMonthData.get(indexVendorInChart).getVendorName());  //vendorsInChartList.get(indexHighchart-1));
+							
+				
+				//if(vendorsInChartList.contains(o))
+				// Verify the label and the amount shown on the tooltip
+				for(int i = 1; i <= legends.size(); i++){
+				
+					int index =  i * 3 - 1;
+									
+					// Get the label and remove colon at the end of its text 
+					String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+	
+					// Get the value on tooltip and remove all blank spaces
+					String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+								
+					// Verify the labels' text and amounts shown on the tooltip 					
+					if (barChartId == UsageHelper.totalUsageDomesticChart) {
+						
+						if (index == 2) {
+							
+							String valueExpected = domesticValue.get(indexVendorInChart);
+							String labelExpected = "Domestic";
+							
+							Assert.assertEquals(labelFound, labelExpected);
+							Assert.assertEquals(valueFound, valueExpected);
+							
+//							System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+//							System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+							
+						}
+						
+						if (categorySelector == UsageHelper.categoryVoice && index == 5) {
+							
+							String valueExpected = overageValue.get(indexVendorInChart);
+							String labelExpected = "Domestic Overage";
+							
+							Assert.assertEquals(labelFound, labelExpected);
+							Assert.assertEquals(valueFound, valueExpected);
+							
+//							System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+//							System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+							
+						}
+						
+					} else if (barChartId == UsageHelper.totalUsageRoamingChart) {
+						
+						String valueExpected = roamingValue.get(indexVendorInChart);
+						String labelExpected = "Roaming";
+						
+						Assert.assertEquals(labelFound, labelExpected);
+						Assert.assertEquals(valueFound, valueExpected);
+						
+//						System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+//						System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+						
+					}
+	
+				}
+				
+				indexHighchart++;
+				indexVendorInChart++;
+				
+			}
+			
+			indexVendorSelected++;
+			
+		}	
+		
+	}
+
+
+
 	
 }
