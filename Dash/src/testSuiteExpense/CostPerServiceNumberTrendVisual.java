@@ -17,6 +17,7 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		// MainLogin();
 	}
 	
 	@Test
@@ -32,7 +33,9 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
 		CostPerServiceNumberTrend.SetupChartId(); // setup unique id for this control test.
-		
+
+		DebugTimeout(9999, "Freeze");
+				
 		// #1 View the 'Cost per Line Trend for Top 5 Spend' component.
 
 		// The title is 'Cost per Service Number - All Categories'.

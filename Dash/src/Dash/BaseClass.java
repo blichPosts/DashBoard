@@ -34,9 +34,13 @@ public class BaseClass
 	//public static String CMD_baseUrl = "http://dc1qacmdweb04:8080/manage/login/login.trq";
 	//public static String CMD_baseUrl = "https://qa1cmd.tangoe.com/manage/login/login.trq";
 	// public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";	
-	public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense";
+	// public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense";  // bladdxx comment ana do
 	//public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:4000/manage/login";
 	// https://qa3.traq.com/manage/login/login.trq
+	
+	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx 
+	public static String Developer_Url = "http://dc1devmule1:3000/fleet/expense"; // bladdxx 
+	public static String ReferenceApp_Url = "http://dc1devmule1.prod.tangoe.com:4000/manage/home"; // bladdxx
 	
 	public static boolean testCaseStatus = false;
 	
@@ -53,9 +57,11 @@ public class BaseClass
 	//public static String commandPassword = "hop*ititmb9";	
 	
 	
-	public static String commandUserName = "shirley.banai@philips.com";
-	public static String commandPassword = "traq01";	
-	public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq";
+	public static String commandUserName = "bob.l.vis";
+	public static String commandPassword = "tngo222";	
+	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
+	
+	public static LoginType loginType; // bladdxx // new
 
 	// names of the three KPI blocks in expenses page from left to right.
 	public static String [] ExpenseKpiNames = {"Total Expense", "Count of Service Numbers", "Cost per Service Number"};
@@ -83,18 +89,25 @@ public class BaseClass
 		Remove
 	}
 
-	public enum ViewType // needed for base class methods. // bladdxx 
+	public enum ViewType // needed for base class methods. // bladdxx -- used by total rxpense 
 	{
 		vendor,
 		country
 	}
 	
+	public enum LoginType // the specify login type. // bladdxx new
+	{
+		Command,
+		ReferenceApp,
+		DeveloperInstance
+	}	
 	
 	// ctor
 	public BaseClass()  
 	{
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
+		loginType = LoginType.ReferenceApp; // bladdxx
 	}
 	
 	public static void ShowArray(String [] strArray)
@@ -179,6 +192,7 @@ public class BaseClass
 		return finalValue.toString();
 	}		
 	
+	// bladdxx
 	public static void setUpDriver() throws Exception
 	{
 		//driver = new FirefoxDriver();
@@ -191,14 +205,36 @@ public class BaseClass
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-extensions");
 		driver = new ChromeDriver(options);		
-
-		baseUrl = CMD_baseUrl;
+		
+		switch(loginType)
+		{
+			case Command:
+			{
+				baseUrl = CMD_baseUrl;
+				break;
+			}
+			
+			case ReferenceApp:
+			{
+				baseUrl = ReferenceApp_Url;
+				break;
+			}
+	
+			case  DeveloperInstance:
+			{
+				baseUrl = Developer_Url;
+				break;
+			}
+		}
+		
 		driver.get(baseUrl);
 		
 		// maximize and configure timeouts
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 	}
+	
+	
 	
 	public static void loginAsAdmin()throws Exception
 	{
@@ -498,13 +534,13 @@ public class BaseClass
 		
 		// added by Ana - to be able to use http://dc1devmule1.prod.tangoe.com:4000, since it seems to be updated
 		
-		public static void login(){
+		public static void login() throws Exception{
 			
 			driver.findElement(By.name("username")).sendKeys("admin.vis");
 			driver.findElement(By.name("password")).sendKeys("tangoe");
 			driver.findElement(By.name("submit")).click();
-			
-			
+		    driver.switchTo().frame(driver.findElement(By.id("CONTENT"))); // bladdxx
+		    Thread.sleep(1000); // bladdxx
 		}
 
 		public static void ShowText(String str) 
@@ -523,5 +559,83 @@ public class BaseClass
 			{
 				ShowText(str);
 			}
-		}			
+		}	
+		
+		// /////////////////////////////////////////////////////////// // bladdxx
+		//  these are new for logging into different instances.
+		// ///////////////////////////////////////////////////////////
+		
+		// bladdxx - new
+		public static void loginCommand()throws Exception
+		{
+			String errMessage = "Error waiting for items in login page.";
+			
+			// wait for login button login and password text boxes 
+			WaitForElementClickable(By.xpath("//input[@name='userName']"), MainTimeout, errMessage);
+			WaitForElementClickable(By.xpath("//input[@name='password']"), MainTimeout, errMessage);
+			WaitForElementClickable(By.cssSelector(".cmd-button.login-button"), MainTimeout, errMessage);		
+			
+			driver.findElement(By.xpath("//input[@name='userName']")).clear();
+		    driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(commandUserName);	    
+		    driver.findElement(By.xpath("//input[@name='password']")).clear();
+		    driver.findElement(By.xpath("//input[@name='password']")).sendKeys(commandPassword);	    
+		    driver.findElement(By.cssSelector(".cmd-button.login-button")).click();	    
+		    
+		    WaitForElementVisible(By.cssSelector("#tngoMainFooter"), MainTimeout); // this waits for the copyright box at the bottom of the landing page.
+		    
+		    GoToDashboard();
+		}
+		
+		// bladdxx
+		public static void GoToDashboard() throws Exception
+		{
+			// get to the dash page
+			WaitForElementClickable(By.cssSelector("#menuMainReporting"),MainTimeout, "Failed wait in GoToOrderStatus");
+			DebugTimeout(1, ""); // this is needed to avoid the error with frames and clicking the wrong thing.
+			
+			driver.findElement(By.cssSelector("#menuMainReporting")).click();
+		    
+		    WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"),MainTimeout, "Failed wait in GoToOrderStatus");
+		    driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();
+		    
+		    // get to frame one.
+		    driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
+			
+		    // this timeout is here because when at frame id "CONTENT" there is no DOM element to wait for.    
+		    DebugTimeout(1, ""); 
+
+		    // this will get to dash board frame. at this pint the dash board test code will wait for the dash page to load. 
+			driver.switchTo().frame(driver.findElement(By.id("dashboard_iframe")));
+		}
+
+		// bladdxx - new
+		public static void MainLogin() throws Exception
+		{
+			switch(loginType)
+			{
+				case Command:
+				{
+					loginCommand();
+					break;
+				}
+
+				case ReferenceApp:
+				{
+					login();
+					break;
+				}
+				
+				case DeveloperInstance:
+				{
+					break;
+				}
+				
+				default:
+				{
+					Assert.fail("Failure: Method BaseClass.MainLogin has been passed an incorrect enum.");
+					break;
+				}
+			}
+		}		
+		
 }
