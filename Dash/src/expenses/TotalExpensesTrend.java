@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -23,13 +24,16 @@ public class TotalExpensesTrend extends BaseClass
 	public static List<WebElement> webEleListTrends;
 	public static List<WebElement> webEleListMonthYearActual;	
 	public static List<WebElement> webEleListVendorCountriesLegends;
+	public static List<WebElement> webEleListBarGraphHoverValues;
+
 	public static List<String> expectedTrends = new ArrayList<String>();
 	public static List<String> actualTrends = new ArrayList<String>();
 	public static List<String> expectedYearMonthList = new ArrayList<String>();
 	public static List<String> actualYearMonthList = new ArrayList<String>();
-	// public static List<String> vendorsList = new ArrayList<String>();
+	public static List<String> vendorsList = new ArrayList<String>();
 	public static List<String> vendorsListActual = new ArrayList<String>();	
-	public static List<String> totalExpenseLegendsList = new ArrayList<String>();	
+	public static List<String> totalExpenseLegendsList = new ArrayList<String>();
+	public static List<String> expectedMonthYear = new ArrayList<String>();
 	public static String [] strArray;
 	
 	public static String mainTitle = "Expense Trending"; 
@@ -42,6 +46,64 @@ public class TotalExpensesTrend extends BaseClass
 	public static int numberOfLegends = 0; // this is used to save the number of legends found in VerifyVendorsCountries().
 
 	public static String chartId = "";
+	
+	public static void TestOneVendor(String addedVendor) throws Exception // bladdxx
+	{
+		vendorsList.add(addedVendor);
+		
+		// setup expected months.
+		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
+		Collections.reverse(expectedMonthYear);
+		
+		WaitForElementPresent(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections), ShortTimeout);
+
+		// make a web element list containing all of the bar graphs.  
+		List<WebElement> eleList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections));
+
+		for(int x = 0; x < eleList.size(); x++)
+		{
+			Thread.sleep(500);
+			try
+			{
+				ClickBarGraph(eleList.get(x));
+			}
+			catch(Exception e)
+			{
+				ShowText("This is an expected error in " + e.getMessage()); ///   FINISH text message
+				break;
+			}
+			
+			VerifyToolTip(expectedMonthYear.get(x), vendorsList);
+
+		}
+	}
+	
+	public static void ClickBarGraph(WebElement ele)
+	{
+		ele.click();
+		ele.click();
+		ele.click();
+	}
+	
+	public static void VerifyToolTip(String expectedMonthYear, List<String> vendorArray)
+	{
+		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+		Assert.assertEquals(webEleListBarGraphHoverValues.get(0).getText(), expectedMonthYear, ""); // verify date at the top of the hover info 
+		
+		ShowText("Start");
+		
+		for(int y = 2, x = 0; x < vendorArray.size(); y += 4, x++)
+		{
+			Assert.assertEquals(webEleListBarGraphHoverValues.get(y).getText().replace(":", ""), vendorArray.get(x));
+			ShowText(webEleListBarGraphHoverValues.get(y).getText());
+			ShowText(vendorArray.get(x));
+		}
+		
+
+	}
+	
+	
+	// partialXpathForHoverInfo
 	
 	public static void Setupdata()
 	{

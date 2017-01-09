@@ -5,11 +5,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
+import Dash.BaseClass.ViewType;
 import expenses.TotalExpenseByVendorSpendCategory;
+import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 
-public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass 
+public class TotalExpensesTrendVendorActions extends BaseClass 
 {
 
 	@BeforeClass
@@ -20,12 +22,27 @@ public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass
 	}
 	
 	@Test
-	public static void TotalExpenseByVendorSpendCategoryActionsCountryTest() throws Exception
+	public static void TotalExpensesTrendVendorActionsTest() throws Exception
 	{
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 
+		TotalExpensesTrend.SetupChartId();
+		
+		// store vendor names currently shown in expense control with everything selected.
+		TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest(); 
+		
+		CommonTestStepActions.UnSelectAllVendors();
+		ExpenseHelper.VerifyControlsNotPresent();
+		
+		CommonTestStepActions.selectOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
+		
+		TotalExpensesTrend.SetupChartId();
+		
+		TotalExpensesTrend.TestOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
+	
+		/*
 		// need to
 		ExpenseHelper.SetChartId(1);
 		
@@ -46,7 +63,8 @@ public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass
 		
 		ExpenseHelper.SetupCountryAndVendorData();
 		
-		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.country); 
+		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.country);
+		*/ 
 	}
 	
 	@AfterClass
@@ -58,4 +76,7 @@ public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass
 		driver.close();
 		driver.quit();
 	}	
+	
+	
+	
 }
