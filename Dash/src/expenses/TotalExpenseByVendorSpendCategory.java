@@ -32,6 +32,8 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	public static String title = "Total Expense by Vendor and Spend Category";
 	static String errMessage = "";
 	
+	public static ViewType vType;
+	
 	// variables for actions
 	
 	// this holds vendor legend names in expense spend category control (string).
@@ -62,15 +64,41 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	
 	public static void InitializeTotalExpenseSpendCategoryTest() throws Exception 
 	{
-		totalExpenseExpectedLegendsList = ExpenseHelper.GetTotalExpenseLegends();
+		if(totalExpenseExpectedLegendsList != null)
+		{
+			totalExpenseExpectedLegendsList.clear();
+		}
+		
+		totalExpenseExpectedLegendsList = ExpenseHelper.GetTotalExpenseLegends(); // this is needed in 'VerifyToolTipInfo' method.
+
+		
+		//if(expectedSpendCategoryLegends != null)
+		//{
+		//	expectedSpendCategoryLegends.clear();
+		//}
+
+		
+		// setup list of legends that are selected. legends are added in the order that they are selected.  
+		//expectedSpendCategoryLegends.clear();
+		
+		//expectedSpendCategoryLegends.add("Voice");
+		//expectedSpendCategoryLegends.add("Data");
+		//expectedSpendCategoryLegends.add("Messages");
+		//expectedSpendCategoryLegends.add("Roaming");
+		//expectedSpendCategoryLegends.add("Equipment");
+		//expectedSpendCategoryLegends.add("Taxes");
+		//expectedSpendCategoryLegends.add("Other");
+		//expectedSpendCategoryLegends.add("Account");	
 	}
 	
 	
 	// PROTOTYPE
-	public static void VerifyRemovingCategories() throws Exception // bladdxx
+	public static void VerifyRemovingCategories(ViewType viewType) throws Exception // bladdxx
 	{
 		// DebugTimeout(1, "Start");
 		Thread.sleep(1000);
+		
+		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
 		
 		List<WebElement> tempList;
  				
@@ -88,8 +116,9 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		
 		Thread.sleep(500);
 		
+		// store the web elements for the slices into a list. 
 		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections));  
-
+		
 		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
 		{
 			//DebugTimeout(1, "starting click");
@@ -101,6 +130,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 
 			Thread.sleep(500);
 
+			// store the info found in the hover.  
 			tempList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
 			
 			VerifyToolTipInfo(tempList, x);
@@ -287,9 +317,18 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		{
 			for(WebElement ele : list)
 			{
-				if(x == 0) // this should always be the vendor name that was selected previously. 
+				if(x == 0) // this should always be the vendor name that was selected previously in the point of view. 
 				{
-					Assert.assertEquals(ele.getText(), TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0), 
+					if(vType == ViewType.vendor) // if in vendor mode, the vendor that was selected in the POV should be what is shown at the top of the pop-up.  
+					{
+						tempString = TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0); // temporary string holds the expected  
+					}
+					else // if in country mode, the vendor that was selected in the POV should NOT be what is shown at the top of the pop-up. The country that the has the selected vendor in it is shown. 
+					{
+						tempString = ExpenseHelper.GetCountryForVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
+					}
+
+					Assert.assertEquals(ele.getText(), tempString, 
 							            "Vendor name appears wrong in TotalExpenseByVendorSpendCategoryVisual.ToolTipInfo.");
 					x++;
 				}
@@ -325,7 +364,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		}
 	}
 
-	public static void BuildListOfAllSpendCatergoryHoverItems(List<WebElement> list)
+	public static void BuildListOfAllSpendCatergoryHoverItems(List<WebElement> list) throws Exception
 	{
 		int x = 0;
 		boolean foundFirstItem = false;
@@ -333,9 +372,18 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 
 		for(WebElement ele : list)
 		{
-			if(x == 0) // this should always be the vendor name that was selected previously. 
+			if(x == 0) 
 			{
-				Assert.assertEquals(ele.getText(), TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0), 
+				if(vType == ViewType.vendor) // if in vendor mode, the vendor that was selected in the POV should be what is shown at the top of the pop-up.  
+				{
+					tempString = TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0); // temporary string holds the expected  
+				}
+				else // if in country mode, the vendor that was selected in the POV should NOT be what is shown at the top of the pop-up. The country that the has the selected vendor in it is shown. 
+				{
+					tempString = ExpenseHelper.GetCountryForVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
+				}
+
+				Assert.assertEquals(ele.getText(), tempString, 
 						            "Vendor name appears wrong in TotalExpenseByVendorSpendCategoryVisual.ToolTipInfo.");
 				x++;
 			}

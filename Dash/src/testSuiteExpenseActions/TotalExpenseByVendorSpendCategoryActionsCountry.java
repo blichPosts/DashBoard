@@ -9,7 +9,7 @@ import expenses.TotalExpenseByVendorSpendCategory;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 
-public class TotalExpenseByVendorSpendCategoryActions extends BaseClass 
+public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass 
 {
 
 	@BeforeClass
@@ -20,8 +20,9 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 	}
 	
 	@Test
-	public static void TotalExpenseByVendorSpendCategoryActionsTest() throws Exception
+	public static void TotalExpenseByVendorSpendCategoryActionsCountryTest() throws Exception
 	{
+		/*
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
@@ -40,7 +41,34 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		// need to 
 		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
-		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
+		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(); 
+		*/
+		
+		// setup page for test.
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
+		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
+
+		// need to
+		ExpenseHelper.SetChartId(1);
+		
+		// store vendor names currently shown in expense control. 
+		TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest(); 
+
+		CommonTestStepActions.SelectCountryView();
+		
+		DebugTimeout(7 , "7");
+		
+		CommonTestStepActions.UnSelectAllVendors();
+		ExpenseHelper.VerifyControlsNotPresent();
+		
+		CommonTestStepActions.selectOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
+		
+		// need to 
+		TotalExpenseByVendorSpendCategory.SetChartId(1);
+		
+		ExpenseHelper.SetupCountryAndVendorData();
+		
+		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.country); 
 	}
 	
 	@AfterClass
@@ -52,7 +80,4 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		driver.close();
 		driver.quit();
 	}	
-
-	
-	
 }
