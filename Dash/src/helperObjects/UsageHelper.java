@@ -4,6 +4,7 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -432,7 +433,7 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	
-	// ******* CONTINUE HERE ************
+
 	public static List<String> getMonthListUnifiedForVendorsSelected(List<List<UsageOneMonth>> listUsageVendorsSelected) throws ParseException{
 		
 		
@@ -531,64 +532,52 @@ public class UsageHelper extends BaseClass{
 		return monthsToSelectPulldown;
 		
 	}
-
-
-	// In the Total Usage charts the vendors are sorted in alphabetical order. 
-	public static List<UsageOneMonth> sortVendorsAlphabetically(List<UsageOneMonth> listVendorsSelectedData) {
 	
-		UsageOneMonth[] vendorsSortedTmp = new UsageOneMonth[listVendorsSelectedData.size()];
-		String[] vendorNames = new String[listVendorsSelectedData.size()];
-		//System.out.println("Unsorted list:");
+
+
+	// Sort the vendors, since in the Total Usage charts the vendors are sorted in alphabetical order. 
+	public static List<UsageOneMonth> sortVendorsAlphabetically(List<UsageOneMonth> listVendorsSelectedData) {
+		
+		List<String> vendorNames = new ArrayList<>();
+		List<UsageOneMonth> usageVendorsSorted = new ArrayList<>();
+		
+//		System.out.println("  Unsorted"); 
 		
 		for (int i = 0; i < listVendorsSelectedData.size(); i++){
-			vendorNames[i] = listVendorsSelectedData.get(i).getVendorName();
-			vendorsSortedTmp[i] = listVendorsSelectedData.get(i);
-			//System.out.println(vendorNames[i]);
+			vendorNames.add(listVendorsSelectedData.get(i).getVendorName());
+//			System.out.println("   " + vendorNames.get(i));
 		}
 		
-		int limit = vendorNames.length;
+		Collections.sort(vendorNames);
 		
+//		System.out.println("  Sorted");
 		
-		for (int index = 0; index < limit-1; index++){
+		for (int i = 0; i < listVendorsSelectedData.size(); i++){
 			
-			int j = 1;
+//			System.out.println("   " + vendorNames.get(i));
+			UsageOneMonth usageTmp;
 			
-			for (int i = 0; i < limit-1; i++){
+			int j = 0;
+			boolean vendorFound = false;
+			
+			do {
 				
-				//System.out.println("VendorsName size: " + vendorNames.length);
-							
-				if(vendorNames[i].compareTo(vendorNames[j]) > 1){
-					
-					//System.out.println("i: " + i + ", j:" + j);
-					//System.out.println("Vendors not sorted : " + vendorNames[i] + ", " + vendorNames[j]);
-					String vendorTmp = vendorNames[i];
-					vendorNames[i] = vendorNames[j];
-					vendorNames[j] = vendorTmp;
-					//System.out.println("Vendors sorted ?: " + vendorNames[i] + ", " + vendorNames[j]);
-					UsageOneMonth usageTmp = vendorsSortedTmp[i];
-					vendorsSortedTmp[i] = vendorsSortedTmp[j];
-					vendorsSortedTmp[j] = usageTmp;
-					
+				usageTmp = listVendorsSelectedData.get(j); 
+				if (usageTmp.getVendorName().equals(vendorNames.get(i))){
+				
+					usageVendorsSorted.add(usageTmp);
+					vendorFound = true;
 				}
+				
 				j++;
 				
-			}
-		
-		}
+			} while (!vendorFound);
 			
-		System.out.println("Sorted list:");
-		
-		List<UsageOneMonth> listUsageVendorsSorted = new ArrayList<>();
-		
-		for (int i = 0; i < vendorsSortedTmp.length; i++){
-			System.out.println(vendorsSortedTmp[i].getVendorName());
-			listUsageVendorsSorted.add(vendorsSortedTmp[i]);
 		}
 		
-		return listUsageVendorsSorted;
+		return usageVendorsSorted;
 		
 	}
-	
 	
 	
 	

@@ -127,15 +127,15 @@ public class UsageTotalUsageTestValues extends BaseClass{
 				Thread.sleep(2000);
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
-				
+				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
+				/*
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryVoice);
 				Thread.sleep(1000);
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryVoice);
 				Thread.sleep(1000);				
 				
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
+				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryData);
 				Thread.sleep(1000);
@@ -143,14 +143,14 @@ public class UsageTotalUsageTestValues extends BaseClass{
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryData);
 				Thread.sleep(1000);				
 				
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
+				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryMessages);
 				Thread.sleep(1000);
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryMessages);
 				Thread.sleep(1000);
-								
+				*/				
 				indexMonth++;
 				
 			} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));

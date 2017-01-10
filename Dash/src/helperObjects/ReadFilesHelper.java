@@ -30,7 +30,7 @@ public class ReadFilesHelper {
 		// This list will contain one UsageOneMonth object per month 
 		List<UsageOneMonth> listValues = new ArrayList<UsageOneMonth>();
 		
-		System.out.println("         vendor_name   invoice_month   year month  dom_mou   overage_mou   dom_msgs   dom_data   roam_mou   roam_data  roam_msgs");
+//		System.out.println("         vendor_name   invoice_month   year month  dom_mou   overage_mou   dom_msgs   dom_data   roam_mou   roam_data  roam_msgs");
 		
 		for (int i = 0; i < linesAmount; i++){
 			
@@ -54,19 +54,19 @@ public class ReadFilesHelper {
 			
 			listValues.add(usageOneMonth);
 			
-			System.out.print("Row " + (i+1) + ":  | ");
-			System.out.print(listValues.get(i).getVendorName() + "  | ");            // vendor_name 
-			System.out.print(listValues.get(i).getInvoiceMonth() + "  | ");          // invoice_month
-			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");           // ordinal_year
-			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");          // ordinal_month
-			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");         // domestic_mou
-			System.out.print(listValues.get(i).getDomesticOverageVoice() + "  | ");  // domestic_overage_mou
-			System.out.print(listValues.get(i).getDomesticMessages() + "  | ");      // domestic_messages
-			System.out.print(listValues.get(i).getDomesticDataUsageKb() + "  | ");   // domestic_data_usage_kb
-			System.out.print(listValues.get(i).getRoamingVoice() + "  | ");          // roaming_mou
-			System.out.print(listValues.get(i).getRoamingDataUsageKb() + "  | ");    // roaming_data_usage_kb
-			System.out.print(listValues.get(i).getRoamingMessages() + "  | ");       // roaming_messages
-			System.out.println("");
+//			System.out.print("Row " + (i+1) + ":  | ");
+//			System.out.print(listValues.get(i).getVendorName() + "  | ");            // vendor_name 
+//			System.out.print(listValues.get(i).getInvoiceMonth() + "  | ");          // invoice_month
+//			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");           // ordinal_year
+//			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");          // ordinal_month
+//			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");         // domestic_mou
+//			System.out.print(listValues.get(i).getDomesticOverageVoice() + "  | ");  // domestic_overage_mou
+//			System.out.print(listValues.get(i).getDomesticMessages() + "  | ");      // domestic_messages
+//			System.out.print(listValues.get(i).getDomesticDataUsageKb() + "  | ");   // domestic_data_usage_kb
+//			System.out.print(listValues.get(i).getRoamingVoice() + "  | ");          // roaming_mou
+//			System.out.print(listValues.get(i).getRoamingDataUsageKb() + "  | ");    // roaming_data_usage_kb
+//			System.out.print(listValues.get(i).getRoamingMessages() + "  | ");       // roaming_messages
+//			System.out.println("");
 			
 		}
 		

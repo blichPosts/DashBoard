@@ -46,7 +46,8 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 12;
+		int amountOfVendors = 12
+				;
 
 		
 		// #1 Select Vendor View and Unselect all vendors  
@@ -55,8 +56,10 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 		
 		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
 		
+		
+		
 		// Run the test for each vendor 
-		for(int i = 8; i < amountOfVendors; i++){
+		for(int i = 0; i < amountOfVendors; i++){
 			
 			String vendor = vendorNames.get(i);
 			String vendorSelected = vendorNames.get(i);
@@ -65,8 +68,8 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
 			
-			System.out.println("Path: " + completePath);
-			System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
+			//System.out.println("Path: " + completePath);
+			//System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
 			
 			// #2 Read data from file
 			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getDataFromSpreadsheet(completePath);
@@ -78,10 +81,6 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 		}
 		
 		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
-		
-		
-		String year =  "";
-		String month = "";
 		String monthYearToSelect = "";
 					
 		int indexMonth = 0;
@@ -124,11 +123,12 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 			
 			// #4 Select month on month/year selector
 			CommonTestStepActions.selectMonthYearPulldown(monthsToSelect.get(indexMonth));
+			System.out.println("monthYear: " + monthsToSelect.get(indexMonth)); 
 			
 			Thread.sleep(2000);
 			
 			// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
-			UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
+			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 			Thread.sleep(1000);
@@ -136,7 +136,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 			Thread.sleep(1000);				
 			
-			UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
+			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
 			Thread.sleep(1000);
@@ -144,7 +144,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
 			Thread.sleep(1000);				
 			
-			UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
+			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
 			Thread.sleep(1000);
