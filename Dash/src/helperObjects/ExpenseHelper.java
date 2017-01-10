@@ -38,7 +38,7 @@ public class ExpenseHelper extends BaseClass
 	public static String errNeedToCallInitializeMethod = "Failed in method call. You first need to call SetupCountryAndVendorData() to use this method.";
 	public static int maxNumberOfLegends = 5; // max number of legends that are not labeled 'other'.
 	public static int numOfLegendsInExpenseSpendCategory = 8; // number of legends in the spend category
-
+	public static int maxNumberOfMonths = 13; // max number of months in graphs listed by months.
 	
 	public static List<WebElement> expenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control. 	
 	public static HashMap<String, String> expenseControlHMap; // this holds a hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
