@@ -93,14 +93,14 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	
 	
 	// PROTOTYPE
-	public static void VerifyRemovingCategories(ViewType viewType) throws Exception // bladdxx
+	public static void VerifyRemovingCategories(ViewType viewType) throws Exception 
 	{
 		// DebugTimeout(1, "Start");
 		Thread.sleep(1000);
 		
 		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
 		
-		List<WebElement> tempList;
+		List<WebElement> tempList; // this holds hover info.
  				
 		// get web element  list of legends in expense spend category. this is for clicking legends. 
 		totalExpenseLegendsElementList =  ExpenseHelper.GetTotalExpenseCatergoryLegends();  
@@ -110,8 +110,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			expenseControlSlicesElemntsList.clear();
 		}
 		
-		WaitForElementPresent(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory), ShortTimeout);
-		
+		// this waits for the vendor(s) in total expense spend control.
 		ExpenseHelper.WaitForControlLegend(controlType.expenseTrending);
 		
 		Thread.sleep(500);
@@ -302,7 +301,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		legendsList = null;
 	}
 
-	public static void VerifyToolTipInfo(List<WebElement> list, int eventNumber) throws Exception // bladdxx
+	public static void VerifyToolTipInfo(List<WebElement> list, int eventNumber) throws Exception 
 	{
 
 		int x = 0;

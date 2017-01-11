@@ -44,11 +44,18 @@ public class TotalExpensesTrend extends BaseClass
 	public static List<String> vendorsListActual = new ArrayList<String>();	
 	public static List<String> totalExpenseLegendsList = new ArrayList<String>();
 	public static List<String> expectedMonthYear = new ArrayList<String>();
+	public static List<String> tempList = new ArrayList<String>();
 	public static String [] strArray;
 	
 	public static String mainTitle = "Expense Trending"; 
 	public static String vendorTitle = "Expense by Vendor - All Categories";
 	public static String countryTitle = "Expense by Country - All Categories";	
+
+	// mouse clicks.
+	public static String cssBar = "";
+	public static String cssLine = "";
+	public static Point barCoordinates;
+	public static Point lineCoordinates;
 	
 	// Expense by Country - All Categories
 	public static String otherString = "Other";
@@ -59,6 +66,8 @@ public class TotalExpensesTrend extends BaseClass
 	
 	public static boolean firstPass = false;
 	
+
+	
 	public static void Setup()
 	{
 		if(totalExpenseLegendsList != null)
@@ -66,118 +75,53 @@ public class TotalExpensesTrend extends BaseClass
 			totalExpenseLegendsList.clear();
 		}
 		
-		// this gets a string list of the legends 
+		if(webEleListLegends != null)
+		{
+			webEleListLegends.clear();
+		}
+		
+		// this gets a string list of the legends. these are used for expected values. 
 		totalExpenseLegendsList = ExpenseHelper.GetTotalExpenseLegends(); // this is needed in 'VerifyToolTipInfo' method.
 		
+		// this get web list of legends that are used for clicking legends. 
 		webEleListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']"  + ExpenseHelper.partialXpathForLegendsInTotalSpendCategoryCategories));
 	}
 	
-	public static void VerifyRemovingLegends() throws Exception // bladdxx
+	// this verifies removing vendors one at a time in the expense trending control. 
+	public static void VerifyRemovingLegends() throws Exception 
 	{
 		Thread.sleep(1000);
-
-		// get the 'expense trending' control visible. 
-		WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(1)"));
-		new Actions(driver).moveToElement(usageTrendingSection).perform();
 		
+		// get the 'expense trending' control visible by moving to it. 
+		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(1)"));
+		new Actions(driver).moveToElement(expenseTrending).perform();
+
 		Thread.sleep(1000);
 		
-		//ShowText("external expected --------------------------------");
-		//ShowListOfStrings(totalExpenseLegendsList);
-
+		// setup expected months. these are the months that will be shown in the hover for each bar clicked.
+		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
+		Collections.reverse(expectedMonthYear);
 		
+		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
-	
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
 				clickBarIndex(y);
 				Thread.sleep(500);
-				VerifyToolTipTwo(totalExpenseLegendsList); 
+				VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
 			totalExpenseLegendsList.remove(0);
 			Thread.sleep(500);
-			//ShowText("external expected --------------------------------");
-			//ShowListOfStrings(totalExpenseLegendsList);
 			webEleListLegends.get(x).click();
 			Thread.sleep(2000);
 		}
-		DebugTimeout(9999, "9999 done");
-
-		
-		
-		/*
-		I have these two lines,  to move to the element I want:
-			WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
-			   new Actions(driver).moveToElement(usageTrendingSection).perform();
-			that's for the Usage Trending charts
-		*/
-		
-		click();
-		Thread.sleep(1000);
-		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
-		ShowInt(webEleListBarGraphHoverValues.size());
-		
-		webEleListLegends.get(0).click();
-		
-		DebugTimeout(1, "Change - 7");
-		
-		click();
-		Thread.sleep(1000);
-		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
-		ShowInt(webEleListBarGraphHoverValues.size());
-		webEleListLegends.get(1).click();
-		
-		DebugTimeout(1, "Change - 7");
-		
-		click();
-		Thread.sleep(1000);
-		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
-		ShowInt(webEleListBarGraphHoverValues.size());
-		webEleListLegends.get(2).click();
-		
-		DebugTimeout(1, "Change - 7");
-		
-		click();
-		Thread.sleep(1000);
-		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
-		ShowInt(webEleListBarGraphHoverValues.size());
-		webEleListLegends.get(3).click();
-	}
-	
-	
-	public static void click() throws Exception
-	{
-		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(1)";
-		String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)";
-		
-		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
-		WebElement bar = driver.findElement(By.cssSelector(cssBar));
-		WebElement line = driver.findElement(By.cssSelector(cssLine));
-		
-		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-		// Get the location of the second line of the chart -> to get the "y" coordinate
-		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-		Point barCoordinates = bar.getLocation();
-		Point lineCoordinates = line.getLocation();
-		
-		Robot robot = new Robot(); 
-		int x = barCoordinates.getX() + 30;
-		int y = lineCoordinates.getY() + 250;
-		
-		robot.mouseMove(x, y);
-		//System.out.println("coordinates - x: " + x + "  y: " + y);
-		
-		Thread.sleep(1000);
-		
-		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK); // may need
 	}
 	
 	public static void clickBarIndex(int barIndex) throws Exception
 	{
-		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + barIndex + ")";
-		String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)";
+		cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + barIndex + ")";
+		cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)";
 		
 		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -186,12 +130,16 @@ public class TotalExpensesTrend extends BaseClass
 		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 		// Get the location of the second line of the chart -> to get the "y" coordinate
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-		Point barCoordinates = bar.getLocation();
-		Point lineCoordinates = line.getLocation();
+		barCoordinates = bar.getLocation();
+		lineCoordinates = line.getLocation();
 		
 		Robot robot = new Robot(); 
+		//int x = barCoordinates.getX() + 30; 
+		//int y = lineCoordinates.getY() + 250;
+		
+		// 1/11/16 - moves cursor arrow up.
 		int x = barCoordinates.getX() + 30;
-		int y = lineCoordinates.getY() + 250;
+		int y = lineCoordinates.getY() + 200;
 		
 		robot.mouseMove(x, y);
 		//System.out.println("coordinates - x: " + x + "  y: " + y);
@@ -202,12 +150,12 @@ public class TotalExpensesTrend extends BaseClass
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 		if(barIndex == 1) // it takes a while for the hover to become visible on first bar graph.
 		{
-			//Thread.sleep(2000);
+			//Thread.sleep(2000); // quit happening
 		}
 	}
 	
-	// FAILURE - keeping here for reference
-	public static void TestOneVendor(String addedVendor) throws Exception // bladdxx
+	// --------------------- FAILURE - keeping here for reference -----------------
+	public static void TestOneVendor(String addedVendor) throws Exception
 	{
 		vendorsList.add(addedVendor);
 		
@@ -232,11 +180,9 @@ public class TotalExpensesTrend extends BaseClass
 				ShowText("This is an expected error in " + "'" + e.getMessage() + "'"); ///   FINISH text message
 				break;
 			}
-			
-			// JOptionPane.showMessageDialog(frame, "Select OK.");
-			
-			VerifyToolTip(expectedMonthYear.get(x), vendorsList);
 
+			VerifyToolTip(expectedMonthYear.get(x), vendorsList);
+		
 		}
 	}
 	
@@ -421,31 +367,35 @@ public class TotalExpensesTrend extends BaseClass
 	// 										Helpers.
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public static void VerifyToolTipTwo(List<String> expectList) throws Exception
+	public static void VerifyToolTipTwo(List<String> expectList, String expectedMonth) throws Exception
 	{
-		
 		List<String> actualList = new ArrayList<String>();
 		List<String> copy = new ArrayList<String>();
 		
-		copy.addAll(expectList);
+		errMessage = "Failure in TotalExpensesTrendVendorActions.VerifyToolTipTwo. Failed to verify correct ";
 		
+		
+		// make a copy of the expected list. sorting done further below made failures when expectList was sorted.
+		copy.addAll(expectList);  
+
+		// get web list that holds the DOM section that holds the hover values.
 		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
 
-		//ShowText(webEleListBarGraphHoverValues.get(0).getText()); //  month/year
+		Assert.assertEquals(webEleListBarGraphHoverValues.get(0).getText(), expectedMonth, errMessage + "month value in hover text."); // verify month at top of hover.
 		
 		for(WebElement ele : webEleListBarGraphHoverValues)
 		{
 			if(ele.getText().contains(":"))
 			{
-				actualList.add(ele.getText().replace(":",  ""));
+				actualList.add(ele.getText().replace(":", ""));
 			}
 		}
 		
+		// sort in case orders are different.
 		Collections.sort(actualList);
 		Collections.sort(copy);
-
 		
-		Assert.assertEquals(actualList, copy);
+		Assert.assertEquals(actualList, copy, errMessage + "vendor.");
 	}
 
 	public static List<String> MakeCopyOfList(List<String> origList)

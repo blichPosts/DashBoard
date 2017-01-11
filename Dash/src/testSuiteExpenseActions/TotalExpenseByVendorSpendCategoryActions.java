@@ -26,7 +26,7 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 
-		// need to
+		// need to set chartId for 'expense helper' because call below uses expense helper call.
 		ExpenseHelper.SetChartId(1);
 		
 		// store vendor names currently shown in expense control. 
@@ -37,7 +37,7 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		
 		CommonTestStepActions.selectOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
 		
-		// need to 
+		// need chartId for 'TotalExpenseByVendorSpendCategory'.
 		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
 		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
@@ -52,7 +52,4 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		driver.close();
 		driver.quit();
 	}	
-
-	
-	
 }

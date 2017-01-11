@@ -1,20 +1,16 @@
 package testSuiteExpenseActions;
 
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
-import Dash.BaseClass.ViewType;
-import expenses.TotalExpenseByVendorSpendCategory;
 import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 
-public class TotalExpensesTrendVendorActions extends BaseClass 
+public class TotalExpensesTrendCountryActions extends BaseClass 
 {
-
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
@@ -28,17 +24,32 @@ public class TotalExpensesTrendVendorActions extends BaseClass
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
+
+		// initialize collection needed to do the convert vendors to countries
+		ExpenseHelper.SetupCountryAndVendorData(); 
+
+		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+		// this list is stored in the expense helper class.
+		ExpenseHelper.SetupForCountryViewPageLoad();  
+		
+		// move to country view.
+		CommonTestStepActions.SelectCountryView();
+		
+		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+		ExpenseHelper.WaitForCountryPageLoad();
+		
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		
 		TotalExpensesTrend.SetupChartId();
 		
 		// this sets up a string list of the legends (for expected values) and a web list of legends (for clicking legends).
 		TotalExpensesTrend.Setup();
 
-		TotalExpensesTrend.VerifyRemovingLegends();
+		TotalExpensesTrend.VerifyRemovingLegends(); // do verification.
 		
 		// verify expense trending control is empty.
 		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.expenseTrending); // verify there are no bar graphs in expense spend category.
-		
 	}
 	
 	@AfterClass
@@ -50,7 +61,4 @@ public class TotalExpensesTrendVendorActions extends BaseClass
 		driver.close();
 		driver.quit();
 	}	
-	
-	
-	
 }

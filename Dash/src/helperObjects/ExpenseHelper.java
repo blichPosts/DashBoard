@@ -108,7 +108,60 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
+	public static void SetupForCountryViewPageLoad() // bladdxx
+	{
+		List<String> totalExpenseLegendsList = GetTotalExpenseLegends();
+		
+		if(tempStringList != null)
+		{
+			tempStringList.clear();
+		}
+		
+		if(totalExpenseLegendsList != null)
+		{
+			totalExpenseLegendsList.clear();
+		}
+		
+		// get the vendor values while in vendor view.
+		totalExpenseLegendsList = ExpenseHelper.GetTotalExpenseLegends();
+
+		// put the corresponding country values in tempList.
+		for(String str : totalExpenseLegendsList)
+		{
+			if(!str.equals("Other"))
+			{
+				tempStringList.add(ExpenseHelper.GetCountryForVendor(str));				
+			}
+		}
+	}
 	
+	public static void WaitForCountryPageLoad() throws Exception // bladdxx
+	{
+
+		chartId = UsageHelper.getChartId(4);
+		
+		if(webElementListLegends != null)
+		{
+			webElementListLegends.clear();
+		}
+		
+		long currentTime= System.currentTimeMillis();
+		long endTime = currentTime+10000;
+		int x = 0;
+		while(System.currentTimeMillis() < endTime) 
+		{
+			Thread.sleep(1000);
+			// get list that
+			webElementListLegends = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + partialXpathToLegendsListInControls));  
+			if(webElementListLegends != null)
+			{
+				if(tempStringList.contains(webElementListLegends.get(0).getText()))
+				{
+					break;
+				}
+			}
+		}
+	}
 	
 	// this uses the 'expenseControlSlicesElemntsList' list  (global in this object) that contains the slices in the 'total expense' control.
 	// for each slice that does not have the DOM value 'visibility=hidden', store the vendor and numeric value onto a hash map list.
@@ -581,6 +634,10 @@ public class ExpenseHelper extends BaseClass
 		
 	}
 
+	
+	
+	// (//h3[@class='tdb-h3']/span[text()='Country'])[4]
+	
 	public static void SetWaitDefault()
 	{
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS); 		
@@ -650,6 +707,12 @@ public class ExpenseHelper extends BaseClass
 		switch(cntrlType)
 		{
 			case totalExpenseSpendCatergory:
+			{
+				chartId =  UsageHelper.getChartId(2); // total expenses. 
+				tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections + ")[1]/*";		
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+			}
+			case expenseTrending:
 			{
 				chartId =  UsageHelper.getChartId(2); // total expenses. 
 				tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections + ")[1]/*";		
