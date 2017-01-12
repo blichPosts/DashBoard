@@ -109,7 +109,7 @@ public class TotalExpensesTrend extends BaseClass
 			{
 				clickBarIndex(y);
 				Thread.sleep(500);
-				VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
+				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
 			totalExpenseLegendsList.remove(0);
 			Thread.sleep(500);
@@ -192,51 +192,6 @@ public class TotalExpensesTrend extends BaseClass
 		ele.click();
 		ele.click();
 	}
-	
-	
-	/*
-	public static void VerifyToolTipTwo(List<String> expectList) throws Exception
-	{
-		
-		List<String> actualList = new ArrayList<String>();
-		List<String> expectedList = new ArrayList<String>();
-		
-		
-		
-		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
-
-		//ShowText(webEleListBarGraphHoverValues.get(0).getText()); //  month/year
-		
-		for(WebElement ele : webEleListBarGraphHoverValues)
-		{
-			if(ele.getText().contains(":"))
-			{
-				actualList.add(ele.getText().replace(":",  ""));
-			}
-		}
-		
-
-		ShowText("Show actual");
-		ShowListOfStrings(actualList);		
-		ShowText("Show expected in method");
-		ShowListOfStrings(expectedList);
-
-		
-		
-		Collections.sort(actualList);
-		Collections.sort(expectedList);
-
-		
-		Assert.assertEquals(actualList, expectedList);
-		
-		ShowText("DONE");
-		
-		
-	}
-	*/
-	
-	
-	
 	
 	// keep for reference.
 	public static void VerifyToolTip(String expectedMonthYear, List<String> vendorList)
@@ -366,47 +321,6 @@ public class TotalExpensesTrend extends BaseClass
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// 										Helpers.
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static void VerifyToolTipTwo(List<String> expectList, String expectedMonth) throws Exception
-	{
-		List<String> actualList = new ArrayList<String>();
-		List<String> copy = new ArrayList<String>();
-		
-		errMessage = "Failure in TotalExpensesTrendVendorActions.VerifyToolTipTwo. Failed to verify correct ";
-		
-		
-		// make a copy of the expected list. sorting done further below made failures when expectList was sorted.
-		copy.addAll(expectList);  
-
-		// get web list that holds the DOM section that holds the hover values.
-		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
-
-		Assert.assertEquals(webEleListBarGraphHoverValues.get(0).getText(), expectedMonth, errMessage + "month value in hover text."); // verify month at top of hover.
-		
-		for(WebElement ele : webEleListBarGraphHoverValues)
-		{
-			if(ele.getText().contains(":"))
-			{
-				actualList.add(ele.getText().replace(":", ""));
-			}
-		}
-		
-		// sort in case orders are different.
-		Collections.sort(actualList);
-		Collections.sort(copy);
-		
-		Assert.assertEquals(actualList, copy, errMessage + "vendor.");
-	}
-
-	public static List<String> MakeCopyOfList(List<String> origList)
-	{
-		List<String> copyList = new ArrayList<String>();
-		
-		copyList.addAll(origList);
-		
-		return copyList;
-	}
-	
 	
 	public static void ClearAllContainers()
 	{

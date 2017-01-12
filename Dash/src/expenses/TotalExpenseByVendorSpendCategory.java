@@ -276,6 +276,20 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// 										Helpers.
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static void ClearVerifyToolTipInfoLists()
+	{
+		if(actuallList != null)
+		{
+			actuallList.clear();
+		}
+
+		if(expectedlList != null)
+		{
+			expectedlList.clear();
+		}
+	}
+	
 	public static void ClearAllContainers()
 	{
 		if(eleList != null)
@@ -307,7 +321,10 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		int x = 0;
 		boolean foundFirstItem = false;
 		boolean foundSecondItem = false;
-
+		
+		// when running country test and then vendor test together, clearing arrays fixed failure in vendor test.
+		ClearVerifyToolTipInfoLists();
+		
 		if(eventNumber == 0)
 		{
 			BuildListOfAllSpendCatergoryHoverItems(list);
@@ -354,8 +371,8 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			for(int y = 0, z = eventNumber; z < expectedlList.size(); y++, z++)
 			{
 
-				//ShowText(actuallList.get(y)); // DEBUG
-				//ShowText(expectedlList.get(z)); // DEBUG
+				ShowText(actuallList.get(y)); // DEBUG
+				ShowText(expectedlList.get(z)); // DEBUG
 				Assert.assertEquals(actuallList.get(y), expectedlList.get(z));	
 			}
 

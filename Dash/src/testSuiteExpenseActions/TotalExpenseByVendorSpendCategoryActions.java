@@ -41,6 +41,9 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
 		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
+		
+		// verify control is empty.
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category.
 	}
 	
 	@AfterClass

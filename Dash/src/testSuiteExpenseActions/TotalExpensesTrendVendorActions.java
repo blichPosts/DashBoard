@@ -34,6 +34,8 @@ public class TotalExpensesTrendVendorActions extends BaseClass
 		// this sets up a string list of the legends (for expected values) and a web list of legends (for clicking legends).
 		TotalExpensesTrend.Setup();
 
+		ExpenseHelper.SetChartId(2); // expense helper needs to know the control because it has a method that's used.
+		
 		TotalExpensesTrend.VerifyRemovingLegends();
 		
 		// verify expense trending control is empty.

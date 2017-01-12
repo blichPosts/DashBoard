@@ -3,6 +3,7 @@ package helperObjects;
 import java.text.ParseException;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +27,7 @@ public class ExpenseHelper extends BaseClass
 	public static String tempUrl = "";
 	
 	public static List<WebElement> webElementListLegends;	
+	public static List<WebElement> webEleListBarGraphHoverValues;
 	public static List<String> legendsListTotalExpense = new ArrayList<String>();	
 
 	// these are for VerifyMonths method 
@@ -674,21 +676,19 @@ public class ExpenseHelper extends BaseClass
 	{
 		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
 		
-		chartId =  UsageHelper.getChartId(0); // total expenses. 
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-		
 		chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
 		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
 		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		
-		chartId =  UsageHelper.getChartId(2); // expense trending.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		
-		chartId =  UsageHelper.getChartId(3); // cost per service number.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+
+		chartId =  UsageHelper.getChartId(2); // expense trending. 
+		ShowText(chartId);
+		tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+
+		chartId =  UsageHelper.getChartId(3); // cost per service number. 
+		// ShowText(chartId);
+		tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
 		
 		chartId =  UsageHelper.getChartId(4); // cost per service number.
 		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
@@ -701,30 +701,38 @@ public class ExpenseHelper extends BaseClass
 	// NOTE --- needs finished.
 	public static void VerifyOneControlNotPresent(controlType cntrlType) throws Exception
 	{
-		//ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
+		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
 
 		switch(cntrlType)
 		{
 			case totalExpenseSpendCatergory:
 			{
-				chartId =  UsageHelper.getChartId(2); // total expenses. 
-				tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections + ")[1]/*";		
+				chartId =  UsageHelper.getChartId(1);  
+				ShowText(chartId);
+				// tempUrl = "#" + chartId + ">svg>.highcharts-yaxis-labels>text:nth-of-type(1)"; // css no work		
+				tempUrl = "(//div[@id='" +  chartId + "']" +  "/*/*[@class='highcharts-axis-labels highcharts-yaxis-labels '])[1]";
 				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-				Assert.assertTrue(WaitForElementVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-				
+				// WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // DEBUG 
+				break;
 			}
 			case expenseTrending:
 			{
-				chartId =  UsageHelper.getChartId(2); // total expenses. 
+				chartId =  UsageHelper.getChartId(2);  
 				ShowText(chartId);
 				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
-				// Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-				//Assert.assertTrue(WaitForElementVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-				WaitForElementPresent(By.xpath(tempUrl), ShortTimeout);
-			
-				// 	public static String partialXpathToMonthListInControls = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
-				//  ==  good    "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*)[1]";
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				break;
 			}
+			case costPerServiceNumber:
+			{
+				chartId =  UsageHelper.getChartId(3);  
+				// ShowText(chartId);
+				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				break;
+			}
+		
+		
 		}
 		
 		/*
@@ -874,6 +882,40 @@ public class ExpenseHelper extends BaseClass
 		Assert.assertEquals(new Select(driver.findElement(By.cssSelector(CommonTestStepActions.pullDownCss))).getFirstSelectedOption().getText(), ExpenseHelper.desiredMonth, 
 				                       "Failed test for verifying correct month in month pulldown in CommonTestStepActions.VerifyMonthPullDownFormatExpense.");
 	}
+
+	// this receives expected and actual lists and verifies. 
+	public static void VerifyToolTipTwo(List<String> expectList, String expectedMonth) throws Exception // bladdxx
+	{
+		List<String> actualList = new ArrayList<String>();
+		List<String> copy = new ArrayList<String>();
+		
+		errMessage = "Failure in TotalExpensesTrendVendorActions.VerifyToolTipTwo. Failed to verify correct ";
+		
+		
+		// make a copy of the expected list. sorting done further below made failures when expectList was sorted.
+		copy.addAll(expectList);  
+
+		// get web list that holds the DOM section that holds the hover values.
+		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+
+		Assert.assertEquals(webEleListBarGraphHoverValues.get(0).getText(), expectedMonth, errMessage + "month value in hover text."); // verify month at top of hover.
+		
+		for(WebElement ele : webEleListBarGraphHoverValues)
+		{
+			if(ele.getText().contains(":"))
+			{
+				actualList.add(ele.getText().replace(":", ""));
+			}
+		}
+		
+		// sort in case orders are different.
+		Collections.sort(actualList);
+		Collections.sort(copy);
+		
+		Assert.assertEquals(actualList, copy, errMessage + "vendor.");
+	}
+	
+	
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers

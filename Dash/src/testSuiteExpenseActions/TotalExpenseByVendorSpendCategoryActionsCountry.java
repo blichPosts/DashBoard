@@ -34,8 +34,6 @@ public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass
 
 		CommonTestStepActions.SelectCountryView();
 		
-		DebugTimeout(7 , "7");
-		
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();
 		
@@ -46,7 +44,10 @@ public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass
 		
 		ExpenseHelper.SetupCountryAndVendorData();
 		
-		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.country); 
+		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.country);
+		
+		// verify control is empty.
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category.
 	}
 	
 	@AfterClass

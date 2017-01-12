@@ -47,11 +47,13 @@ public class CostPerServiceNumberTrendCountry extends BaseClass
 		
 		// this sets up a string list of the legends (for expected values) and a web list of legends (for clicking legends).
 		CostPerServiceNumberTrend.Setup();
+		
+		ExpenseHelper.SetChartId(3); // expense helper needs to know the control because it has a method that's used.
 
 		CostPerServiceNumberTrend.VerifyRemovingLegends(); // do verification.
 		
 		// verify expense trending control is empty.
-		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.expenseTrending); // verify there are no bar graphs in expense spend category.
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.costPerServiceNumber); // verify there are no bar graphs in expense spend category.
 	}
 	
 	@AfterClass
