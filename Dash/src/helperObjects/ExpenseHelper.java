@@ -108,7 +108,7 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	public static void SetupForCountryViewPageLoad() // bladdxx
+	public static void SetupForCountryViewPageLoad()
 	{
 		List<String> totalExpenseLegendsList = GetTotalExpenseLegends();
 		
@@ -135,7 +135,7 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	public static void WaitForCountryPageLoad() throws Exception // bladdxx
+	public static void WaitForCountryPageLoad() throws Exception 
 	{
 
 		chartId = UsageHelper.getChartId(4);
@@ -701,9 +701,8 @@ public class ExpenseHelper extends BaseClass
 	// NOTE --- needs finished.
 	public static void VerifyOneControlNotPresent(controlType cntrlType) throws Exception
 	{
-		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
-		
-		
+		//ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
+
 		switch(cntrlType)
 		{
 			case totalExpenseSpendCatergory:
@@ -711,12 +710,20 @@ public class ExpenseHelper extends BaseClass
 				chartId =  UsageHelper.getChartId(2); // total expenses. 
 				tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections + ")[1]/*";		
 				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				Assert.assertTrue(WaitForElementVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				
 			}
 			case expenseTrending:
 			{
 				chartId =  UsageHelper.getChartId(2); // total expenses. 
-				tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections + ")[1]/*";		
-				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				ShowText(chartId);
+				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
+				// Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				//Assert.assertTrue(WaitForElementVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				WaitForElementPresent(By.xpath(tempUrl), ShortTimeout);
+			
+				// 	public static String partialXpathToMonthListInControls = "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*";
+				//  ==  good    "/*/*[@class='highcharts-axis-labels highcharts-xaxis-labels ']/*/*)[1]";
 			}
 		}
 		
