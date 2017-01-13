@@ -5,11 +5,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
-import expenses.TotalExpensesTrend;
+import expenses.CostPerServiceNumberTrend;
+import expenses.CountOfServiceNumbersTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 
-public class TotalExpensesTrendCountryActions extends BaseClass 
+public class CountOfServiceNumbersCountry extends BaseClass
 {
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -19,7 +20,7 @@ public class TotalExpensesTrendCountryActions extends BaseClass
 	}
 	
 	@Test
-	public static void TotalExpensesTrendVendorActionsTest() throws Exception
+	public static void CountOfServiceNumbersCountryTest() throws Exception
 	{
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
@@ -41,17 +42,17 @@ public class TotalExpensesTrendCountryActions extends BaseClass
 		
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		
-		TotalExpensesTrend.SetupChartId(); // expense helper needs to know the current control because it has a method that's used.
+		CountOfServiceNumbersTrend.SetupChartId();
 		
 		// this sets up a string list of the legends (for expected values) and a web list of legends (for clicking legends).
-		TotalExpensesTrend.Setup();
+		CountOfServiceNumbersTrend.Setup();
 		
-		ExpenseHelper.SetChartId(2); // expense helper needs to know the control because it has a method that's used.
+		ExpenseHelper.SetChartId(4); // expense helper needs to know the current control because it has a method that's used.
 
-		TotalExpensesTrend.VerifyRemovingLegends(); // do verification.
+		CountOfServiceNumbersTrend.VerifyRemovingLegends(); // do verification.
 		
 		// verify expense trending control is empty.
-		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.expenseTrending); // verify there are no bar graphs in expense spend category.
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.countOfServiceNumbers); // verify there are no bar graphs in expense spend category.
 	}
 	
 	@AfterClass
@@ -62,5 +63,5 @@ public class TotalExpensesTrendCountryActions extends BaseClass
 	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
 		driver.close();
 		driver.quit();
-	}	
+	}		
 }

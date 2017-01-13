@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import junit.framework.AssertionFailedError;
 
 public class ExpenseHelper extends BaseClass
 {
@@ -110,6 +111,8 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
+	// this gets the expense legend names, excluding the 'other' legend, and adds them into 'tempStringList' as their corresponding country name.
+	// the list of country names is used to wait for the country view to load.  
 	public static void SetupForCountryViewPageLoad()
 	{
 		List<String> totalExpenseLegendsList = GetTotalExpenseLegends();
@@ -124,7 +127,7 @@ public class ExpenseHelper extends BaseClass
 			totalExpenseLegendsList.clear();
 		}
 		
-		// get the vendor values while in vendor view.
+		// get the vendor values (legend names) that were stored while in vendor view into a list. 
 		totalExpenseLegendsList = ExpenseHelper.GetTotalExpenseLegends();
 
 		// put the corresponding country values in tempList.
@@ -137,9 +140,10 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
+	
 	public static void WaitForCountryPageLoad() throws Exception 
 	{
-
+		boolean foundCountryLegend = false;
 		chartId = UsageHelper.getChartId(4);
 		
 		if(webElementListLegends != null)
@@ -153,15 +157,22 @@ public class ExpenseHelper extends BaseClass
 		while(System.currentTimeMillis() < endTime) 
 		{
 			Thread.sleep(1000);
+			
 			// get list that
 			webElementListLegends = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + partialXpathToLegendsListInControls));  
 			if(webElementListLegends != null)
 			{
 				if(tempStringList.contains(webElementListLegends.get(0).getText()))
 				{
+					foundCountryLegend = true;
 					break;
 				}
 			}
+		}
+		
+		if(!foundCountryLegend)
+		{
+			Assert.fail("Failed to find a country legend in method ExpenseHelper.WaitForCountryPageLoad.");			
 		}
 	}
 	
@@ -690,10 +701,11 @@ public class ExpenseHelper extends BaseClass
 		tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
 		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
 		
-		chartId =  UsageHelper.getChartId(4); // cost per service number.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		
+		chartId =  UsageHelper.getChartId(4); // count of service numbers  
+		// ShowText(chartId);
+		tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+
 		ExpenseHelper.SetWaitDefault(); // back to default.
 	}	
 	
@@ -710,7 +722,7 @@ public class ExpenseHelper extends BaseClass
 				chartId =  UsageHelper.getChartId(1);  
 				ShowText(chartId);
 				// tempUrl = "#" + chartId + ">svg>.highcharts-yaxis-labels>text:nth-of-type(1)"; // css no work		
-				tempUrl = "(//div[@id='" +  chartId + "']" +  "/*/*[@class='highcharts-axis-labels highcharts-yaxis-labels '])[1]";
+				tempUrl = "(//div[@id='" +  chartId + "']" +  "/*/*[@class='highcharts-axis-labels highcharts-yaxis-labels '])[1]"; // show ana.
 				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
 				// WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // DEBUG 
 				break;
@@ -731,31 +743,16 @@ public class ExpenseHelper extends BaseClass
 				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
 				break;
 			}
-		
-		
+			case countOfServiceNumbers:
+			{
+				chartId =  UsageHelper.getChartId(4);  
+				// ShowText(chartId);
+				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				break;
+			}
 		}
 		
-		/*
-		chartId =  UsageHelper.getChartId(0); // total expenses. 
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-		
-		chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		
-		chartId =  UsageHelper.getChartId(2); // expense trending.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		
-		chartId =  UsageHelper.getChartId(3); // cost per service number.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		
-		chartId =  UsageHelper.getChartId(4); // cost per service number.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathToLegendsListInControls + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-		*/
 		ExpenseHelper.SetWaitDefault(); // back to default.
 	}	
 	

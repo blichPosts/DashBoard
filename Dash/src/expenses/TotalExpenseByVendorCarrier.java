@@ -175,7 +175,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		}
 	}
 	
-	public static void setAllLegendsAndPieCount() throws InterruptedException
+	public static void SetAllLegendsAndPieCount() throws InterruptedException
 	{
 		
 		if(webElementListLegands != null) // clear if already has contents.
@@ -194,9 +194,15 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		// get the legends in the expense control.
 		legendsList = ExpenseHelper.GetTotalExpenseLegends();
 		
-		// show Ana
-		// String temp = ".//*[@id='" +  chartId + "']/*/*[@class='highcharts-series-group ']"; // nope -- this works in fire bug.
-		// String temp = ".//*[@id='" +  chartId + "']/*/*[@class='highcharts-series-group']"; // yes -- works in selenium code.
+		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-series-group']/*/*"));
+
+		for(WebElement ele : webElementListLegands)
+		{
+			if(ele.getAttribute("visibility") != null)
+			{
+				Assert.fail("It appears that one of the slices in the Expense pie is missing in TotalExpenseByVendorCarrier.SetAllLegendsAndPieCount");
+			}
+		}
 		
 		numPieParts = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-series-group']/*/*")).size();		
 	}
@@ -205,7 +211,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	{
 		String errMessage = "Failed checks in TotalExpenseByVendorCarrier.VerifyLegendsAndPieCount";
 		
-		setAllLegendsAndPieCount();
+		SetAllLegendsAndPieCount();
 
 		Assert.assertTrue(legendsList.size() == numPieParts); // the number of legends should equal the number of parts in the expense pie. 
 		

@@ -22,6 +22,7 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	@Test
@@ -36,7 +37,7 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
-		CountOfServiceNumbersTrend.SetupChartId(); // setup unique id for this control test.
+		CountOfServiceNumbersTrend.SetChartId(4); // setup unique id for this control test.
 		
 		// The title is 'Count of Service Number by Vendor/Country'
 		CountOfServiceNumbersTrend.VerifyTitle(CommonTestStepActions.ExpensesViewMode.vendor);

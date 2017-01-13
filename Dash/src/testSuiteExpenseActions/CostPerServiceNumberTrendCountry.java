@@ -48,7 +48,7 @@ public class CostPerServiceNumberTrendCountry extends BaseClass
 		// this sets up a string list of the legends (for expected values) and a web list of legends (for clicking legends).
 		CostPerServiceNumberTrend.Setup();
 		
-		ExpenseHelper.SetChartId(3); // expense helper needs to know the control because it has a method that's used.
+		ExpenseHelper.SetChartId(3);  // expense helper needs to know the current control because it has a method that's used.
 
 		CostPerServiceNumberTrend.VerifyRemovingLegends(); // do verification.
 		
@@ -65,7 +65,4 @@ public class CostPerServiceNumberTrendCountry extends BaseClass
 		driver.close();
 		driver.quit();
 	}		
-	
-	
-	
 }

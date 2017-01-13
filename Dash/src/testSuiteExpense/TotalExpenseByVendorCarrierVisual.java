@@ -19,6 +19,7 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	@Test
@@ -40,9 +41,21 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 		// The “Others” slice should not appear if just five or less vendors are selected.
 		TotalExpenseByVendorCarrier.VerifyLegendsTitleAndPieCount();
 		TotalExpenseByVendorCarrier.VerifyVendorView();
-		
+
+		// initialize collection needed to do the convert vendors to countries
+		ExpenseHelper.SetupCountryAndVendorData(); 
+
+		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+		// this list is stored in the expense helper class.
+		ExpenseHelper.SetupForCountryViewPageLoad();  
+
 		// #2 Select country in the 'Country/Vendor View Selector'
 		CommonTestStepActions.SelectCountryView();
+		
+		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+		ExpenseHelper.WaitForCountryPageLoad();
+
 		
 	    // The title is 'Total Expenses by Country'.
 	    // There is a slice in the pie for each country.

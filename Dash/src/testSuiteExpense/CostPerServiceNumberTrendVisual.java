@@ -17,7 +17,7 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		// MainLogin();
+		MainLogin();
 	}
 	
 	@Test

@@ -85,7 +85,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
 				clickBarIndex(y);
-				Thread.sleep(1000);
+				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
 			totalExpenseLegendsList.remove(0);
