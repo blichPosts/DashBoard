@@ -5,6 +5,7 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -349,7 +350,8 @@ public class UsageTrending extends BaseClass {
 
 
 	// Verifies the content of the tooltips displayed on charts under Usage Trending Domestic and Roaming charts
-	public static void verifyUsageTrendingChartTooltip(int barChartId, List<UsageOneMonth> allValuesFromFile, int categorySelector) throws ParseException, InterruptedException, AWTException {
+	// **** ONLY FOR ONE VENDOR SELECTED ****
+	public static void verifyUsageTrendingChartTooltipOneVendor(int barChartId, List<UsageOneMonth> allValuesFromFile, int categorySelector) throws ParseException, InterruptedException, AWTException {
 		
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
@@ -520,6 +522,250 @@ public class UsageTrending extends BaseClass {
 		}
 
 	}
+	
+
+	
+	
+	// Verifies the content of the tooltips displayed on charts under Usage Trending Domestic and Roaming charts
+	public static void verifyUsageTrendingChartTooltip(int barChartId, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector) throws ParseException, InterruptedException, AWTException {
+		
+		// List "allValuesFromFile" has all 13 months listed on pulldown. 
+		
+		WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
+		new Actions(driver).moveToElement(usageTrendingSection).perform();
+		
+		Thread.sleep(2000);
+		
+		String chartId = UsageHelper.getChartId(barChartId);
+			
+		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
+		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
+
+		int amount = highchartSeries.size();
+		//System.out.println("amount: " + amount);
+		
+		int indexHighchart = 1;
+		
+		List<String> monthYearList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
+		int indexMonth = monthYearList.size()-1;
+		
+				
+		List<HashMap<String, String>> expectedValues = new ArrayList<>();
+		List<String> expectedLabels = new ArrayList<>();
+		
+		HashMap<String, Boolean> vendorHasData = vendorHasDataForSelectedMonth(allValuesFromFile);
+		
+				
+		for(int indexMonthValues = 0; indexMonthValues < allValuesFromFile.size(); indexMonthValues++){
+			
+			HashMap<String, String> map = new HashMap<>();
+			
+			for (int j = 0; j < allValuesFromFile.get(indexMonthValues).size(); j++) {
+			
+				String keyVendor = allValuesFromFile.get(indexMonthValues).get(j).getVendorName();
+				
+				UsageOneMonth usageOneMonth = allValuesFromFile.get(indexMonthValues).get(j);
+				
+				if (vendorHasData.get(keyVendor)) {
+	
+					if (barChartId == UsageHelper.usageTrendingDomesticChart) {
+					
+						if(categorySelector == UsageHelper.categoryVoice){
+
+							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getDomesticVoice()) + Double.parseDouble(usageOneMonth.getDomesticOverageVoice())));
+							
+						} else if (categorySelector == UsageHelper.categoryData){
+							
+							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(Double.parseDouble(usageOneMonth.getDomesticDataUsageKb())));
+															
+						} else if (categorySelector == UsageHelper.categoryMessages){
+							
+							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getDomesticMessages())));
+							
+						}
+						
+						
+					} else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
+						
+						if(categorySelector == UsageHelper.categoryVoice){
+
+							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getRoamingVoice())));
+							
+						} else if (categorySelector == UsageHelper.categoryData){
+							
+							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(Double.parseDouble(usageOneMonth.getRoamingDataUsageKb())));
+															
+						} else if (categorySelector == UsageHelper.categoryMessages){
+							
+							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getRoamingMessages())));
+							
+						}
+						
+					}
+					
+					if(!expectedLabels.contains(keyVendor))
+						expectedLabels.add(keyVendor);
+					
+				}
+									
+			}
+			
+			expectedValues.add(map);
+			
+		}	
+
+		// Verify the info contained on each of the tooltips for the 13 months 		
+		while(indexHighchart <= monthYearList.size()){
+			
+			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(1)";
+			
+			// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
+			WebElement bar = driver.findElement(By.cssSelector(cssBar));
+			WebElement line = driver.findElement(By.cssSelector(cssLine));
+			
+			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+			// Get the location of the second line of the chart -> to get the "y" coordinate
+			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+			Point barCoordinates = bar.getLocation();
+			Point lineCoordinates = line.getLocation();
+			
+			Robot robot = new Robot(); 
+			int x = barCoordinates.getX() + 10;
+			int y = lineCoordinates.getY();
+			
+			robot.mouseMove(x, y);
+			//System.out.println("coordinates - x: " + x + "  y: " + y);
+			
+			Thread.sleep(1000);
+			
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+			
+			
+			try {
+				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+				//System.out.println("Tooltip present");
+			} catch (Exception e) {
+				System.out.println("Tooltip NOT present");
+				e.printStackTrace();
+			}
+			
+			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
+			
+			int expectedAmountItemsTooltip = (amount * 3) + 1;
+			
+			
+			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
+			// 0 MM-YYYY -- month and year appears once
+			// 1 ? -- this is for the bullet
+			// 2 <vendor's name>
+			// 3 <amount shown for the vendor>
+			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			
+			//System.out.println("Index month : " + indexMonth + "  --Month-year from tooltip: " + tooltip.get(0).getText());
+			
+			// Verify the vendor's name and the amount shown on the tooltip
+			for(int i = 1; i <= legends.size(); i++){
+			
+				int index =  i * 3 - 1;
+				
+				// Get the label and remove colon at the end of its text
+				//System.out.println("tooltip.get(index).getText(): " + tooltip.get(index).getText());
+				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+
+				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: 15 256 985. Value needed is: 15256985
+				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+				
+				//System.out.println("label: " + labelFound + ", value: " + valueFound); 
+							
+				// Verify the labels' text and amounts shown on the tooltip
+				String labelExpected = expectedLabels.get(i-1);
+				Assert.assertEquals(labelFound, labelExpected); 
+				
+				String valueExpected = expectedValues.get(indexMonth).get(labelExpected);
+				Assert.assertEquals(valueFound, valueExpected);
+					
+//				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+//				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+				
+			}
+			
+			// Verify month and year shown on the tooltip (first line)
+			String monthYearFound = tooltip.get(0).getText();
+			String monthYearExpected = monthYearList.get(indexMonth);
+				
+			Assert.assertEquals(monthYearFound, monthYearExpected);
+//			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+//			System.out.println("");
+			
+			indexHighchart++;
+			indexMonth--;
+			
+		}
+
+	}
+
+
+
+	// It returns true if there's data for the vendor in the selected month. That means that the vendor will be displayed on the Usage Trending chart
+	// Else it returns false	
+	private static HashMap<String, Boolean> vendorHasDataForSelectedMonth(List<List<UsageOneMonth>> allValuesFromFile) throws ParseException {
+		
+		String monthYearSelected = CommonTestStepActions.GetPulldownTextSelected();
+		
+		String[] monthSelectedParts = monthYearSelected.split(" ");
+		String monthSelected = CommonTestStepActions.ConvertMonthToInt(monthSelectedParts[0].trim());
+		String yearSelected = monthSelectedParts[1].trim();
+		
+//		System.out.println("month/year selected: " + monthSelected + "/" + yearSelected);
+		
+		HashMap<String, Boolean> vendorsToBeDisplayedMap = new HashMap<>();
+		
+		// Initialize HashMap with all values set to false
+		for (UsageOneMonth u: allValuesFromFile.get(0)) {
+			
+			vendorsToBeDisplayedMap.put(u.getVendorName(), false);
+		}
+		
+//			System.out.println("Initial values: ");
+		
+		for (UsageOneMonth u: allValuesFromFile.get(0)) {
+//				System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
+		}
+		
+		
+		for (int i = 0; i < allValuesFromFile.size(); i++) {
+			
+			for (int j = 0; j < allValuesFromFile.get(i).size(); j++) {
+				
+				UsageOneMonth usage = allValuesFromFile.get(i).get(j);
+				
+				if(monthSelected.equals(usage.getOrdinalMonth()) && yearSelected.equals(usage.getOrdinalYear())) {
+					
+					if (!usage.getInvoiceMonth().equals("")) {
+						
+						vendorsToBeDisplayedMap.replace(usage.getVendorName(), true);
+											
+					}
+					
+				}
+					
+			}
+			
+		}
+		
+//			System.out.println("Updated values: ");
+		for (UsageOneMonth u: allValuesFromFile.get(0)) {
+//				System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
+		}
+		
+		
+		return vendorsToBeDisplayedMap;
+		
+	} 	
+	
+		
 	
 	
 	

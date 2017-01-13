@@ -357,8 +357,9 @@ public class TotalUsageActions extends BaseClass{
 	
 	
 	
-/*		
+		
 	// Verifies the content of the tooltips displayed on charts under Total Usage Domestic and Roaming charts
+	// **** ONLY FOR ONE VENDOR SELECTED ****
 	public static void verifyTotalUsageChartTooltip(int barChartId, UsageOneMonth oneMonthData, int categorySelector) throws ParseException, InterruptedException, AWTException {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
@@ -477,7 +478,7 @@ public class TotalUsageActions extends BaseClass{
 			
 			// Verify country/vendor shown on the tooltip
 			//System.out.println("Tooltip text: " + tooltip.get(0).getText());
-//			Assert.assertEquals(tooltip.get(0).getText(), oneMonthData.getVendorName());  //vendorsInChartList.get(indexHighchart-1));
+			Assert.assertEquals(tooltip.get(0).getText(), oneMonthData.getVendorName());  //vendorsInChartList.get(indexHighchart-1));
 						
 			
 			// Verify the label and the amount shown on the tooltip
@@ -486,7 +487,7 @@ public class TotalUsageActions extends BaseClass{
 				int index =  i * 3 - 1;
 								
 				// Get the label and remove colon at the end of its text 
-				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+				String labelFound = tooltip.get(index).getText().replace(":", "");   //substring(0, tooltip.get(index).getText().length()-1);
 
 				// Get the value on tooltip and remove all blank spaces
 				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
@@ -522,11 +523,12 @@ public class TotalUsageActions extends BaseClass{
 		
 	}
 
-*/
+
 	
-	// ********************** HERE **********************
+
 
 	// Verifies the content of the tooltips displayed on charts under Total Usage Domestic and Roaming charts
+	// ** FOR ONE OR MORE VENDORS SELECTED
 	public static void verifyTotalUsageChartTooltip(int barChartId, List<UsageOneMonth> listOneMonthData, int categorySelector) throws ParseException, InterruptedException, AWTException {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
@@ -544,7 +546,6 @@ public class TotalUsageActions extends BaseClass{
 		}	
 		
 		
-//		System.out.println("HashMap test!!!");
 		HashMap<String, UsageOneMonth> vendorUsageMap = new HashMap<String, UsageOneMonth>();
 		for (UsageOneMonth u: listOneMonthData) {
 			vendorUsageMap.put(u.getVendorName(), u);
@@ -554,8 +555,7 @@ public class TotalUsageActions extends BaseClass{
 		
 		Thread.sleep(2000);
 		
-		// Lists that will contain the expected values
-		// replace the lists with values by hashmaps <vendorName, value> 
+		// The HashMap<vendorName, value>  will contain the expected values
 		HashMap<String, String> domesticValue = new HashMap<String, String>();
 		HashMap<String, String> overageValue = new HashMap<String, String>();
 		HashMap<String, String> roamingValue = new HashMap<String, String>();
@@ -631,102 +631,85 @@ public class TotalUsageActions extends BaseClass{
 				if (!vendorsInChartNames.contains(v)){
 					
 					System.out.println("Vendor " + v + ", is not listed in chart");
+				
+					UsageOneMonth usage = (UsageOneMonth) vendorUsageMap.get(v);
+
+					// If there's data for the selected month/vendor add the values to the "other" variables, if not, move to the next vendor
+					boolean usageNull;
 					
-				//	for (int j = 0; j <listOneMonthData.size(); j++){
+					try {
 						
-						//if (listOneMonthData.get(j).getVendorName().equals(v)){
-							
-							System.out.println("vendor name to use as a key: " + v);
-							UsageOneMonth usage = (UsageOneMonth) vendorUsageMap.get(v);
-//							System.out.println(vendorUsageMap.get(usage.getVendorName()).getVendorName() + " - Domestic voice: " + usage.getDomesticVoice());
-							// ******
-							// listOneMonthData.get(j) is replaced by usage. See if it works!!!
-							
-							// If there's data for the selected month/vendor add the values to the "other" variables, if not, move to the next vendor
-							boolean usageNull;
-							
-							try {
-								
-								usage.getDomesticVoice();
-								usageNull = false;
-								
-							} catch (NullPointerException e) {
-								
-								usageNull = true;
-								
-							}
-							
-							
-							if (!usageNull) {
-								
-								System.out.println("there's data for the vendor");
-								
-								if (barChartId == 0) {
-									
-									if(categorySelector == UsageHelper.categoryVoice){
-										// ****************
-										// ** Trying first with only one vendor summed up in "Other", then try for more vendors , add the value to the ...Other variables
-										// **************
-										domesticTmpSum += Double.parseDouble(usage.getDomesticVoice());
-										domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum);  //Double.parseDouble(usage.getDomesticVoice()));
-										
-										overageTmpSum += Double.parseDouble(usage.getDomesticOverageVoice());
-										overageValueOther = UsageCalculationHelper.roundNoDecimalDigits(overageTmpSum);
-										overageValue.put(otherVendors, overageValueOther);
-										
-									} else if (categorySelector == UsageHelper.categoryData){
-										
-										domesticTmpSum += Double.parseDouble(usage.getDomesticDataUsageKb());
-										domesticValueOther = UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(domesticTmpSum);
-										
-									} else if (categorySelector == UsageHelper.categoryMessages){
-										
-										domesticTmpSum += Double.parseDouble(usage.getDomesticMessages());
-										domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum);
-										
-									}
-									
-									domesticValue.put(otherVendors, domesticValueOther);
-									
-									
-								} else if (barChartId == 1) {
-									
-									if(categorySelector == UsageHelper.categoryVoice){
-										
-										roamingTmpSum += Double.parseDouble(usage.getRoamingVoice());
-										roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum);
-										
-									} else if (categorySelector == UsageHelper.categoryData){
-										
-										roamingTmpSum += Double.parseDouble(usage.getRoamingDataUsageKb());
-										roamingValueOther = UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(roamingTmpSum);
-										
-									} else if (categorySelector == UsageHelper.categoryMessages){
-										
-										roamingTmpSum += Double.parseDouble(usage.getRoamingMessages());
-										roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum);
-										
-									}
-									
-									roamingValue.put(otherVendors, roamingValueOther);
-									
-								}
-								
-							} else {
-								System.out.println("there's NO data for the vendor");
-							}
-							
+						usage.getDomesticVoice();
+						usageNull = false;
+						
+					} catch (NullPointerException e) {
+						
+						usageNull = true;
+						
 					}
 					
-			//	}
-				
+					if (!usageNull) {
+						
+						System.out.println("there's data for the vendor");
+						
+						if (barChartId == 0) {
+							
+							if(categorySelector == UsageHelper.categoryVoice){
+								
+								domesticTmpSum += Double.parseDouble(usage.getDomesticVoice());
+								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum);
+								
+								overageTmpSum += Double.parseDouble(usage.getDomesticOverageVoice());
+								overageValueOther = UsageCalculationHelper.roundNoDecimalDigits(overageTmpSum);
+								overageValue.put(otherVendors, overageValueOther);
+								
+							} else if (categorySelector == UsageHelper.categoryData){
+								
+								domesticTmpSum += Double.parseDouble(usage.getDomesticDataUsageKb());
+								domesticValueOther = UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(domesticTmpSum);
+								
+							} else if (categorySelector == UsageHelper.categoryMessages){
+								
+								domesticTmpSum += Double.parseDouble(usage.getDomesticMessages());
+								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum);
+								
+							}
+							
+							domesticValue.put(otherVendors, domesticValueOther);
+							
+							
+						} else if (barChartId == 1) {
+							
+							if(categorySelector == UsageHelper.categoryVoice){
+								
+								roamingTmpSum += Double.parseDouble(usage.getRoamingVoice());
+								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum);
+								
+							} else if (categorySelector == UsageHelper.categoryData){
+								
+								roamingTmpSum += Double.parseDouble(usage.getRoamingDataUsageKb());
+								roamingValueOther = UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(roamingTmpSum);
+								
+							} else if (categorySelector == UsageHelper.categoryMessages){
+								
+								roamingTmpSum += Double.parseDouble(usage.getRoamingMessages());
+								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum);
+								
+							}
+							
+							roamingValue.put(otherVendors, roamingValueOther);
+							
+						}
+						
+					} else {
+						System.out.println("there's NO data for the vendor");
+					}
+						
+				}
+
 			}
 			
 		}
-		
-		
-		
-		
 		
 		
 		//System.out.println("domestic list size: " + domesticValue.size());
@@ -754,10 +737,9 @@ public class TotalUsageActions extends BaseClass{
 //			System.out.println("Vendor name checkbox: " +  vendorsSelectedCheckBox.get(indexVendorSelected).getText());
 //			System.out.println("Condition is: " +  vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()));
 			
-			// If the vendor in vendorsSelectedCheckBox list is present in the vendorsInChartList, or if the current element from chart is "Other", run the test. Else, move to the next vendor
+			// If the vendor in vendorsSelectedCheckBox list is present in the vendorsInChartList, or if the current element from chart is "Other", 
+			// then run the test. Else, move to the next vendor
 			if(vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()) || vendorsInChartNames.get(indexVendorInChart).equals("Other")){
-			
-			//	System.out.println("Inside if");
 				
 				String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
 				//System.out.println("cssSelector: " + cssSelector);
@@ -812,15 +794,9 @@ public class TotalUsageActions extends BaseClass{
 				
 				// Verify country/vendor shown on the tooltip
 				String vendorNameFound = tooltip.get(0).getText();
-				String vendorNameExpected = "";
-				
-				//if (vendorsInChartNames.get(indexVendorInChart).equals("Other"))
-				//	firstLineExpected = "Other";
-				//else
-					vendorNameExpected = vendorsInChartNames.get(indexVendorInChart);
+				String vendorNameExpected = vendorsInChartNames.get(indexVendorInChart);
 					
-				Assert.assertEquals(vendorNameFound, vendorNameExpected);  //listOneMonthData.get(indexVendorInChart).getVendorName());  //vendorsInChartList.get(indexHighchart-1));
-				
+				Assert.assertEquals(vendorNameFound, vendorNameExpected);
 				System.out.println("firstLineFound: " + vendorNameFound + ", firstLineExpected: " + vendorNameExpected);
 				
 				

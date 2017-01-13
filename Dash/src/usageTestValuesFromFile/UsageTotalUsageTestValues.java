@@ -128,10 +128,10 @@ public class UsageTotalUsageTestValues extends BaseClass{
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
 				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
-				/*
+				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryVoice);
 				Thread.sleep(1000);
-				
+				/*
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryVoice);
 				Thread.sleep(1000);				
 				

@@ -134,28 +134,28 @@ public class UsageTrendingTestValues extends BaseClass{
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryVoice);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryVoice);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryVoice);
 				Thread.sleep(2000);				
-				
+			/*	
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryData);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryData);
 				Thread.sleep(2000);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryData);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryData);
 				Thread.sleep(2000);				
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryMessages);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryMessages);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
-				
+			*/	
 			} catch(NullPointerException e){
 				
 				System.out.println("chart not found");

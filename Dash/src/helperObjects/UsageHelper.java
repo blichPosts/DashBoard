@@ -167,6 +167,9 @@ public class UsageHelper extends BaseClass{
 	}
 
 
+	// The Usage Trending charts show the data for the past 13 months. 
+	// If there's no data on the source file for one or more months, for the selected vendor, 
+	// the data corresponding to those months needs to be added with zero values
 	public static List<UsageOneMonth> addMissingMonthsForVendor(List<UsageOneMonth> valuesFromFileTmp) throws ParseException {
 		
 		List<UsageOneMonth> valuesFromFileNew = new ArrayList<>();
@@ -201,9 +204,9 @@ public class UsageHelper extends BaseClass{
 				*/
 				String[] monthYearParts = monthsList.get(i).getText().split(" "); 
 				String monthNum = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
-				if(monthNum.length() == 1){
+				/*if(monthNum.length() == 1){
 					monthNum = "0" + monthNum;
-				}
+				}*/
 				
 				UsageOneMonth usageMonth = new UsageOneMonth(vendorName, monthYearParts[1], monthNum);
 				valuesFromFileNew.add(i, usageMonth);
@@ -212,9 +215,9 @@ public class UsageHelper extends BaseClass{
 			} else {
 				
 				String monthTmp = valuesFromFileTmp.get(fileIndex).getOrdinalMonth();
-				if(monthTmp.length() == 1){
+				/*if(monthTmp.length() == 1){
 					monthTmp = "0" + monthTmp;
-				}
+				}*/
 				
 				UsageOneMonth usageMonthTmp = valuesFromFileTmp.get(fileIndex);
 				usageMonthTmp.setOrdinalMonth(monthTmp);
@@ -227,9 +230,26 @@ public class UsageHelper extends BaseClass{
 			
 		}
 		
-		/*for(UsageOneMonth m: valuesFromFileNew){
-			System.out.println("month: " + m.getOrdinalMonth() + " " + m.getOrdinalYear());
-		}*/
+		
+		for(UsageOneMonth m: valuesFromFileNew){
+			
+			/*System.out.println("vendor name: " + m.getVendorName());
+			System.out.println("year: " + m.getOrdinalYear());
+			System.out.println("month: " + m.getOrdinalMonth());
+			System.out.println("invoice month: " + m.getInvoiceMonth());
+			System.out.println("domestic voice: " + m.getDomesticVoice());
+			System.out.println("overage voice: " + m.getDomesticOverageVoice());
+			System.out.println("domestic messages: " + m.getDomesticMessages());
+			System.out.println("domestic data:" + m.getDomesticDataUsageKb());
+			System.out.println("roaming voice: " + m.getRoamingVoice());
+			System.out.println("roaming data: " + m.getRoamingDataUsageKb());
+			System.out.println("roaming messages: " + m.getRoamingMessages());*/
+		    
+//			System.out.println("month: " + m.getOrdinalMonth() + " " + m.getOrdinalYear());
+			
+		}
+		
+//		System.out.println("amount of months for " + valuesFromFileNew.get(0).getVendorName() + " is " + valuesFromFileNew.size());
 		
 		return valuesFromFileNew;
 		
@@ -439,7 +459,7 @@ public class UsageHelper extends BaseClass{
 		
 		List<String> monthsWithData = new ArrayList<>();
 		
-		for(int i = 0; i < 13; i++){
+		for (int i = 0; i < 13; i++) {
 			monthsWithData.add("");
 		}
 		
@@ -448,42 +468,46 @@ public class UsageHelper extends BaseClass{
 		
 		boolean monthEqualToInvoiceMonth = false;
 		
-		if(listUsageVendorsSelected.get(0).get(0).getOrdinalMonth().equals(getMonthOfInvoiceMonth(listUsageVendorsSelected.get(0).get(0).getInvoiceMonth()))){
+		if (listUsageVendorsSelected.get(0).get(0).getOrdinalMonth().equals(getMonthOfInvoiceMonth(listUsageVendorsSelected.get(0).get(0).getInvoiceMonth()))){
 			monthEqualToInvoiceMonth = true;
 		}
 		
 				
-		for(int i = 0; i < months.size(); i++){
+		for (int i = 0; i < months.size(); i++) {
 		
 			String[] monthYear = getMonthYearSeparated(months.get(i));
 			String month = monthYear[0]; // month in the format "M" 
 			String year = monthYear[1]; // year in the format "YYYY"
 			
-			//System.out.println("Month: " + month + ", Year: " + year);
+			//if the month has a leading "0", remove it, to match the format of the month in source file 
+			if (month.startsWith("0") && month.length() == 2)  
+				month = month.substring(1, 2);
 			
-			for(int j = 0; j < listUsageVendorsSelected.size(); j++){
+//			System.out.println("Month: " + month + ", Year: " + year);
 			
-				//System.out.println("j: " + j);
+			for (int j = 0; j < listUsageVendorsSelected.size(); j++) {
+			
 				List<UsageOneMonth> listOneVendor = listUsageVendorsSelected.get(j);
 				
-				for(int k = 0; k < listUsageVendorsSelected.get(j).size(); k++){
+				for (int k = 0; k < listOneVendor.size(); k++){
 				
-					if(monthEqualToInvoiceMonth){
-						
+					if (monthEqualToInvoiceMonth) {
+										
 						if(month.equals(listOneVendor.get(k).getOrdinalMonth()) && year.equals(listOneVendor.get(k).getOrdinalYear())){
 							
 							String monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
-							
+														
 							if(!monthsWithData.get(i).equals(monthYearToSelect)){
 								 
-								//System.out.println("1-Month Added: " + monthsWithData.get(i)); 
+//								System.out.println("1-Month Added: " + monthYearToSelect); 
 								monthsWithData.add(i, monthYearToSelect);
+							
 									
 							}
 									
 						} 
 						
-					} else {
+					} else if (!monthEqualToInvoiceMonth) {
 						
 						String monthTmp;
 						String yearTmp;
@@ -502,7 +526,7 @@ public class UsageHelper extends BaseClass{
 							
 							if(!monthsWithData.get(i).equals(monthYearToSelect)){
 								
-								//System.out.println("2-Month Added: " + monthsWithData.get(i));
+//								System.out.println("2-Month Added: " + monthYearToSelect);
 								monthsWithData.add(i, monthYearToSelect);
 								
 							}
@@ -519,15 +543,17 @@ public class UsageHelper extends BaseClass{
 		
 		List<String> monthsToSelectPulldown = new ArrayList<>();
 		
-		for(int i = 0; i < 13; i++){
-			if(!monthsWithData.get(i).equals("")){
+		for (int i = 0; i < 13; i++) {
+			
+			if (!monthsWithData.get(i).equals("")) {
+				
 				monthsToSelectPulldown.add(monthsWithData.get(i));
-				//System.out.println("Month to select: " + monthsWithData.get(i));
+//				System.out.println("Month to select: " + monthsWithData.get(i));
 			}
 				
 		}
 		
-		//System.out.println("monthsToSelectPulldown.size(): " + monthsToSelectPulldown.size());
+//		System.out.println("monthsToSelectPulldown.size(): " + monthsToSelectPulldown.size());
 		
 		return monthsToSelectPulldown;
 		
@@ -580,7 +606,25 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	
+	public static List<String> getMonthYearListString() throws ParseException{
+		
+		List<String> listMonthYearInteger = CommonTestStepActions.YearMonthIntergerFromPulldown();
+		List<String> listMonthYearString = new ArrayList<>();
+		
+		for(String s: listMonthYearInteger) {
+			
+			String[] dateParts = s.split("-");
+			String month = dateParts[0];
+			String year = dateParts[1];
+			
+			listMonthYearString.add(CommonTestStepActions.convertMonthNumberToName(month, year));
+			
+		}
+		
+		return listMonthYearString;
+		
+	}
 	
-	
+
 	
 }
