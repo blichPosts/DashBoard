@@ -198,12 +198,30 @@ public class CountOfServiceNumbersTrend extends BaseClass
 	}
 	
 	// verify number of legends equals number of sections in the bar graphs.
-	public static void VerifyNumLegendsMatchNumBarSections()
+	public static void VerifyNumLegendsMatchNumBarSections() throws Exception
 	{
 		errMessage = "Fail verifying number of legands and number of bar chart parts in CountOfServiceNumbersTrend.VerifyNumLegendsMatchNumBarSections";
 		
+		if (webEleListLegends != null)
+		{
+			webEleListLegends.clear();
+		}
+		
+		webEleListLegends =  driver.findElements(By.xpath("//div[@id = '" + chartId  + "']" + ExpenseHelper.partialXpathToBarGrapghControls ));
+		
+		// verify there are no bar sections with attribute 'visibility'. 
+		for(WebElement ele : webEleListLegends)
+		{
+			if(ele.getAttribute("visibility") != null)
+			{
+				Assert.fail(errMessage);
+			}
+		}
+		
+		// verify number of legends equal number of bar chart sections.
 		String cntrlPath = "//div[@id = '" + chartId  + "']" + ExpenseHelper.partialXpathToBarGrapghControls;
-
+		
+		// verify number of legends equal number of bar chart sections.
 		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath)).size() == numberOfLegends, errMessage);
 	}
 	

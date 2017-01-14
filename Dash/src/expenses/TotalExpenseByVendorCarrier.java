@@ -196,6 +196,7 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		
 		webElementListLegands = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-series-group']/*/*"));
 
+		// make sure there are no disabled pie slices.
 		for(WebElement ele : webElementListLegands)
 		{
 			if(ele.getAttribute("visibility") != null)

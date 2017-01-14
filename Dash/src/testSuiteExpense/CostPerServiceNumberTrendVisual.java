@@ -1,5 +1,8 @@
 package testSuiteExpense;
 
+
+// 1/14/16 - update country view wait and verify no "visibility" attributes when testing legends/control sections.
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -34,8 +37,6 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 		
 		CostPerServiceNumberTrend.SetupChartId(); // setup unique id for this control test.
 
-		DebugTimeout(9999, "Freeze");
-				
 		// #1 View the 'Cost per Line Trend for Top 5 Spend' component.
 
 		// The title is 'Cost per Service Number - All Categories'.
@@ -54,14 +55,26 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 		CostPerServiceNumberTrend.VerifyMonths();
 		CostPerServiceNumberTrend.VerifyNumLegendsMatchNumBarSections();		
 		
+		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+		// this list is stored in the expense helper class.
+		ExpenseHelper.SetupForCountryPageWait();
+		
 		// #3
 		// Switch to the 'Country View'.
 		// The results are the same as the above steps except countries are shown instead of vendors.
 		CommonTestStepActions.SelectCountryView();
+		
+		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+		ExpenseHelper.WaitForCountryPageLoad();
+		
 		CostPerServiceNumberTrend.VerifyTitle(CommonTestStepActions.ExpensesViewMode.country);
 		CostPerServiceNumberTrend.VerifyLegends();
 		CostPerServiceNumberTrend.VerifyMonths();
-		CostPerServiceNumberTrend.VerifyNumLegendsMatchNumBarSections();		
+		CostPerServiceNumberTrend.VerifyNumLegendsMatchNumBarSections();
+		
+		
+		
 	}
 	
 	@AfterClass

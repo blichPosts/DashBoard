@@ -84,7 +84,9 @@ public class ExpenseHelper extends BaseClass
 	
 	// this is for getting the vendors in 'Total Expense by Vendor/Country and Spend Category'.
 	public static String partialXpathForLegendsInTotalSpendCategoryCategories = "/*/*[@class='highcharts-legend']/*/*/*";
-
+	
+	// this gets the bar chart section in expense spend category.
+	public static String partialXpathForBarChartInTotalSpendCategoryCategories = "/*/*[@class='highcharts-series-group']/*";
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// The xpaths below help in getting hover values in the controls and selecting elements in controls (some controls).    
@@ -608,6 +610,18 @@ public class ExpenseHelper extends BaseClass
 			}
 		}		
 	}
+	
+	// this is a setup so a wait for the loading of the country page can be done.
+	public static void SetupForCountryPageWait()
+	{
+		// initialize collection needed to do the convert vendors to countries
+		SetupCountryAndVendorData(); 
+
+		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+		// this list is stored in the expense helper class.
+		SetupForCountryViewPageLoad();  
+	}
+	
 	
 	// This shows all countries with vendors.
 	// NOTE: you MUST run  SetupCountryAndVendorData() before using this.

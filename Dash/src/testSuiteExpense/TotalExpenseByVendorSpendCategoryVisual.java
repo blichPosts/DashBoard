@@ -1,5 +1,7 @@
 package testSuiteExpense;
 
+//1/14/16 - update country view wait and verify no "visibility" attributes when testing legends/control sections.
+
 import javax.swing.JOptionPane;
 
 import org.testng.annotations.AfterClass;
@@ -19,6 +21,7 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	@Test
@@ -63,9 +66,17 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
 		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
 
+		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+		// this list is stored in the expense helper class.
+		ExpenseHelper.SetupForCountryPageWait();
+		
 		// #2
 		// In the 'Country/Vendor View Selector' component, select Country.
 		CommonTestStepActions.SelectCountryView();
+		
+		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+		ExpenseHelper.WaitForCountryPageLoad();
 		
 	    // All of the countries are listed next to the horizontal bar graph in the same fashion as they are listed in the 'Total Expense' control.
 	    // The hover behavior matches the behavior in step one.

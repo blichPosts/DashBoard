@@ -1,5 +1,7 @@
 package testSuiteExpense;
 
+//1/14/16 - update country view wait and verify no "visibility" attributes when testing legends/control sections.
+
 import java.util.List;
 
 import org.eclipse.jetty.servlets.WelcomeFilter;
@@ -54,10 +56,20 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		CountOfServiceNumbersTrend.VerifyMonths();
 		CountOfServiceNumbersTrend.VerifyNumLegendsMatchNumBarSections();		
 
+		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+		// this list is stored in the expense helper class.
+		ExpenseHelper.SetupForCountryPageWait();		
+		
 		// #3
 		// Switch to the 'Country View'.
 		// The results are the same as the above steps except countries are shown instead of vendors.
 		CommonTestStepActions.SelectCountryView();
+		
+
+		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+		ExpenseHelper.WaitForCountryPageLoad();
+		
 		CountOfServiceNumbersTrend.VerifyTitle(CommonTestStepActions.ExpensesViewMode.country);		
 		CountOfServiceNumbersTrend.VerifyLegends();
 		CountOfServiceNumbersTrend.VerifyMonths();

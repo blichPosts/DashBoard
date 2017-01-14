@@ -6,6 +6,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
+import org.testng.internal.TestMethodWithDataProviderMethodWorker;
 
 import Dash.BaseClass;
 import helperObjects.ExpenseHelper;
@@ -145,7 +146,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category. 
 	}
 	
-	public static void Setupdata() 
+	public static void Setupdata()  
 	{
 		chartId = UsageHelper.getChartId(1);
 		
@@ -170,10 +171,26 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		numberOfLegendsInLegendList = expectedSpendCategoryLegends.size();
 		
 		// this gets the number of available bar sections.    
-		numberOfLegendsInBarChart = driver.findElements(By.xpath("(//div[@id='" + chartId + "']/*/*/*/..)[6]/*")).size()/2;
+		numberOfLegendsInBarChart = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + ExpenseHelper.partialXpathForBarChartInTotalSpendCategoryCategories)).size()/2;		
+
+		// verify there are no unselected elements in the bar charts.
+		if(eleList != null)
+		{
+			eleList.clear();
+		}
+		
+		eleList = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + ExpenseHelper.partialXpathForBarChartInTotalSpendCategoryCategories));
+		
+		for(WebElement ele : eleList)
+		{
+			if(ele.getAttribute("visibility") != null)
+			{
+				Assert.fail(errMessage);
+			}
+		}
 	}
 	
-	public static void VerifyLegendsTitleAndbarGraphCount() throws InterruptedException
+	public static void VerifyLegendsTitleAndbarGraphCount() 
 	{
 		errMessage = "Failed checks in TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndPieCount.";
 		
@@ -193,14 +210,6 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		
 		// verify number of sections in the bar graphs equals number of legends. 
 		Assert.assertTrue(numberOfLegendsInBarChart == numberOfLegendsInLegendList, errMessage);
-		
-		// NOTE - to get at vendor names use this - (//div[@id='highcharts-2']/*/*/*/..)[8]
-				
-		// this selects (clicks) 'voice' and 'other' legends.
-		//WaitForElementClickable(By.xpath("(//div[@id='highcharts-2']/*/*)[9]/*/*/*/*[text()='Voice']"), MediumTimeout, "");
-		//driver.findElement(By.xpath("(//div[@id='highcharts-2']/*/*)[9]/*/*/*/*[text()='Voice']")).click();
-		//driver.findElement(By.xpath("(//div[@id='highcharts-2']/*/*)[9]/*/*/*/*[text()='Other']")).click();
-		
 		
 		// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// this gets the the sections in the horizontal bar graph. 
@@ -246,7 +255,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		chartId = UsageHelper.getChartId(1);
 	}
 	
-	public static void VerifyVendorsCountries() throws InterruptedException
+	public static void VerifyVendorsCountries() throws Exception
 	{
 		// clear containers if needed.
 		ClearAllContainers();

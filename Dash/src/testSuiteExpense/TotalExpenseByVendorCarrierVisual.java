@@ -1,5 +1,7 @@
 package testSuiteExpense;
 
+//1/14/16 - update country view wait and verify no "visibility" attributes when testing legends/control sections.
+
 import javax.swing.JOptionPane;
 
 import org.testng.annotations.AfterClass;
@@ -42,12 +44,9 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 		TotalExpenseByVendorCarrier.VerifyLegendsTitleAndPieCount();
 		TotalExpenseByVendorCarrier.VerifyVendorView();
 
-		// initialize collection needed to do the convert vendors to countries
-		ExpenseHelper.SetupCountryAndVendorData(); 
-
 		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
 		// this list is stored in the expense helper class.
-		ExpenseHelper.SetupForCountryViewPageLoad();  
+		ExpenseHelper.SetupForCountryPageWait();
 
 		// #2 Select country in the 'Country/Vendor View Selector'
 		CommonTestStepActions.SelectCountryView();
