@@ -1,5 +1,7 @@
 package testSuiteExpenseActions;
 
+//1/14/16 - update country view wait
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -26,12 +28,9 @@ public class CountOfServiceNumbersCountry extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 
-		// initialize collection needed to do the convert vendors to countries
-		ExpenseHelper.SetupCountryAndVendorData(); 
-
 		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
 		// this list is stored in the expense helper class.
-		ExpenseHelper.SetupForCountryViewPageLoad();  
+		ExpenseHelper.SetupForCountryPageWait();
 		
 		// move to country view.
 		CommonTestStepActions.SelectCountryView();

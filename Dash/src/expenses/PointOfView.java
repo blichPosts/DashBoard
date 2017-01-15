@@ -213,7 +213,7 @@ public class PointOfView extends BaseClass
 	// this goes through each month in months pulldown and verifies the month text is in the top left corner and the expense control.
 	public static void VerifyMonthPulldownSelectionsInControls() throws Exception
 	{
-		List<WebElement> monthYearList;
+		// List<WebElement> monthYearList;
 		
 		CommonTestStepActions.initializeMonthSelector();
 		
@@ -221,12 +221,21 @@ public class PointOfView extends BaseClass
 		
 		for(WebElement ele : CommonTestStepActions.webListPulldown) // go through each month.
 		{
-			//  ShowText(ele.getText()); // DEBUG.
-			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
-			WaitForElementVisible(By.xpath("//h1[text()='" +   ele.getText()  + "']"), MediumTimeout);
-			Assert.assertEquals(driver.findElement(By.xpath("//h1[text()='" +   ele.getText()  + "']")).getText(), ele.getText(), "");
-			WaitForElementVisible(By.xpath("//h2[text()='" +   ele.getText()  + "']"), MediumTimeout);
-			Assert.assertEquals(driver.findElement(By.xpath("//h2[text()='" +   ele.getText()  + "']")).getText(), ele.getText(), "");
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText()); // select.
+			
+			try // this verifies the correct month/date text is in the total expense control. This waits for the text to be visible.
+			{
+				WaitForElementVisible(By.xpath("(//h2[@class='tdb-h2'])[1][text()='" +   ele.getText()  + "']"), MediumTimeout);
+			}
+			catch(Exception e) 
+			{
+				Assert.fail("The expected text for month " +  ele.getText() + " was not found in PonitOfView.VerifyMonthPulldownSelectionsInControls");
+			}
+			
+			// this verifies the correct month/date 
+			WaitForElementVisible(By.cssSelector(".tdb-currentContextMonth>h1"), MediumTimeout);
+			Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1")).getText().contains(ele.getText()), 
+					        					 "The expected text for month " +  ele.getText() + " was not found in PonitOfView.VerifyMonthPulldownSelectionsInControls");
 		}
 	}
 

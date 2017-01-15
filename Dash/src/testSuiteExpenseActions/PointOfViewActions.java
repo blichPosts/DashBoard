@@ -1,5 +1,7 @@
 package testSuiteExpenseActions;
 
+//1/14/16 - update country view wait
+
 import javax.swing.JOptionPane;
 
 import org.bouncycastle.cms.PasswordRecipientInformation;
@@ -22,6 +24,7 @@ public class PointOfViewActions extends BaseClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	@Test
@@ -65,11 +68,17 @@ public class PointOfViewActions extends BaseClass
 		// In the 'Country/Vendor View Selector' component, select Country and repeat the above steps.
 		// Expected results pass.
 		
-		// create container that stores each country object and the vendors inside each country onto a list. this is needed to  
-		ExpenseHelper.SetupCountryAndVendorData();
-		
+		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+		// this list is stored in the expense helper class.
+		ExpenseHelper.SetupForCountryPageWait(); // bladdxx
+
 		// switch to the country view, un-select all vendors, and wait for all controls to be empty.  
 		CommonTestStepActions.SelectCountryView();
+		
+		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+		ExpenseHelper.WaitForCountryPageLoad(); // bladdxx
+		
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();
 
