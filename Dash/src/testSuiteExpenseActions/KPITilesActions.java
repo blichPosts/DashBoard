@@ -15,6 +15,7 @@ public class KPITilesActions extends BaseClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	@Test

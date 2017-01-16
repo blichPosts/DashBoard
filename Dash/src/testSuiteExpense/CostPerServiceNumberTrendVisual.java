@@ -72,9 +72,6 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 		CostPerServiceNumberTrend.VerifyLegends();
 		CostPerServiceNumberTrend.VerifyMonths();
 		CostPerServiceNumberTrend.VerifyNumLegendsMatchNumBarSections();
-		
-		
-		
 	}
 	
 	@AfterClass
