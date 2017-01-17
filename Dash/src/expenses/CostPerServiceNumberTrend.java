@@ -175,7 +175,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 
 		Assert.assertEquals(countOfServiceNumsLegends, totalExpenseLegends, errMessage);
 		
-		numberOfLegends = totalExpenseLegends.size(); // save the number of legends.
+		numberOfLegends = totalExpenseLegends.size(); // save the number of legends for future test.
 	}
 	
 	// this verifies the months in the control are the same months that are in the months pulldown - need to send xpath to the method.
@@ -185,7 +185,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 	}
 	
 	// verify number of legends equals number of sections in the bar graphs.
-	public static void VerifyNumLegendsMatchNumBarSections() 
+	public static void VerifyNumLegendsMatchNumBarSections() throws Exception 
 	{
 		errMessage = "Fail verifying number of legands and number of bar chart parts in CostPerServiceNumberTrend.VerifyNumLegendsMatchNumBarSections";
 		
@@ -195,6 +195,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 			webEleListLegends.clear();
 		}
 		
+		// this gets the horizontal bars, in the DOM, that extend across all the bar graphs. 
 		webEleListLegends =  driver.findElements(By.xpath("//div[@id = '" + chartId  + "']" + ExpenseHelper.partialXpathToBarGrapghControls ));
 		
 		// verify there are no bar sections with attribute 'visibility'. 
@@ -206,9 +207,9 @@ public class CostPerServiceNumberTrend extends  BaseClass
 			}
 		}
 		
-		// verify number of legends equal number of bar chart sections.
-		String cntrlPath = "//div[@id = '" + chartId  + "']" + ExpenseHelper.partialXpathToBarGrapghControls;
-		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath)).size() == numberOfLegends, errMessage);
+		// verify 
+		Assert.assertTrue(webEleListLegends.size() == numberOfLegends, errMessage);
+
 	}	
 	
 	

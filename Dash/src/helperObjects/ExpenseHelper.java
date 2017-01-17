@@ -85,7 +85,7 @@ public class ExpenseHelper extends BaseClass
 	// this is for getting the vendors in 'Total Expense by Vendor/Country and Spend Category'.
 	public static String partialXpathForLegendsInTotalSpendCategoryCategories = "/*/*[@class='highcharts-legend']/*/*/*";
 	
-	// this gets the bar chart section in expense spend category.
+	// this gets the bar chart section in expense spend category. also gets pie section in 'expense' control.
 	public static String partialXpathForBarChartInTotalSpendCategoryCategories = "/*/*[@class='highcharts-series-group']/*";
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ public class ExpenseHelper extends BaseClass
 		{
 			Thread.sleep(1000);
 			
-			// get list that
+			// get list of web elements that are in chartId 4.
 			webElementListLegends = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + partialXpathToLegendsListInControls));  
 			if(webElementListLegends != null)
 			{
@@ -446,7 +446,7 @@ public class ExpenseHelper extends BaseClass
 		}
 	}	
 
-	// this waits for the legends block to be visible in the control type passed in. 
+	// this waits for the legends block to be visible in the control type passed in.  NOTE: 1/17/17 - verified this works using total expense.
 	public static void WaitForControlLegend(controlType control) throws Exception
 	{
 		switch(control)
@@ -454,7 +454,7 @@ public class ExpenseHelper extends BaseClass
 			case totalExpense:
 			{
 				chartId = UsageHelper.getChartId(0); // get current chart Id for expense control.
-				WaitForElementVisible(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls), MediumTimeout);
+				WaitForElementVisible(By.xpath("//div[@id='" +  chartId + "']" + partialXpathForBarChartInTotalSpendCategoryCategories), MediumTimeout);
 			}
 			
 			case totalExpenseSpendCatergory:
@@ -701,12 +701,15 @@ public class ExpenseHelper extends BaseClass
 	{
 		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
 		
+		// NEED TO ADD TOTAL EXPENSE HERE
+		
+		
 		chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
 		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
 		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
 
 		chartId =  UsageHelper.getChartId(2); // expense trending. 
-		ShowText(chartId);
+		// ShowText(chartId);
 		tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
 		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
 

@@ -47,7 +47,6 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 		// Select all the vendors. 
 		CommonTestStepActions.SelectAllVendors();
 
-
     	// The legends match the legends in the 'Total Expense' control.
     	// The last 13 months are shown across the bottom of a line graph matching the months in the month pulldown.
     	// There is a line for each legend (shown in hover).
