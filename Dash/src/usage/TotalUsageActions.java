@@ -528,7 +528,7 @@ public class TotalUsageActions extends BaseClass{
 
 
 	// Verifies the content of the tooltips displayed on charts under Total Usage Domestic and Roaming charts
-	// ** FOR ONE OR MORE VENDORS SELECTED
+	// **** FOR ONE OR MORE VENDORS SELECTED ****
 	public static void verifyTotalUsageChartTooltip(int barChartId, List<UsageOneMonth> listOneMonthData, int categorySelector) throws ParseException, InterruptedException, AWTException {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
@@ -537,13 +537,6 @@ public class TotalUsageActions extends BaseClass{
 		
 		// It gets the legends for "Domestic" and "Domestic Overage" or "Roaming"
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
-		
-		List<WebElement> vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
-		List<String> vendorsInChartNames = new ArrayList<String>();
-		
-		for (int i = 0; i < vendorsInChart.size(); i++){
-			vendorsInChartNames.add(vendorsInChart.get(i).getText());
-		}	
 		
 		
 		HashMap<String, UsageOneMonth> vendorUsageMap = new HashMap<String, UsageOneMonth>();
@@ -603,6 +596,12 @@ public class TotalUsageActions extends BaseClass{
 		}
 		
 		
+		List<WebElement> vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
+		List<String> vendorsInChartNames = new ArrayList<String>();
+		
+		for (int i = 0; i < vendorsInChart.size(); i++){
+			vendorsInChartNames.add(vendorsInChart.get(i).getText());
+		}	
 		
 		
 		boolean moreThanFiveVendorsSelected = vendorsSelectedCheckBox.size() > 5;
@@ -613,7 +612,8 @@ public class TotalUsageActions extends BaseClass{
 		String roamingValueOther = "";
 		String otherVendors = "Other";
 	
-		// If more than 5 vendors are selected and there are 6 vendors in chart. This will be 5 vendors and "Other", summarizing the values for one or more vendors
+		// If more than 5 vendors are selected and there are 6 vendors in chart,  
+		// then the vendors that have data for the selected month are summarized in the "Other" item.
 		if (moreThanFiveVendorsSelected && sixVendorsInChart) {
 			
 			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);

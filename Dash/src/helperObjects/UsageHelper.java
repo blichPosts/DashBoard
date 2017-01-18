@@ -233,7 +233,7 @@ public class UsageHelper extends BaseClass{
 		
 		for(UsageOneMonth m: valuesFromFileNew){
 			
-			/*System.out.println("vendor name: " + m.getVendorName());
+		/*	System.out.println("vendor name: " + m.getVendorName());
 			System.out.println("year: " + m.getOrdinalYear());
 			System.out.println("month: " + m.getOrdinalMonth());
 			System.out.println("invoice month: " + m.getInvoiceMonth());
@@ -243,7 +243,7 @@ public class UsageHelper extends BaseClass{
 			System.out.println("domestic data:" + m.getDomesticDataUsageKb());
 			System.out.println("roaming voice: " + m.getRoamingVoice());
 			System.out.println("roaming data: " + m.getRoamingDataUsageKb());
-			System.out.println("roaming messages: " + m.getRoamingMessages());*/
+			System.out.println("roaming messages: " + m.getRoamingMessages()); */
 		    
 //			System.out.println("month: " + m.getOrdinalMonth() + " " + m.getOrdinalYear());
 			
@@ -401,6 +401,33 @@ public class UsageHelper extends BaseClass{
 		return monthAndYear;
 		
 	}
+	
+	
+	// ** For Bob ***
+	public static boolean isMonthEqualToInvoiceMonth(String month, String invoiceMonth) {
+
+		String[] invoiceMonthParts = invoiceMonth.split("/");
+		
+		// If the month in invoice_month is the month before ordinal_month
+		// E.g.: invoice_month = 9/1/2016 and ordinal_month = 8
+		if(!invoiceMonthParts[0].equals(month)){
+			
+			return true;
+			
+		} 
+		
+		// Else if the month in invoice_month is the same as ordinal_month
+		// E.g.: invoice_month = 9/1/2016 and ordinal_month = 9
+		else {
+		
+			return false;
+		}
+		
+	}
+	
+	
+	
+	
 	
 	
 	public static String getMonthOfInvoiceMonth(String invoiceMonth){

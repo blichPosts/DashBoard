@@ -60,7 +60,7 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = new ArrayList<>();
 		
 		// Run the test for each vendor 
-		for(int i = 7; i < amountOfVendors; i++){
+		for(int i = 4; i < amountOfVendors; i++){
 			
 			String vendor = vendorNames.get(i);
 			String vendorSelected = vendorNames.get(i);
@@ -73,10 +73,7 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 			//System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
 			
 			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getDataFromSpreadsheet(completePath);
-			
-			//System.out.println("valuesFromFileTmp size: " + valuesFromFileTmp.size());  
-			
+			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getDataFromSpreadsheet(completePath);			
 			listSelectedDataForMonthListUnified.add(valuesFromFileTmp);
 				
 			// #3 Select one vendor
@@ -163,14 +160,14 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 		}
 		
 		
-		int indexMonthToSelect = 0;
+		int indexMonthToSelect = 7;   //  <---- SET IT BACK TO ZERO!!
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 		
 		do {
 					
-			monthYearToSelect = monthsWithDataToSelectPulldown.get(indexMonthToSelect);
-//			System.out.println("Month Year: " + monthYearToSelect);
+			monthYearToSelect = monthsWithDataToSelectPulldown.get(indexMonthToSelect);  
+			System.out.println("Month Year: " + monthYearToSelect);
 			
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 			Thread.sleep(2000);
@@ -188,7 +185,7 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 				
 				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, listAllMonthsSortedByVendor, UsageHelper.categoryVoice);
 				Thread.sleep(2000);				
-				/*
+				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
 				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, listAllMonthsSortedByVendor, UsageHelper.categoryData);
@@ -204,7 +201,7 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 				
 				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, listAllMonthsSortedByVendor, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
-				*/
+				
 				  
 			} catch(NullPointerException e){
 				

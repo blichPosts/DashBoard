@@ -46,7 +46,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 8;
+		int amountOfVendors = 5;
 
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();
@@ -133,7 +133,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 			Thread.sleep(1000);
-		/*	
+	
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 			Thread.sleep(1000);				
 			
@@ -152,7 +152,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
 			Thread.sleep(1000);
-		*/					
+						
 			indexMonth++;
 
 			

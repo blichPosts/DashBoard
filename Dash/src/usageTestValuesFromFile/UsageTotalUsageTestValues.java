@@ -98,22 +98,6 @@ public class UsageTotalUsageTestValues extends BaseClass{
 			
 				oneMonthData = valuesFromFile.get(indexMonth);   
 				
-				/*
-				 * This has been modified on the source file. Month is the month listed on the file, it doesn't refer to the previous month.
-				 * E.g.: “9/1/2016” now refers to September instead of August  
-				 * if(oneMonthData[1].equals("1")){
-					month = "12";
-					year = Integer.toString(Integer.parseInt(oneMonthData[0]) - 1);
-				}else{
-					month = Integer.toString((Integer.parseInt(oneMonthData[1]) - 1));
-					year =  oneMonthData[0];
-				}*/
-				
-				// The following two lines replace the commented above. Will need to find out which version is the correct....
-				//month = oneMonthData.getOrdinalMonth();
-				//year =  oneMonthData.getOrdinalYear();
-				
-				// Code above replaced by the following 3 lines:
 				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
 				month = monthYear[0];
 				year = monthYear[1];
