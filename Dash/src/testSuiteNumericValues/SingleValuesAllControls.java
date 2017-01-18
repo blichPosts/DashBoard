@@ -27,37 +27,28 @@ public class SingleValuesAllControls extends BaseClass
 	@Test
 	public static void SingleValuesAllControlsTest() throws Exception
 	{
+		// clear all the controls.
 		CommonTestStepActions.GoToExpensePage();
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();
 
-		// 
+		// setup the list of lists to be used for testing AT & T.
 		ExpenseValuesHelper.ReadFileAndBuildLists("AT&T Mobility.txt");
+		CommonTestStepActions.SelectSingleVendor("AT&T Mobility");
+		ExpenseValuesHelper.SetupChartIdForExpense();
 
-		ShowText(ExpenseValuesHelper.listOfRows.get(0).get(ExpenseValuesHelper.titlesList.indexOf("invoice_month")));
-		
-		ShowText(CommonTestStepActions.convertMonthNumberToName("9", "2016")); 
+		// total expense control.
+		for(int x = 0; x < ExpenseValuesHelper.rowsOfValues; x++)
+		{
+			ExpenseValuesHelper.SelectMonth(x);
+			// Thread.sleep(1000);
+			ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+			ExpenseValuesHelper.VerifyOneVendorTotalExpense();
+		}
 		
 		DebugTimeout(9999, "9999");
 		
-		// this month is known to have all the vendors possible showing. 
-		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
-		
-		// 
-		CommonTestStepActions.SelectSingleVendor("AT&T Mobility");
-		
-		// 
-		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
-		
-		
-		ExpenseValuesHelper.SetupChartId();
-		
-		ExpenseValuesHelper.VerifyOneVendor();
-		
-		//ShowText((ExpenseValuesHelper.listOfRows.get(0).get(ExpenseValuesHelper.titlesList.indexOf("ordinal_month"))));
-		//ShowText(ExpenseValuesHelper.listOfRows.get(0).get(ExpenseValuesHelper.titlesList.indexOf("roaming_data_charges_ex")));
 	}
-	
 	
 	@AfterClass
 	public static void closeDriver() throws Exception

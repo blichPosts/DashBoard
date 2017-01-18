@@ -12,8 +12,11 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.w3c.dom.Element;
+import org.testng.Assert;
 
 import Dash.BaseClass;
+import net.sf.cglib.asm.attrs.StackMapAttribute;
+// import junit.framework.Assert;
 
 public class ExpenseValuesHelper extends BaseClass 
 {
@@ -25,8 +28,11 @@ public class ExpenseValuesHelper extends BaseClass
 	public static int fieldWidth =  30;
 	public static List<String> titlesList;
 	public static List<List<String>> listOfRows = new ArrayList<List<String>>();
+	public static String newMonth = "";
 	public static int rowsOfValues= 0;
-	
+	public static int testRow =  0;
+	public static double actual = 0;
+	public static double expected = 0;
 	
 	// mouse clicks.
 	public static String cssBar = "";
@@ -38,24 +44,34 @@ public class ExpenseValuesHelper extends BaseClass
 	public static String chartId = "";
 	
 	// this vendor has been selected and the 'listOfRows' has been created for the vendor.
-	public static void VerifyOneVendor() throws Exception
+	public static void VerifyOneVendorTotalExpense() throws Exception
 	{
-		
 		// get the 'expense' control visible by moving to it. 
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(1)"));
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
 		ClickExpenseControl();
-		
-		Thread.sleep(1000);
+		Thread.sleep(500);
 		VerifyExpenseControl();
+	}
+
+	// this selects the month being tested. 
+	public static void SelectMonth(int month) throws Exception
+	{
+		// 
+		String [] tempArray = GetMonthYear(ExpenseValuesHelper.listOfRows.get(month).get(ExpenseValuesHelper.titlesList.indexOf("invoice_month")));
+
+		// 
+		CommonTestStepActions.selectMonthYearPulldown(CommonTestStepActions.convertMonthNumberToName(tempArray[0], tempArray[1]));
 		
-		DebugTimeout(9999, "9999");
+		newMonth = CommonTestStepActions.convertMonthNumberToName(tempArray[0], tempArray[1]);
+		WaitForElementVisible(By.xpath("(//h2[@class='tdb-h2'])[1][text()='" + newMonth + "']"), MediumTimeout);
 		
+		// 
+		testRow = month;
 	}
 	
-	
-	public static void SetupChartId()
+	public static void SetupChartIdForExpense()
 	{
 		chartId = UsageHelper.getChartId(0);
 	}
@@ -108,12 +124,29 @@ public class ExpenseValuesHelper extends BaseClass
 
 	// ///////////////////////////////////////////// Helpers ///////////////////////////////////////////////////////////////////////////////
 	
+	public static String[] GetMonthYear(String invoiceMonth)
+	{
+		return new String[]  {invoiceMonth.split("/")[0],invoiceMonth.split("/")[2]};
+	}
+	
+	public static double GetDoubleValueForExpenseValueActual(String strVal)
+	{
+		strVal = strVal.split("\\$")[1].replace(" ","");
+		return Double.parseDouble(strVal);
+	}	
+	
+	public static double GetDoubleValueForExpenseValueExpected(String strVal)
+	{
+		return Math.round(Double.parseDouble(strVal));
+	}	
+	
+	
 	public static void ClickExpenseControl() throws Exception
 	{
-		cssBar = "#" + chartId + ">svg>g:nth-of-type(2)>rect";
-		chartId = UsageHelper.getChartId(1);
-		cssLine = "#" + chartId + ">svg>g:nth-of-type(8)";
-		SetupChartId();
+		cssBar = "#" + chartId + ">svg>g:nth-of-type(2)>rect"; // vertical coordinate. 
+		chartId = UsageHelper.getChartId(1); // change chartId to expense spend category for horizontal coordinate. 
+		cssLine = "#" + chartId + ">svg>g:nth-of-type(8)"; // horizontal coordinate.
+		SetupChartIdForExpense();
 		
 		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -126,10 +159,7 @@ public class ExpenseValuesHelper extends BaseClass
 		lineCoordinates = line.getLocation();
 		
 		Robot robot = new Robot(); 
-		//int x = barCoordinates.getX() + 30; 
-		//int y = lineCoordinates.getY() + 250;
 		
-		// 1/11/16 - moves cursor arrow up.
 		int x = barCoordinates.getX() + 30;
 		int y = lineCoordinates.getY() + 200;
 		
@@ -144,11 +174,14 @@ public class ExpenseValuesHelper extends BaseClass
 	
 	public static void VerifyExpenseControl()
 	{
+		ShowText("run");
 		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(3)>text"));
-		for(WebElement ele : eleList)
-		{
-			ShowText(ele.getText());
-		}
+		// for(WebElement ele : eleList){ShowText(ele.getText());}
+
+		actual = GetDoubleValueForExpenseValueActual(eleList.get(0).getText());
+		expected = GetDoubleValueForExpenseValueExpected(listOfRows.get(testRow).get(titlesList.indexOf("total_charge_ex"))); 
+		
+		Assert.assertEquals(actual, expected);
 	}
 	
 	// this takes a row and breaks it apart into sections of fieldWidth characters, trims each section, and adds each section to the list to be returned.
