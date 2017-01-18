@@ -32,22 +32,38 @@ public class SingleValuesAllControls extends BaseClass
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();
 
-		// setup the list of lists to be used for testing AT & T.
-		ExpenseValuesHelper.ReadFileAndBuildLists("AT&T Mobility.txt");
-		CommonTestStepActions.SelectSingleVendor("AT&T Mobility");
+		ExpenseValuesHelper.ReadFileAndBuildLists("AT&T Mobility.txt"); // setup the list of lists to be used for testing. the list holds expected values.
+		CommonTestStepActions.SelectSingleVendor("AT&T Mobility"); // select the vendor
 		ExpenseValuesHelper.SetupChartIdForExpense();
 
-		// total expense control.
+		// total expense control test. loop through each month for the selected vendor.
 		for(int x = 0; x < ExpenseValuesHelper.rowsOfValues; x++)
 		{
-			ExpenseValuesHelper.SelectMonth(x);
-			// Thread.sleep(1000);
-			ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
-			ExpenseValuesHelper.VerifyOneVendorTotalExpense();
+			// this selects month to run test on. it has a built in wait for the selection to complete
+			ExpenseValuesHelper.SelectMonth(x);  
+			
+			if(x == 0) // wait for expense control to load on first time through loop.
+			{
+				ExpenseHelper.WaitForControlLegend(controlType.totalExpense);				
+			}
+			
+			ExpenseValuesHelper.VerifyOneVendorTotalExpense(); // verify total expense value for current month selection. 
 		}
 		
-		DebugTimeout(9999, "9999");
-		
+		// total expense Spend Category control test. loop through each month for the selected vendor.
+		for(int x = 0; x < ExpenseValuesHelper.rowsOfValues; x++)
+		{
+			// this selects month to run test on. it has a built in wait for the selection to complete
+			ExpenseValuesHelper.SelectMonth(x);  
+			
+			if(x == 0) // wait for expense control to load on first time through loop.
+			{
+				ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
+				ExpenseValuesHelper.SetupChartIdForExpenseSpendCategory(); // need to set correct chart id. method above changes it. 
+			}
+			
+			ExpenseValuesHelper.VerifyOneVendorTotalExpenseSpendCategory(); // verify total expense value for current month selection. 
+		}
 	}
 	
 	@AfterClass
