@@ -98,23 +98,7 @@ public class UsageTrendingTestValues extends BaseClass{
 			String year =  "";
 			String month = "";
 			String monthYearToSelect = "";
-						
-			/*
-			 * This has been modified on the source file. Month is the month listed on the file, it doesn't refer to the previous month.
-			 * E.g.: “9/1/2016” now refers to September instead of August  
-			 * if(oneMonthData[1].equals("1")){
-				month = "12";
-				year = Integer.toString(Integer.parseInt(oneMonthData[0]) - 1);
-			}else{
-				month = Integer.toString((Integer.parseInt(oneMonthData[1]) - 1));
-				year =  oneMonthData[0];
-			}*/
 			
-			// The following two lines replace the commented above. Will need to find out which version is the correct....
-			//month = oneMonthData.getOrdinalMonth();
-			//year =  oneMonthData.getOrdinalYear();
-				
-			// Code above replaced by the following 3 lines: 
 			String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
 			month = monthYear[0];
 			year = monthYear[1];
@@ -134,28 +118,28 @@ public class UsageTrendingTestValues extends BaseClass{
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryVoice);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryVoice);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryVoice);
 				Thread.sleep(2000);				
-				
+			/*	
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryData);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryData);
 				Thread.sleep(2000);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryData);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryData);
 				Thread.sleep(2000);				
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryMessages);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryMessages);
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
-				
+			*/	
 			} catch(NullPointerException e){
 				
 				System.out.println("chart not found");

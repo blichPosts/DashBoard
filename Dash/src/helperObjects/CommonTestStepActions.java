@@ -613,4 +613,24 @@ public class CommonTestStepActions extends BaseClass
 			
 		return countriesAndVendors;
 	}
+	
+	
+	
+	public static String[] getMonthYearInteger(String monthYearToConvert) throws ParseException {
+		
+		Date date = new SimpleDateFormat("MMM").parse(monthYearToConvert);//put your month name here
+		
+		Calendar cal = Calendar.getInstance();
+	    cal.setTime(date);
+	    
+	    String monthNumber = String.valueOf(cal.get(Calendar.MONTH) + 1);
+	    String yearNumber = monthYearToConvert.split(" ")[1];
+	   
+	    String[] monthYearNumber = {monthNumber, yearNumber};
+	    
+	    return monthYearNumber;
+	    
+	}
+	
+	
 }
