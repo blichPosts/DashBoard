@@ -39,20 +39,36 @@ public class ReadFilesHelper {
 			String lineToBeSplited = linesOfFile.get(i+2);
 			String[] splitedline = splitLine(lineToBeSplited);
 		
-			UsageOneMonth usageOneMonth = new UsageOneMonth();
-			usageOneMonth.setVendorName(linesOfFile.get(0));         // vendor_name
-			usageOneMonth.setInvoiceMonth(splitedline[3]);			 // invoice_month
-			usageOneMonth.setOrdinalYear(splitedline[4]);            // ordinal_year
-			usageOneMonth.setOrdinalMonth(splitedline[5]);           // ordinal_month
-			usageOneMonth.setDomesticVoice(splitedline[19]);         // domestic_mou
-			usageOneMonth.setDomesticOverageVoice(splitedline[20]);  // domestic_overage_mou
-			usageOneMonth.setDomesticMessages(splitedline[21]);      // domestic_messages
-			usageOneMonth.setDomesticDataUsageKb(splitedline[22]);   // domestic_data_usage_kb
-			usageOneMonth.setRoamingVoice(splitedline[23]);          // roaming_mou
-			usageOneMonth.setRoamingDataUsageKb(splitedline[24]);    // roaming_data_usage_kb
-			usageOneMonth.setRoamingMessages(splitedline[25]);       // roaming_messages
+			UsageOneMonth dataOneMonth = new UsageOneMonth();
+			dataOneMonth.setVendorName(linesOfFile.get(0));         // vendor_name
+			dataOneMonth.setInvoiceMonth(splitedline[3]);			 // invoice_month
+			dataOneMonth.setOrdinalYear(splitedline[4]);            // ordinal_year
+			dataOneMonth.setOrdinalMonth(splitedline[5]);           // ordinal_month
+			dataOneMonth.setDomesticVoice(splitedline[19]);         // domestic_mou
+			dataOneMonth.setDomesticOverageVoice(splitedline[20]);  // domestic_overage_mou
+			dataOneMonth.setDomesticMessages(splitedline[21]);      // domestic_messages
+			dataOneMonth.setDomesticDataUsageKb(splitedline[22]);   // domestic_data_usage_kb
+			dataOneMonth.setRoamingVoice(splitedline[23]);          // roaming_mou
+			dataOneMonth.setRoamingDataUsageKb(splitedline[24]);    // roaming_data_usage_kb
+			dataOneMonth.setRoamingMessages(splitedline[25]);       // roaming_messages
 			
-			listValues.add(usageOneMonth);
+			dataOneMonth.setNumberOfInvoices(splitedline[6]);
+			dataOneMonth.setNumberOfLines(splitedline[7]);
+			dataOneMonth.setTotalSubscriberCharges(splitedline[9]);
+			dataOneMonth.setVoiceCharges(splitedline[10]);
+			dataOneMonth.setDataCharges(splitedline[11]);
+			dataOneMonth.setMessagesCharges(splitedline[12]);
+			dataOneMonth.setEquipmentCharges(splitedline[13]);
+			dataOneMonth.setTaxCharges(splitedline[14]);
+			dataOneMonth.setRoamingMsgCharges(splitedline[15]);
+			dataOneMonth.setRoamingDataCharges(splitedline[16]);
+			dataOneMonth.setRoamingVoiceCharges(splitedline[17]);
+			dataOneMonth.setTotalAccountLevelCharges(splitedline[18]);
+			dataOneMonth.setRoamingCharges(splitedline[26]);
+			dataOneMonth.setOtherCharges(splitedline[27]);
+			dataOneMonth.setTotalCharge(splitedline[28]);
+			
+			listValues.add(dataOneMonth);
 			
 //			System.out.print("Row " + (i+1) + ":  | ");
 //			System.out.print(listValues.get(i).getVendorName() + "  | ");            // vendor_name 
@@ -73,8 +89,8 @@ public class ReadFilesHelper {
 		return listValues;
 		
 	}
-	
-	
+
+
 	
 	public static List<String> getRowsfromFile(String filePath) throws IOException{
 		

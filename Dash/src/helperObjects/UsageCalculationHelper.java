@@ -109,10 +109,14 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		//System.out.println("Original amount: " + amount);
 			
-		if (amount < 1000.0){
+//		if (amount < 1000.0){
+//			tmpAmount = amount;
+//		}
+//		else if (amount > 1000.0 && amount < 1000000.0){
+		if (amount < 950.0){
 			tmpAmount = amount;
 		}
-		else if (amount > 1000.0 && amount < 1000000.0){
+		else if (amount > 950.0 && amount < 1000000.0){
 			tmpAmount = amount / 1000;
 			unit = "K";
 		}
@@ -313,6 +317,21 @@ public class UsageCalculationHelper extends BaseClass{
 		//System.out.println("Value with no units: " + valueNoUnits);
 		
 		return valueNoUnits.trim();
+		
+	}
+
+	
+	// Adds the '$' symbol to the expenses values 
+	public static String convertUnitsExpense(double value) {
+		
+		String valueConverted = convertUnits(Math.abs(value));
+		
+		// If the original value was less than zero, add a leading dash to the value to be returned
+		if (value < 0) {
+			valueConverted = "-" + valueConverted;
+		}
+		
+		return "$" + valueConverted;
 		
 	}
 	

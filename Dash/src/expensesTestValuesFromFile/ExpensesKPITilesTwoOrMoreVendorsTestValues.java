@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package expensesTestValuesFromFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +12,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
+import expenses.ExpensesKPITilesValues;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
 import usage.UsageKPITilesActions;
 
-public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
+public class ExpensesKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 
 	
 	@BeforeClass
@@ -39,24 +40,22 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
-		for(WebElement vendor: vendors){
+		for (WebElement vendor: vendors) {
 			vendorNames.add(vendor.getText());
 		}
 	
-		
-		CommonTestStepActions.GoToUsagePageDetailedWait();
+		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 4;
+		int amountOfVendors = 12;
 		
-		// #1 Select Vendor View and Unselect all vendors 
-		UsageHelper.selectVendorView();
+		// #1 Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
 		
 		// Run the test for each vendor 
-		for(int i = 0; i < amountOfVendors; i++){
+		for (int i = 0; i < amountOfVendors; i++) {
 			
 			String vendor = vendorNames.get(i);
 			String vendorSelected = vendorNames.get(i);
@@ -84,15 +83,12 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 		String year =  "";
 		String month = "";
 		String monthYearToSelect = "";
-		String domesticVoiceUsage;
-		String domesticVoiceOverageUsage;
-		String domesticMessagesUsage;
-		String domesticDataUsage;
-		String roamingDataUsage;
+		String totalCharge;
+		String numberOfLines;
 		
 		int indexMonth = 0;
 		
-		List<UsageOneMonth> valuesSummarizedVendors = UsageHelper.summarizeDataUsageVendorsSelected(listVendorsSelectedData);
+		List<UsageOneMonth> valuesSummarizedVendors = UsageHelper.summarizeDataExpensesVendorsSelected(listVendorsSelectedData);
 		
 		
 		do {
@@ -111,14 +107,11 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 			
 			Thread.sleep(2000);
 			
-			domesticVoiceUsage = oneMonthData.getDomesticVoice();
-			domesticVoiceOverageUsage = oneMonthData.getDomesticOverageVoice();
-			domesticMessagesUsage = oneMonthData.getDomesticMessages();
-			domesticDataUsage = oneMonthData.getDomesticDataUsageKb();
-			roamingDataUsage = oneMonthData.getRoamingDataUsageKb();
+			totalCharge = oneMonthData.getTotalCharge();
+			numberOfLines = oneMonthData.getNumberOfLines();
 							
 			// #5 Compare the values displayed on the KPIs to the values from spreadsheet
-			UsageKPITilesActions.verifyKPItileValues(domesticVoiceUsage, domesticVoiceOverageUsage, domesticMessagesUsage, domesticDataUsage, roamingDataUsage);
+			ExpensesKPITilesValues.verifyKPItileValues(totalCharge, numberOfLines);
 			
 			
 			// #6 Calculate 3 Month Rolling Averages and Trending Percentage
@@ -135,8 +128,8 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 				valuesForTrendingValue.add(valuesSummarizedVendors.get(indexMonth+1));
 				// Adds values from 2 months ago to the list
 				valuesForTrendingValue.add(valuesSummarizedVendors.get(indexMonth+2));
-			 
-				UsageKPITilesActions.verifyThreeMonthRollingAverageAndTrendingValues(valuesForTrendingValue);
+			 	
+				ExpensesKPITilesValues.verifyThreeMonthRollingAverageAndTrendingValues(valuesForTrendingValue);
 				
 			}
 			
@@ -145,7 +138,7 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 			// Get the values needed to calculate the 6 month Rolling Averages
 			// ONLY if there's data for five months before the current month. 
 			// E.g.: Last month with data: January 2016, then June 2016 is the last month that will have the 6 month rolling average calculated
-			if(indexMonth < valuesSummarizedVendors.size()-5){
+			if (indexMonth < valuesSummarizedVendors.size()-5) {
 				
 				List<UsageOneMonth> valuesForSixMonthAverage = new ArrayList<UsageOneMonth>();
 				
@@ -162,7 +155,7 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 				// Adds values from 5 months ago to the list
 				valuesForSixMonthAverage.add(valuesSummarizedVendors.get(indexMonth+5));
 				
-				UsageKPITilesActions.verifySixMonthRollingAverage(valuesForSixMonthAverage);
+				ExpensesKPITilesValues.verifySixMonthRollingAverage(valuesForSixMonthAverage);
 				
 			}
 			
@@ -186,4 +179,6 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 
 	
 	
+
 }
+

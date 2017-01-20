@@ -255,8 +255,10 @@ public class UsageHelper extends BaseClass{
 		
 	}
 
-
-	public static List<UsageOneMonth> summarizeDataVendorsSelected(List<List<UsageOneMonth>> data) throws ParseException {
+	
+	
+	// Gets the Usage data summarized  
+	public static List<UsageOneMonth> summarizeDataUsageVendorsSelected(List<List<UsageOneMonth>> data) throws ParseException {
 		
 		List<UsageOneMonth> dataSummarized = new ArrayList<>();
 		
@@ -353,6 +355,78 @@ public class UsageHelper extends BaseClass{
 		return dataSummarized;
 		
 	}
+	
+	
+	
+	// Gets the Expenses data summarized  
+	public static List<UsageOneMonth> summarizeDataExpensesVendorsSelected(List<List<UsageOneMonth>> data) throws ParseException {
+		
+		List<UsageOneMonth> dataSummarized = new ArrayList<>();
+		
+		CommonTestStepActions.initializeMonthSelector();
+		List<String> months = CommonTestStepActions.YearMonthIntergerFromPulldown(); 
+		
+		boolean monthEqualToInvoiceMonth = false;
+		
+		if(data.get(0).get(0).getOrdinalMonth().equals(getMonthOfInvoiceMonth(data.get(0).get(0).getInvoiceMonth()))){
+			monthEqualToInvoiceMonth = true;
+		}
+		
+				
+		for(int i = 0; i < months.size(); i++){
+		
+			String[] monthYear = getMonthYearSeparated(months.get(i));
+			String month = monthYear[0];
+			String year = monthYear[1];
+			
+			UsageOneMonth usageSummarized = new UsageOneMonth("", year, month);
+						
+			//System.out.println("Month: " + month + ", Year: " + year);
+			
+			for(int j = 0; j < data.size(); j++){
+			
+				//System.out.println("j: " + j);
+				//System.out.println("data " + j + " size: " + data.get(j).size()); 
+				
+				boolean invoiceMonthAssigned = false;
+				
+				for(UsageOneMonth usage: data.get(j)){
+					
+					if(month.equals(usage.getOrdinalMonth()) && year.equals(usage.getOrdinalYear())){
+												
+//						System.out.println("Total Charge previous value: " + Double.toString(Double.parseDouble(usageSummarized.getTotalCharge())));
+//						System.out.println("Total Charge value to be added: " + Double.toString(Double.parseDouble(usage.getTotalCharge())));
+//						System.out.println("Total Charge summarized: " + Double.toString(Double.parseDouble(usageSummarized.getTotalCharge()) + Double.parseDouble(usage.getTotalCharge())));
+//						
+//						System.out.println("Number of Lines previous value: " + Double.toString(Double.parseDouble(usageSummarized.getNumberOfLines())));
+//						System.out.println("Number of Lines value to be added: " + Double.toString(Double.parseDouble(usage.getNumberOfLines())));
+//						System.out.println("Number of Lines summarized: " + Double.toString(Double.parseDouble(usageSummarized.getNumberOfLines()) + Double.parseDouble(usage.getNumberOfLines())));
+						
+						usageSummarized.setTotalCharge(Double.toString(Double.parseDouble(usageSummarized.getTotalCharge()) + Double.parseDouble(usage.getTotalCharge())));
+						
+						usageSummarized.setNumberOfLines(Double.toString(Double.parseDouble(usageSummarized.getNumberOfLines()) + Double.parseDouble(usage.getNumberOfLines())));
+												
+						if(!invoiceMonthAssigned){
+							usageSummarized.setInvoiceMonth(usage.getInvoiceMonth());
+							invoiceMonthAssigned = true;
+						}
+						
+					}
+			
+				}
+			
+			}
+
+			dataSummarized.add(usageSummarized);
+			 
+		}
+		
+		dataSummarized = addMissingInvoiceMonths(dataSummarized, monthEqualToInvoiceMonth);
+				
+		return dataSummarized;
+		
+	}
+	
 	
 	
 	
