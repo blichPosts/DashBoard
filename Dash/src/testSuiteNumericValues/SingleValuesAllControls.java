@@ -11,6 +11,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
+import helperObjects.ExpenseValuesHelper.SpendCategory;
 import helperObjects.ExpenseValuesHelper;
 
 public class SingleValuesAllControls extends BaseClass 
@@ -42,7 +43,6 @@ public class SingleValuesAllControls extends BaseClass
 		
 		CommonTestStepActions.SelectSingleVendor("AT&T Mobility"); // select the vendor
 
-		/*
 		// /////////////////////////////////////////////////////////////////////////////////
 		// total expense control test. loop through each month for the selected vendor.
 		// /////////////////////////////////////////////////////////////////////////////////
@@ -58,9 +58,8 @@ public class SingleValuesAllControls extends BaseClass
 			}
 			ExpenseValuesHelper.VerifyOneVendorTotalExpense(); // verify total expense value for current month selection. 
 		}
-		*/
-		
-		/*
+
+
 		// /////////////////////////////////////////////////////////////////////////////////////////////		
 		// total expense Spend Category control test. loop through each month for the selected vendor.
 		// /////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,28 +76,36 @@ public class SingleValuesAllControls extends BaseClass
 			
 			ExpenseValuesHelper.VerifyOneVendorTotalExpenseSpendCategory(); // verify total expense value for current month selection. 
 		}
-		*/
+
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+		// this is for the expense trend. the months don't need to be cycled through because this test verifies the 
+		// values for each month by checking the value for each month/bar-graph.  
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		ExpenseValuesHelper.SelectMonth(0);  
+		ExpenseHelper.WaitForControlLegend(controlType.expenseTrending);
+		ExpenseValuesHelper.SetupChartIdForExpenseTrending(); // need to set correct chart id. method above changes it. 
+		ExpenseValuesHelper.VerifyOneVendorExpenseTrending(); // verify total expense value for current month selection.
 		
 		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-		// this is for the expense trend. the months don't need to be cycled through because this test verifies the values for each month 
-		// by checking the value for each month/bar-graph.  
+		// this is for count of service numbers trend. the months don't need to be cycled through because this test verifies the 
+		// values for each month by checking the value for each month/bar-graph.  
 		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//ExpenseValuesHelper.SelectMonth(0);  
-		//ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
-		//ExpenseValuesHelper.SetupChartIdForExpenseTrending(); // need to set correct chart id. method above changes it. 
-		//ExpenseValuesHelper.VerifyOneVendorExpenseTrending(); // verify total expense value for current month selection.
+		ExpenseValuesHelper.SelectMonth(0);  
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);
+		ExpenseValuesHelper.SetupChartIdForCountOfServiceNumbers(); // need to set correct chart id. method above changes it. 
+		ExpenseValuesHelper.VerifyOneVendorCountOfServiceNumbers(); // verify total expense value for current month selection.
 		
+		// NOTE: the two tests above verify the values in expected equal the actual values. in the test below, the expected values 
+		// that have been verified above, are used to verify the 'cost per service' number below.    
 		
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+		// this is for the cost per service number trend. the months don't need to be cycled through because this test verifies the 
+		// values for each month by checking the value for each month/bar-graph.  
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		ExpenseValuesHelper.SelectMonth(0);  
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 		ExpenseValuesHelper.SetupChartIdForCostPerServiceNumber(); // need to set correct chart id. method above changes it. 
 		ExpenseValuesHelper.VerifyOneVendorCostPerServiceNumber(); // verify total expense value for current month selection.
-
-		
-		
-		
-		
-		
 	}
 	
 	@AfterClass
@@ -108,9 +115,4 @@ public class SingleValuesAllControls extends BaseClass
 		driver.close();
 		driver.quit();
 	}
-
-	
-	
-	
-	
 }

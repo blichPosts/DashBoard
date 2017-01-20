@@ -12,9 +12,11 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
+import org.w3c.dom.Element;
 
 import Dash.BaseClass;
 import expenses.CostPerServiceNumberTrend;
+import expenses.CountOfServiceNumbersTrend;
 import expenses.TotalExpensesTrend;
 
 public class ExpenseValuesHelper extends BaseClass 
@@ -37,6 +39,7 @@ public class ExpenseValuesHelper extends BaseClass
 	public static List<WebElement>  webEleListBarGraphHoverValues;
 	public static String newMonth = "";
 	public static String errMessage = "";
+	public static String errMessageBarCharts = "Fail value testing in ExpenseValuesHelper. ";
 	
 	public static double actual = 0;
 	public static double expected = 0;
@@ -49,6 +52,20 @@ public class ExpenseValuesHelper extends BaseClass
 	
 	// 
 	public static String chartId = "";
+	
+	// these are the trend selections above the 'Expense Trending' bar graph.
+	public static enum SpendCategory
+	{
+		All,
+		Voice,
+		Data,
+		Messages,
+		Roaming,
+		Equipment,
+		Taxes,
+		Other,
+		Account
+	}
 	
 	// this vendor has been selected and the 'listOfRows' has been created for the vendor.
 	public static void VerifyOneVendorTotalExpense() throws Exception
@@ -106,18 +123,20 @@ public class ExpenseValuesHelper extends BaseClass
 			}
 			
 			expected = GetDoubleValueForValueExpected(listOfRows.get(rowWithActualValues).get(titlesList.indexOf("total_charge_ex"))); // get expected from expected container.
-
 			// ShowText(" actual: expected: -------"); System.out.println(actual);System.out.println(expected); // DEBUG
 			
-			Assert.assertEquals(actual, expected, "Fail");
-			
+			Assert.assertEquals(actual, expected, errMessage + "VerifyOneVendorExpenseTrending");
 			webEleListBarGraphHoverValues.clear();
 		}
 	}	
 	
 	// this vendor has been selected and the 'listOfRows' has been created for the vendor.
-	public static void VerifyOneVendorCostPerServiceNumber() throws Exception // bladdxx
+	public static void VerifyOneVendorCostPerServiceNumber() throws Exception
 	{
+		double expenseValue = 0;
+		double countOfServiceNumbersValue = 0;
+		// double expected = 0;
+		
 		// get the 'expense trending' control visible by moving to it. 
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(2)"));
 		new Actions(driver).moveToElement(expenseTrending).perform();
@@ -134,11 +153,11 @@ public class ExpenseValuesHelper extends BaseClass
 			CostPerServiceNumberTrend.clickBarIndex(x); // click bar graph.
 			
 			// get web list that holds the DOM section that holds the hover values just selected.
-			//webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+			webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
 			
-			//actual = GetDoubleValueActual(webEleListBarGraphHoverValues.get(3).getText()); // get the numeric value
+			actual = GetDoubleValueActual(webEleListBarGraphHoverValues.get(3).getText()); // get the numeric value
 			
-			//SelectMonthExpectedValueOnly(y); // this sets the 'rowWithActualValues' variable that used below in the call to get the expected data.
+			SelectMonthExpectedValueOnly(y); // this sets the 'rowWithActualValues' variable that used below in the call to get the expected data.
 			
 			// this limits how many loops are done when the data in the invoice month contains data from the previous month.
 			if(rowWithActualValues > rowsOfValues)
@@ -146,17 +165,110 @@ public class ExpenseValuesHelper extends BaseClass
 				break;
 			}
 			
-			//expected = GetDoubleValueForValueExpected(listOfRows.get(rowWithActualValues).get(titlesList.indexOf("total_charge_ex"))); // get expected from expected container.
-
+			// for this control, the expected is 'expense trend' divided by 'count of service numbers'.
+			expenseValue = GetDoubleValueForValueExpected(listOfRows.get(rowWithActualValues).get(titlesList.indexOf("total_charge_ex"))); // get expected from expected container.
+			countOfServiceNumbersValue = GetDoubleValueForValueExpected(listOfRows.get(rowWithActualValues).get(titlesList.indexOf("no_of_lines"))); // get expected from expected container.
+			expected = Math.round(expenseValue/countOfServiceNumbersValue);
+			
 			// ShowText(" actual: expected: -------"); System.out.println(actual);System.out.println(expected); // DEBUG
+			Assert.assertEquals(actual, expected, errMessageBarCharts +  "VerifyOneVendorCostPerServiceNumber");
 			
-			//Assert.assertEquals(actual, expected, "Fail");
-			
-			//webEleListBarGraphHoverValues.clear();
+			webEleListBarGraphHoverValues.clear();
 		}
 	}	
 	
+	// this vendor has been selected and the 'listOfRows' has been created for the vendor.
+	public static void VerifyOneVendorCountOfServiceNumbers() throws Exception 
+	{
+		// get the 'expense trending' control visible by moving to it. 
+		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(3)"));
+		new Actions(driver).moveToElement(expenseTrending).perform();
+		
+		CountOfServiceNumbersTrend.SetupChartId(); // calling into CountOfServiceNumbersTrend for clicks. need to setup its chartId.
+		
+		// rowsOfValuesOriginal - this is the number of rows that have values in the input file.
+		// rowWithActualValues - this can vary, depending on where the expected data is in relation to the invoice month.
+		//                       this gets changed each time 'SelectMonthExpectedValueOnly(int)' gets called.   
+		// this goes through each bar graph, selects it, gets the hover info and compares it with the expected.
+		// it starts selecting the bar graph with the highest month value and continues down to the lowest month value. 
+		for(int x = rowsOfValuesOriginal, y = 0; x > 0; x--, y++)
+		{
+			CountOfServiceNumbersTrend.clickBarIndex(x); // click bar graph.
+			
+			// get web list that holds the DOM section that holds the hover values just selected.
+			webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+			
+			actual = GetDoubleValueActualNoDollarSign(webEleListBarGraphHoverValues.get(3).getText()); // get the numeric value
+			
+			SelectMonthExpectedValueOnly(y); // this sets the 'rowWithActualValues' variable that used below in the call to get the expected data.
+			
+			// this limits how many loops are done when the data in the invoice month contains data from the previous month.
+			if(rowWithActualValues > rowsOfValues)
+			{
+				break;
+			}
+			
+			expected = GetDoubleValueForValueExpected(listOfRows.get(rowWithActualValues).get(titlesList.indexOf("no_of_lines"))); // get expected from expected container.
+			
+			// ShowText(" actual: expected: -------"); System.out.println(actual);System.out.println(expected); // DEBUG
+			Assert.assertEquals(actual, expected, errMessageBarCharts +  "VerifyOneVendorCountOfServiceNumbers");
+			
+			webEleListBarGraphHoverValues.clear();
+		}
+	}		
 	
+	// select spend category button depending on enum sent in.
+	public static void SelectSpendCategory(SpendCategory catergory)
+	{
+		switch(catergory)
+		{
+			case All:
+			{
+				driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(1)")).click();
+				break;
+			}
+			case Voice:
+			{
+				driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(2)")).click();				
+				break;
+			}
+			case Data:
+			{
+				driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(3)")).click();
+				break;
+			}
+			case Messages:
+			{
+				driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(4)")).click();
+				break;
+			}
+			case Roaming:
+			{
+				driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(5)")).click();
+				break;
+			}
+			case Equipment:
+			{
+				driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(6)")).click();
+				break;
+			}
+			case Taxes:
+			{
+				driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(7)")).click();
+				break;
+			}
+			case Other:
+			{
+				driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(8)")).click();
+				break;
+			}
+			case Account:
+			{
+				driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(9)")).click();
+				break;
+			}
+		}
+	}
 	
 	
 	// this selects the month being tested. the month being tested is the integer passed in.
@@ -165,8 +277,7 @@ public class ExpenseValuesHelper extends BaseClass
 		// this gets an integer pair for month/year from the expected data 'invoice_month'.
 		String [] tempArray = GetMonthYear(ExpenseValuesHelper.listOfRows.get(month).get(ExpenseValuesHelper.titlesList.indexOf("invoice_month")));
 
-		ShowText(tempArray[0]);
-		ShowText(tempArray[1]);		
+		// ShowText(tempArray[0]);ShowText(tempArray[1]); // DEBUG		
 		
 		// this uses the integer pair from above to selects the month.  
 		CommonTestStepActions.selectMonthYearPulldown(CommonTestStepActions.convertMonthNumberToName(tempArray[0], tempArray[1]));
@@ -221,6 +332,11 @@ public class ExpenseValuesHelper extends BaseClass
 		chartId = UsageHelper.getChartId(3);
 	}
 	
+	public static void SetupChartIdForCountOfServiceNumbers()
+	{
+		chartId = UsageHelper.getChartId(4);
+	}
+	
 	public static void ReadFileAndBuildLists(String fileName) throws Exception
 	{
 		String [] strArray;
@@ -270,14 +386,13 @@ public class ExpenseValuesHelper extends BaseClass
 
 	public static void VerifyExpenseControl()
 	{
-		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(3)>text")); // get hover list.
-		// for(WebElement ele : eleList){ShowText(ele.getText());}  // DEBUG
+		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(3)>text")); // get hover list. 
 
 		// get actual and expected.
 		actual = GetDoubleValueActual(eleList.get(0).getText()); // from UI.
 		expected = GetDoubleValueForValueExpected(listOfRows.get(rowWithActualValues).get(titlesList.indexOf("total_charge_ex"))); // from expected container. 
-		ShowText("-----------------");System.out.println(actual);System.out.println(expected); // DEBUG
-		//Assert.assertEquals(actual, expected, "Failed value check in ExpenseValuesHelper.VerifyExpenseControl");
+		// ShowText("-----------------");System.out.println(actual);System.out.println(expected); // DEBUG
+		Assert.assertEquals(actual, expected, errMessageBarCharts +   "ExpenseValuesHelper.VerifyExpenseControl");
 	}
 	
 	public static void VerifyExpenseSpendCategoryControl()
@@ -414,6 +529,13 @@ public class ExpenseValuesHelper extends BaseClass
 		return Double.parseDouble(strVal);
 	}	
 	
+	// this takes number info from a hover and returns the value in it as a double.
+	public static double GetDoubleValueActualNoDollarSign(String strVal)
+	{
+		strVal = strVal.replace(" ","");
+		return Double.parseDouble(strVal);
+	}	
+	
 	// this takes a string with expected value and returns the value as a double. 
 	public static double GetDoubleValueForValueExpected(String strVal)
 	{
@@ -481,36 +603,6 @@ public class ExpenseValuesHelper extends BaseClass
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 	}
 	
-	/*
-	public static void ClickExpenseTrendCategoryControl() throws Exception
-	{
-		cssBar = "#" + chartId + ">svg>g:nth-of-type(7)>text:nth-of-type(4)"; // vertical coordinate. 
-		cssLine = "#" + chartId + ">svg>g:nth-of-type(8)>text"; // horizontal coordinate.
-		
-		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
-		WebElement bar = driver.findElement(By.cssSelector(cssBar));
-		WebElement line = driver.findElement(By.cssSelector(cssLine));
-		
-		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-		// Get the location of the second line of the chart -> to get the "y" coordinate
-		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-		barCoordinates = bar.getLocation();
-		lineCoordinates = line.getLocation();
-		
-		Robot robot = new Robot(); 
-		
-		int x = barCoordinates.getX() + 30;
-		int y = lineCoordinates.getY() + 200;
-		
-		robot.mouseMove(x, y);
-		//System.out.println("coordinates - x: " + x + "  y: " + y);
-		
-		Thread.sleep(500);
-		
-		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-	}
-	*/
 	// this takes a row and breaks it apart into sections of fieldWidth characters, trims each section, and adds each section to the list to be returned.
 	public static List<String> GetListOfItemsInRow(String oneLine) throws Exception 
 	{
