@@ -24,6 +24,7 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
@@ -160,7 +161,7 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 		}
 		
 		
-		int indexMonthToSelect = 7;   //  <---- SET IT BACK TO ZERO!!
+		int indexMonthToSelect = 0;   //  <---- SET IT BACK TO ZERO!!
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 		

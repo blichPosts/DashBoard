@@ -25,6 +25,7 @@ public class ExpensesKPITilesTestValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
  		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
@@ -74,6 +75,7 @@ public class ExpensesKPITilesTestValues extends BaseClass{
 			// #1 Read data from file
 			List<UsageOneMonth> valuesFromFile = ReadFilesHelper.getDataFromSpreadsheet(completePath);
 			
+			List<UsageOneMonth> valuesOneVendorAllMonths = UsageHelper.addMissingMonthsForVendor(valuesFromFile);
 				
 			// #2 Select only one vendor
 			CommonTestStepActions.UnSelectAllVendors();
@@ -92,7 +94,7 @@ public class ExpensesKPITilesTestValues extends BaseClass{
 			
 			do {
 			
-				oneMonthData = valuesFromFile.get(indexMonth);   
+				oneMonthData = valuesOneVendorAllMonths.get(indexMonth);   
 				
 				/*
 				 * This has been modified on the source file. Month is the month listed on the file, it doesn't refer to the previous month.
@@ -114,63 +116,80 @@ public class ExpensesKPITilesTestValues extends BaseClass{
 				month = monthYear[0];
 				year = monthYear[1];
 				
-				monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
-//				System.out.println("Month Year: " + monthYearToSelect);
+				boolean monthYearNull = false; 
 				
-				// #3 Select month on month/year selector
-				CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-				
-				Thread.sleep(2000);
-				
-				totalChargeExpenses = oneMonthData.getTotalCharge();
-				numberOfLinesExpenses = oneMonthData.getNumberOfLines();
-								
-				// #4 Compare the values displayed on the KPIs to the values from spreadsheet
-				ExpensesKPITilesValues.verifyKPItileValues(totalChargeExpenses, numberOfLinesExpenses);
-				
-				
-				// #5 Calculate 3 Month Rolling Averages and Trending Percentage
-				// Get the values needed to calculate the 3 month Rolling Averages, and the Trending values
-				// ONLY if there's data for two months before the current month. 
-				// E.g.: Last month with data: January 2016, then March 2016 is the last month that will have the 3 month rolling average and trending values calculated
-				if(indexMonth < valuesFromFile.size()-2){
-					
-					List<UsageOneMonth> valuesForTrendingValue = new ArrayList<UsageOneMonth>();
-					
-					// Adds the current month values to the list
-					valuesForTrendingValue.add(valuesFromFile.get(indexMonth));
-					// Adds the previous month values to the list
-					valuesForTrendingValue.add(valuesFromFile.get(indexMonth+1));
-					// Adds values from 2 months ago to the list
-					valuesForTrendingValue.add(valuesFromFile.get(indexMonth+2));
-				 
-					ExpensesKPITilesValues.verifyThreeMonthRollingAverageAndTrendingValues(valuesForTrendingValue);
-					
+				try {
+					if (!(month.equals(null) && year.equals(null))) {
+						monthYearNull = false;
+						System.out.println("Month and year NOT null");
+					}
+							
+				} catch (NullPointerException e) {
+					monthYearNull = true;
+					System.out.println("Month and year ARE null");
 				}
+					
+				if (!monthYearNull) {
 				
-				
-				// #6 Calculate 6 Month Rolling Averages
-				// Get the values needed to calculate the 6 month Rolling Averages
-				// ONLY if there's data for five months before the current month. 
-				// E.g.: Last month with data: January 2016, then June 2016 is the last month that will have the 6 month rolling average calculated
-				if(indexMonth < valuesFromFile.size()-5){
+					monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
+	//				System.out.println("Month Year: " + monthYearToSelect);
 					
-					List<UsageOneMonth> valuesForSixMonthAverage = new ArrayList<UsageOneMonth>();
+					// #3 Select month on month/year selector
+					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 					
-					// Adds the current month values to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth));
-					// Adds the previous month values to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+1));
-					// Adds values from 2 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+2));
-					// Adds values from 3 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+3));
-					// Adds values from 4 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+4));
-					// Adds values from 5 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+5));
+					Thread.sleep(2000);
 					
-					ExpensesKPITilesValues.verifySixMonthRollingAverage(valuesForSixMonthAverage);
+					totalChargeExpenses = oneMonthData.getTotalCharge();
+					numberOfLinesExpenses = oneMonthData.getNumberOfLines();
+									
+					// #4 Compare the values displayed on the KPIs to the values from spreadsheet
+					ExpensesKPITilesValues.verifyKPItileValues(totalChargeExpenses, numberOfLinesExpenses);
+					
+					
+					// #5 Calculate 3 Month Rolling Averages and Trending Percentage
+					// Get the values needed to calculate the 3 month Rolling Averages, and the Trending values
+					// ONLY if there's data for two months before the current month. 
+					// E.g.: Last month with data: January 2016, then March 2016 is the last month that will have the 3 month rolling average and trending values calculated
+					if(indexMonth < valuesFromFile.size()-2){
+						
+						List<UsageOneMonth> valuesForTrendingValue = new ArrayList<UsageOneMonth>();
+						
+						// Adds the current month values to the list
+						valuesForTrendingValue.add(valuesFromFile.get(indexMonth));
+						// Adds the previous month values to the list
+						valuesForTrendingValue.add(valuesFromFile.get(indexMonth+1));
+						// Adds values from 2 months ago to the list
+						valuesForTrendingValue.add(valuesFromFile.get(indexMonth+2));
+					 
+						ExpensesKPITilesValues.verifyThreeMonthRollingAverageAndTrendingValues(valuesForTrendingValue);
+						
+					}
+					
+					
+					// #6 Calculate 6 Month Rolling Averages
+					// Get the values needed to calculate the 6 month Rolling Averages
+					// ONLY if there's data for five months before the current month. 
+					// E.g.: Last month with data: January 2016, then June 2016 is the last month that will have the 6 month rolling average calculated
+					if(indexMonth < valuesFromFile.size()-5){
+						
+						List<UsageOneMonth> valuesForSixMonthAverage = new ArrayList<UsageOneMonth>();
+						
+						// Adds the current month values to the list
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth));
+						// Adds the previous month values to the list
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+1));
+						// Adds values from 2 months ago to the list
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+2));
+						// Adds values from 3 months ago to the list
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+3));
+						// Adds values from 4 months ago to the list
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+4));
+						// Adds values from 5 months ago to the list
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+5));
+						
+						ExpensesKPITilesValues.verifySixMonthRollingAverage(valuesForSixMonthAverage);
+						
+					}
 					
 				}
 				

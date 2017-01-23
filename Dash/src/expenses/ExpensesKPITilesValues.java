@@ -56,7 +56,7 @@ public class ExpensesKPITilesValues extends BaseClass{
 			
 			totalExpenseValues.add(monthValues.getTotalCharge());
 			countServNumberValues.add(monthValues.getNumberOfLines());
-			if (monthValues.getNumberOfLines().equals("0") && monthValues.getTotalCharge().equals("0")){
+			if (monthValues.getNumberOfLines().equals("0") || monthValues.getTotalCharge().equals("0")){
 				costServNumberValues.add("0");
 			} else {
 				costServNumberValues.add(Double.toString(Double.parseDouble(monthValues.getTotalCharge())/ Double.parseDouble(monthValues.getNumberOfLines())));
@@ -86,7 +86,7 @@ public class ExpensesKPITilesValues extends BaseClass{
 			boolean threeMonthDisplayed = true;
 			
 			try{
-				threeMonthValue = driver.findElement(By.xpath("(//div[text()='3 months'])[" + i +"]/following-sibling::div"));
+				threeMonthValue = driver.findElement(By.xpath("(//div[text()='3 months'])[" + i + "]/following-sibling::div"));
 				//System.out.println("threeMonthDisplayed true");
 			}catch(Exception e){
 				// If 3 month rolling average is not displayed, set the variable to false
@@ -194,13 +194,19 @@ public class ExpensesKPITilesValues extends BaseClass{
 			
 			totalExpenseValues.add(monthValues.getTotalCharge());
 			countServNumberValues.add(monthValues.getNumberOfLines());
-			if (monthValues.getNumberOfLines().equals("0") && monthValues.getTotalCharge().equals("0")){
-				costServNumberValues.add("0");
-			} else {
-				costServNumberValues.add(Double.toString(Double.parseDouble(monthValues.getTotalCharge())/ Double.parseDouble(monthValues.getNumberOfLines())));
+			
+			double totalExpense = Double.parseDouble(monthValues.getTotalCharge());
+			double numLines = Double.parseDouble(monthValues.getNumberOfLines());
+			double costServNumber = 0;
+			
+			if (numLines != 0){
+				costServNumber = totalExpense / numLines;
 			}
 			
+			costServNumberValues.add(Double.toString(costServNumber));
+			
 		}
+		
 		
 		double rollingAvgTotalExpense = calculateRollingAverage(totalExpenseValues);
 		double rollingAvgCountServNum = calculateRollingAverage(countServNumberValues);
@@ -219,10 +225,11 @@ public class ExpensesKPITilesValues extends BaseClass{
 			WebElement sixMonthValue = null;
 			boolean sixMonthDisplayed = true;
 			
-			try{
+			try {
+				
 				sixMonthValue = driver.findElement(By.xpath("(//div[text()='6 months'])[" + i +"]/following-sibling::div"));
 				
-			}catch(Exception e){
+			} catch(Exception e){
 				// If 6 month rolling average is not displayed, set the variable to false
 				//System.out.println("Six Month Displayed false");
 				sixMonthDisplayed = false;
@@ -275,7 +282,9 @@ public class ExpensesKPITilesValues extends BaseClass{
 		
 		for (String v: values) {
 			sum += Double.parseDouble(v);
+//			System.out.println("Value: " + v);
 		}
+//		System.out.println("Sum: " + sum + " / values size: " + values.size());
 		
 		double average = sum / values.size();
 		

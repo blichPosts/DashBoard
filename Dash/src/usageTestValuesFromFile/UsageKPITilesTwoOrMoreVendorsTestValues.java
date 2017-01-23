@@ -25,6 +25,7 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
  		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
@@ -47,7 +48,7 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 4;
+		int amountOfVendors = 3;
 		
 		// #1 Select Vendor View and Unselect all vendors 
 		UsageHelper.selectVendorView();
@@ -56,7 +57,7 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
 		
 		// Run the test for each vendor 
-		for(int i = 0; i < amountOfVendors; i++){
+		for(int i = 2; i < amountOfVendors; i++){
 			
 			String vendor = vendorNames.get(i);
 			String vendorSelected = vendorNames.get(i);

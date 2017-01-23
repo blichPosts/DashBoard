@@ -15,6 +15,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 
 import Dash.BaseClass;
+import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
@@ -434,7 +435,11 @@ public class TotalUsageActions extends BaseClass{
 			// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
 			Point coordinates = bar.getLocation();
 			Robot robot = new Robot(); 
-			robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work :) 
+			robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work for REF APP :)
+			
+			if (loginType.equals(LoginType.Command)) {
+				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 200); // these coordinates work for CMD :)
+			}
 			
 			if (!(bar.getAttribute("height").toString().equals("0"))){
 				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
@@ -446,7 +451,7 @@ public class TotalUsageActions extends BaseClass{
 				robot.mouseRelease(InputEvent.BUTTON1_MASK);
 			}
 				
-			
+						
 			try {
 				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
 				//System.out.println("Tooltip present");
@@ -474,12 +479,24 @@ public class TotalUsageActions extends BaseClass{
 			// 2 Roaming:
 			// 3 <Amount for Roaming>
 			
+			Thread.sleep(2000);
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			
+			
+//			for(WebElement w : tooltip){
+//				System.out.println("Item tooltip: " + w.getText());
+//			}
+//			
 			
 			// Verify country/vendor shown on the tooltip
 			//System.out.println("Tooltip text: " + tooltip.get(0).getText());
-			Assert.assertEquals(tooltip.get(0).getText(), oneMonthData.getVendorName());  //vendorsInChartList.get(indexHighchart-1));
 						
+			String vendorNameFound = tooltip.get(0).getText();
+			String vendorNameExpected = oneMonthData.getVendorName();
+			
+			System.out.println("firstLineFound: " + vendorNameFound + ", firstLineExpected: " + vendorNameExpected);
+			Assert.assertEquals(vendorNameFound, vendorNameExpected);
+									
 			
 			// Verify the label and the amount shown on the tooltip
 			for(int i = 1; i <= legends.size(); i++){
@@ -750,7 +767,11 @@ public class TotalUsageActions extends BaseClass{
 				// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
 				Point coordinates = bar.getLocation();
 				Robot robot = new Robot(); 
-				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work :) 
+				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work for REF APP :)
+				
+				if (loginType.equals(LoginType.Command)) {
+					robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 200); // these coordinates work for CMD :)
+				}
 				
 				if (Double.parseDouble(bar.getAttribute("height").toString()) > 10.0) {   //if (!(bar.getAttribute("height").toString().equals("0"))){
 					bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed

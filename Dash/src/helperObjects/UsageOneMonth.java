@@ -38,6 +38,7 @@ public class UsageOneMonth {
 		this.ordinalYear = ordinalYear;
 		this.ordinalMonth = ordinalMonth;
 		this.invoiceMonth = "";
+		
 		this.domesticVoice = "0";
 		this.domesticOverageVoice = "0";
 		this.domesticMessages = "0";
@@ -45,6 +46,7 @@ public class UsageOneMonth {
 		this.roamingVoice = "0";
 		this.roamingDataUsageKb = "0";
 		this.roamingMessages = "0"; 
+		
 		this.numberOfInvoices = "0";
 		this.numberOfLines = "0";
 		this.totalSubscriberCharges = "0";

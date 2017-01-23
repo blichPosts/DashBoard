@@ -17,7 +17,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
-import usage.UsageKPITilesActions;
+
 
 public class ExpensesKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 
@@ -26,6 +26,7 @@ public class ExpensesKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
  		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
@@ -34,7 +35,7 @@ public class ExpensesKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 	
 	
 	@Test
-	public static void UsageKPITilesTwoOrMoreVendorsTestValuesTest() throws Exception
+	public static void ExpensesKPITilesTwoOrMoreVendorsTestValuesTest() throws Exception
 	{
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
@@ -66,6 +67,7 @@ public class ExpensesKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 			
 			System.out.println("Path: " + completePath);
 			
+			
 			System.out.println("  **  RUNNING KPI TILE TEST FOR VENDOR: " + vendor + "  **");
 			
 			// #2 Read data from file
@@ -76,11 +78,12 @@ public class ExpensesKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 			CommonTestStepActions.selectOneVendor(vendor);
 			
 		}
+		
 			
 		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 		
 		UsageOneMonth oneMonthData;
-		String year =  "";
+		String year = "";
 		String month = "";
 		String monthYearToSelect = "";
 		String totalCharge;
@@ -89,7 +92,6 @@ public class ExpensesKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 		int indexMonth = 0;
 		
 		List<UsageOneMonth> valuesSummarizedVendors = UsageHelper.summarizeDataExpensesVendorsSelected(listVendorsSelectedData);
-		
 		
 		do {
 		

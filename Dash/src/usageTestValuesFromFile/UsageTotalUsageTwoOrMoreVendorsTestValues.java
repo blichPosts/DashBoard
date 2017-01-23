@@ -25,6 +25,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
  		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
@@ -46,7 +47,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 5;
+		int amountOfVendors = 1;
 
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();

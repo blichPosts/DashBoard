@@ -177,7 +177,11 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		//System.out.println("Original amount: " + amount);
 			
-		if (amount < 1000.0){
+		if (amount == 0){
+			tmpAmount = amount;
+			unit = "B";
+		}
+		else if (amount < 1000.0){
 			tmpAmount = amount;
 			unit = "KB";
 		}

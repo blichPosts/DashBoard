@@ -233,7 +233,7 @@ public class UsageHelper extends BaseClass{
 		
 		for(UsageOneMonth m: valuesFromFileNew){
 			
-		/*	System.out.println("vendor name: " + m.getVendorName());
+			/*System.out.println("vendor name: " + m.getVendorName());
 			System.out.println("year: " + m.getOrdinalYear());
 			System.out.println("month: " + m.getOrdinalMonth());
 			System.out.println("invoice month: " + m.getInvoiceMonth());
@@ -243,10 +243,10 @@ public class UsageHelper extends BaseClass{
 			System.out.println("domestic data:" + m.getDomesticDataUsageKb());
 			System.out.println("roaming voice: " + m.getRoamingVoice());
 			System.out.println("roaming data: " + m.getRoamingDataUsageKb());
-			System.out.println("roaming messages: " + m.getRoamingMessages()); */
+			System.out.println("roaming messages: " + m.getRoamingMessages()); 
 		    
-//			System.out.println("month: " + m.getOrdinalMonth() + " " + m.getOrdinalYear());
-			
+			System.out.println("month: " + m.getOrdinalMonth() + " " + m.getOrdinalYear());
+			*/
 		}
 		
 //		System.out.println("amount of months for " + valuesFromFileNew.get(0).getVendorName() + " is " + valuesFromFileNew.size());
@@ -272,7 +272,7 @@ public class UsageHelper extends BaseClass{
 		}
 		
 				
-		for(int i = 0; i < months.size(); i++){
+		for (int i = 0; i < months.size(); i++) {
 		
 			String[] monthYear = getMonthYearSeparated(months.get(i));
 			String month = monthYear[0];
@@ -289,9 +289,9 @@ public class UsageHelper extends BaseClass{
 				
 				boolean invoiceMonthAssigned = false;
 				
-				for(UsageOneMonth usage: data.get(j)){
+				for (UsageOneMonth usage: data.get(j)) {
 					
-					if(month.equals(usage.getOrdinalMonth()) && year.equals(usage.getOrdinalYear())){
+					if (month.equals(usage.getOrdinalMonth()) && year.equals(usage.getOrdinalYear())) {
 												
 						usageSummarized.setDomesticVoice(Double.toString(Double.parseDouble(usageSummarized.getDomesticVoice()) + Double.parseDouble(usage.getDomesticVoice())));
 						
@@ -307,7 +307,7 @@ public class UsageHelper extends BaseClass{
 						
 						usageSummarized.setRoamingDataUsageKb(Double.toString(Double.parseDouble(usageSummarized.getRoamingDataUsageKb()) + Double.parseDouble(usage.getRoamingDataUsageKb())));
 						
-						if(!invoiceMonthAssigned){
+						if (!invoiceMonthAssigned) {
 							usageSummarized.setInvoiceMonth(usage.getInvoiceMonth());
 							invoiceMonthAssigned = true;
 						}
