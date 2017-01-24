@@ -437,7 +437,7 @@ public class TotalUsageActions extends BaseClass{
 			Robot robot = new Robot(); 
 			robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work for REF APP :)
 			
-			if (loginType.equals(LoginType.Command)) {
+			if (loginType.equals(LoginType.Command) || loginType.equals(LoginType.ReferenceApp)) {
 				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 200); // these coordinates work for CMD :)
 			}
 			
@@ -769,7 +769,7 @@ public class TotalUsageActions extends BaseClass{
 				Robot robot = new Robot(); 
 				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work for REF APP :)
 				
-				if (loginType.equals(LoginType.Command)) {
+				if (loginType.equals(LoginType.Command) || loginType.equals(LoginType.ReferenceApp)) {
 					robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 200); // these coordinates work for CMD :)
 				}
 				

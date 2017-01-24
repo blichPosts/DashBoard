@@ -577,7 +577,7 @@ public class CommonTestStepActions extends BaseClass
 	// It switches to the frame that contains the PoV, KPIs, charts
 	public static void switchToContentFrame(){
 		
-		WebElement frame = driver.findElement(By.xpath(".//iframe[@id='CONTENT']"));
+		WebElement frame = driver.findElement(By.cssSelector("iframe#CONTENT"));   //(By.xpath(".//iframe[@id='CONTENT']"));
 		driver.switchTo().frame(frame);
 		
 	}

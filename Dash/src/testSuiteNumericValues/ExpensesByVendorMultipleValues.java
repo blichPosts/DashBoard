@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package testSuiteNumericValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +18,13 @@ import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
 import usage.UsageTrending;
 
-public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
+public class ExpensesByVendorMultipleValues extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
 		login();
-		// MainLogin();
 		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 

@@ -365,7 +365,7 @@ public class UsageTrending extends BaseClass {
 		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
 
 		int amount = highchartSeries.size();
-		//System.out.println("amount: " + amount);
+		// System.out.println("amount: " + amount);
 		
 		int indexHighchart = 1;
 		
@@ -444,10 +444,16 @@ public class UsageTrending extends BaseClass {
 			
 			Robot robot = new Robot(); 
 			int x = barCoordinates.getX() + 10;
-			int y = lineCoordinates.getY();
+			int y = lineCoordinates.getY();  // these coordinates work for Dev Instance :)
 			
 			if (loginType.equals(LoginType.Command)) {
-				y = y - 400; // these coordinates work for CMD :)
+				
+				y = y - 400;  // these coordinates work for CMD :)
+				
+			} else if (loginType.equals(LoginType.ReferenceApp)) {
+				
+				y = y + 100; // these coordinates work for Ref App :)
+				
 			}
 			
 			robot.mouseMove(x, y);
@@ -499,28 +505,29 @@ public class UsageTrending extends BaseClass {
 				String labelExpected = allValuesFromFile.get(indexMonth).getVendorName();
 				Assert.assertEquals(labelFound, labelExpected); 
 				
+				String valueExpected = "";
+				
 				if (barChartId == UsageHelper.usageTrendingDomesticChart) {
 					
-					String valueExpected = domesticValue.get(indexMonth);
-					//System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-					//System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+					valueExpected = domesticValue.get(indexMonth);
 					Assert.assertEquals(valueFound, valueExpected);
 					
 				} else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
 					
-					String valueExpected = roamingValue.get(indexMonth);
-					//System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-					//System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+					valueExpected = roamingValue.get(indexMonth);
 					Assert.assertEquals(valueFound, valueExpected);
 					
 				}
+				
+				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 				
 			}
 			
 			// Verify month and year shown on the tooltip
 			// --> UNCOMMENT LINE BELOW FOR REF APP. FOR CMD FAILS BECAUSE IT HAS AN OLDER DASH VERSION, WHERE THE MONTH YEAR ARE REPRESENTED AS MM-YYYY, INSTEAD OF MM/YYYY. 
-			//Assert.assertEquals(tooltip.get(0).getText(), monthYearList.get(indexMonth)); 
-			//System.out.println("First line found: " + tooltip.get(0).getText() + ", First line expected: " + monthYearList.get(indexMonth));
+			Assert.assertEquals(tooltip.get(0).getText(), monthYearList.get(indexMonth)); 
+			System.out.println("First line found: " + tooltip.get(0).getText() + ", First line expected: " + monthYearList.get(indexMonth));
 			
 			indexHighchart++;
 			indexMonth--;
@@ -743,11 +750,7 @@ public class UsageTrending extends BaseClass {
 							}
 							
 							expectedValues.get(indexMonthValues).put(otherVendors, valueForOther); 
-							
-//						} else {
-//							System.out.println("there's NO data for the vendor");
-//						}
-							
+														
 					}
 					
 				}
@@ -783,10 +786,16 @@ public class UsageTrending extends BaseClass {
 			
 			Robot robot = new Robot(); 
 			int x = barCoordinates.getX() + 10;
-			int y = lineCoordinates.getY();
+			int y = lineCoordinates.getY();  // these coordinates work for Dev Instance :)
 			
 			if (loginType.equals(LoginType.Command)) {
-				y = y - 400; // these coordinates work for CMD :)
+				
+				y = y - 400;  // these coordinates work for CMD :)
+				
+			} else if (loginType.equals(LoginType.ReferenceApp)) {
+				
+				y = y + 100; // these coordinates work for Ref App :)
+				
 			}
 			
 			robot.mouseMove(x, y);
@@ -851,8 +860,8 @@ public class UsageTrending extends BaseClass {
 			String monthYearFound = tooltip.get(0).getText();
 			String monthYearExpected = monthYearList.get(indexMonth);
 				
-//			Assert.assertEquals(monthYearFound, monthYearExpected); // **** UNCOMMENT FOR REF APP!! ****
-//			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+			Assert.assertEquals(monthYearFound, monthYearExpected); // **** UNCOMMENT FOR REF APP!! ****
+			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;
 			indexMonth--;
