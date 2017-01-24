@@ -21,6 +21,8 @@ public class KPITilesActions extends BaseClass
 	@Test
 	public static void KpiTilesActionsTest() throws Exception
 	{
+		
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 
 		// #1
 		// Un-select all of the vendors in the Point of View.

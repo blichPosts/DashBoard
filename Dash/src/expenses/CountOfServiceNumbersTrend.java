@@ -46,7 +46,7 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		chartId = UsageHelper.getChartId(4);
 	}
 	
-	public static void Setup() // bladdxx
+	public static void Setup() 
 	{
 		if(totalExpenseLegendsList != null)
 		{
@@ -63,6 +63,9 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		
 		// this get web list of legends that are used for clicking legends. 
 		webEleListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']"  + ExpenseHelper.partialXpathForLegendsInTotalSpendCategoryCategories));
+		
+		for(WebElement ele :webEleListLegends){ShowText(ele.getText());} // DEBUG
+		
 	}	
 	
 	// this has a wait for element visible in each case statement. this is needed because this can be the first method called after switching to the country view.
@@ -113,7 +116,9 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		// setup expected months. these are the months that will be shown in the hover for each bar clicked.
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		Collections.reverse(expectedMonthYear);
-		
+
+		//for(WebElement ele	: webEleListLegends){ShowText(ele.getText());}
+
 		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
@@ -123,7 +128,7 @@ public class CountOfServiceNumbersTrend extends BaseClass
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
-			totalExpenseLegendsList.remove(0);
+			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(500);
 			webEleListLegends.get(x).click();
 			Thread.sleep(2000);

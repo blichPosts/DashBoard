@@ -733,18 +733,21 @@ public class ExpenseHelper extends BaseClass
 
 		switch(cntrlType)
 		{
-			case totalExpenseSpendCatergory: // needs work
+			case totalExpenseSpendCatergory: // needs work -- 
 			{
 				chartId =  UsageHelper.getChartId(1);  
 				ShowText(chartId);
 				// tempUrl = "#" + chartId + ">svg>.highcharts-yaxis-labels>text:nth-of-type(1)"; // css no work		
-				tempUrl = "(//div[@id='" +  chartId + "']" +  "/*/*[@class='highcharts-axis-labels highcharts-yaxis-labels '])[1]"; 
+				//tempUrl = ".//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group']/*/*[contains(@d,'M 0 0')]"; // latest attempt
 				
 				// tempUrl  = "(.//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group ']/*/*)[1][@visibility='hidden']";
 				
 				//(.//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group ']/*/*)[1][@visibility='hidden']
 				// Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-				//WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // DEBUG 
+				//WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // DEBUG
+				
+				//WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // always visible.
+				 
 				break;
 			}
 			case expenseTrending:

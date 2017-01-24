@@ -88,9 +88,9 @@ public class CostPerServiceNumberTrend extends  BaseClass
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
-			totalExpenseLegendsList.remove(0);
 			Thread.sleep(500);
 			webEleListLegends.get(x).click();
+			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(2000);
 		}
 	}
@@ -98,7 +98,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 	public static void clickBarIndex(int barIndex) throws Exception
 	{
 		cssBar = "#" + chartId + ">svg>g:nth-of-type(8)>text:nth-of-type(" + barIndex + ")";
-		cssLine = "#" + chartId + ">svg>g:nth-of-type(7)>text:nth-of-type(3)";
+		cssLine = "#" + chartId + ">svg>g:nth-of-type(7)>text:nth-of-type(1)";
 		
 		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -116,7 +116,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		
 		// 1/11/16 - moves cursor arrow up.
 		int x = barCoordinates.getX() + 30;
-		int y = lineCoordinates.getY() + 250;
+		int y = lineCoordinates.getY() + 150;
 		
 		robot.mouseMove(x, y);
 		//System.out.println("coordinates - x: " + x + "  y: " + y);

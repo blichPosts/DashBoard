@@ -42,8 +42,8 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 		TotalExpenseByVendorCarrier.StoreAllLegendsInTotalExpense(); // setup containers in 'TotalExpenseByVendorCarrier' for testing 'total expense' control slices.
 		TotalExpenseByVendorCarrier.VerifyUnSelectingLegendsAndSlices();
 		
-		ExpenseHelper.VerifyOneControlNotPresent(controlType.totalExpense);
-		
+		ExpenseHelper.VerifyOneControlNotPresent(controlType.totalExpense); // needs work
+
 	}
 	
 	@AfterClass

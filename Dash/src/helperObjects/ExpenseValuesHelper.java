@@ -7,6 +7,9 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.sax.TemplatesHandler;
+
+import org.bouncycastle.util.Store;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
@@ -30,12 +33,14 @@ public class ExpenseValuesHelper extends BaseClass
 	public static int fieldWidth =  30;
 	public static int rowsOfValues= 0;
 	public static int rowWithActualValues =  0;
-	public static int rowsOfValuesOriginal = 0;
-	
+	public static int rowsOfValuesOriginal = 0; // this is the rows of values when the vendor file is first read in
+	public static int SpendCategoriesCounter = 0;	
 	
 	public static List<String> titlesList;
-	
+	public static String tempString = "";
+	public static String tempStringTwo = "";
 	public static List<List<String>> listOfRows = new ArrayList<List<String>>();
+	public static List<String> dataList = new ArrayList<String>();
 	public static List<WebElement>  webEleListBarGraphHoverValues;
 	public static String newMonth = "";
 	public static String errMessage = "";
@@ -43,6 +48,11 @@ public class ExpenseValuesHelper extends BaseClass
 	
 	public static double actual = 0;
 	public static double expected = 0;
+
+	public static boolean catergoryNameDone = false;
+	public static boolean catergoryCostDone = false;
+
+	
 	
 	// mouse clicks.
 	public static String cssBar = "";
@@ -138,10 +148,12 @@ public class ExpenseValuesHelper extends BaseClass
 		// double expected = 0;
 		
 		// get the 'expense trending' control visible by moving to it. 
-		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(2)"));
-		new Actions(driver).moveToElement(expenseTrending).perform();
+		WebElement costPerServiceNumber = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(2)"));
+		new Actions(driver).moveToElement(costPerServiceNumber).perform();
 		
 		CostPerServiceNumberTrend.SetupChartId(); // calling into CostPerServiceNumberTrend for clicks. need to setup its chartId.
+		
+		Thread.sleep(1000);
 		
 		// rowsOfValuesOriginal - this is the number of rows that have values in the input file.
 		// rowWithActualValues - this can vary, depending on where the expected data is in relation to the invoice month.
@@ -151,6 +163,8 @@ public class ExpenseValuesHelper extends BaseClass
 		for(int x = rowsOfValuesOriginal, y = 0; x > 0; x--, y++)
 		{
 			CostPerServiceNumberTrend.clickBarIndex(x); // click bar graph.
+			//ShowInt(x);
+			//DebugTimeout(9999, "9999");
 			
 			// get web list that holds the DOM section that holds the hover values just selected.
 			webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
@@ -271,7 +285,8 @@ public class ExpenseValuesHelper extends BaseClass
 	}
 	
 	
-	// this selects the month being tested. the month being tested is the integer passed in.
+	// this selects the month being tested. the month being tested is the integer passed in.it also sets up the 
+	// row to use when getting test values. 
 	public static void SelectMonth(int month) throws Exception
 	{
 		// this gets an integer pair for month/year from the expected data 'invoice_month'.
@@ -282,6 +297,7 @@ public class ExpenseValuesHelper extends BaseClass
 		// this uses the integer pair from above to selects the month.  
 		CommonTestStepActions.selectMonthYearPulldown(CommonTestStepActions.convertMonthNumberToName(tempArray[0], tempArray[1]));
 		
+		// this is wait for month selection to complete.
 		newMonth = CommonTestStepActions.convertMonthNumberToName(tempArray[0], tempArray[1]);
 		WaitForElementVisible(By.xpath("(//h2[@class='tdb-h2'])[1][text()='" + newMonth + "']"), MediumTimeout);
 		
@@ -436,9 +452,233 @@ public class ExpenseValuesHelper extends BaseClass
 		//Assert.assertEquals(actual, expected, "Failed value check in ExpenseValuesHelper.VerifyExpenseControl");
 	}
 	
+	public static void SetupSpendCategoriesCounter()
+	{
+		SpendCategoriesCounter = rowsOfValuesOriginal;
+	}
+	
+	// this gets expected values from the spend category control (these values have already been verified) and uses the expected values to test 
+	// the values in the  
+	public static void VerifySpendCategoriesForSelectedMonth() throws Exception // bladdxx
+	{
+		SetupChartIdForExpenseSpendCategory(); // everything is done in this class.
+
+		// get the 'expense spend category' control visible by moving to it. 
+		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(1)"));
+		new Actions(driver).moveToElement(expenseTrending).perform();
+		Thread.sleep(250);
+		
+		ClickExpenseSpendCategoryControl();
+		Thread.sleep(250);
+		
+		// this stores spend category hover entries onto the 'dataList list' list. that has name and corresponding value for each category. 
+		StoreSpendCatergoryNamesValuesForCurrentMonth();    
+		
+		TotalExpensesTrend.SetupChartId();
+		Thread.sleep(250);
+		
+		SetupChartIdForExpenseTrending();
+		
+		// get the 'expense trending' control clickable by moving to it. 
+		expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(1)"));
+		new Actions(driver).moveToElement(expenseTrending).perform();
+		Thread.sleep(250);
+		
+		// go through and select each spend category selection, except the 'all' selection.
+		for(SpendCategory spend : SpendCategory.values())
+		{
+			if(spend.name()!= "All")
+			{
+				ExpenseValuesHelper.SelectSpendCategory(spend); // select spend category.
+				Thread.sleep(250);
+
+				if(SpendCategoriesCounter != rowsOfValuesOriginal)
+				{
+					clickBarIndexExpenseTrend(SpendCategoriesCounter + 1);  
+					Thread.sleep(250);
+				}
+				else
+				{
+					clickBarIndexExpenseTrend(SpendCategoriesCounter - 1);  
+					Thread.sleep(250);
+				}
+				
+				clickBarIndexExpenseTrend(SpendCategoriesCounter); // click the bar graph for the selected pulldown month.  
+				Thread.sleep(250);
+				
+				Assert.assertEquals(GetActualValue(), GetExpectedValue(spend));
+				Thread.sleep(250);
+			}			
+		}
+
+		// FIGURE OUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// this limits how many loops are done when the data in the invoice month contains data from the previous month.
+		//if(rowWithActualValues > rowsOfValues)
+		//{return;}
+		dataList.clear();
+		SpendCategoriesCounter--;
+	}
+	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// ///////////////////////////////////////////// Helpers ///////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	public static String GetActualValue()
+	{
+		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+		// ShowInt(webEleListBarGraphHoverValues.size()); // DEBUG.
+		return webEleListBarGraphHoverValues.get(3).getText();
+	}
+	
+	// this is done in this class instead of calling into the 'expense trend' class because when going through the trends 
+	// the bar graphs are all over the place. this local copy of the  'expense trend' method can be tweaked.
+	public static void clickBarIndexExpenseTrend(int barIndex) throws Exception
+	{
+		cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + barIndex + ")";
+		// cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)"; // orig
+		cssLine = "#" + chartId + ">svg>.highcharts-axis>text";		
+		
+		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+		WebElement line = driver.findElement(By.cssSelector(cssLine));
+		
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// Get the location of the second line of the chart -> to get the "y" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		barCoordinates = bar.getLocation();
+		lineCoordinates = line.getLocation();
+		
+		Robot robot = new Robot(); 
+		
+		int x = barCoordinates.getX() + 30;
+		int y = lineCoordinates.getY() + 200;
+		
+		robot.mouseMove(x, y);
+		//System.out.println("coordinates - x: " + x + "  y: " + y);
+		
+		Thread.sleep(500);
+		
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+	}
+	
+	
+	
+	public static void StoreSpendCatergoryNamesValuesForCurrentMonth()
+	{
+		tempString = "";
+		tempStringTwo = "";
+
+		catergoryNameDone = false;
+		catergoryCostDone = false;
+		
+		if(webEleListBarGraphHoverValues != null)
+		{
+			webEleListBarGraphHoverValues.clear();
+		}
+		
+		if(dataList != null)
+		{
+			dataList.clear();
+		}		
+		
+		// get web list that has the DOM section that holds the hover values just selected by a click.
+		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+		
+		for(WebElement ele : webEleListBarGraphHoverValues)
+		{
+			if(ele.getText().contains(":")) // this is category name
+			{
+				tempString = ele.getText();
+				catergoryNameDone = true;
+			}
+
+			if(ele.getText().contains("$")) // this is dollar value
+			{
+				tempStringTwo = ele.getText();
+				catergoryCostDone = true;
+			}
+			
+			if(catergoryNameDone && catergoryCostDone)
+			{
+				dataList.add(tempString + tempStringTwo);
+				catergoryCostDone = false;
+				catergoryNameDone = false;				
+			}
+		}
+
+		// ShowListOfStrings(dataList); // DEBUG
+		
+		webEleListBarGraphHoverValues.clear();
+	}
+	
+	public static String GetExpectedValue(SpendCategory spendCategory)
+	{
+		for(String str : dataList)
+		{
+			if(str.contains(spendCategory.name()))
+			{
+				// ShowText(str); // DEBUG
+				return str.replace(":", "").replace(spendCategory.name(), "");
+			}
+		}
+		
+		Assert.fail("Error in ExpenseValueHelper.GetExpectedValue. Did not find an expected value.");
+		return"";
+	}
+	
+	
+	public static String GetCostFromDataListForSpendCategory(SpendCategory spendCategory)
+	{
+		for(String str: dataList)
+		{
+			if(str.contains(spendCategory.name()))
+			{
+				return str;
+			}
+		}
+
+		Assert.fail("Error in ExpenseValuesHelper.GetCostFromDataListForSpendCategory. A spend category was not found.");
+		
+		return "";
+
+	}
+	
+	
+	public static void StoreExpenseSpendCategoryValues()
+	{
+		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(9)>text>tspan")); // get hover list.
+		dataList = new ArrayList<String>();
+				
+		String tempCategory = "";
+		String tempCost = "";
+		boolean foundFirstItem = false;
+		boolean foundSecondItem = false;
+		
+		for(WebElement ele : eleList)
+		{
+			// ShowText(ele.getText());
+			if(ele.getText().contains(":"))
+			{
+				tempCategory = ele.getText();
+				foundFirstItem = true;
+			}
+			
+			if(ele.getText().contains("$"))
+			{
+				tempCost = ele.getText();
+				foundSecondItem = true;
+			}
+			
+			if(foundFirstItem && foundSecondItem)
+			{
+				foundFirstItem = false;
+				foundSecondItem = false;
+				dataList.add(tempCategory + tempCost);
+			}
+		}
+	}
 	
 	// this gets a list of the items in the expense spend category hover and verifies the values.
 	// it goes through the list of hover values and test each value depending on what spend category the value is.
