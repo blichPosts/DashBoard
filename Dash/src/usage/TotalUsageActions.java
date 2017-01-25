@@ -390,7 +390,7 @@ public class TotalUsageActions extends BaseClass{
 		
 			if(categorySelector == UsageHelper.categoryVoice){
 				
-				domesticValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getDomesticVoice()));
+				domesticValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getDomesticVoice()), false);
 				overageValue = oneMonthData.getDomesticOverageVoice();
 				expectedAmountItemsTooltip = 7;  // The amount of items expected in the tooltip is 7 only if chart is Domestic and category is Voice 
 				
@@ -400,7 +400,7 @@ public class TotalUsageActions extends BaseClass{
 				
 			} else if (categorySelector == UsageHelper.categoryMessages){
 				
-				domesticValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getDomesticMessages()));
+				domesticValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getDomesticMessages()), false);
 				
 			}
 			
@@ -408,7 +408,7 @@ public class TotalUsageActions extends BaseClass{
 			
 			if(categorySelector == UsageHelper.categoryVoice){
 				
-				roamingValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getRoamingVoice()));
+				roamingValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getRoamingVoice()), false);
 				
 			} else if (categorySelector == UsageHelper.categoryData){
 				
@@ -416,7 +416,7 @@ public class TotalUsageActions extends BaseClass{
 				
 			} else if (categorySelector == UsageHelper.categoryMessages){
 				
-				roamingValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getRoamingMessages()));
+				roamingValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getRoamingMessages()), false);
 				
 			}
 			
@@ -578,8 +578,8 @@ public class TotalUsageActions extends BaseClass{
 				
 				if(categorySelector == UsageHelper.categoryVoice){
 					
-					domesticValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticVoice())));
-					overageValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticOverageVoice())));
+					domesticValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticVoice()), false));
+					overageValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticOverageVoice()), false));
 					expectedAmountItemsTooltip = 7;  // The amount of items expected in the tooltip is 7 only if chart is Domestic and category is Voice 
 					
 				} else if (categorySelector == UsageHelper.categoryData){
@@ -588,7 +588,7 @@ public class TotalUsageActions extends BaseClass{
 					
 				} else if (categorySelector == UsageHelper.categoryMessages){
 					
-					domesticValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticMessages())));
+					domesticValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticMessages()), false));
 					
 				}
 				
@@ -596,7 +596,7 @@ public class TotalUsageActions extends BaseClass{
 				
 				if(categorySelector == UsageHelper.categoryVoice){
 					
-					roamingValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingVoice())));
+					roamingValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingVoice()), false));
 					
 				} else if (categorySelector == UsageHelper.categoryData){
 					
@@ -604,7 +604,7 @@ public class TotalUsageActions extends BaseClass{
 					
 				} else if (categorySelector == UsageHelper.categoryMessages){
 					
-					roamingValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingMessages())));
+					roamingValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingMessages()), false));
 					
 				}
 				
@@ -674,10 +674,10 @@ public class TotalUsageActions extends BaseClass{
 							if(categorySelector == UsageHelper.categoryVoice){
 								
 								domesticTmpSum += Double.parseDouble(usage.getDomesticVoice());
-								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum);
+								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum, false);
 								
 								overageTmpSum += Double.parseDouble(usage.getDomesticOverageVoice());
-								overageValueOther = UsageCalculationHelper.roundNoDecimalDigits(overageTmpSum);
+								overageValueOther = UsageCalculationHelper.roundNoDecimalDigits(overageTmpSum, false);
 								overageValue.put(otherVendors, overageValueOther);
 								
 							} else if (categorySelector == UsageHelper.categoryData){
@@ -688,7 +688,7 @@ public class TotalUsageActions extends BaseClass{
 							} else if (categorySelector == UsageHelper.categoryMessages){
 								
 								domesticTmpSum += Double.parseDouble(usage.getDomesticMessages());
-								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum);
+								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum, false);
 								
 							}
 							
@@ -700,7 +700,7 @@ public class TotalUsageActions extends BaseClass{
 							if(categorySelector == UsageHelper.categoryVoice){
 								
 								roamingTmpSum += Double.parseDouble(usage.getRoamingVoice());
-								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum);
+								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum, false);
 								
 							} else if (categorySelector == UsageHelper.categoryData){
 								
@@ -710,7 +710,7 @@ public class TotalUsageActions extends BaseClass{
 							} else if (categorySelector == UsageHelper.categoryMessages){
 								
 								roamingTmpSum += Double.parseDouble(usage.getRoamingMessages());
-								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum);
+								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum, false);
 								
 							}
 							

@@ -77,7 +77,7 @@ public class UsageCalculationHelper extends BaseClass{
 	public static String convertDataUnitToGbNoDecimalPoint(double amount) {
 		
 		double tmpAmount = amount / Math.pow(1024, 2);
-		String amountConverted = roundNoDecimalDigits(tmpAmount);
+		String amountConverted = roundNoDecimalDigits(tmpAmount, false);
 		//System.out.println("Original amount: " + amount + ", Converted from KB to GB: " + tmpAmount + ", Value rounded: " + amountConverted);
 		
 		return amountConverted;
@@ -86,11 +86,15 @@ public class UsageCalculationHelper extends BaseClass{
 	
 		
 	// Round value, no decimal digits
-	public static String roundNoDecimalDigits(double notRoundedValue){
+	public static String roundNoDecimalDigits(double notRoundedValue, boolean isExpenseValue){
 		
 		long roundedValue = Math.round(notRoundedValue);
 		String amountConverted = Long.toString(roundedValue);
-		//System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
+		
+		if (isExpenseValue)
+			amountConverted = "$" + amountConverted;
+		
+//		System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
 		
 		return amountConverted;
 		
