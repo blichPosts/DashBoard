@@ -40,9 +40,9 @@ public class SingleValuesAllSpendCategories extends BaseClass
 		CommonTestStepActions.SelectSingleVendor("AT&T Mobility"); // select the vendor
 		
 		// /////////////////////////////////////////////////////////////////////////////////
-		// 
+		// This tests all spend category selections in the expense trending.
 		// /////////////////////////////////////////////////////////////////////////////////
-
+		/*
 		ExpenseValuesHelper.SetupSpendCategoriesCounter();
 		
 		for(int x = 0; x < ExpenseValuesHelper.rowsOfValues; x++)
@@ -54,7 +54,27 @@ public class SingleValuesAllSpendCategories extends BaseClass
 			{
 				ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
 			}
-			ExpenseValuesHelper.VerifySpendCategoriesForSelectedMonth(); // verify 
+			ExpenseValuesHelper.VerifyExpenseTrendSpendCategoriesForSelectedMonth(); // verify 
+		}		
+		*/
+		
+		// /////////////////////////////////////////////////////////////////////////////////
+		// 
+		// /////////////////////////////////////////////////////////////////////////////////
+		
+		ExpenseValuesHelper.SetupSpendCategoriesCounter();
+		
+		for(int x = 0; x < ExpenseValuesHelper.rowsOfValues; x++)
+		{
+			// this selects month to run test on. it has a built in wait for the selection to complete
+			ExpenseValuesHelper.SelectMonth(x);  
+			
+			if(x == 0) // wait for expense control to load on first time through loop.
+			{
+				ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
+			}
+			ExpenseValuesHelper.VerifyCostPerServiceSpendCategoriesForSelectedMonth(); // verify 
+			// DebugTimeout(9999, "9999");
 		}		
 	}
 
