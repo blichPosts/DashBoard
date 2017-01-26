@@ -42,7 +42,7 @@ public class SingleValuesAllSpendCategories extends BaseClass
 		// /////////////////////////////////////////////////////////////////////////////////
 		// This tests all spend category selections in the expense trending.
 		// /////////////////////////////////////////////////////////////////////////////////
-		/*
+
 		ExpenseValuesHelper.SetupSpendCategoriesCounter();
 		
 		for(int x = 0; x < ExpenseValuesHelper.rowsOfValues; x++)
@@ -56,10 +56,10 @@ public class SingleValuesAllSpendCategories extends BaseClass
 			}
 			ExpenseValuesHelper.VerifyExpenseTrendSpendCategoriesForSelectedMonth(); // verify 
 		}		
-		*/
+
 		
 		// /////////////////////////////////////////////////////////////////////////////////
-		// 
+		// This tests all spend category selections for cost per service number.
 		// /////////////////////////////////////////////////////////////////////////////////
 		
 		ExpenseValuesHelper.SetupSpendCategoriesCounter();

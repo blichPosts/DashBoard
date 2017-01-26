@@ -458,14 +458,15 @@ public class ExpenseValuesHelper extends BaseClass
 	//
 	// For one month:
 	//
-	// * for the current selected month, get hover the values from the spend category control (these values have already been verified) and use 
-	//   these expected values to test the values in an expense trending bar graph. 
+	// * for the current selected month, get the hover values from the spend category control (these values have already been verified) and use 
+	//   these expected values to test the values in the expense trending bar graph. 
 	//
 	// * each trend selection (except 'all') is selected (one at a time) and the bar graph for the current selected month has it's hover 
 	//   value verified by using the expected value found in the spend category control. 
 	// 
-	//  * when the hover value for a bar graph is verified, the bar graph next to it is selected first. this is done because the click 
+	//  * each time the hover value for a bar graph is verified, the bar graph next to it is selected first. this is done because the click 
 	//    method being used has problems clicking the same bar graph multiple times.
+	//
 	public static void VerifyExpenseTrendSpendCategoriesForSelectedMonth() throws Exception 
 	{
 		// set chart Id in this class to the spend category control because this class will accessing the spend category control.
@@ -476,7 +477,7 @@ public class ExpenseValuesHelper extends BaseClass
 		new Actions(driver).moveToElement(expenseTrending).perform();
 		Thread.sleep(250);
 		
-		ClickExpenseSpendCategoryControl();
+		ClickExpenseSpendCategoryControl(); // click for hover
 		Thread.sleep(250);
 		
 		// this stores spend category hover entries onto the 'dataList list' list. that has name and corresponding value for each category. 
@@ -513,7 +514,7 @@ public class ExpenseValuesHelper extends BaseClass
 				clickBarIndexExpenseTrend(SpendCategoriesCounter); // click the bar graph for the selected pulldown month.  
 				Thread.sleep(250);
 				
-				// verify
+				// verify the bar graph value using the expected value from the spend category.
 				Assert.assertEquals(GetActualValue(), GetExpectedValue(spend), 
 						            "Failed verify of values in ExpenseValueHelpser.VerifySpendCategoriesForSelectedMonth"); 
 				Thread.sleep(250);
@@ -532,17 +533,15 @@ public class ExpenseValuesHelper extends BaseClass
 	}
 	
 	//
-	// For one month: // DO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// For one month: 
 	//
-	// * for the current selected month, get hover the values from the spend category control (these values have already been verified) and use 
-	//   these expected values to test the values in an expense trending bar graph. 
+	// 1) set a spend category selection.
+	// 2) get the hover value from the 'expense trend' bar graph.
+	// 3) get the value of the 'count of service numbers' from the expected data collection.   
+	// 4) divide the hover value from the 'expense trend' bar graph by the value of the 'count of service numbers' from the expected data collection.   
+	// 5) the cost per service number should equal quotient from above. 
 	//
-	// * each trend selection (except 'all') is selected (one at a time) and the bar graph for the current selected month has it's hover 
-	//   value verified by using the expected value found in the spend category control. 
-	// 
-	//  * when the hover value for a bar graph is verified, the bar graph next to it is selected first. this is done because the click 
-	//    method being used has problems clicking the same bar graph multiple times.
-	public static void VerifyCostPerServiceSpendCategoriesForSelectedMonth() throws Exception // bladdxx  
+	public static void VerifyCostPerServiceSpendCategoriesForSelectedMonth() throws Exception 
 	{
 		WebElement costPerServiceNumber;
 		
@@ -551,7 +550,7 @@ public class ExpenseValuesHelper extends BaseClass
 		new Actions(driver).moveToElement(costPerServiceNumber).perform();
 		Thread.sleep(250);
 		
-		TotalExpensesTrend.SetupChartId(); // need this class chartId setup to call its click its bar charts. 
+		TotalExpensesTrend.SetupChartId(); // need this class chartId setup to call its bar charts click. 
 		
 		// go through spend categories and select each, except the 'all' selection, one at a time 
 		for(SpendCategory spend : SpendCategory.values())
@@ -561,22 +560,25 @@ public class ExpenseValuesHelper extends BaseClass
 				ExpenseValuesHelper.SelectSpendCategory(spend); // select spend category.
 				Thread.sleep(250);
 
-				TotalExpensesTrend.clickBarIndex(SpendCategoriesCounter);
+				TotalExpensesTrend.clickBarIndex(SpendCategoriesCounter); // click expense trend bar chart. 
 				Thread.sleep(250);
 				
-				SetupChartIdForExpenseTrending(); // 
+				SetupChartIdForExpenseTrending(); // set the chart id in this class to the expense trend control.
 				
+				// store the hover value for the expense trend bar graph just clicked.
 				webEleListBarGraphHoverValues =  driver.findElements(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(9)>text>tspan"));
 				expenseTrendValue = webEleListBarGraphHoverValues.get(3).getText();
 		
-				SetupChartIdForCostPerServiceNumber(); // 
+				SetupChartIdForCostPerServiceNumber(); // set the chart id in this class to the cost per service number control.
 
-				CostPerServiceNumberclickBarIndex(SpendCategoriesCounter);
+				CostPerServiceNumberclickBarIndex(SpendCategoriesCounter); // click and get hover value (actual).
 				webEleListBarGraphHoverValues =  driver.findElements(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(9)>text>tspan"));
 				actualValueCostPerServiceNumber = webEleListBarGraphHoverValues.get(3).getText();
 				
-				countOfServiceNumbers = listOfRows.get(rowWithActualValues).get(titlesList.indexOf("no_of_lines"));
+				// get value for count of service numbers.
+				countOfServiceNumbers = listOfRows.get(rowWithActualValues).get(titlesList.indexOf("no_of_lines"));  
 				
+				// verify
 				VerifyCostPerServiceNumberForSpendCategory(GetDoubleValueActual(expenseTrendValue), 
 						                                   GetDoubleValueActualNoDollarSign(countOfServiceNumbers), 
 						                                   GetDoubleValueActual(actualValueCostPerServiceNumber));
@@ -599,6 +601,8 @@ public class ExpenseValuesHelper extends BaseClass
 	// ///////////////////////////////////////////// Helpers ///////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	
+	// DO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	public static void VerifyCostPerServiceNumberForSpendCategory(double expenseTrendVal, double countOfServiceNumbers, double actualValueCostPerServiceNumber)
 	{
 		double expectedCostPerServiceNumber = Math.round(expenseTrendVal/countOfServiceNumbers);
@@ -606,10 +610,12 @@ public class ExpenseValuesHelper extends BaseClass
 		//System.out.println(expected);
 		//System.out.println(actualValueCostPerServiceNumber);
 		
-		Assert.assertEquals(actualValueCostPerServiceNumber, expectedCostPerServiceNumber);
+		Assert.assertEquals(actualValueCostPerServiceNumber, expectedCostPerServiceNumber, 
+				            "Failed testing value for 'Cost Per Service Number' in ExpenseValuesHelper.VerifyCostPerServiceNumberForSpendCategory.");
 
 	}
 	
+	// this gets the actual value in the bar graph hover.
 	public static String GetActualValue()
 	{
 		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
@@ -728,9 +734,10 @@ public class ExpenseValuesHelper extends BaseClass
 		webEleListBarGraphHoverValues.clear();
 	}
 	
+	// get expected value from spend category info list.
 	public static String GetExpectedValue(SpendCategory spendCategory)
 	{
-		for(String str : dataList)
+		for(String str : dataList) // go through list holding expected values and find the category passed in. 
 		{
 			if(str.contains(spendCategory.name()))
 			{
