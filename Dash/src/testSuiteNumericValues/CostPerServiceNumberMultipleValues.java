@@ -47,7 +47,7 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		String path = ExpenseHelperMultipleVendors.path;
-		int amountOfVendors = 8;
+		int amountOfVendors = 12;
 
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();
@@ -178,7 +178,7 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAll);
 				Thread.sleep(2000);
-				/*
+				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryVoice);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryVoice);
@@ -193,12 +193,12 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryMessages);
 				Thread.sleep(2000);
-				 
+				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryRoaming);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryRoaming);
 				Thread.sleep(2000);
-				
+				 
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryEquipment);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryEquipment);
@@ -218,7 +218,7 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAccount);
 				Thread.sleep(2000);
-				*/
+				
 				
 			} catch (NullPointerException e) {
 				

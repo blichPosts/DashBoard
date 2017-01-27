@@ -158,14 +158,14 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		}
 		
 		
-		int indexMonthToSelect = 0;
+		int indexMonthToSelect = 4;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 		
 		do {
 					
 			monthYearToSelect = monthsWithDataToSelectPulldown.get(indexMonthToSelect);  
-			System.out.println("Month Year: " + monthYearToSelect);
+			System.out.println(" ** Month Year: " + monthYearToSelect);
 			
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 			Thread.sleep(2000);
@@ -173,7 +173,7 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 			// #5 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
 			
 			try {
-				/*
+				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryAll);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAll);
@@ -198,12 +198,12 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryRoaming);
 				Thread.sleep(2000);
-				*/
+				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryEquipment);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryEquipment);
 				Thread.sleep(2000);
-				/* 
+				 
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryTaxes);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryTaxes);
@@ -218,7 +218,7 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAccount);
 				Thread.sleep(2000);
-				*/ 
+				 
 				
 			} catch (NullPointerException e) {
 				

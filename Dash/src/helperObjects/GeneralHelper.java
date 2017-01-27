@@ -1,8 +1,13 @@
 package helperObjects;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import org.openqa.selenium.WebElement;
 
 public class GeneralHelper {
 
@@ -63,6 +68,33 @@ public class GeneralHelper {
 		return vendorsToBeDisplayedMap;
 		
 	} 	
+	
+	
+	
+	public static int getNumberOfLineForYCoordenate(List<WebElement> yAxisLabels) {
+		
+		List<Integer> labels = new ArrayList<Integer>();
+		
+		for (WebElement y: yAxisLabels) {
+			
+			String label = y.getText(); 
+			
+			if (label.toUpperCase().endsWith("K")) {
+				label = label.replace("K", "");
+			} else if (label.toUpperCase().endsWith("M")) {
+				label = label.replace("M", "");
+			}
+			
+			labels.add(Integer.parseInt(label));
+			
+		}
+		
+		Collections.sort(labels);
+		
+		
+		return 1;
+	}
+	
 	
 	
 }

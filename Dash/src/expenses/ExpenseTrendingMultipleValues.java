@@ -397,6 +397,12 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				
 			}
 			
+			
+//			String cssYLabels = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-yaxis-labels>text";
+//			int numberLine = GeneralHelper.getNumberOfLineForYCoordenate(driver.findElements(By.cssSelector(cssYLabels)));
+//			
+//			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(" + numberLine + ")";
+			
 			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(1)";
 			
 			// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
@@ -418,7 +424,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				
 			} else if (loginType.equals(LoginType.ReferenceApp)) {
 				
-				y_offset = 100; // these coordinates work for Ref App :)
+				y_offset = 150; // these coordinates work for Ref App :)  // was 100
 				
 			}
 			
@@ -426,7 +432,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			int y = lineCoordinates.getY() + y_offset;  // these coordinates work for Dev Instance :)
 			
 			robot.mouseMove(x, y);
-			//System.out.println("coordinates - x: " + x + "  y: " + y);
+			System.out.println("coordinates:  x: " + x + "  y: " + y);
 			
 			Thread.sleep(500);
 			

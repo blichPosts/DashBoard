@@ -173,7 +173,7 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 			// #5 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
 			
 			try {
-				/*
+				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryAll);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAll);
@@ -183,12 +183,12 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryVoice);
 				Thread.sleep(2000);
-				*/
+				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryData);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryData);
 				Thread.sleep(2000);
-				/*
+				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryMessages);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryMessages);
@@ -218,7 +218,7 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAccount);
 				Thread.sleep(2000);
-				*/ 
+				 
 				
 			} catch (NullPointerException e) {
 				

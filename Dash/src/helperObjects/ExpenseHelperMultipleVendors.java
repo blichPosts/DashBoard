@@ -12,6 +12,8 @@ public class ExpenseHelperMultipleVendors extends BaseClass{
 	public final static int totalExpenseSection = 0;
 	public final static int expenseTrendingSection = 1;
 	
+	public final static int expenseTotalExpensePieChart = 0;
+	public final static int expenseTotalExpenseBarChart = 1;
 	public final static int expenseByVendorChart = 2;
 	public final static int costPerServiceNumberChart  = 3;
 	public final static int countServiceNumbersChart = 4;

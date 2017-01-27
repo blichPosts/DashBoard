@@ -27,9 +27,6 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 		setUpDriver();
 		login();
 		// MainLogin();
-		
-		
-		
  		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
