@@ -432,7 +432,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			int y = lineCoordinates.getY() + y_offset;  // these coordinates work for Dev Instance :)
 			
 			robot.mouseMove(x, y);
-			System.out.println("coordinates:  x: " + x + "  y: " + y);
+//			System.out.println("coordinates:  x: " + x + "  y: " + y);
 			
 			Thread.sleep(500);
 			

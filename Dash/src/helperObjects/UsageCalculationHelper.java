@@ -104,7 +104,7 @@ public class UsageCalculationHelper extends BaseClass{
 		if (isExpenseValue)
 			amountConverted = "$" + amountConverted;
 		
-		System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
+//		System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
 		
 		return amountConverted;
 		
