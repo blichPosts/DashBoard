@@ -191,6 +191,7 @@ public class ExpenseHelper extends BaseClass
 			}
 			else // the control slice is clickable. select it and put the vendor/value onto the hash map. 
 			{
+				Thread.sleep(1000);				
 				ele.click();
 				Thread.sleep(1000);
 				expenseControlHMap.put(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText(),

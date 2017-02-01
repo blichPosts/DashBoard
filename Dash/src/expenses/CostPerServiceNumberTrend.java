@@ -1,5 +1,11 @@
 package expenses;
 
+// 
+// Revision history.
+//
+// 1/29/16 - updated VerifyRemovingLegends() to call click method in ExpenseValueHelper because it is more reliable. 
+
+
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.text.ParseException;
@@ -16,6 +22,7 @@ import org.testng.Assert;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseValuesHelper;
 import helperObjects.UsageHelper;
 
 public class CostPerServiceNumberTrend extends  BaseClass
@@ -79,12 +86,16 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		Collections.reverse(expectedMonthYear);
 		
+		ExpenseValuesHelper.SetupChartIdForCostPerServiceNumber(); // 1/29/17 - need this so  'ExpenseValuesHelper' can call reliable x/y click.
+		
 		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
-				clickBarIndex(y);
+				// clickBarIndex(y);  
+				ExpenseValuesHelper.CostPerServiceNumberclickBarIndex(y); // 1/29/17 - changed to call ExpenseValuesHelper. this has a more reliable click method.
+				
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
