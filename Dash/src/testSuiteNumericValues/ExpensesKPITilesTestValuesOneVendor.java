@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package testSuiteNumericValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,22 +12,20 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
+import expenses.ExpensesKPITilesValues;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
-import usage.UsageKPITilesActions;
 
-
-public class UsageKPITilesTestValues extends BaseClass{
+public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 
 	
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		login();
-//		MainLogin();
+		MainLogin();
  		// CommonTestStepActions.switchToContentFrame();
 		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
 		// I've put it here to make sure that it gets initialized and that will not error 
@@ -36,7 +34,7 @@ public class UsageKPITilesTestValues extends BaseClass{
 	
 	
 	@Test
-	public static void UsageKPITilesTestValuesTest() throws Exception
+	public static void ExpensesKPITilesTestValuesOneVendorTest() throws Exception
 	{
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
@@ -69,23 +67,17 @@ public class UsageKPITilesTestValues extends BaseClass{
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
 			
-			System.out.println("Path: " + completePath);
-			
+//			System.out.println("Path: " + completePath);
 			System.out.println("  **  RUNNING KPI TILE TEST FOR VENDOR: " + vendor + "  **");
 			
-			CommonTestStepActions.GoToUsagePageDetailedWait();
+			CommonTestStepActions.GoToExpensePageDetailedWait();
 				
-			// #1 Select Vendor View 
-			UsageHelper.selectVendorView();
-			
-			
-			// #2 Read data from file
+			// #1 Read data from file
 			List<UsageOneMonth> valuesFromFile = ReadFilesHelper.getDataFromSpreadsheet(completePath);
 			
 			List<UsageOneMonth> valuesOneVendorAllMonths = UsageHelper.addMissingMonthsForVendor(valuesFromFile);
-			
 				
-			// #3 Select only one vendor
+			// #2 Select only one vendor
 			CommonTestStepActions.UnSelectAllVendors();
 			CommonTestStepActions.selectOneVendor(vendor);
 			
@@ -95,11 +87,8 @@ public class UsageKPITilesTestValues extends BaseClass{
 			String year =  "";
 			String month = "";
 			String monthYearToSelect = "";
-			String domesticVoiceUsage;
-			String domesticVoiceOverageUsage;
-			String domesticMessagesUsage;
-			String domesticDataUsage;
-			String roamingDataUsage;
+			String totalChargeExpenses; 
+			String numberOfLinesExpenses;
 			
 			int indexMonth = 0;
 			
@@ -130,79 +119,75 @@ public class UsageKPITilesTestValues extends BaseClass{
 				boolean monthYearNull = false; 
 				
 				try {
-					
 					if (!(month.equals(null) && year.equals(null))) {
 						monthYearNull = false;
+						System.out.println("Month and year NOT null");
 					}
 							
 				} catch (NullPointerException e) {
 					monthYearNull = true;
+					System.out.println("Month and year ARE null");
 				}
 					
-				// If month and year aren't null, then verify the values for the current month and vendor selected
-				// 'month' and 'year' null, means there's no data for the current month and vendor selected
 				if (!monthYearNull) {
-					
+				
 					monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
-					System.out.println("Month Year: " + monthYearToSelect);
+	//				System.out.println("Month Year: " + monthYearToSelect);
 					
-					// #4 Select month on month/year selector
+					// #3 Select month on month/year selector
 					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 					
 					Thread.sleep(2000);
 					
-					domesticVoiceUsage = oneMonthData.getDomesticVoice();
-					domesticVoiceOverageUsage = oneMonthData.getDomesticOverageVoice();
-					domesticMessagesUsage = oneMonthData.getDomesticMessages();
-					domesticDataUsage = oneMonthData.getDomesticDataUsageKb();
-					roamingDataUsage = oneMonthData.getRoamingDataUsageKb();
+					totalChargeExpenses = oneMonthData.getTotalCharge();
+					numberOfLinesExpenses = oneMonthData.getNumberOfLines();
 									
-					// #5 Compare the values displayed on the KPIs to the values from spreadsheet
-					UsageKPITilesActions.verifyKPItileValues(domesticVoiceUsage, domesticVoiceOverageUsage, domesticMessagesUsage, domesticDataUsage, roamingDataUsage);
+					// #4 Compare the values displayed on the KPIs to the values from spreadsheet
+					ExpensesKPITilesValues.verifyKPItileValues(totalChargeExpenses, numberOfLinesExpenses);
 					
 					
-					// #6 Calculate 3 Month Rolling Averages and Trending Percentage
+					// #5 Calculate 3 Month Rolling Averages and Trending Percentage
 					// Get the values needed to calculate the 3 month Rolling Averages, and the Trending values
 					// ONLY if there's data for two months before the current month. 
 					// E.g.: Last month with data: January 2016, then March 2016 is the last month that will have the 3 month rolling average and trending values calculated
-					if(indexMonth < valuesOneVendorAllMonths.size()-2){
+					if(indexMonth < valuesFromFile.size()-2){
 						
 						List<UsageOneMonth> valuesForTrendingValue = new ArrayList<UsageOneMonth>();
 						
 						// Adds the current month values to the list
-						valuesForTrendingValue.add(valuesOneVendorAllMonths.get(indexMonth));
+						valuesForTrendingValue.add(valuesFromFile.get(indexMonth));
 						// Adds the previous month values to the list
-						valuesForTrendingValue.add(valuesOneVendorAllMonths.get(indexMonth+1));
+						valuesForTrendingValue.add(valuesFromFile.get(indexMonth+1));
 						// Adds values from 2 months ago to the list
-						valuesForTrendingValue.add(valuesOneVendorAllMonths.get(indexMonth+2));
+						valuesForTrendingValue.add(valuesFromFile.get(indexMonth+2));
 					 
-						UsageKPITilesActions.verifyThreeMonthRollingAverageAndTrendingValues(valuesForTrendingValue);
+						ExpensesKPITilesValues.verifyThreeMonthRollingAverageAndTrendingValues(valuesForTrendingValue);
 						
 					}
 					
 					
-					// #7 Calculate 6 Month Rolling Averages
+					// #6 Calculate 6 Month Rolling Averages
 					// Get the values needed to calculate the 6 month Rolling Averages
 					// ONLY if there's data for five months before the current month. 
 					// E.g.: Last month with data: January 2016, then June 2016 is the last month that will have the 6 month rolling average calculated
-					if(indexMonth < valuesOneVendorAllMonths.size()-5){
+					if(indexMonth < valuesFromFile.size()-5){
 						
 						List<UsageOneMonth> valuesForSixMonthAverage = new ArrayList<UsageOneMonth>();
 						
 						// Adds the current month values to the list
-						valuesForSixMonthAverage.add(valuesOneVendorAllMonths.get(indexMonth));
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth));
 						// Adds the previous month values to the list
-						valuesForSixMonthAverage.add(valuesOneVendorAllMonths.get(indexMonth+1));
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+1));
 						// Adds values from 2 months ago to the list
-						valuesForSixMonthAverage.add(valuesOneVendorAllMonths.get(indexMonth+2));
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+2));
 						// Adds values from 3 months ago to the list
-						valuesForSixMonthAverage.add(valuesOneVendorAllMonths.get(indexMonth+3));
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+3));
 						// Adds values from 4 months ago to the list
-						valuesForSixMonthAverage.add(valuesOneVendorAllMonths.get(indexMonth+4));
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+4));
 						// Adds values from 5 months ago to the list
-						valuesForSixMonthAverage.add(valuesOneVendorAllMonths.get(indexMonth+5));
+						valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+5));
 						
-						UsageKPITilesActions.verifySixMonthRollingAverage(valuesForSixMonthAverage);
+						ExpensesKPITilesValues.verifySixMonthRollingAverage(valuesForSixMonthAverage);
 						
 					}
 					
@@ -210,7 +195,6 @@ public class UsageKPITilesTestValues extends BaseClass{
 				
 				indexMonth++;
 				
-					
 			} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
 			
 			Thread.sleep(2000);
@@ -225,9 +209,10 @@ public class UsageKPITilesTestValues extends BaseClass{
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Test for KPI tiles values finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "Test for Expenses KPI tiles values finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}
 	
+
 }

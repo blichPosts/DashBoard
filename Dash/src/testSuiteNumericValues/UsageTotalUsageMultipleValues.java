@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package testSuiteNumericValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import helperObjects.UsageOneMonth;
 import usage.TotalUsageActions;
 
 
-public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
+public class UsageTotalUsageMultipleValues extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -28,14 +28,12 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 		login();
 		// MainLogin();
  		// CommonTestStepActions.switchToContentFrame();
-		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
-		// I've put it here to make sure that it gets initialized and that will not error 
-		// CommonTestStepActions.initializeMonthSelector();
+
 	}
 	
 	
 	@Test
-	public static void UsageTotalUsageTwoOrMoreVendorsTestValuesTest() throws Exception
+	public static void UsageTotalUsageMultipleValuesTest() throws Exception
 	{
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
@@ -48,7 +46,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 1;
+		int amountOfVendors = 5;
 
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();
@@ -131,11 +129,12 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 			Thread.sleep(2000);
 			
 			// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
+			
 			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 			Thread.sleep(1000);
-	
+			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 			Thread.sleep(1000);				
 			

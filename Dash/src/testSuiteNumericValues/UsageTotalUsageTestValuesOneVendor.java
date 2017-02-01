@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package testSuiteNumericValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import helperObjects.UsageOneMonth;
 import usage.TotalUsageActions;
 
 
-public class UsageTotalUsageTestValues extends BaseClass{
+public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 
 	
 	@BeforeClass
@@ -29,14 +29,12 @@ public class UsageTotalUsageTestValues extends BaseClass{
 		login();
 		// MainLogin();
  		// CommonTestStepActions.switchToContentFrame();
-		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
-		// I've put it here to make sure that it gets initialized and that will not error 
-		// CommonTestStepActions.initializeMonthSelector();
+
 	}
 	
 	
 	@Test
-	public static void UsageTotalUsageTestValuesTest() throws Exception
+	public static void UsageTotalUsageTestValuesOneVendorTest() throws Exception
 	{
 
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
@@ -113,7 +111,7 @@ public class UsageTotalUsageTestValues extends BaseClass{
 				Thread.sleep(2000);
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
-				/*
+				
 				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryVoice);
@@ -121,12 +119,12 @@ public class UsageTotalUsageTestValues extends BaseClass{
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryVoice);
 				Thread.sleep(1000);				
-				*/
+				
 				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryData);
 				Thread.sleep(1000);
-				/*
+				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryData);
 				Thread.sleep(1000);				
 				
@@ -137,7 +135,7 @@ public class UsageTotalUsageTestValues extends BaseClass{
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryMessages);
 				Thread.sleep(1000);
-				*/				
+								
 				indexMonth++;
 				
 			} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));

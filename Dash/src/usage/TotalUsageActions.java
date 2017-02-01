@@ -11,12 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 
 import Dash.BaseClass;
 import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -633,8 +635,8 @@ public class TotalUsageActions extends BaseClass{
 		// then the vendors that have data for the selected month are summarized in the "Other" item.
 		if (moreThanFiveVendorsSelected && sixVendorsInChart) {
 			
-			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
-			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
+//			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
+//			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
 			
 			double domesticTmpSum = 0;
 			double overageTmpSum = 0;
@@ -667,7 +669,7 @@ public class TotalUsageActions extends BaseClass{
 					
 					if (!usageNull) {
 						
-						System.out.println("there's data for the vendor");
+//						System.out.println("there's data for the vendor");
 						
 						if (barChartId == 0) {
 							
@@ -719,7 +721,7 @@ public class TotalUsageActions extends BaseClass{
 						}
 						
 					} else {
-						System.out.println("there's NO data for the vendor");
+//						System.out.println("there's NO data for the vendor");
 					}
 						
 				}
@@ -729,16 +731,16 @@ public class TotalUsageActions extends BaseClass{
 		}
 		
 		
-		//System.out.println("domestic list size: " + domesticValue.size());
-//		System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
+		
+		System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
 		for(String s: vendorsInChartNames){
-//			System.out.println("*** " + s);
+			System.out.println("*** " + s);
 		}
 		
-		//System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
-		for(WebElement w: vendorsSelectedCheckBox){
+//		System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
+//		for(WebElement w: vendorsSelectedCheckBox){
 //			System.out.println("*** " + w.getText());
-		}
+//		}
 
 		
 		int indexVendorSelected = 0;
@@ -759,30 +761,42 @@ public class TotalUsageActions extends BaseClass{
 			if(vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()) || vendorsInChartNames.get(indexVendorInChart).equals("Other")){
 				
 				String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-				//System.out.println("cssSelector: " + cssSelector);
 				
 				// The 'bar' WebElement will be used to set the position of the mouse on the chart
 				WebElement bar = driver.findElement(By.cssSelector(cssSelector));
 	
 				// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
-				Point coordinates = bar.getLocation();
-				Robot robot = new Robot(); 
-				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work for REF APP :)
+				Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
 				
-				if (loginType.equals(LoginType.Command) || loginType.equals(LoginType.ReferenceApp)) {
-					robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 200); // these coordinates work for CMD :)
-				}
+				int x = coordinates.getX();
+				int y = coordinates.getY();
 				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) > 10.0) {   //if (!(bar.getAttribute("height").toString().equals("0"))){
+				Dimension d = bar.getSize();
+				int height = d.getHeight();
+				int width = d.getWidth();
+
+							
+				Robot robot = new Robot();
+				
+				int x_offset = (int) (width * 0.5);
+				int y_offset = (int) (height * 0.5);
+				
+				// If the bar's width is zero (it means the value represented is zero) then the coordinates passed to robot.mouseMove will not be useful to get the tooltip visible.
+				// We add 20 to "x" so the mouse is hovered over the chart and the tooltip is displayed. 
+				if (width == 0)
+					x_offset = 20;
+				
+				robot.mouseMove(x + x_offset, y + y_offset); 
+				
+				if (Double.parseDouble(bar.getAttribute("height").toString()) > 10.0) {
 					bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-					//firstBar = false;
 				}
 				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) < 10.0) {  //if (bar.getAttribute("height").toString().equals("0")){
+				if (Double.parseDouble(bar.getAttribute("height").toString()) < 10.0) {
 					robot.mousePress(InputEvent.BUTTON1_MASK);
 					robot.mouseRelease(InputEvent.BUTTON1_MASK);
 				}
-					
+				
 				
 				try {
 					WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
@@ -840,7 +854,7 @@ public class TotalUsageActions extends BaseClass{
 						
 						if (index == 2) {
 							
-							valueExpected = domesticValue.get(vendorNameExpected);    //get(indexVendorInChart);
+							valueExpected = domesticValue.get(vendorNameExpected);
 							labelExpected = "Domestic";
 							
 							Assert.assertEquals(labelFound, labelExpected);

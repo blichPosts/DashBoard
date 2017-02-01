@@ -2,15 +2,33 @@ package helperObjects;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 
-public class GeneralHelper {
+import Dash.BaseClass;
 
+public class GeneralHelper extends BaseClass {
+
+	
+	public static WebElement iframe;  
+	public static int x_iFrame;
+	public static int y_iFrame;
+	
+	public static void setUpiFrame() {
+		
+		iframe = driver.findElement(By.cssSelector("iframe#CONTENT"));
+		Point iframeLoc = iframe.getLocation();
+		x_iFrame = iframeLoc.getX();
+        y_iFrame = iframeLoc.getY();
+        
+	}
+	
+	
 	
 	// It returns true if there's data for the vendor in the selected month. That means that the vendor will be displayed on the Usage Trending chart
 	// Else it returns false	
@@ -96,5 +114,21 @@ public class GeneralHelper {
 	}
 	
 	
+	public static Point getAbsoluteLocation(WebElement element) {
+		
+        int x = x_iFrame;
+        int y = y_iFrame;
+        
+        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
+		int headerHeight = header.getSize().getHeight();
+        
+        Point elementLoc = element.getLocation();
+        x += elementLoc.getX();
+        y += elementLoc.getY() + headerHeight;
+        
+        Point p = new Point(x, y);
+        return p; 
+        
+	}
 	
 }

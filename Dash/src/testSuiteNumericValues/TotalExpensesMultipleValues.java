@@ -15,6 +15,7 @@ import Dash.BaseClass;
 import expenses.TotalExpensesValues;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelperMultipleVendors;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -57,7 +58,7 @@ public class TotalExpensesMultipleValues extends BaseClass{
 		if (amountOfVendorsToSelect > vendorNames.size())
 			amountOfVendorsToSelect = vendorNames.size();
 		
-		System.out.println("amountOfVendorsToSelect: " + amountOfVendorsToSelect);
+		System.out.println("Amount Of Vendors To Select: " + amountOfVendorsToSelect);
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectVendorView();
@@ -73,6 +74,9 @@ public class TotalExpensesMultipleValues extends BaseClass{
 			CommonTestStepActions.UnSelectAllVendors();
 			i = offsetVendorsAmount;
 			totalAmountVendors = amountOfVendorsToSelect + offsetVendorsAmount;
+		
+			if (totalAmountVendors > vendorNames.size())
+				totalAmountVendors = vendorNames.size();
 			
 			// Run the test for each vendor selected
 			for (i = offsetVendorsAmount; i < totalAmountVendors; i++) {

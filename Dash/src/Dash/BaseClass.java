@@ -27,6 +27,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import helperObjects.Country;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageHelper;
 
 public class BaseClass
@@ -542,6 +543,7 @@ public class BaseClass
 			driver.findElement(By.name("username")).sendKeys("admin.vis");
 			driver.findElement(By.name("password")).sendKeys("tangoe");
 			driver.findElement(By.name("submit")).click();
+			GeneralHelper.setUpiFrame();  // anaaddxx
 		    driver.switchTo().frame(driver.findElement(By.id("CONTENT"))); // bladdxx
 		    Thread.sleep(1000); // bladdxx
 		}

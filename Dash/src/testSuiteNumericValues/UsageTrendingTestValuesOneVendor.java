@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package testSuiteNumericValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import helperObjects.UsageOneMonth;
 import usage.UsageTrending;
 
 
-public class UsageTrendingTestValues extends BaseClass{
+public class UsageTrendingTestValuesOneVendor extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -27,14 +27,12 @@ public class UsageTrendingTestValues extends BaseClass{
 		login();
 		// MainLogin();
 		// CommonTestStepActions.switchToContentFrame();
-		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
-		// I've put it here to make sure that it gets initialized and that will not error 
-		// CommonTestStepActions.initializeMonthSelector();
+
 	}
 
 
 	@Test
-	public static void UsageTrendingTestValuesTest() throws Exception
+	public static void UsageTrendingTestValuesOneVendorTest() throws Exception
 	{
 
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();

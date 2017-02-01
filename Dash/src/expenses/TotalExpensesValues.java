@@ -16,6 +16,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -36,9 +37,9 @@ public class TotalExpensesValues extends BaseClass {
 		
 		
 		HashMap<String, UsageOneMonth> vendorExpensesMap = new HashMap<String, UsageOneMonth>();
+		
 		for (UsageOneMonth u: listOneMonthData) {
 			vendorExpensesMap.put(u.getVendorName(), u);
-//			System.out.println(vendorExpensesMap.get(u.getVendorName()).getVendorName()); // + " - Domestic voice: " + u.getDomesticVoice());
 		}
 		
 		Thread.sleep(2000);
@@ -66,7 +67,6 @@ public class TotalExpensesValues extends BaseClass {
 			accountExpensesValues.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getTotalAccountLevelCharges()), true));
 			
 		}
-		
 		
 		
 		List<WebElement> vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
@@ -97,8 +97,8 @@ public class TotalExpensesValues extends BaseClass {
 		// then the vendors that have data for the selected month are summarized in the "Other" item.
 		if (moreThanFiveVendorsSelected && sixVendorsInChart) {
 			
-			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
-			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
+//			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
+//			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
 			
 			double voiceTmpSum = 0;
 			double dataTmpSum = 0;
@@ -116,7 +116,7 @@ public class TotalExpensesValues extends BaseClass {
 				
 				if (!vendorsInChartNames.contains(v)){
 					
-					System.out.println("Vendor " + v + ", is not listed in chart");
+//					System.out.println("Vendor " + v + ", is not listed in chart");
 				
 					UsageOneMonth usage = (UsageOneMonth) vendorExpensesMap.get(v);
 
@@ -136,7 +136,7 @@ public class TotalExpensesValues extends BaseClass {
 					
 					if (!usageNull) {
 						
-						System.out.println("there's data for the vendor");
+//						System.out.println("there's data for the vendor");
 						
 						voiceTmpSum += Double.parseDouble(usage.getVoiceCharges());
 						voiceValueOther = UsageCalculationHelper.roundNoDecimalDigits(voiceTmpSum, true);
@@ -200,15 +200,17 @@ public class TotalExpensesValues extends BaseClass {
 		int indexHighchart = 1;
 		
 		
-		// Verify the info contained on each of the tooltips for all the vendors listed in chart 		
-		
+ 		
+		// **************************************************************************************
+		// Verify the info contained on each of the tooltips for all the vendors listed in chart
+		// **************************************************************************************
 		while (indexVendorSelected < vendorsSelectedCheckBox.size() && indexVendorInChart < vendorsInChartNames.size()) {
 			
-//				System.out.println("indexVendorSelected: " + indexVendorSelected + ", vendorsSelectedCheckBox.size(): " + vendorsSelectedCheckBox.size());
-//			    System.out.println("indexVendorInChart: " + indexVendorInChart + ", vendorsInChartNames.size(): " + vendorsInChartNames.size()); 
-//				System.out.println("Vendor name chart: " +  vendorsInChartNames.get(indexVendorInChart));
-//				System.out.println("Vendor name checkbox: " +  vendorsSelectedCheckBox.get(indexVendorSelected).getText());
-//				System.out.println("Condition is: " +  vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()));
+//			System.out.println("indexVendorSelected: " + indexVendorSelected + ", vendorsSelectedCheckBox.size(): " + vendorsSelectedCheckBox.size());
+//		    System.out.println("indexVendorInChart: " + indexVendorInChart + ", vendorsInChartNames.size(): " + vendorsInChartNames.size()); 
+//			System.out.println("Vendor name chart: " +  vendorsInChartNames.get(indexVendorInChart));
+//			System.out.println("Vendor name checkbox: " +  vendorsSelectedCheckBox.get(indexVendorSelected).getText());
+//			System.out.println("Condition is: " +  vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()));
 			
 			// If the vendor in vendorsSelectedCheckBox list is present in the vendorsInChartList, or if the current element from chart is "Other", 
 			// then run the test. Else, move to the next vendor
@@ -222,6 +224,25 @@ public class TotalExpensesValues extends BaseClass {
 				WebElement bar = driver.findElement(By.cssSelector(cssSelector));
 	
 				// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
+				Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
+				
+				int x = coordinates.getX();
+				int y = coordinates.getY();
+				
+				Dimension d = bar.getSize();
+				int height = d.getHeight();
+				int width = d.getWidth();
+
+				Robot robot = new Robot();
+				
+				int x_offset = (int) (width * 0.5);
+				int y_offset = (int) (height * 0.5);
+				
+				robot.mouseMove(x + x_offset, y + y_offset); 
+				
+				
+				/*
+				
 				Point coordinates = bar.getLocation();
 				Robot robot = new Robot(); 
 				
@@ -237,20 +258,17 @@ public class TotalExpensesValues extends BaseClass {
 				if (loginType.equals(LoginType.Command) || loginType.equals(LoginType.ReferenceApp)) {
 					robot.mouseMove(x + x_offset, y + y_offset); // these coordinates work for CMD :)
 				}
+				*/
 				
-				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) > 10.0) {   //if (!(bar.getAttribute("height").toString().equals("0"))){
+				if (Double.parseDouble(bar.getAttribute("height").toString()) > 10.0) {
 					bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-					//firstBar = false;
 				}
 				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) < 10.0) {  //if (bar.getAttribute("height").toString().equals("0")){
+				if (Double.parseDouble(bar.getAttribute("height").toString()) < 10.0) {
 					robot.mousePress(InputEvent.BUTTON1_MASK);
 					robot.mouseRelease(InputEvent.BUTTON1_MASK);
 				}	
 				
-					
-				System.out.println("coordinates:  x: " + (x + x_offset) + "  y: " + (y + y_offset));
 				
 				try {
 					WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
@@ -287,8 +305,6 @@ public class TotalExpensesValues extends BaseClass {
 				for (int i = 1; i <= legends.size(); i++) {
 				
 					int index =  i * 3 - 1;
-					
-					System.out.println("  index: " + index);
 					
 					// Get the label and remove colon at the end of its text 
 					String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
@@ -338,7 +354,6 @@ public class TotalExpensesValues extends BaseClass {
 						
 					}
 						
-					
 					Assert.assertEquals(labelFound, labelExpected);
 					Assert.assertEquals(valueFound, valueExpected);
 					
@@ -402,15 +417,14 @@ public class TotalExpensesValues extends BaseClass {
 		boolean sixVendorsInChart = vendorsInChartNames.size() == 6;
 		
 		String totalValueOther = "";
-		
 		String otherVendors = "Other";
 	
 		// If more than 5 vendors are selected and there are 6 vendors in chart,  
 		// then the vendors that have data for the selected month are summarized in the "Other" item.
 		if (moreThanFiveVendorsSelected && sixVendorsInChart) {
 			
-			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
-			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
+//			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
+//			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
 			
 			double totalTmpSum = 0;
 			
@@ -420,7 +434,7 @@ public class TotalExpensesValues extends BaseClass {
 				
 				if (!vendorsInChartNames.contains(v)){
 					
-					System.out.println("Vendor " + v + ", is not listed in chart");
+//					System.out.println("Vendor " + v + ", is not listed in chart");
 				
 					UsageOneMonth usage = (UsageOneMonth) vendorExpensesMap.get(v);
 
@@ -440,15 +454,14 @@ public class TotalExpensesValues extends BaseClass {
 					
 					if (!usageNull) {
 						
-						System.out.println("there's data for the vendor");
-						
 						totalTmpSum += Double.parseDouble(usage.getTotalCharge());
 						totalValueOther = UsageCalculationHelper.roundNoDecimalDigits(totalTmpSum, true);
 						totalExpensesValues.put(otherVendors, totalValueOther);
+//						System.out.println("there's data for the vendor");
 						
 					} else {
 						
-						System.out.println("there's NO data for the vendor");
+//						System.out.println("there's NO data for the vendor");
 						
 					}
 						
@@ -459,81 +472,70 @@ public class TotalExpensesValues extends BaseClass {
 		}
 		
 		
-		//System.out.println("domestic list size: " + domesticValue.size());
-//				System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
+		
+//		System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
+		
+		System.out.println(" * Vendors In Chart * "); 
 		for(String s: vendorsInChartNames){
-//					System.out.println("*** " + s);
+			System.out.println("*** " + s);
 		}
 		
 		//System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
 		for(WebElement w: vendorsSelectedCheckBox){
-//					System.out.println("*** " + w.getText());
+//			System.out.println("*** " + w.getText());
 		}
 
 		
+		
+		// **************************************************************************************
+		// Verify the info contained on each of the tooltips for all the vendors listed in chart
+		// **************************************************************************************
+		
+		// Gets all the sections of the pie chart and puts it into a list
+		List<WebElement> listChartParts = driver.findElements(By.cssSelector("#" + chartId + ">svg>g>g>path.highcharts-point"));
+		
 		int indexVendorSelected = 0;
 		int indexVendorInChart = 0;
-		int indexHighchart = 1;
 		boolean noVendorsVerifiedYet = true;
+				
+		List<String> tmpListVendorFound = new ArrayList<>();
 		
-		
-		// Verify the info contained on each of the tooltips for all the vendors listed in chart 		
 		
 		while (indexVendorSelected < vendorsSelectedCheckBox.size() && indexVendorInChart < vendorsInChartNames.size()) {
 			
-//			System.out.println("indexVendorSelected: " + indexVendorSelected + ", vendorsSelectedCheckBox.size(): " + vendorsSelectedCheckBox.size());
-//		    System.out.println("indexVendorInChart: " + indexVendorInChart + ", vendorsInChartNames.size(): " + vendorsInChartNames.size()); 
-//			System.out.println("Vendor name chart: " +  vendorsInChartNames.get(indexVendorInChart));
-//			System.out.println("Vendor name checkbox: " +  vendorsSelectedCheckBox.get(indexVendorSelected).getText());
-//			System.out.println("Condition is: " +  vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()));
-			
-			
-			List<WebElement> listChartParts = driver.findElements(By.cssSelector("#" + chartId + ">svg>g>g>path.highcharts-point"));
-
 			// If the vendor in vendorsSelectedCheckBox list is present in the vendorsInChartList, or if the current element from chart is "Other", 
 			// then run the test. Else, move to the next vendor
 			if (vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()) || vendorsInChartNames.get(indexVendorInChart).equals("Other")) {
 				
 				// The 'bar' WebElement will be used to set the position of the mouse on the chart
-				WebElement bar = listChartParts.get(indexVendorInChart); 
+				WebElement slice = listChartParts.get(indexVendorInChart); 
 						
-						
-				// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
-				Point coordinates = bar.getLocation();
-				Robot robot = new Robot(); 
+				// Get the location of the slice of the pie chart
+				Point coordinates = GeneralHelper.getAbsoluteLocation(slice);
 				
 				int x = coordinates.getX();
-				int y = coordinates.getY() + 70;
+				int y = coordinates.getY();
 				
-				int x_offset = 5;
-				int y_offset = 100;
-				
-//				robot.mouseMove(x, y); 
-				
-				
-//				if (loginType.equals(LoginType.Command) || loginType.equals(LoginType.ReferenceApp)) {
-//					robot.mouseMove(x + x_offset, y + y_offset); // these coordinates work for CMD :)
-//				}
-				
+				Dimension d = slice.getSize();
+				int height = d.getHeight();
+				int width = d.getWidth();
+
+				Robot robot = new Robot();
 				
 				if (listChartParts.size() == 1 || noVendorsVerifiedYet) {
-					robot.mouseMove(x, y); // these coordinates work for DEV INSTANCE :)
+				
+					robot.mouseMove((x - 20), (y - 20));
+					noVendorsVerifiedYet = false;
 					
 				}
 				
-				Thread.sleep(500);
+				Thread.sleep(1000);
 				
-				Dimension d = bar.getSize();
-				int height = d.getHeight();
-				int width = d.getWidth();
-					
-				x_offset = (int) (width * 0.5);   // 35;
-				y_offset = (int) (height * 0.5) + 100;   // 140;
+				int x_offset = (int) (width * 0.5);
+				int y_offset = (int) (height * 0.5);
+				
 				robot.mouseMove(x + x_offset, y + y_offset); 
-					
-					
-//				System.out.println("coordinates:  x: " + (x + x_offset) + "  y: " + (y + y_offset));
-//				System.out.println("height: " + height + ", width: " + width);
+
 				
 				try {
 					WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
@@ -557,15 +559,12 @@ public class TotalExpensesValues extends BaseClass {
 				
 				// Verify country/vendor shown on the tooltip
 				String vendorNameFound = tooltip.get(0).getText();
-//				String vendorNameExpected = vendorsInChartNames.get(indexVendorInChart);
-					
-//				Assert.assertEquals(vendorNameFound, vendorNameExpected);
-//				System.out.println("vendorNameFound: " + vendorNameFound + ", vendorNameExpected: " + vendorNameExpected);
+				tmpListVendorFound.add(vendorNameFound);
 				System.out.println("vendorNameFound: " + vendorNameFound);
 				
 				
 				// Verify the label and the amount shown on the tooltip
-				int index = 2; //i * 3 - 1;
+				int index = 2;
 		
 				// Get the label and remove colon at the end of its text 
 				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
@@ -573,17 +572,19 @@ public class TotalExpensesValues extends BaseClass {
 				// Get the value on tooltip and remove all blank spaces
 				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
 				
-				// Verify the label's text and amount shown on the tooltip 			
+				// Verify the label's text and amount shown on the tooltip
+				// The vendor name found by the mouse hover will be used to get the expected value. 
+				// Since in some cases the pie chart has very narrow sections it's not possible to ensure that the mouse hover will obtain the value for those tiny parts 
+				// In the cases where the mouse hover won't get the value for the intended vendor, the test would fail. 
 				String valueExpected = totalExpensesValues.get(vendorNameFound);
 				String labelExpected = "Expense";
 								
 				Assert.assertEquals(labelFound, labelExpected);
 				Assert.assertEquals(valueFound, valueExpected);
 				
-				System.out.println("  labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-				System.out.println("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+//				System.out.println("  labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+//				System.out.println("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 				
-				indexHighchart++;
 				indexVendorInChart++;
 				
 			}
@@ -592,14 +593,13 @@ public class TotalExpensesValues extends BaseClass {
 			if ((vendorsSelectedCheckBox.size() - indexVendorSelected) > 1)
 				indexVendorSelected++;
 			
-			noVendorsVerifiedYet = false;
-			
 		}	
 		
+		// .. to be removed
+		System.out.println("Vendors in chart equal to vendors found by test??: " + tmpListVendorFound.containsAll(vendorsInChartNames));
+		// ...............	
 	}
 
-	
-	
 	
 	
 }

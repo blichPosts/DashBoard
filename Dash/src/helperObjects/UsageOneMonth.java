@@ -7,6 +7,7 @@ public class UsageOneMonth {
 	private String ordinalMonth;
 	private String invoiceMonth;
 	
+	// Usage data
 	private String domesticVoice;
 	private String domesticOverageVoice;
 	private String domesticMessages;
@@ -15,6 +16,7 @@ public class UsageOneMonth {
 	private String roamingDataUsageKb;
 	private String roamingMessages; 
 	
+	// Expenses data
 	private String numberOfInvoices;
 	private String numberOfLines;
 	private String totalSubscriberCharges;
@@ -30,6 +32,7 @@ public class UsageOneMonth {
 	private String roamingCharges;
 	private String otherCharges;
 	private String totalCharge;
+	
 	
 	// this constructor will be used to create and initialize the months that are missing on the file for the vendor selected 
 	public UsageOneMonth(String vendorName, String ordinalYear, String ordinalMonth){
