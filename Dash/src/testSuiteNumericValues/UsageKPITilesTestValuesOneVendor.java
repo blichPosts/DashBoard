@@ -26,9 +26,8 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		login();
-//		MainLogin();
- 		// CommonTestStepActions.switchToContentFrame();
+		MainLogin();
+
 	}
 	
 	

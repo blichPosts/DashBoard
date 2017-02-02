@@ -25,10 +25,8 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		login();
-		// MainLogin();
- 		// CommonTestStepActions.switchToContentFrame();
-
+		MainLogin();
+ 		
 	}
 	
 	
@@ -47,6 +45,8 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		String path = UsageHelper.path;
+		
+		// Amount of vendors to be selected on the PoV section
 		int amountOfVendors = 3;
 		
 		// #1 Select Vendor View and Unselect all vendors 
@@ -78,10 +78,12 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 			
 		}
 			
+		
+		// Get the last month listed on month selector 
 		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 		
 		UsageOneMonth oneMonthData;
-		String year =  "";
+		String year = "";
 		String month = "";
 		String monthYearToSelect = "";
 		String domesticVoiceUsage;
@@ -98,6 +100,7 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 		
 		do {
 		
+			// Get the data for the month indicated by "indexMonth"
 			oneMonthData = valuesSummarizedVendors.get(indexMonth);
 			 
 			String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);

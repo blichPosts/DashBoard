@@ -26,10 +26,8 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		login();
-		// MainLogin();
- 		// CommonTestStepActions.switchToContentFrame();
-
+		MainLogin();
+ 		
 	}
 	
 	
@@ -40,26 +38,17 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
-		for(WebElement vendor: vendors){
+		
+		// Get all the vendor names listed on the PoV section
+		for (WebElement vendor: vendors) {
 			vendorNames.add(vendor.getText());
 		}
 		
-		//String vendor = "Telstra Australia";
-		//String vendor = "Vivo Brazil";
-		//String vendor = "Rogers";
-		//String vendor = "Telcel Mexico";
-		//String vendor = "SingTel Singapore";
-		//String vendor = "Etisalat";
-		//String vendor = "O2 UK";
-		//String vendor = "Vodafone United Kingdom";
-		//String vendor = "AT&T Mobility";
-		//String vendor = "Tangoe, Inc.";
-		//String vendor = "Verizon Wireless";
 		
 		String path = UsageHelper.path;
 
 		// Run the test for each vendor 
-		for(String vendorSelected: vendorNames){
+		for (String vendorSelected: vendorNames) {
 			
 			String vendor = vendorSelected;
 			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);
@@ -68,7 +57,6 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 			String completePath = path + file;
 			
 			System.out.println("Path: " + completePath);
-			
 			System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
 			
 			CommonTestStepActions.GoToUsagePageDetailedWait();
@@ -96,6 +84,7 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 			
 			do {
 			
+				// Get the data for the selected vendor and the month indicated by indexMonth
 				oneMonthData = valuesFromFile.get(indexMonth);   
 				
 				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);

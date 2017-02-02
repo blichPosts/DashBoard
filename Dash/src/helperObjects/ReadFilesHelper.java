@@ -9,16 +9,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 
-
 public class ReadFilesHelper {
 
-	
-	/*public static void main(String args[]) throws IOException{
-		
-	}
-	*/
-	
-	
 	// E.g. path: "D:/Documents/CMD Dashboard/CreateFilesProgram/AT&T Mobility.txt"
 	
 	public static List<UsageOneMonth> getDataFromSpreadsheet(String filePath) throws IOException{
@@ -30,8 +22,6 @@ public class ReadFilesHelper {
 		// This list will contain one UsageOneMonth object per month 
 		List<UsageOneMonth> listValues = new ArrayList<UsageOneMonth>();
 		
-//		System.out.println("         vendor_name   invoice_month   year month  dom_mou   overage_mou   dom_msgs   dom_data   roam_mou   roam_data  roam_msgs");
-		
 		for (int i = 0; i < linesAmount; i++){
 			
 			//System.out.println("line # " + i);
@@ -40,17 +30,19 @@ public class ReadFilesHelper {
 			String[] splitedline = splitLine(lineToBeSplited);
 		
 			UsageOneMonth dataOneMonth = new UsageOneMonth();
-			dataOneMonth.setVendorName(linesOfFile.get(0));         // vendor_name
-			dataOneMonth.setInvoiceMonth(splitedline[3]);			 // invoice_month
-			dataOneMonth.setOrdinalYear(splitedline[4]);            // ordinal_year
-			dataOneMonth.setOrdinalMonth(splitedline[5]);           // ordinal_month
-			dataOneMonth.setDomesticVoice(splitedline[19]);         // domestic_mou
-			dataOneMonth.setDomesticOverageVoice(splitedline[20]);  // domestic_overage_mou
-			dataOneMonth.setDomesticMessages(splitedline[21]);      // domestic_messages
-			dataOneMonth.setDomesticDataUsageKb(splitedline[22]);   // domestic_data_usage_kb
-			dataOneMonth.setRoamingVoice(splitedline[23]);          // roaming_mou
-			dataOneMonth.setRoamingDataUsageKb(splitedline[24]);    // roaming_data_usage_kb
-			dataOneMonth.setRoamingMessages(splitedline[25]);       // roaming_messages
+		
+			dataOneMonth.setVendorName(linesOfFile.get(0));
+			dataOneMonth.setInvoiceMonth(splitedline[3]);
+			dataOneMonth.setOrdinalYear(splitedline[4]);
+			dataOneMonth.setOrdinalMonth(splitedline[5]);
+			
+			dataOneMonth.setDomesticVoice(splitedline[19]);
+			dataOneMonth.setDomesticOverageVoice(splitedline[20]);
+			dataOneMonth.setDomesticMessages(splitedline[21]);
+			dataOneMonth.setDomesticDataUsageKb(splitedline[22]);
+			dataOneMonth.setRoamingVoice(splitedline[23]);
+			dataOneMonth.setRoamingDataUsageKb(splitedline[24]);
+			dataOneMonth.setRoamingMessages(splitedline[25]);
 			
 			dataOneMonth.setNumberOfInvoices(splitedline[6]);
 			dataOneMonth.setNumberOfLines(splitedline[7]);
@@ -71,17 +63,17 @@ public class ReadFilesHelper {
 			listValues.add(dataOneMonth);
 			
 //			System.out.print("Row " + (i+1) + ":  | ");
-//			System.out.print(listValues.get(i).getVendorName() + "  | ");            // vendor_name 
-//			System.out.print(listValues.get(i).getInvoiceMonth() + "  | ");          // invoice_month
-//			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");           // ordinal_year
-//			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");          // ordinal_month
-//			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");         // domestic_mou
-//			System.out.print(listValues.get(i).getDomesticOverageVoice() + "  | ");  // domestic_overage_mou
-//			System.out.print(listValues.get(i).getDomesticMessages() + "  | ");      // domestic_messages
-//			System.out.print(listValues.get(i).getDomesticDataUsageKb() + "  | ");   // domestic_data_usage_kb
-//			System.out.print(listValues.get(i).getRoamingVoice() + "  | ");          // roaming_mou
-//			System.out.print(listValues.get(i).getRoamingDataUsageKb() + "  | ");    // roaming_data_usage_kb
-//			System.out.print(listValues.get(i).getRoamingMessages() + "  | ");       // roaming_messages
+//			System.out.print(listValues.get(i).getVendorName() + "  | "); 
+//			System.out.print(listValues.get(i).getInvoiceMonth() + "  | ");
+//			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");
+//			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");
+//			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");
+//			System.out.print(listValues.get(i).getDomesticOverageVoice() + "  | ");
+//			System.out.print(listValues.get(i).getDomesticMessages() + "  | ");
+//			System.out.print(listValues.get(i).getDomesticDataUsageKb() + "  | ");
+//			System.out.print(listValues.get(i).getRoamingVoice() + "  | ");
+//			System.out.print(listValues.get(i).getRoamingDataUsageKb() + "  | ");
+//			System.out.print(listValues.get(i).getRoamingMessages() + "  | ");
 //			System.out.println("");
 			
 		}
@@ -96,12 +88,9 @@ public class ReadFilesHelper {
 		
 		Path path = Paths.get(filePath);
 		Stream<String> rows = Files.lines(path);
-		
 		List<String> lines = new ArrayList<String>();
 		
 		rows.forEach(s ->lines.add((String)s));
-					
-		//System.out.println("count: " +  lines.size());
 		
 		for(String line: lines){	
 			//System.out.println("line: " + line);
@@ -118,12 +107,8 @@ public class ReadFilesHelper {
 		
 		
 		String itemsOfLine[];
-		//String lineWithNoSpaces = lineToBeSplited.replaceAll("          ", ";"); 
-		
-		//System.out.println("lineWithNoSpaces: " + lineWithNoSpaces); 
 				 		
-		itemsOfLine = lineToBeSplited.split(";;");    //lineWithNoSpaces.split(";");
-		//itemsOfLine = line.get(2).split(" ");
+		itemsOfLine = lineToBeSplited.split(";;");
 		
 		//System.out.println("Items #: " + itemsOfLine.length);  // 31, the last item is empty, must be discarded 
 		

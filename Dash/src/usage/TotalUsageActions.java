@@ -377,17 +377,16 @@ public class TotalUsageActions extends BaseClass{
 		
 		for(int i = 0; i < vendorsInChart.size(); i++){
 			vendorsInChartList.add(vendorsInChart.get(i).getText());
-		}	
+		}		
 				
-		//boolean firstBar = true;
-				
-		Thread.sleep(2000);
+//		Thread.sleep(2000);
 		
 		String domesticValue = "";
 		String overageValue = "";
 		String roamingValue = "";
 		int expectedAmountItemsTooltip = 4;
 		
+		// Get the data and set up the expected values to be compared to the values found on the tooltips
 		if (barChartId == 0) {
 		
 			if(categorySelector == UsageHelper.categoryVoice){
@@ -445,7 +444,7 @@ public class TotalUsageActions extends BaseClass{
 			
 			if (!(bar.getAttribute("height").toString().equals("0"))){
 				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-				//firstBar = false;
+
 			}
 			
 			if (bar.getAttribute("height").toString().equals("0")){
@@ -557,13 +556,12 @@ public class TotalUsageActions extends BaseClass{
 		// It gets the legends for "Domestic" and "Domestic Overage" or "Roaming"
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		
-		
 		HashMap<String, UsageOneMonth> vendorUsageMap = new HashMap<String, UsageOneMonth>();
+
 		for (UsageOneMonth u: listOneMonthData) {
 			vendorUsageMap.put(u.getVendorName(), u);
-//			System.out.println(vendorUsageMap.get(u.getVendorName()).getVendorName()); // + " - Domestic voice: " + u.getDomesticVoice());
+
 		}
-		
 		
 		Thread.sleep(2000);
 		

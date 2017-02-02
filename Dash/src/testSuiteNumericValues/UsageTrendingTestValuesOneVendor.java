@@ -24,10 +24,8 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		login();
-		// MainLogin();
-		// CommonTestStepActions.switchToContentFrame();
-
+		MainLogin();
+		
 	}
 
 

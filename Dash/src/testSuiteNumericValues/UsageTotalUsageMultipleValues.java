@@ -25,10 +25,8 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		login();
-		// MainLogin();
- 		// CommonTestStepActions.switchToContentFrame();
-
+		MainLogin();
+ 		
 	}
 	
 	
@@ -91,7 +89,6 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 		do {
 		
 			// List listOneMonthData will have the data for a specific month, for all the vendors previously selected
-			
 			List<UsageOneMonth> listOneMonthData = new ArrayList<>();
 			
 			for(List<UsageOneMonth> values: listVendorsSelectedData){
@@ -104,9 +101,7 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 					String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
 					
 					if(monthsToSelect.get(indexMonth).equals(monthYear)){
-//						System.out.println("Vendor: " + values.get(indexMonthForVendorSelected).getVendorName());
-//						System.out.println("monthToSelect: " + monthsToSelect.get(indexMonth));
-						//System.out.println("monthYear: " + monthYear); 
+ 
 						listOneMonthData.add(values.get(indexMonthForVendorSelected));
 						dataFoundForMonth = true;
 						

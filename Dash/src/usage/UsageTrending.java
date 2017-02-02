@@ -696,7 +696,7 @@ public class UsageTrending extends BaseClass {
 					// ************ SEE NOTE NEXT TO NEXT LINE - CHANGE TO BE MADE **************************
 					if (!vendorsInChartNames.contains(v) && vendorHasData.get(v)){ // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
 						
-						System.out.println("Vendor " + v + ", is not listed in chart");
+//						System.out.println("Vendor " + v + ", is not listed in chart");
 					
 						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(v);
 

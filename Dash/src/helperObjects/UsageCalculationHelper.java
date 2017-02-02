@@ -95,10 +95,10 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		// If the fractional part of the value is equal to .49, then the value will be rounded to the preceding integer.
 		// If the fractional part of the value starts with .49..., and has more than 2 fractional digits then the value will be rounded to the next integer. 
-		if (fractionalPart >= 0.495) {		
-			amountConverted = Integer.toString(Integer.parseInt(amountConverted) + 1);
-			System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
-		}
+//		if (fractionalPart >= 0.495) {		
+//			amountConverted = Integer.toString(Integer.parseInt(amountConverted) + 1);
+//			System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
+//		}
 				
 		if (isExpenseValue)
 			amountConverted = "$" + amountConverted;

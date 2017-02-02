@@ -20,16 +20,12 @@ import helperObjects.UsageOneMonth;
 
 public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 
-	
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
 		MainLogin();
- 		// CommonTestStepActions.switchToContentFrame();
-		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
-		// I've put it here to make sure that it gets initialized and that will not error 
-		// CommonTestStepActions.initializeMonthSelector();
+ 		
 	}
 	
 	
@@ -96,22 +92,6 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 			
 				oneMonthData = valuesOneVendorAllMonths.get(indexMonth);   
 				
-				/*
-				 * This has been modified on the source file. Month is the month listed on the file, it doesn't refer to the previous month.
-				 * E.g.: “9/1/2016” now refers to September instead of August  
-				 * if(oneMonthData[1].equals("1")){
-					month = "12";
-					year = Integer.toString(Integer.parseInt(oneMonthData[0]) - 1);
-				}else{
-					month = Integer.toString((Integer.parseInt(oneMonthData[1]) - 1));
-					year =  oneMonthData[0];
-				}*/
-				
-				// The following two lines replace the commented above. Will need to find out which version is the correct....
-				//month = oneMonthData.getOrdinalMonth();
-				//year =  oneMonthData.getOrdinalYear();
-				
-				// Code above replaced by the following 3 lines: 
 				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
 				month = monthYear[0];
 				year = monthYear[1];

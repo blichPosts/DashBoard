@@ -69,9 +69,7 @@ public class UsageOneMonth {
 	}
 	
 	
-	public UsageOneMonth() {
-		// TODO Auto-generated constructor stub
-	}
+	public UsageOneMonth() {}
 
 
 	public String getVendorName() {
@@ -230,8 +228,5 @@ public class UsageOneMonth {
 	public void setTotalCharge(String totalCharge) {
 		this.totalCharge = totalCharge;
 	}
-	
-	
-	
 	
 }
