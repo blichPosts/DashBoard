@@ -42,18 +42,6 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 			vendorNames.add(vendor.getText());
 		}
 		
-		//String vendor = "Telstra Australia";
-		//String vendor = "Vivo Brazil";
-		//String vendor = "Rogers";
-		//String vendor = "Telcel Mexico";
-		//String vendor = "SingTel Singapore";
-		//String vendor = "Etisalat";
-		//String vendor = "O2 UK";
-		//String vendor = "Vodafone United Kingdom";
-		//String vendor = "AT&T Mobility";
-		//String vendor = "Tangoe, Inc.";
-		//String vendor = "Verizon Wireless";
-		
 		String path = UsageHelper.path;
 
 		// Run the test for each vendor 
@@ -64,10 +52,6 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
-			
-			System.out.println("Path: " + completePath);
-			
-			System.out.println("  **  RUNNING KPI TILE TEST FOR VENDOR: " + vendor + "  **");
 			
 			CommonTestStepActions.GoToUsagePageDetailedWait();
 				
@@ -103,22 +87,6 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 			
 				oneMonthData = valuesOneVendorAllMonths.get(indexMonth);   
 				
-				/*
-				 * This has been modified on the source file. Month is the month listed on the file, it doesn't refer to the previous month.
-				 * E.g.: “9/1/2016” now refers to September instead of August  
-				 * if(oneMonthData[1].equals("1")){
-					month = "12";
-					year = Integer.toString(Integer.parseInt(oneMonthData[0]) - 1);
-				}else{
-					month = Integer.toString((Integer.parseInt(oneMonthData[1]) - 1));
-					year =  oneMonthData[0];
-				}*/
-				
-				// The following two lines replace the commented above. Will need to find out which version is the correct....
-				//month = oneMonthData.getOrdinalMonth();
-				//year =  oneMonthData.getOrdinalYear();
-				
-				// Code above replaced by the following 3 lines: 
 				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
 				month = monthYear[0];
 				year = monthYear[1];

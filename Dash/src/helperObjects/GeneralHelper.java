@@ -88,7 +88,7 @@ public class GeneralHelper extends BaseClass {
 	} 	
 	
 	
-	
+	// **** NOT USED ******
 	public static int getNumberOfLineForYCoordenate(List<WebElement> yAxisLabels) {
 		
 		List<Integer> labels = new ArrayList<Integer>();

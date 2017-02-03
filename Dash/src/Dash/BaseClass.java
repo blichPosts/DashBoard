@@ -302,7 +302,7 @@ public class BaseClass
 	}
 	
 	
-	// Added by Ana -- **** not sure if needed *****
+	// Added by Ana -- **** not sure if needed *****  -- TO BE REMOVED
 	public static void WaitForUsagePageDetailedLoad() throws Exception {
 		
 		//WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);

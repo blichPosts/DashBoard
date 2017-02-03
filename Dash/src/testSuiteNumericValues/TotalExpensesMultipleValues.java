@@ -45,11 +45,11 @@ public class TotalExpensesMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		String path = ExpenseHelperMultipleVendors.path;
+
+		// ** In many cases some of the sections of the pie chart are too small and the coordinates used to move the mouse to sometimes are not accurate.
+		// ** So, it's better to set the amountOfVendorsToSelect to maybe 2 or 3 at a time...
 		int amountOfVendorsToSelect = 3;
 		
-		// ** The test will be run for only 2 vendors selected at a time, since it's hard to determine the exact coordinates for the different sections of the pie chart.
-		// ** In many cases some of the sections of the pie chart are too small and the coordinates used to move the mouse to sometimes are not accurate.  
-
 		if (amountOfVendorsToSelect > vendorNames.size())
 			amountOfVendorsToSelect = vendorNames.size();
 		
@@ -82,9 +82,6 @@ public class TotalExpensesMultipleValues extends BaseClass{
 				
 				String file = vendorFileName + ".txt";
 				String completePath = path + file;
-				
-				//System.out.println("Path: " + completePath);
-				//System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
 				
 				// #2 Read data from file
 				List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getDataFromSpreadsheet(completePath);

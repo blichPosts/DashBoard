@@ -62,10 +62,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
-			
-//			System.out.println("Path: " + completePath);
-			System.out.println("  **  RUNNING KPI TILE TEST FOR VENDOR: " + vendor + "  **");
-			
+					
 			CommonTestStepActions.GoToExpensePageDetailedWait();
 				
 			// #1 Read data from file
@@ -99,6 +96,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 				boolean monthYearNull = false; 
 				
 				try {
+					
 					if (!(month.equals(null) && year.equals(null))) {
 						monthYearNull = false;
 						System.out.println("Month and year NOT null");

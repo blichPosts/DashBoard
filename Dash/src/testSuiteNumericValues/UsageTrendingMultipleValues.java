@@ -48,7 +48,7 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();
 		
-		System.out.println("amountOfVendors: " + amountOfVendors);
+		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		UsageHelper.selectVendorView();
@@ -66,10 +66,7 @@ public class UsageTrendingMultipleValues extends BaseClass{
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
-			
-			//System.out.println("Path: " + completePath);
-			//System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
-			
+						
 			// #2 Read data from file
 			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getDataFromSpreadsheet(completePath);			
 			listSelectedDataForMonthListUnified.add(valuesFromFileTmp);
@@ -79,7 +76,6 @@ public class UsageTrendingMultipleValues extends BaseClass{
 			
 		}
 		
-	
 		
 		CommonTestStepActions.initializeMonthSelector();
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();

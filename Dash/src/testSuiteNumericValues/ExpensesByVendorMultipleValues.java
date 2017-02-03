@@ -49,7 +49,7 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();
 		
-		System.out.println("amountOfVendors: " + amountOfVendors);
+		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectVendorView();
@@ -67,9 +67,6 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
-			
-			//System.out.println("Path: " + completePath);
-			//System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
 			
 			// #2 Read data from file
 			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getDataFromSpreadsheet(completePath);			
@@ -146,16 +143,15 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		}
 		
 		
-		for (List<UsageOneMonth> list: listAllMonthsSortedByVendor) { 
-			
-			for (UsageOneMonth u: list) {
+//		for (List<UsageOneMonth> list: listAllMonthsSortedByVendor) {
+//			for (UsageOneMonth u: list) {
 //				System.out.println(" Vendor: ** " + u.getVendorName() + " **, Month: " + u.getOrdinalMonth() + ", Year: " + u.getOrdinalYear() + ", Invoice Month: " + u.getInvoiceMonth());
-			}
+//			}
 //			System.out.println("");
-		}
+//		}
 		
 		
-		int indexMonthToSelect = 4;
+		int indexMonthToSelect = 0;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 		
@@ -165,7 +161,7 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 			System.out.println(" ** Month Year: " + monthYearToSelect);
 			
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-			Thread.sleep(2000);
+			Thread.sleep(2000);  // --> to give time to the data of the selected month to be displayed
 			
 			// #5 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
 			

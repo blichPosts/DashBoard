@@ -55,10 +55,7 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
-			
-			System.out.println("Path: " + completePath);
-			System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
-			
+						
 			CommonTestStepActions.GoToUsagePageDetailedWait();
 				
 			// #1 Select Vendor View 
