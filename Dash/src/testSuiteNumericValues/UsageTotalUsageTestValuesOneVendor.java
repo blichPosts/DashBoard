@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package testSuiteNumericValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,58 +19,43 @@ import helperObjects.UsageOneMonth;
 import usage.TotalUsageActions;
 
 
-public class UsageTotalUsageTestValues extends BaseClass{
+public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 
 	
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
- 		// CommonTestStepActions.switchToContentFrame();
-		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
-		// I've put it here to make sure that it gets initialized and that will not error 
-		// CommonTestStepActions.initializeMonthSelector();
+		MainLogin();
+ 		
 	}
 	
 	
 	@Test
-	public static void UsageTotalUsageTestValuesTest() throws Exception
+	public static void UsageTotalUsageTestValuesOneVendorTest() throws Exception
 	{
 
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
-		for(WebElement vendor: vendors){
+		
+		// Get all the vendor names listed on the PoV section
+		for (WebElement vendor: vendors) {
 			vendorNames.add(vendor.getText());
 		}
 		
-		//String vendor = "Telstra Australia";
-		//String vendor = "Vivo Brazil";
-		//String vendor = "Rogers";
-		//String vendor = "Telcel Mexico";
-		//String vendor = "SingTel Singapore";
-		//String vendor = "Etisalat";
-		//String vendor = "O2 UK";
-		//String vendor = "Vodafone United Kingdom";
-		//String vendor = "AT&T Mobility";
-		//String vendor = "Tangoe, Inc.";
-		//String vendor = "Verizon Wireless";
 		
 		String path = UsageHelper.path;
 
 		// Run the test for each vendor 
-		for(String vendorSelected: vendorNames){
+		for (String vendorSelected: vendorNames) {
 			
 			String vendor = vendorSelected;
 			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
-			
-			System.out.println("Path: " + completePath);
-			
-			System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
-			
+						
 			CommonTestStepActions.GoToUsagePageDetailedWait();
 				
 			// #1 Select Vendor View 
@@ -96,6 +81,7 @@ public class UsageTotalUsageTestValues extends BaseClass{
 			
 			do {
 			
+				// Get the data for the selected vendor and the month indicated by indexMonth
 				oneMonthData = valuesFromFile.get(indexMonth);   
 				
 				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
@@ -111,11 +97,12 @@ public class UsageTotalUsageTestValues extends BaseClass{
 				Thread.sleep(2000);
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
+				
 				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryVoice);
 				Thread.sleep(1000);
-				/*
+				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryVoice);
 				Thread.sleep(1000);				
 				
@@ -134,7 +121,7 @@ public class UsageTotalUsageTestValues extends BaseClass{
 				
 				TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryMessages);
 				Thread.sleep(1000);
-				*/				
+								
 				indexMonth++;
 				
 			} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));

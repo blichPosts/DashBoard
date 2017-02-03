@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package testSuiteNumericValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,22 +18,20 @@ import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
 import usage.UsageKPITilesActions;
 
-public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
+public class UsageKPITilesMultipleValues extends BaseClass{
 
 	
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
- 		// CommonTestStepActions.switchToContentFrame();
-		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
-		// I've put it here to make sure that it gets initialized and that will not error 
-		// CommonTestStepActions.initializeMonthSelector();
+		MainLogin();
+ 		
 	}
 	
 	
 	@Test
-	public static void UsageKPITilesTwoOrMoreVendorsTestValuesTest() throws Exception
+	public static void UsageKPITilesMultipleValuesTest() throws Exception
 	{
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
@@ -47,7 +45,9 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 4;
+		
+		// Amount of vendors to be selected on the PoV section
+		int amountOfVendors = 3;
 		
 		// #1 Select Vendor View and Unselect all vendors 
 		UsageHelper.selectVendorView();
@@ -65,10 +65,6 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
 			
-			System.out.println("Path: " + completePath);
-			
-			System.out.println("  **  RUNNING KPI TILE TEST FOR VENDOR: " + vendor + "  **");
-			
 			// #2 Read data from file
 			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getDataFromSpreadsheet(completePath);
 			listVendorsSelectedData.add(valuesFromFileOneVendor);
@@ -78,10 +74,12 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 			
 		}
 			
+		
+		// Get the last month listed on month selector 
 		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 		
 		UsageOneMonth oneMonthData;
-		String year =  "";
+		String year = "";
 		String month = "";
 		String monthYearToSelect = "";
 		String domesticVoiceUsage;
@@ -92,11 +90,13 @@ public class UsageKPITilesTwoOrMoreVendorsTestValues extends BaseClass{
 		
 		int indexMonth = 0;
 		
-		List<UsageOneMonth> valuesSummarizedVendors = UsageHelper.summarizeDataVendorsSelected(listVendorsSelectedData);
+		// When more than one vendor is selected, the data needs to be summarized 
+		List<UsageOneMonth> valuesSummarizedVendors = UsageHelper.summarizeDataUsageVendorsSelected(listVendorsSelectedData);
 		
 		
 		do {
 		
+			// Get the data for the month indicated by "indexMonth"
 			oneMonthData = valuesSummarizedVendors.get(indexMonth);
 			 
 			String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);

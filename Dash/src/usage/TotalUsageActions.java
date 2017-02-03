@@ -11,11 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 
 import Dash.BaseClass;
+import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -374,22 +377,21 @@ public class TotalUsageActions extends BaseClass{
 		
 		for(int i = 0; i < vendorsInChart.size(); i++){
 			vendorsInChartList.add(vendorsInChart.get(i).getText());
-		}	
+		}		
 				
-		//boolean firstBar = true;
-				
-		Thread.sleep(2000);
+//		Thread.sleep(2000);
 		
 		String domesticValue = "";
 		String overageValue = "";
 		String roamingValue = "";
 		int expectedAmountItemsTooltip = 4;
 		
+		// Get the data and set up the expected values to be compared to the values found on the tooltips
 		if (barChartId == 0) {
 		
 			if(categorySelector == UsageHelper.categoryVoice){
 				
-				domesticValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getDomesticVoice()));
+				domesticValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getDomesticVoice()), false);
 				overageValue = oneMonthData.getDomesticOverageVoice();
 				expectedAmountItemsTooltip = 7;  // The amount of items expected in the tooltip is 7 only if chart is Domestic and category is Voice 
 				
@@ -399,7 +401,7 @@ public class TotalUsageActions extends BaseClass{
 				
 			} else if (categorySelector == UsageHelper.categoryMessages){
 				
-				domesticValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getDomesticMessages()));
+				domesticValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getDomesticMessages()), false);
 				
 			}
 			
@@ -407,7 +409,7 @@ public class TotalUsageActions extends BaseClass{
 			
 			if(categorySelector == UsageHelper.categoryVoice){
 				
-				roamingValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getRoamingVoice()));
+				roamingValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getRoamingVoice()), false);
 				
 			} else if (categorySelector == UsageHelper.categoryData){
 				
@@ -415,7 +417,7 @@ public class TotalUsageActions extends BaseClass{
 				
 			} else if (categorySelector == UsageHelper.categoryMessages){
 				
-				roamingValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getRoamingMessages()));
+				roamingValue = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(oneMonthData.getRoamingMessages()), false);
 				
 			}
 			
@@ -434,11 +436,15 @@ public class TotalUsageActions extends BaseClass{
 			// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
 			Point coordinates = bar.getLocation();
 			Robot robot = new Robot(); 
-			robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work :) 
+			robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work for REF APP :)
+			
+			if (loginType.equals(LoginType.Command) || loginType.equals(LoginType.ReferenceApp)) {
+				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 200); // these coordinates work for CMD :)
+			}
 			
 			if (!(bar.getAttribute("height").toString().equals("0"))){
 				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-				//firstBar = false;
+
 			}
 			
 			if (bar.getAttribute("height").toString().equals("0")){
@@ -446,7 +452,7 @@ public class TotalUsageActions extends BaseClass{
 				robot.mouseRelease(InputEvent.BUTTON1_MASK);
 			}
 				
-			
+						
 			try {
 				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
 				//System.out.println("Tooltip present");
@@ -474,12 +480,24 @@ public class TotalUsageActions extends BaseClass{
 			// 2 Roaming:
 			// 3 <Amount for Roaming>
 			
+			Thread.sleep(2000);
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			
+			
+//			for(WebElement w : tooltip){
+//				System.out.println("Item tooltip: " + w.getText());
+//			}
+//			
 			
 			// Verify country/vendor shown on the tooltip
 			//System.out.println("Tooltip text: " + tooltip.get(0).getText());
-			Assert.assertEquals(tooltip.get(0).getText(), oneMonthData.getVendorName());  //vendorsInChartList.get(indexHighchart-1));
 						
+			String vendorNameFound = tooltip.get(0).getText();
+			String vendorNameExpected = oneMonthData.getVendorName();
+			
+			System.out.println("firstLineFound: " + vendorNameFound + ", firstLineExpected: " + vendorNameExpected);
+			Assert.assertEquals(vendorNameFound, vendorNameExpected);
+									
 			
 			// Verify the label and the amount shown on the tooltip
 			for(int i = 1; i <= legends.size(); i++){
@@ -538,13 +556,12 @@ public class TotalUsageActions extends BaseClass{
 		// It gets the legends for "Domestic" and "Domestic Overage" or "Roaming"
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		
-		
 		HashMap<String, UsageOneMonth> vendorUsageMap = new HashMap<String, UsageOneMonth>();
+
 		for (UsageOneMonth u: listOneMonthData) {
 			vendorUsageMap.put(u.getVendorName(), u);
-//			System.out.println(vendorUsageMap.get(u.getVendorName()).getVendorName()); // + " - Domestic voice: " + u.getDomesticVoice());
+
 		}
-		
 		
 		Thread.sleep(2000);
 		
@@ -561,8 +578,8 @@ public class TotalUsageActions extends BaseClass{
 				
 				if(categorySelector == UsageHelper.categoryVoice){
 					
-					domesticValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticVoice())));
-					overageValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticOverageVoice())));
+					domesticValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticVoice()), false));
+					overageValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticOverageVoice()), false));
 					expectedAmountItemsTooltip = 7;  // The amount of items expected in the tooltip is 7 only if chart is Domestic and category is Voice 
 					
 				} else if (categorySelector == UsageHelper.categoryData){
@@ -571,7 +588,7 @@ public class TotalUsageActions extends BaseClass{
 					
 				} else if (categorySelector == UsageHelper.categoryMessages){
 					
-					domesticValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticMessages())));
+					domesticValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getDomesticMessages()), false));
 					
 				}
 				
@@ -579,7 +596,7 @@ public class TotalUsageActions extends BaseClass{
 				
 				if(categorySelector == UsageHelper.categoryVoice){
 					
-					roamingValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingVoice())));
+					roamingValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingVoice()), false));
 					
 				} else if (categorySelector == UsageHelper.categoryData){
 					
@@ -587,7 +604,7 @@ public class TotalUsageActions extends BaseClass{
 					
 				} else if (categorySelector == UsageHelper.categoryMessages){
 					
-					roamingValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingMessages())));
+					roamingValue.put(listOneMonthData.get(i).getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(listOneMonthData.get(i).getRoamingMessages()), false));
 					
 				}
 				
@@ -616,8 +633,8 @@ public class TotalUsageActions extends BaseClass{
 		// then the vendors that have data for the selected month are summarized in the "Other" item.
 		if (moreThanFiveVendorsSelected && sixVendorsInChart) {
 			
-			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
-			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
+//			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
+//			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
 			
 			double domesticTmpSum = 0;
 			double overageTmpSum = 0;
@@ -650,17 +667,17 @@ public class TotalUsageActions extends BaseClass{
 					
 					if (!usageNull) {
 						
-						System.out.println("there's data for the vendor");
+//						System.out.println("there's data for the vendor");
 						
 						if (barChartId == 0) {
 							
 							if(categorySelector == UsageHelper.categoryVoice){
 								
 								domesticTmpSum += Double.parseDouble(usage.getDomesticVoice());
-								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum);
+								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum, false);
 								
 								overageTmpSum += Double.parseDouble(usage.getDomesticOverageVoice());
-								overageValueOther = UsageCalculationHelper.roundNoDecimalDigits(overageTmpSum);
+								overageValueOther = UsageCalculationHelper.roundNoDecimalDigits(overageTmpSum, false);
 								overageValue.put(otherVendors, overageValueOther);
 								
 							} else if (categorySelector == UsageHelper.categoryData){
@@ -671,7 +688,7 @@ public class TotalUsageActions extends BaseClass{
 							} else if (categorySelector == UsageHelper.categoryMessages){
 								
 								domesticTmpSum += Double.parseDouble(usage.getDomesticMessages());
-								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum);
+								domesticValueOther = UsageCalculationHelper.roundNoDecimalDigits(domesticTmpSum, false);
 								
 							}
 							
@@ -683,7 +700,7 @@ public class TotalUsageActions extends BaseClass{
 							if(categorySelector == UsageHelper.categoryVoice){
 								
 								roamingTmpSum += Double.parseDouble(usage.getRoamingVoice());
-								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum);
+								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum, false);
 								
 							} else if (categorySelector == UsageHelper.categoryData){
 								
@@ -693,7 +710,7 @@ public class TotalUsageActions extends BaseClass{
 							} else if (categorySelector == UsageHelper.categoryMessages){
 								
 								roamingTmpSum += Double.parseDouble(usage.getRoamingMessages());
-								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum);
+								roamingValueOther = UsageCalculationHelper.roundNoDecimalDigits(roamingTmpSum, false);
 								
 							}
 							
@@ -702,7 +719,7 @@ public class TotalUsageActions extends BaseClass{
 						}
 						
 					} else {
-						System.out.println("there's NO data for the vendor");
+//						System.out.println("there's NO data for the vendor");
 					}
 						
 				}
@@ -712,16 +729,16 @@ public class TotalUsageActions extends BaseClass{
 		}
 		
 		
-		//System.out.println("domestic list size: " + domesticValue.size());
-//		System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
+		
+		System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
 		for(String s: vendorsInChartNames){
-//			System.out.println("*** " + s);
+			System.out.println("*** " + s);
 		}
 		
-		//System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
-		for(WebElement w: vendorsSelectedCheckBox){
+//		System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
+//		for(WebElement w: vendorsSelectedCheckBox){
 //			System.out.println("*** " + w.getText());
-		}
+//		}
 
 		
 		int indexVendorSelected = 0;
@@ -742,26 +759,42 @@ public class TotalUsageActions extends BaseClass{
 			if(vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()) || vendorsInChartNames.get(indexVendorInChart).equals("Other")){
 				
 				String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-				//System.out.println("cssSelector: " + cssSelector);
 				
 				// The 'bar' WebElement will be used to set the position of the mouse on the chart
 				WebElement bar = driver.findElement(By.cssSelector(cssSelector));
 	
 				// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
-				Point coordinates = bar.getLocation();
-				Robot robot = new Robot(); 
-				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work :) 
+				Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
 				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) > 10.0) {   //if (!(bar.getAttribute("height").toString().equals("0"))){
+				int x = coordinates.getX();
+				int y = coordinates.getY();
+				
+				Dimension d = bar.getSize();
+				int height = d.getHeight();
+				int width = d.getWidth();
+
+							
+				Robot robot = new Robot();
+				
+				int x_offset = (int) (width * 0.5);
+				int y_offset = (int) (height * 0.5);
+				
+				// If the bar's width is zero (it means the value represented is zero) then the coordinates passed to robot.mouseMove will not be useful to get the tooltip visible.
+				// We add 20 to "x" so the mouse is hovered over the chart and the tooltip is displayed. 
+				if (width == 0)
+					x_offset = 20;
+				
+				robot.mouseMove(x + x_offset, y + y_offset); 
+				
+				if (Double.parseDouble(bar.getAttribute("height").toString()) > 10.0) {
 					bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-					//firstBar = false;
 				}
 				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) < 10.0) {  //if (bar.getAttribute("height").toString().equals("0")){
+				if (Double.parseDouble(bar.getAttribute("height").toString()) < 10.0) {
 					robot.mousePress(InputEvent.BUTTON1_MASK);
 					robot.mouseRelease(InputEvent.BUTTON1_MASK);
 				}
-					
+				
 				
 				try {
 					WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
@@ -819,7 +852,7 @@ public class TotalUsageActions extends BaseClass{
 						
 						if (index == 2) {
 							
-							valueExpected = domesticValue.get(vendorNameExpected);    //get(indexVendorInChart);
+							valueExpected = domesticValue.get(vendorNameExpected);
 							labelExpected = "Domestic";
 							
 							Assert.assertEquals(labelFound, labelExpected);

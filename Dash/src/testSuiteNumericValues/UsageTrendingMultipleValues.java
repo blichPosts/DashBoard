@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package testSuiteNumericValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,21 +18,19 @@ import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
 import usage.UsageTrending;
 
-public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
+public class UsageTrendingMultipleValues extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		// CommonTestStepActions.switchToContentFrame();
-		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
-		// I've put it here to make sure that it gets initialized and that will not error 
-		// CommonTestStepActions.initializeMonthSelector();
+		MainLogin();
+		
 	}
 
 
 	@Test
-	public static void UsageTrendingTwoOrMoreVendorsTestValuesTest() throws Exception
+	public static void UsageTrendingMultipleValuesTest() throws Exception
 	{
 
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
@@ -45,12 +43,12 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 11;
+		int amountOfVendors = 12;
 
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();
 		
-		System.out.println("amountOfVendors: " + amountOfVendors);
+		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		UsageHelper.selectVendorView();
@@ -60,7 +58,7 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = new ArrayList<>();
 		
 		// Run the test for each vendor 
-		for(int i = 4; i < amountOfVendors; i++){
+		for(int i = 0; i < amountOfVendors; i++){
 			
 			String vendor = vendorNames.get(i);
 			String vendorSelected = vendorNames.get(i);
@@ -68,10 +66,7 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
-			
-			//System.out.println("Path: " + completePath);
-			//System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
-			
+						
 			// #2 Read data from file
 			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getDataFromSpreadsheet(completePath);			
 			listSelectedDataForMonthListUnified.add(valuesFromFileTmp);
@@ -81,7 +76,6 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 			
 		}
 		
-	
 		
 		CommonTestStepActions.initializeMonthSelector();
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
@@ -160,7 +154,7 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 		}
 		
 		
-		int indexMonthToSelect = 7;   //  <---- SET IT BACK TO ZERO!!
+		int indexMonthToSelect = 0;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 		
@@ -173,10 +167,8 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 			Thread.sleep(2000);
 			
 			// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
-			// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
-			// will be displayed on the Usage Trending charts 
 			
-			try{
+			try {
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
@@ -201,9 +193,8 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 				
 				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, listAllMonthsSortedByVendor, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
-				
 				  
-			} catch(NullPointerException e){
+			} catch(NullPointerException e) {
 				
 				System.out.println("chart not found");
 				
@@ -214,7 +205,6 @@ public class UsageTrendingTwoOrMoreVendorsTestValues extends BaseClass{
 		} while (!monthYearToSelect.equals(lastMonthListedMonthSelector) && indexMonthToSelect < monthsToSelect.size());
 		
 			
-	
 	}
 	
 	

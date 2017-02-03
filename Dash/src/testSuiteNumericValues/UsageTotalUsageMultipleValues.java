@@ -1,4 +1,4 @@
-package usageTestValuesFromFile;
+package testSuiteNumericValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,21 +19,19 @@ import helperObjects.UsageOneMonth;
 import usage.TotalUsageActions;
 
 
-public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
+public class UsageTotalUsageMultipleValues extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
- 		// CommonTestStepActions.switchToContentFrame();
-		// Initialization of month selector - we may want to call this method from somewhere else, or just when the month selector is needed
-		// I've put it here to make sure that it gets initialized and that will not error 
-		// CommonTestStepActions.initializeMonthSelector();
+		MainLogin();
+ 		
 	}
 	
 	
 	@Test
-	public static void UsageTotalUsageTwoOrMoreVendorsTestValuesTest() throws Exception
+	public static void UsageTotalUsageMultipleValuesTest() throws Exception
 	{
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
@@ -51,7 +49,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();
 		
-		System.out.println("amountOfVendors: " + amountOfVendors);
+		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		UsageHelper.selectVendorView();
@@ -68,10 +66,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 			
 			String file = vendorFileName + ".txt";
 			String completePath = path + file;
-			
-			//System.out.println("Path: " + completePath);
-			//System.out.println("  **  RUNNING TOTAL USAGE TEST FOR VENDOR: " + vendor + "  **");
-			
+						
 			// #2 Read data from file
 			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getDataFromSpreadsheet(completePath);
 			listVendorsSelectedData.add(valuesFromFileOneVendor);
@@ -91,7 +86,6 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 		do {
 		
 			// List listOneMonthData will have the data for a specific month, for all the vendors previously selected
-			
 			List<UsageOneMonth> listOneMonthData = new ArrayList<>();
 			
 			for(List<UsageOneMonth> values: listVendorsSelectedData){
@@ -104,9 +98,7 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 					String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
 					
 					if(monthsToSelect.get(indexMonth).equals(monthYear)){
-//						System.out.println("Vendor: " + values.get(indexMonthForVendorSelected).getVendorName());
-//						System.out.println("monthToSelect: " + monthsToSelect.get(indexMonth));
-						//System.out.println("monthYear: " + monthYear); 
+ 
 						listOneMonthData.add(values.get(indexMonthForVendorSelected));
 						dataFoundForMonth = true;
 						
@@ -129,11 +121,12 @@ public class UsageTotalUsageTwoOrMoreVendorsTestValues extends BaseClass{
 			Thread.sleep(2000);
 			
 			// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
+			
 			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 			Thread.sleep(1000);
-	
+			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 			Thread.sleep(1000);				
 			

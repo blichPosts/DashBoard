@@ -15,7 +15,9 @@ import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -364,7 +366,7 @@ public class UsageTrending extends BaseClass {
 		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
 
 		int amount = highchartSeries.size();
-		//System.out.println("amount: " + amount);
+		// System.out.println("amount: " + amount);
 		
 		int indexHighchart = 1;
 		
@@ -382,7 +384,7 @@ public class UsageTrending extends BaseClass {
 			if(categorySelector == UsageHelper.categoryVoice){
 				
 				for(UsageOneMonth usage: allValuesFromFile){
-					domesticValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getDomesticVoice()) + Double.parseDouble(usage.getDomesticOverageVoice())));
+					domesticValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getDomesticVoice()) + Double.parseDouble(usage.getDomesticOverageVoice()), false));
 				}
 
 			} else if (categorySelector == UsageHelper.categoryData){
@@ -394,7 +396,7 @@ public class UsageTrending extends BaseClass {
 			} else if (categorySelector == UsageHelper.categoryMessages){
 				
 				for(UsageOneMonth usage: allValuesFromFile){
-					domesticValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getDomesticMessages())));
+					domesticValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getDomesticMessages()), false));
 				}
 				
 				
@@ -405,7 +407,7 @@ public class UsageTrending extends BaseClass {
 			if(categorySelector == UsageHelper.categoryVoice){
 				
 				for(UsageOneMonth usage: allValuesFromFile){
-					roamingValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getRoamingVoice())));
+					roamingValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getRoamingVoice()), false));
 				}
 				
 			} else if (categorySelector == UsageHelper.categoryData){
@@ -417,7 +419,7 @@ public class UsageTrending extends BaseClass {
 			} else if (categorySelector == UsageHelper.categoryMessages){
 				
 				for(UsageOneMonth usage: allValuesFromFile){
-					roamingValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getRoamingMessages())));
+					roamingValue.add(UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usage.getRoamingMessages()), false));
 				}
 				
 			}
@@ -443,7 +445,17 @@ public class UsageTrending extends BaseClass {
 			
 			Robot robot = new Robot(); 
 			int x = barCoordinates.getX() + 10;
-			int y = lineCoordinates.getY();
+			int y = lineCoordinates.getY();  // these coordinates work for Dev Instance :)
+			
+			if (loginType.equals(LoginType.Command)) {
+				
+				y = y - 400;  // these coordinates work for CMD :)
+				
+			} else if (loginType.equals(LoginType.ReferenceApp)) {
+				
+				y = y + 100; // these coordinates work for Ref App :)
+				
+			}
 			
 			robot.mouseMove(x, y);
 			//System.out.println("coordinates - x: " + x + "  y: " + y);
@@ -494,27 +506,29 @@ public class UsageTrending extends BaseClass {
 				String labelExpected = allValuesFromFile.get(indexMonth).getVendorName();
 				Assert.assertEquals(labelFound, labelExpected); 
 				
+				String valueExpected = "";
+				
 				if (barChartId == UsageHelper.usageTrendingDomesticChart) {
 					
-					String valueExpected = domesticValue.get(indexMonth);
-					//System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-					//System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+					valueExpected = domesticValue.get(indexMonth);
 					Assert.assertEquals(valueFound, valueExpected);
 					
 				} else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
 					
-					String valueExpected = roamingValue.get(indexMonth);
-					//System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-					//System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+					valueExpected = roamingValue.get(indexMonth);
 					Assert.assertEquals(valueFound, valueExpected);
 					
 				}
 				
+				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+				
 			}
 			
 			// Verify month and year shown on the tooltip
-			Assert.assertEquals(tooltip.get(0).getText(), monthYearList.get(indexMonth));
-			//System.out.println("First line found: " + tooltip.get(0).getText() + ", First line expected: " + monthYearList.get(indexMonth));
+			// --> UNCOMMENT LINE BELOW FOR REF APP. FOR CMD FAILS BECAUSE IT HAS AN OLDER DASH VERSION, WHERE THE MONTH YEAR ARE REPRESENTED AS MM-YYYY, INSTEAD OF MM/YYYY. 
+			Assert.assertEquals(tooltip.get(0).getText(), monthYearList.get(indexMonth)); 
+			System.out.println("First line found: " + tooltip.get(0).getText() + ", First line expected: " + monthYearList.get(indexMonth));
 			
 			indexHighchart++;
 			indexMonth--;
@@ -562,7 +576,7 @@ public class UsageTrending extends BaseClass {
 		List<HashMap<String, String>> expectedValues = new ArrayList<>();
 		List<String> expectedLabels = new ArrayList<>(); // it may be removed -- see if legends work as expected label
 		
-		HashMap<String, Boolean> vendorHasData = vendorHasDataForSelectedMonth(allValuesFromFile);
+		HashMap<String, Boolean> vendorHasData = GeneralHelper.vendorHasDataForSelectedMonth(allValuesFromFile);
 		
 				
 		for(int indexMonthValues = 0; indexMonthValues < allValuesFromFile.size(); indexMonthValues++){
@@ -582,7 +596,7 @@ public class UsageTrending extends BaseClass {
 						if(categorySelector == UsageHelper.categoryVoice){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getDomesticVoice()) 
-									+ Double.parseDouble(usageOneMonth.getDomesticOverageVoice())));
+									+ Double.parseDouble(usageOneMonth.getDomesticOverageVoice()), false));
 
 							
 						} else if (categorySelector == UsageHelper.categoryData){
@@ -591,7 +605,7 @@ public class UsageTrending extends BaseClass {
 															
 						} else if (categorySelector == UsageHelper.categoryMessages){
 							
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getDomesticMessages())));
+							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getDomesticMessages()), false));
 							
 						}
 						
@@ -600,7 +614,7 @@ public class UsageTrending extends BaseClass {
 						
 						if(categorySelector == UsageHelper.categoryVoice){
 
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getRoamingVoice())));
+							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getRoamingVoice()), false));
 							
 						} else if (categorySelector == UsageHelper.categoryData){
 							
@@ -608,7 +622,7 @@ public class UsageTrending extends BaseClass {
 															
 						} else if (categorySelector == UsageHelper.categoryMessages){
 							
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getRoamingMessages())));
+							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getRoamingMessages()), false));
 							
 						}
 						
@@ -682,7 +696,7 @@ public class UsageTrending extends BaseClass {
 					// ************ SEE NOTE NEXT TO NEXT LINE - CHANGE TO BE MADE **************************
 					if (!vendorsInChartNames.contains(v) && vendorHasData.get(v)){ // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
 						
-						System.out.println("Vendor " + v + ", is not listed in chart");
+//						System.out.println("Vendor " + v + ", is not listed in chart");
 					
 						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(v);
 
@@ -698,7 +712,7 @@ public class UsageTrending extends BaseClass {
 //									System.out.println("Vendor: " + usage.getVendorName());
 //									System.out.println("Value to be added to tmp: " + Double.parseDouble(usage.getDomesticVoice()) + Double.parseDouble(usage.getDomesticOverageVoice()));
 									otherTmpSum += (Double.parseDouble(usage.getDomesticVoice()) + Double.parseDouble(usage.getDomesticOverageVoice()));
-									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum);
+									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
 //									System.out.println("otherTmpSum: " + otherTmpSum);
 
 									
@@ -710,7 +724,7 @@ public class UsageTrending extends BaseClass {
 								} else if (categorySelector == UsageHelper.categoryMessages){
 									
 									otherTmpSum += Double.parseDouble(usage.getDomesticMessages());
-									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum);
+									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
 									
 								}
 								
@@ -720,7 +734,7 @@ public class UsageTrending extends BaseClass {
 								if(categorySelector == UsageHelper.categoryVoice){
 									
 									otherTmpSum += Double.parseDouble(usage.getRoamingVoice());
-									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum);
+									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
 									
 								} else if (categorySelector == UsageHelper.categoryData){
 									
@@ -730,18 +744,14 @@ public class UsageTrending extends BaseClass {
 								} else if (categorySelector == UsageHelper.categoryMessages){
 									
 									otherTmpSum += Double.parseDouble(usage.getRoamingMessages());
-									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum);
+									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
 									
 								}
 
 							}
 							
 							expectedValues.get(indexMonthValues).put(otherVendors, valueForOther); 
-							
-//						} else {
-//							System.out.println("there's NO data for the vendor");
-//						}
-							
+														
 					}
 					
 				}
@@ -777,7 +787,17 @@ public class UsageTrending extends BaseClass {
 			
 			Robot robot = new Robot(); 
 			int x = barCoordinates.getX() + 10;
-			int y = lineCoordinates.getY();
+			int y = lineCoordinates.getY();  // these coordinates work for Dev Instance :)
+			
+			if (loginType.equals(LoginType.Command)) {
+				
+				y = y - 400;  // these coordinates work for CMD :)
+				
+			} else if (loginType.equals(LoginType.ReferenceApp)) {
+				
+				y = y + 100; // these coordinates work for Ref App :)
+				
+			}
 			
 			robot.mouseMove(x, y);
 			//System.out.println("coordinates - x: " + x + "  y: " + y);
@@ -841,9 +861,8 @@ public class UsageTrending extends BaseClass {
 			String monthYearFound = tooltip.get(0).getText();
 			String monthYearExpected = monthYearList.get(indexMonth);
 				
-			Assert.assertEquals(monthYearFound, monthYearExpected);
-//			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
-
+			Assert.assertEquals(monthYearFound, monthYearExpected); // **** UNCOMMENT FOR REF APP!! ****
+			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;
 			indexMonth--;
@@ -853,67 +872,6 @@ public class UsageTrending extends BaseClass {
 	}
 
 	
-	
-	/// ************ END CURRENT METHOD :D ********
-	
-
-
-	// It returns true if there's data for the vendor in the selected month. That means that the vendor will be displayed on the Usage Trending chart
-	// Else it returns false	
-	private static HashMap<String, Boolean> vendorHasDataForSelectedMonth(List<List<UsageOneMonth>> allValuesFromFile) throws ParseException {
-		
-		String monthYearSelected = CommonTestStepActions.GetPulldownTextSelected();
-		
-		String[] monthSelectedParts = monthYearSelected.split(" ");
-		String monthSelected = CommonTestStepActions.ConvertMonthToInt(monthSelectedParts[0].trim());
-		String yearSelected = monthSelectedParts[1].trim();
-		
-//		System.out.println("month/year selected: " + monthSelected + "/" + yearSelected);
-		
-		HashMap<String, Boolean> vendorsToBeDisplayedMap = new HashMap<>();
-		
-		// Initialize HashMap with all values set to false
-		for (UsageOneMonth u: allValuesFromFile.get(0)) {
-			
-			vendorsToBeDisplayedMap.put(u.getVendorName(), false);
-		}
-		
-//			System.out.println("Initial values: ");
-		
-		for (UsageOneMonth u: allValuesFromFile.get(0)) {
-//				System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
-		}
-		
-		
-		for (int i = 0; i < allValuesFromFile.size(); i++) {
-			
-			for (int j = 0; j < allValuesFromFile.get(i).size(); j++) {
-				
-				UsageOneMonth usage = allValuesFromFile.get(i).get(j);
-				
-				if(monthSelected.equals(usage.getOrdinalMonth()) && yearSelected.equals(usage.getOrdinalYear())) {
-					
-					if (!usage.getInvoiceMonth().equals("")) {
-						
-						vendorsToBeDisplayedMap.replace(usage.getVendorName(), true);
-											
-					}
-					
-				}
-					
-			}
-			
-		}
-		
-//			System.out.println("Updated values: ");
-		for (UsageOneMonth u: allValuesFromFile.get(0)) {
-//				System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
-		}
-		
-		
-		return vendorsToBeDisplayedMap;
-		
-	} 	
 	
 		
 	

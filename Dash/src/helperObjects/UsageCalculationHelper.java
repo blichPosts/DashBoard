@@ -20,44 +20,45 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		//System.out.println("Original amount: " + amount);
 			
-		if (amount < 1000.0){
+		if (amount < 1000.0) {
 			tmpAmount = amount;
 		}
-		else if (amount > 1000.0 && amount < 1000000.0){
+		else if (amount > 1000.0 && amount < 1000000.0) {
 			tmpAmount = amount / 1024;
 			//unit = "K";
 		}
-		else if (amount > 1000000.0 && amount < 1000000000.0){
+		else if (amount > 1000000.0 && amount < 1000000000.0) {
 			tmpAmount = amount / Math.pow(1024, 2);
 			//unit = "M";
 		}
-		else if (amount > 1000000000.0 && amount < 1000000000000.0){
+		else if (amount > 1000000000.0 && amount < 1000000000000.0) {
 			tmpAmount = amount / Math.pow(1024, 3);
 			//unit = "G";
 		}
-		else if (amount > 1000000000000.0){
+		else if (amount > 1000000000000.0) {
 			tmpAmount = amount / Math.pow(1024, 4);
 			//unit = "T";
 		}
 		
 		//System.out.println("Temp amount: " + tmpAmount);
 		
-		if(tmpAmount < 10.0){
+		if (tmpAmount < 10.0) {
 			
 			BigDecimal rounded = new BigDecimal(tmpAmount);
 			rounded = rounded.setScale(1, RoundingMode.HALF_UP);
 			amountConvertedTmp = Double.toString(rounded.doubleValue());
-			if(amountConvertedTmp.endsWith(".0")){
+			
+			if (amountConvertedTmp.endsWith(".0")) {
 				
 				amountConverted = Integer.toString(rounded.toBigIntegerExact().intValue());  // + unit;
 				
-			}else{
+			} else {
 				
 				amountConverted = Double.toString(rounded.doubleValue());  // + unit;
 				
 			}
 			
-		}else{
+		} else {
 			long roundedValue = Math.round(tmpAmount);
 			amountConverted = Long.toString(roundedValue);  // + unit;
 						
@@ -77,20 +78,32 @@ public class UsageCalculationHelper extends BaseClass{
 	public static String convertDataUnitToGbNoDecimalPoint(double amount) {
 		
 		double tmpAmount = amount / Math.pow(1024, 2);
-		String amountConverted = roundNoDecimalDigits(tmpAmount);
-		//System.out.println("Original amount: " + amount + ", Converted from KB to GB: " + tmpAmount + ", Value rounded: " + amountConverted);
-		
+		String amountConverted = roundNoDecimalDigits(tmpAmount, false);
+//		System.out.println("Original amount: " + amount + ", Converted from KB to GB: " + tmpAmount + ", Value rounded: " + amountConverted);
 		return amountConverted;
 		
 	}
 	
 		
 	// Round value, no decimal digits
-	public static String roundNoDecimalDigits(double notRoundedValue){
+	public static String roundNoDecimalDigits(double notRoundedValue, boolean isExpenseValue){
 		
 		long roundedValue = Math.round(notRoundedValue);
 		String amountConverted = Long.toString(roundedValue);
-		//System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
+		
+		double fractionalPart = notRoundedValue - roundedValue;
+		
+		// If the fractional part of the value is equal to .49, then the value will be rounded to the preceding integer.
+		// If the fractional part of the value starts with .49..., and has more than 2 fractional digits then the value will be rounded to the next integer. 
+//		if (fractionalPart >= 0.495) {		
+//			amountConverted = Integer.toString(Integer.parseInt(amountConverted) + 1);
+//			System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
+//		}
+				
+		if (isExpenseValue)
+			amountConverted = "$" + amountConverted;
+		
+//		System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
 		
 		return amountConverted;
 		
@@ -109,22 +122,26 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		//System.out.println("Original amount: " + amount);
 			
-		if (amount < 1000.0){
+//		if (amount < 1000.0){
+//			tmpAmount = amount;
+//		}
+//		else if (amount > 1000.0 && amount < 1000000.0) { 
+		if (amount < 950.0){
 			tmpAmount = amount;
 		}
-		else if (amount > 1000.0 && amount < 1000000.0){
+		else if (amount > 950.0 && amount < 1000000.0) {
 			tmpAmount = amount / 1000;
 			unit = "K";
 		}
-		else if (amount > 1000000.0 && amount < 1000000000.0){
+		else if (amount > 1000000.0 && amount < 1000000000.0) {
 			tmpAmount = amount / 1000000;
 			unit = "M";
 		}
-		else if (amount > 1000000000.0 && amount < 1000000000000.0){
+		else if (amount > 1000000000.0 && amount < 1000000000000.0) {
 			tmpAmount = amount / 1000000000;
 			unit = "G";
 		}
-		else if (amount > 1000000000000.0){
+		else if (amount > 1000000000000.0) {
 			tmpAmount = amount / 1000000000000.0;
 			unit = "T";
 		}
@@ -132,22 +149,23 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		//System.out.println("Temp amount: " + tmpAmount);
 		
-		if(tmpAmount < 10.0){
+		if (tmpAmount < 10.0) {
 			
 			BigDecimal rounded = new BigDecimal(tmpAmount);
 			rounded = rounded.setScale(1, RoundingMode.HALF_UP);
 			amountConvertedTmp = Double.toString(rounded.doubleValue());
-			if(amountConvertedTmp.endsWith(".0")){
+			
+			if (amountConvertedTmp.endsWith(".0")) {
 				
 				amountConverted = Integer.toString(rounded.toBigIntegerExact().intValue()) + unit;
 				
-			}else{
+			} else {
 				
 				amountConverted = Double.toString(rounded.doubleValue()) + unit;
 				
 			}
 			
-		}else{
+		} else {
 			long roundedValue = Math.round(tmpAmount);
 			amountConverted = Long.toString(roundedValue) + unit;
 						
@@ -173,19 +191,23 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		//System.out.println("Original amount: " + amount);
 			
-		if (amount < 1000.0){
+		if (amount == 0) {
+			tmpAmount = amount;
+			unit = "B";
+		}
+		else if (amount < 1000.0) {
 			tmpAmount = amount;
 			unit = "KB";
 		}
-		else if (amount > 1000.0 && amount < 1000000.0){
+		else if (amount > 1000.0 && amount < 1000000.0) { 
 			tmpAmount = amount / 1024;
 			unit = "MB";
 		}
-		else if (amount > 1000000.0 && amount < 1000000000.0){
+		else if (amount > 1000000.0 && amount < 1000000000.0) {
 			tmpAmount = amount / Math.pow(1024, 2);
 			unit = "GB";
 		}
-		else if (amount > 1000000000.0 && amount < 1000000000000.0){
+		else if (amount > 1000000000.0 && amount < 1000000000000.0) {
 			tmpAmount = amount / Math.pow(1024, 3);
 			unit = "TB";
 		}
@@ -196,22 +218,23 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		//System.out.println("Temp amount: " + tmpAmount);
 		
-		if(tmpAmount < 10.0){
+		if (tmpAmount < 10.0) {
 			
 			BigDecimal rounded = new BigDecimal(tmpAmount);
 			rounded = rounded.setScale(1, RoundingMode.HALF_UP);
 			amountConvertedTmp = Double.toString(rounded.doubleValue());
-			if(amountConvertedTmp.endsWith(".0")){
+			
+			if (amountConvertedTmp.endsWith(".0")) {
 				
 				amountConverted = Integer.toString(rounded.toBigIntegerExact().intValue()) + unit;
 				
-			}else{
+			} else {
 				
 				amountConverted = Double.toString(rounded.doubleValue()) + unit;
 				
 			}
 			
-		}else{
+		} else {
 			
 			long roundedValue = Math.round(tmpAmount);
 			amountConverted = Long.toString(roundedValue) + unit;
@@ -240,32 +263,32 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		//System.out.println("Value String: " + stringValue);
 		
-		if (stringValue.contains(unitK)){
+		if (stringValue.contains(unitK)) {
 			
 			String[] kpiValueParts = stringValue.split(unitK);
 			valueNoUnits = kpiValueParts[0];
 							
-		}else if (stringValue.contains(unitM)){
+		} else if (stringValue.contains(unitM)) {
 			
 			String[] kpiValueParts = stringValue.split(unitM);
 			valueNoUnits = kpiValueParts[0];
 			
-		}else if (stringValue.contains(unitG)){
+		} else if (stringValue.contains(unitG)) {
 			
 			String[] kpiValueParts = stringValue.split(unitG);
 			valueNoUnits = kpiValueParts[0];
 		
-		}else if (stringValue.contains(unitT)){
+		} else if (stringValue.contains(unitT)) {
 			
 			String[] kpiValueParts = stringValue.split(unitT);
 			valueNoUnits = kpiValueParts[0];
 		
-		}else{
+		} else {
 			valueNoUnits = stringValue;
 			
 		}
 		
-		if(valueNoUnits.endsWith(".0")){
+		if (valueNoUnits.endsWith(".0")) {
 			String[] tmpValue = valueNoUnits.split(".0"); 
 			valueNoUnits = tmpValue[0];
 		}
@@ -290,22 +313,22 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		//System.out.println("Original Value: " + stringValue);
 		
-		if (stringValue.contains(minutes)){
+		if (stringValue.contains(minutes)) {
 			
 			String[] valueParts = stringValue.split(minutes);
 			valueNoUnits = valueParts[0];
 							
-		}else if (stringValue.contains(messages)){
+		} else if (stringValue.contains(messages)) {
 			
 			String[] valueParts = stringValue.split(messages);
 			valueNoUnits = valueParts[0];
 			
-		}else{
+		} else {
 			valueNoUnits = stringValue;
 			
 		}
 		
-		if(valueNoUnits.endsWith(".0")){
+		if (valueNoUnits.endsWith(".0")) {
 			String[] tmpValue = valueNoUnits.split(".0"); 
 			valueNoUnits = tmpValue[0];
 		}
@@ -313,6 +336,21 @@ public class UsageCalculationHelper extends BaseClass{
 		//System.out.println("Value with no units: " + valueNoUnits);
 		
 		return valueNoUnits.trim();
+		
+	}
+
+	
+	// Adds the '$' symbol to the expenses values 
+	public static String convertUnitsExpense(double value) {
+		
+		String valueConverted = convertUnits(Math.abs(value));
+		
+		// If the original value was less than zero, add a leading dash to the value to be returned
+		if (value < 0) {
+			valueConverted = "-" + valueConverted;
+		}
+		
+		return "$" + valueConverted;
 		
 	}
 	

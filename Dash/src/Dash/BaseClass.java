@@ -1,5 +1,7 @@
 package Dash;
 
+import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.io.File;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
@@ -14,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -24,6 +27,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import helperObjects.Country;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageHelper;
 
 public class BaseClass
@@ -39,7 +43,7 @@ public class BaseClass
 	// https://qa3.traq.com/manage/login/login.trq
 	
 	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx 
-	public static String Developer_Url = "http://dc1devmule1:3000/fleet/expense"; // bladdxx 
+	public static String Developer_Url = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense"; // bladdxx 
 	public static String ReferenceApp_Url = "http://dc1devmule1.prod.tangoe.com:4000/manage/home"; // bladdxx
 	
 	public static boolean testCaseStatus = false;
@@ -298,7 +302,7 @@ public class BaseClass
 	}
 	
 	
-	// Added by Ana -- **** not sure if needed *****
+	// Added by Ana -- **** not sure if needed *****  -- TO BE REMOVED
 	public static void WaitForUsagePageDetailedLoad() throws Exception {
 		
 		//WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);
@@ -539,6 +543,7 @@ public class BaseClass
 			driver.findElement(By.name("username")).sendKeys("admin.vis");
 			driver.findElement(By.name("password")).sendKeys("tangoe");
 			driver.findElement(By.name("submit")).click();
+			GeneralHelper.setUpiFrame();  // anaaddxx
 		    driver.switchTo().frame(driver.findElement(By.id("CONTENT"))); // bladdxx
 		    Thread.sleep(1000); // bladdxx
 		}
@@ -593,10 +598,30 @@ public class BaseClass
 			WaitForElementClickable(By.cssSelector("#menuMainReporting"),MainTimeout, "Failed wait in GoToOrderStatus");
 			DebugTimeout(1, ""); // this is needed to avoid the error with frames and clicking the wrong thing.
 			
-			driver.findElement(By.cssSelector("#menuMainReporting")).click();
+			WebElement menu = driver.findElement(By.cssSelector("#menuMainReporting"));
+						
+			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+			// Get the location of the second line of the chart -> to get the "y" coordinate
+			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+			Point coordinates = menu.getLocation();
+			
+			Robot robot = new Robot(); 
+			int x = coordinates.getX() + 30;
+			int y = coordinates.getY() + 70;
+			
+			robot.mouseMove(x, y);
+			//System.out.println("coordinates - x: " + x + "  y: " + y);
+			
+			Thread.sleep(1000);
+			
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+			
+			
+//			driver.findElement(By.cssSelector("#menuMainReporting")).click();  // --> commented by Ana
 		    
-		    WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"),MainTimeout, "Failed wait in GoToOrderStatus");
-		    driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();
+//		    WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"),MainTimeout, "Failed wait in GoToOrderStatus");  // --> commented by Ana
+		    driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();  // --> commented by Ana
 		    
 		    // get to frame one.
 		    driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
