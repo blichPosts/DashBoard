@@ -45,6 +45,7 @@ public class KPITilesVisual extends BaseClass
 		//Next there is a trend icon (up/down) arrow.
 		ExpenseHelper.TotalExpensedVerifyTrend();
 		
+		// 1/20/16 - removed this because it doesn't always exist. ana's test for KPI tiles will verify this.
 		// Next there is a Rolling average with rolling averages for three and six months.
 		ExpenseHelper.VerifyRollingAverageTotalExpense();
 		
@@ -58,6 +59,7 @@ public class KPITilesVisual extends BaseClass
 	    // Next there is a trend icon (up/down) arrow.
 		ExpenseHelper.CountServiceNumbersVerifyTrend();
 		
+		// 1/20/16 - removed this because it doesn't always exist. ana's test for KPI tiles will verify this.
 		// Next there is a Rolling average with rolling averages for three and six months. 
 		ExpenseHelper.VerifyRollingAverageCountServiceNumbers(); 
 		

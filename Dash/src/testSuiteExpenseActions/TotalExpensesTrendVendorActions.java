@@ -11,6 +11,7 @@ import expenses.TotalExpenseByVendorSpendCategory;
 import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 
 public class TotalExpensesTrendVendorActions extends BaseClass 
 {
@@ -28,6 +29,10 @@ public class TotalExpensesTrendVendorActions extends BaseClass
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
+		
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		
+		Thread.sleep(2000); // without this web element with legends gets bad info.
 		
 		TotalExpensesTrend.SetupChartId();
 		

@@ -324,6 +324,9 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		legendsList = null;
 	}
 
+	// the first time this is called an expected list is created that has all of the rows in the hover.
+	// the expected list is used to test the following calls to this method. the following calls 
+	// will have less rows. each call with less rows will use a part of the expected list for verification.  
 	public static void VerifyToolTipInfo(List<WebElement> list, int eventNumber) throws Exception 
 	{
 
@@ -334,7 +337,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		// when running country test and then vendor test together, clearing arrays fixed failure in vendor test.
 		ClearVerifyToolTipInfoLists();
 		
-		if(eventNumber == 0)
+		if(eventNumber == 0) // build expected list.
 		{
 			BuildListOfAllSpendCatergoryHoverItems(list);
 		}

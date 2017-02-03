@@ -1,5 +1,11 @@
 package expenses;
 
+// 
+// Revision history.
+//
+// 1/29/16 - updated VerifyRemovingLegends() to call click method in ExpenseValueHelper because it is more reliable. 
+
+
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.text.ParseException;
@@ -16,6 +22,7 @@ import org.testng.Assert;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseValuesHelper;
 import helperObjects.UsageHelper;
 
 public class CostPerServiceNumberTrend extends  BaseClass
@@ -79,18 +86,22 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		Collections.reverse(expectedMonthYear);
 		
+		ExpenseValuesHelper.SetupChartIdForCostPerServiceNumber(); // 1/29/17 - need this so  'ExpenseValuesHelper' can call reliable x/y click.
+		
 		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
-				clickBarIndex(y);
+				// clickBarIndex(y);  
+				ExpenseValuesHelper.CostPerServiceNumberclickBarIndex(y); // 1/29/17 - changed to call ExpenseValuesHelper. this has a more reliable click method.
+				
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
-			totalExpenseLegendsList.remove(0);
 			Thread.sleep(500);
 			webEleListLegends.get(x).click();
+			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(2000);
 		}
 	}
@@ -98,7 +109,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 	public static void clickBarIndex(int barIndex) throws Exception
 	{
 		cssBar = "#" + chartId + ">svg>g:nth-of-type(8)>text:nth-of-type(" + barIndex + ")";
-		cssLine = "#" + chartId + ">svg>g:nth-of-type(7)>text:nth-of-type(3)";
+		cssLine = "#" + chartId + ">svg>g:nth-of-type(7)>text:nth-of-type(1)";
 		
 		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -116,7 +127,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		
 		// 1/11/16 - moves cursor arrow up.
 		int x = barCoordinates.getX() + 30;
-		int y = lineCoordinates.getY() + 250;
+		int y = lineCoordinates.getY() + 150;
 		
 		robot.mouseMove(x, y);
 		//System.out.println("coordinates - x: " + x + "  y: " + y);

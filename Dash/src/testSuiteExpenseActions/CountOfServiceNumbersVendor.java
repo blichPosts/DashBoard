@@ -9,6 +9,7 @@ import expenses.CostPerServiceNumberTrend;
 import expenses.CountOfServiceNumbersTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 
 public class CountOfServiceNumbersVendor extends BaseClass 
 {
@@ -20,17 +21,21 @@ public class CountOfServiceNumbersVendor extends BaseClass
 	}
 	
 	@Test
-	public static void CostPerServiceNumberTrendVendorTest() throws Exception
+	public static void CountOfServiceNumbersTrendVendorTest() throws Exception
 	{
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);
+		
+		Thread.sleep(2000); // without this web element with legends gets bad info.
+		
 		CountOfServiceNumbersTrend.SetupChartId();
 		
 		// this sets up a string list of the legends (for expected values) and a web list of legends (for clicking legends).
 		CountOfServiceNumbersTrend.Setup();
-
+		
 		ExpenseHelper.SetChartId(4);  // expense helper needs to know the current control because it has a method that's used.
 		
 		CountOfServiceNumbersTrend.VerifyRemovingLegends();

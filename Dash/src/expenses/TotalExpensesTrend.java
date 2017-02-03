@@ -111,7 +111,7 @@ public class TotalExpensesTrend extends BaseClass
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
-			totalExpenseLegendsList.remove(0);
+			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(500);
 			webEleListLegends.get(x).click();
 			Thread.sleep(2000);
