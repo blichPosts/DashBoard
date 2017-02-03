@@ -20,7 +20,8 @@ public class ExpenseHelper extends BaseClass
 {
 	public static String tmpStr = "";
 	public static String errMessage = "";	
-	public static String desiredMonth = "May 2016";
+	// public static String desiredMonth = "May 2016";
+	public static String desiredMonth = "August 2016";
 	public static String impericalDesiredMonth = ""; // this is found by going through the months and finding the month(s) with the most amount of vendors showing in the expense control. 
 	public static String chartId = "";
 	public static String otherText = "Other";
@@ -190,6 +191,7 @@ public class ExpenseHelper extends BaseClass
 			}
 			else // the control slice is clickable. select it and put the vendor/value onto the hash map. 
 			{
+				Thread.sleep(2000);				
 				ele.click();
 				Thread.sleep(1000);
 				expenseControlHMap.put(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText(),
@@ -281,8 +283,6 @@ public class ExpenseHelper extends BaseClass
 		Assert.assertEquals(tempStringList, expectedVendorNamesList, "Failed verifying actual versus expected in ExpenseHelpser.VerifyCorrectControlSlices.");
 	}
 	
-	
-// 	.//*[@id='highcharts-ejp1hdz-408']/*/*[@class='highcharts-legend']
 	
 	public static void VerifyThreeComponents()
 	{
@@ -734,14 +734,21 @@ public class ExpenseHelper extends BaseClass
 
 		switch(cntrlType)
 		{
-			case totalExpenseSpendCatergory:
+			case totalExpenseSpendCatergory: // needs work -- 
 			{
 				chartId =  UsageHelper.getChartId(1);  
 				ShowText(chartId);
 				// tempUrl = "#" + chartId + ">svg>.highcharts-yaxis-labels>text:nth-of-type(1)"; // css no work		
-				tempUrl = "(//div[@id='" +  chartId + "']" +  "/*/*[@class='highcharts-axis-labels highcharts-yaxis-labels '])[1]"; // show ana.
-				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-				// WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // DEBUG 
+				//tempUrl = ".//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group']/*/*[contains(@d,'M 0 0')]"; // latest attempt
+				
+				// tempUrl  = "(.//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group ']/*/*)[1][@visibility='hidden']";
+				
+				//(.//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group ']/*/*)[1][@visibility='hidden']
+				// Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				//WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // DEBUG
+				
+				//WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // always visible.
+				 
 				break;
 			}
 			case expenseTrending:

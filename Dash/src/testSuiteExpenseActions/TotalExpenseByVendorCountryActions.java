@@ -11,6 +11,7 @@ import expenses.TotalExpenseByVendorCarrier;
 import helperObjects.CommonTestStepActions;
 import helperObjects.Country;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.enableDisableActionsType;
 
 public class TotalExpenseByVendorCountryActions extends BaseClass 
@@ -41,8 +42,8 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 		TotalExpenseByVendorCarrier.StoreAllLegendsInTotalExpense(); // setup containers in 'TotalExpenseByVendorCarrier' for testing 'total expense' control slices.
 		TotalExpenseByVendorCarrier.VerifyUnSelectingLegendsAndSlices();
 		
-		
-		
+		ExpenseHelper.VerifyOneControlNotPresent(controlType.totalExpense); // needs work
+
 	}
 	
 	@AfterClass
