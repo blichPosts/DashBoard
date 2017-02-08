@@ -562,18 +562,12 @@ public class UsageTrending extends BaseClass {
 		}
 		
 		
-		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
-
-		int amount = highchartSeries.size();
-		//System.out.println("amount: " + amount);
-		
-		int indexHighchart = 1;
-		
 		List<String> monthYearList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		int indexMonth = monthYearList.size()-1;
 		
-				
+		// The HashMap "expectedValues" will have one entry per vendor listed in chart. The key is the vendor's name. 		
 		List<HashMap<String, String>> expectedValues = new ArrayList<>();
+		
 		List<String> expectedLabels = new ArrayList<>(); // it may be removed -- see if legends work as expected label
 		
 		HashMap<String, Boolean> vendorHasData = GeneralHelper.vendorHasDataForSelectedMonth(allValuesFromFile);
@@ -678,11 +672,9 @@ public class UsageTrending extends BaseClass {
 		
 		String otherVendors = "Other";
 		
-		// If more than 5 vendors are selected, and there are 6 vendors in chart
+		// If more than 5 vendors are selected, and there are 6 vendors in chart, then there's an "Other" element.
+		// The value for "Other" needs to be calculated.
 		if (moreThanFiveVendorsSelected && sixVendorsInChart) {
-			
-//			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
-//			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
 						
 			for (int indexMonthValues = 0; indexMonthValues < listUsageAllMonths.size(); indexMonthValues++) {
 
@@ -695,62 +687,51 @@ public class UsageTrending extends BaseClass {
 					
 					// ************ SEE NOTE NEXT TO NEXT LINE - CHANGE TO BE MADE **************************
 					if (!vendorsInChartNames.contains(v) && vendorHasData.get(v)){ // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
-						
-//						System.out.println("Vendor " + v + ", is not listed in chart");
 					
 						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(v);
-
-						// If there's data for the selected month/vendor add the values to the "other" variables, if not, move to the next vendor						
-						//if (!usage.getInvoiceMonth().equals("")) {
-														
-//							System.out.println("there's data for the vendor");
 							
-							if (barChartId == UsageHelper.usageTrendingDomesticChart) {
+						if (barChartId == UsageHelper.usageTrendingDomesticChart) {
+							
+							if(categorySelector == UsageHelper.categoryVoice){
 								
-								if(categorySelector == UsageHelper.categoryVoice){
-									
-//									System.out.println("Vendor: " + usage.getVendorName());
-//									System.out.println("Value to be added to tmp: " + Double.parseDouble(usage.getDomesticVoice()) + Double.parseDouble(usage.getDomesticOverageVoice()));
-									otherTmpSum += (Double.parseDouble(usage.getDomesticVoice()) + Double.parseDouble(usage.getDomesticOverageVoice()));
-									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
-//									System.out.println("otherTmpSum: " + otherTmpSum);
-
-									
-								} else if (categorySelector == UsageHelper.categoryData){
-									
-									otherTmpSum += Double.parseDouble(usage.getDomesticDataUsageKb());
-									valueForOther = UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(otherTmpSum);
-									
-								} else if (categorySelector == UsageHelper.categoryMessages){
-									
-									otherTmpSum += Double.parseDouble(usage.getDomesticMessages());
-									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
-									
-								}
+								otherTmpSum += (Double.parseDouble(usage.getDomesticVoice()) + Double.parseDouble(usage.getDomesticOverageVoice()));
+								valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
 								
+							} else if (categorySelector == UsageHelper.categoryData){
 								
-							} else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
+								otherTmpSum += Double.parseDouble(usage.getDomesticDataUsageKb());
+								valueForOther = UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(otherTmpSum);
 								
-								if(categorySelector == UsageHelper.categoryVoice){
-									
-									otherTmpSum += Double.parseDouble(usage.getRoamingVoice());
-									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
-									
-								} else if (categorySelector == UsageHelper.categoryData){
-									
-									otherTmpSum += Double.parseDouble(usage.getRoamingDataUsageKb());
-									valueForOther = UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(otherTmpSum);
-									
-								} else if (categorySelector == UsageHelper.categoryMessages){
-									
-									otherTmpSum += Double.parseDouble(usage.getRoamingMessages());
-									valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
-									
-								}
-
+							} else if (categorySelector == UsageHelper.categoryMessages){
+								
+								otherTmpSum += Double.parseDouble(usage.getDomesticMessages());
+								valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
+								
 							}
 							
-							expectedValues.get(indexMonthValues).put(otherVendors, valueForOther); 
+							
+						} else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
+							
+							if(categorySelector == UsageHelper.categoryVoice){
+								
+								otherTmpSum += Double.parseDouble(usage.getRoamingVoice());
+								valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
+								
+							} else if (categorySelector == UsageHelper.categoryData){
+								
+								otherTmpSum += Double.parseDouble(usage.getRoamingDataUsageKb());
+								valueForOther = UsageCalculationHelper.convertDataUnitToGbNoDecimalPoint(otherTmpSum);
+								
+							} else if (categorySelector == UsageHelper.categoryMessages){
+								
+								otherTmpSum += Double.parseDouble(usage.getRoamingMessages());
+								valueForOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
+								
+							}
+
+						}
+						
+						expectedValues.get(indexMonthValues).put(otherVendors, valueForOther); 
 														
 					}
 					
@@ -763,12 +744,15 @@ public class UsageTrending extends BaseClass {
 		}
 		
 	
-		for (int i = 0; i < expectedLabels.size(); i++) {		
-//			System.out.println(" Label " + i + ": " + expectedLabels.get(i));
-		}
-		
+			
 
+		// *******************************************************************
 		// Verify the info contained on each of the tooltips for the 13 months 		
+		// *******************************************************************
+		
+		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
+		int amountOfSeries = highchartSeries.size();
+		int indexHighchart = 1;
 		
 		while (indexHighchart <= monthYearList.size()) {
 			
@@ -825,7 +809,7 @@ public class UsageTrending extends BaseClass {
 			// 2 <vendor's name>
 			// 3 <amount shown for the vendor>
 			
-			int expectedAmountItemsTooltip = (amount * 3) + 1;
+			int expectedAmountItemsTooltip = (amountOfSeries * 3) + 1;
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 			
 			
@@ -850,7 +834,7 @@ public class UsageTrending extends BaseClass {
 				
 				System.out.println("Vendor: " + labelFound + " --> found, expected");
 //				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 
 //				System.out.println(valueFound);
 //				System.out.println(valueExpected);
@@ -862,7 +846,7 @@ public class UsageTrending extends BaseClass {
 			String monthYearExpected = monthYearList.get(indexMonth);
 				
 			Assert.assertEquals(monthYearFound, monthYearExpected); // **** UNCOMMENT FOR REF APP!! ****
-			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+			System.out.println("Month/Year Found: " + monthYearFound + ", Month/Year Expected: " + monthYearExpected);
 			
 			indexHighchart++;
 			indexMonth--;

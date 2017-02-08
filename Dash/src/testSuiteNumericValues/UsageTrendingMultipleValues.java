@@ -50,6 +50,7 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		
 		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
 		
+		
 		// #1 Select Vendor View and Unselect all vendors  
 		UsageHelper.selectVendorView();
 		CommonTestStepActions.UnSelectAllVendors();
@@ -131,31 +132,12 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		} while (indexMonth < monthsToSelect.size());
 			
 		
-		// Vendors are listed in alphabetical order in the Usage Trending tooltips
-			
-		List<List<UsageOneMonth>> listAllMonthsSortedByVendor = new ArrayList<>();
-		
-		for (List<UsageOneMonth> list: dataForUsageTrending) {
-			
-			listAllMonthsSortedByVendor.add(UsageHelper.sortVendorsAlphabetically(list));
-		
-		}
-		
-		
-		for (List<UsageOneMonth> list: listAllMonthsSortedByVendor) { 
-			
-			for (UsageOneMonth u: list) {
-				
-//				System.out.println(" Vendor: ** " + u.getVendorName() + " **, Month: " + u.getOrdinalMonth() + ", Year: " + u.getOrdinalYear() + ", Invoice Month: " + u.getInvoiceMonth());
-				
-			}
-			
-//			System.out.println("");
-		}
-		
 		
 		int indexMonthToSelect = 0;
 		String monthYearToSelect = "";
+		
+		// Add to a list the months that have data for at least one vendor. 
+		// Months that have no data won't be selected on the month selector, since no data is displayed on the Dashboard.
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 		
 		do {
@@ -166,34 +148,36 @@ public class UsageTrendingMultipleValues extends BaseClass{
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 			Thread.sleep(2000);
 			
+			
 			// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
 			
 			try {
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, listAllMonthsSortedByVendor, UsageHelper.categoryVoice);
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, listAllMonthsSortedByVendor, UsageHelper.categoryVoice);
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);				
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, listAllMonthsSortedByVendor, UsageHelper.categoryData);
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
 				Thread.sleep(2000);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, listAllMonthsSortedByVendor, UsageHelper.categoryData);
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
 				Thread.sleep(2000);				
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, listAllMonthsSortedByVendor, UsageHelper.categoryMessages);
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, listAllMonthsSortedByVendor, UsageHelper.categoryMessages);
+				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
-				  
+				
+				
 			} catch(NullPointerException e) {
 				
 				System.out.println("chart not found");
