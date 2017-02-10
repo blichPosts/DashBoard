@@ -56,11 +56,16 @@ public class ExpensesKPITilesValues extends BaseClass{
 			
 			totalExpenseValues.add(monthValues.getTotalCharge());
 			countServNumberValues.add(monthValues.getNumberOfLines());
-			if (monthValues.getNumberOfLines().equals("0") || monthValues.getTotalCharge().equals("0")){
-				costServNumberValues.add("0");
-			} else {
-				costServNumberValues.add(Double.toString(Double.parseDouble(monthValues.getTotalCharge())/ Double.parseDouble(monthValues.getNumberOfLines())));
+			
+			double totalExpense = Double.parseDouble(monthValues.getTotalCharge());
+			double numLines = Double.parseDouble(monthValues.getNumberOfLines());
+			double costServNumber = 0;
+			
+			if (numLines != 0){
+				costServNumber = totalExpense / numLines;
 			}
+			
+			costServNumberValues.add(Double.toString(costServNumber));
 			
 		}
 		

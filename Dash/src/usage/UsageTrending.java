@@ -686,7 +686,7 @@ public class UsageTrending extends BaseClass {
 					String v = vendorsSelectedCheckBox.get(i).getText();
 					
 					// ************ SEE NOTE NEXT TO NEXT LINE - CHANGE TO BE MADE **************************
-					if (!vendorsInChartNames.contains(v) && vendorHasData.get(v)){ // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
+					if (!vendorsInChartNames.contains(v)) {  // && vendorHasData.get(v)){ // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
 					
 						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(v);
 							

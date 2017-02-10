@@ -13,6 +13,8 @@ public class ReadFilesHelper {
 
 	// E.g. path: "D:/Documents/CMD Dashboard/CreateFilesProgram/AT&T Mobility.txt"
 	
+	
+	// Reads the data needed for the "Fleet Manager Dashboard" tests
 	public static List<UsageOneMonth> getDataFromSpreadsheet(String filePath) throws IOException{
 		
 		List<String> linesOfFile = getRowsfromFile(filePath);
@@ -120,7 +122,232 @@ public class ReadFilesHelper {
 		
 		return itemsOfLine;
 	}
+
+
+
 	
+	// Reads the data needed for the "Hierarchy Dashboard" tests
+	public static List<HierarchyTrendData> getHierarchyTrendData(String filePath) throws IOException {
+
+		List<String> linesOfFile = getRowsfromFile(filePath);
+		boolean rowsLineRead = false;
+		
+		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
+		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
+		
+//		System.out.println("File to be read:" + filePath);
+		
+		for (String s: linesOfFile) {
+			
+//			System.out.println("Line :" + s);
+			
+			if (s.contains("rows")) {
+				rowsLineRead = true;
+			}	
+			
+			if (rowsLineRead && !s.trim().equals("{") && !s.trim().equals("},")) {
+				
+				switch (returnName(s)) {
+				
+					case "id":
+					
+						trendDataOneMonth.setId(returnValue(s));
+						break;
+					
+					case "name":
+					
+						trendDataOneMonth.setName(returnValue(s));
+						break;
+					
+					case "ordinal_year":
+					
+						trendDataOneMonth.setOrdinalYear(returnValue(s));
+						break;
+					
+					case "ordinal_month":
+										
+						trendDataOneMonth.setOrdinalMonth(returnValue(s));
+						break;
+					
+					case "no_of_invoices":
+					
+						trendDataOneMonth.setNumberOfInvoices(returnValue(s));
+						break;
+					
+					case "no_of_lines":
+					
+						trendDataOneMonth.setNumberOfLines(returnValue(s));
+						break;
+					
+					case "no_of_accounts":
+					
+						trendDataOneMonth.setNumberOfAccounts(returnValue(s));
+						break;
+					
+					case "no_of_invoices_rollup":
+						
+						trendDataOneMonth.setNumberOfInvoicesRollup(returnValue(s));
+						break;
+					
+					case "no_of_lines_rollup":
+					
+						trendDataOneMonth.setNumberOfLinesRollup(returnValue(s));
+						break;
+					
+					case "no_of_accounts_rollup":
+					
+						trendDataOneMonth.setNumberOfAccountsRollup(returnValue(s));
+						break;
+					
+					case "currency_code":
+					
+						trendDataOneMonth.setCurrencyCode(returnValue(s));
+						break;
+					
+					case "total_expense_ex":
+					
+						trendDataOneMonth.setTotalExpense(returnValue(s));
+						break;
+					
+					case "optimizable_expense_ex":
+					
+						trendDataOneMonth.setOptimizableExpense(returnValue(s));
+						break;
+					
+					case "roaming_expense_ex":
+					
+						trendDataOneMonth.setRoamingExpense(returnValue(s));
+						break;
+					
+					case "total_expense_rollup_ex":
+					
+						trendDataOneMonth.setTotalExpenseRollup(returnValue(s));
+						break;
+					
+					case "optimizable_expense_rollup_ex":
+					
+						trendDataOneMonth.setOptimizableExpenseRollup(returnValue(s));
+						break;
+					
+					case "roaming_expense_rollup_ex":
+					
+						trendDataOneMonth.setRoamingExpenseRollup(returnValue(s));
+						break;
+					
+					default:
+					
+//						System.out.println("not a value");
+						break;
+					
+				}
+				
+			}
+			
+			if (rowsLineRead && (s.trim().equals("},") || s.trim().equals("]"))) {
+				
+				listValues.add(trendDataOneMonth);
+				trendDataOneMonth = new HierarchyTrendData();
+			}
+			
+		}
+		
+		
+		
+		for (HierarchyTrendData h: listValues) {
+			
+			System.out.println("id: " + h.getId()); 
+			System.out.println("name: " + h.getName());
+			System.out.println("ordinal_year: " + h.getOrdinalYear());
+			System.out.println("ordinal_month: " + h.getOrdinalMonth());
+			System.out.println("no_of_invoices: " + h.getNumberOfInvoices());
+			System.out.println("no_of_lines: " + h.getNumberOfLines());
+			System.out.println("no_of_accounts: " + h.getNumberOfAccounts());
+			System.out.println("no_of_invoices_rollup: " + h.getNumberOfInvoicesRollup());
+			System.out.println("no_of_lines_rollup: " + h.getNumberOfLinesRollup());
+			System.out.println("no_of_accounts_rollup: " + h.getNumberOfAccountsRollup());
+			System.out.println("currency_code: " + h.getCurrencyCode());
+			System.out.println("total_expense_ex: " + h.getTotalExpense());
+			System.out.println("optimizable_expense_ex: " + h.getOptimizableExpense());
+			System.out.println("roaming_expense_ex: " + h.getRoamingExpense());
+			System.out.println("total_expense_rollup_ex: " + h.getTotalExpenseRollup());
+			System.out.println("optimizable_expense_rollup_ex: " + h.getOptimizableExpenseRollup());
+			System.out.println("roaming_expense_rollup_ex: " + h.getRoamingExpenseRollup());
+			
+		}
+		
+		
+		
+		int linesAmount = linesOfFile.size() - 2; 
+		
+		// This list will contain one UsageOneMonth object per month 
+
+		
+//		for (int i = 0; i < linesAmount; i++){
+//			
+//			//System.out.println("line # " + i);
+//			
+//			String lineToBeSplited = linesOfFile.get(i+2);
+//			String[] splitedline = splitLine(lineToBeSplited);
+//		
+//			HierarchyTrendData trendData = new HierarchyTrendData();
+//		
+//			trendData.setId("...");
+//			trendData.setName("...");
+//			trendData.setOrdinalYear("...");
+//			trendData.setOrdinalMonth("...");
+//			
+//			trendData.setNumberOfInvoices("...");
+//			trendData.setNumberOfLines("...");
+//			trendData.setNumberOfAccounts("...");
+//			trendData.setNumberOfInvoicesRollup("...");
+//			trendData.setNumberOfLinesRollup("...");
+//			trendData.setNumberOfAccountsRollup("...");
+//			trendData.setCurrencyCode("...");
+//			trendData.setTotalExpense("...");
+//			trendData.setOptimizableExpense("...");
+//			trendData.setRoamingExpense("...");
+//			trendData.setTotalExpenseRollup("...");
+//			trendData.setOptimizableExpenseRollup("...");
+//			trendData.setRoamingExpenseRollup("...");
+//			
+//			listValues.add(trendData);
+			
+//			System.out.print("Row " + (i+1) + ":  | ");
+//			System.out.print(listValues.get(i).getVendorName() + "  | "); 
+//			System.out.print(listValues.get(i).getInvoiceMonth() + "  | ");
+//			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");
+//			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");
+//			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");
+//			System.out.print(listValues.get(i).getDomesticOverageVoice() + "  | ");
+//			System.out.print(listValues.get(i).getDomesticMessages() + "  | ");
+//			System.out.print(listValues.get(i).getDomesticDataUsageKb() + "  | ");
+//			System.out.print(listValues.get(i).getRoamingVoice() + "  | ");
+//			System.out.print(listValues.get(i).getRoamingDataUsageKb() + "  | ");
+//			System.out.print(listValues.get(i).getRoamingMessages() + "  | ");
+//			System.out.println("");
+			
+//		}
+		
+		return listValues;
+		
+	}
+		
+	
+	
+	public static String returnName(String jsonItem) {
+		
+		return jsonItem.split(":")[0].trim().replace("\"", "");
+		
+	}
+		
+	
+	public static String returnValue(String jsonItem) {
+		
+		jsonItem = jsonItem.trim();
+		return (jsonItem.split("\":")[1].trim().replace("\"", "").replace(",", ""));
+//		return (jsonItem.substring(jsonItem.trim().indexOf(":") + 1,jsonItem.length() - 1)).trim().replace("\"","");
+		
+	}
 	 
 	
 }

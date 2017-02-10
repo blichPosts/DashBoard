@@ -549,15 +549,19 @@ public class CommonTestStepActions extends BaseClass
 	public static void selectMonthYearPulldown(String monthYear){
 		
 		// this list will have ALL the 'Month Year' listed on the pulldown on the Point of View section
-		List<WebElement> listMonthYear = driver.findElements(By.xpath(".//select/option"));
+		List<WebElement> listMonthYear = driver.findElements(By.cssSelector("select>option"));  //(".//select/option"));
+		List<String> listMonthNames = new ArrayList<>();
 		
+		for (WebElement month: listMonthYear) {
+			listMonthNames.add(month.getText());
+		}
 		
 		for(int i = 0; i < listMonthYear.size(); i++){
 			
 			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
-			if(listMonthYear.get(i).getText().equals(monthYear)){
+			if(listMonthNames.get(i).equals(monthYear)){
 				
-				listMonthYear.get(i).click();
+				driver.findElement(By.cssSelector("select>option:nth-of-type(" + (i+1) + ")")).click();;
 				
 			}
 			
@@ -583,10 +587,10 @@ public class CommonTestStepActions extends BaseClass
 	}
 
 	
-	public static List<List> getCountriesAndVendors() {
+	public static List<List<WebElement>> getCountriesAndVendors() {
 
 		
-		List<List> countriesAndVendors = new ArrayList<>();
+		List<List<WebElement>> countriesAndVendors = new ArrayList<>();
 		
 		List<WebElement> countries = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead"));
 		List<WebElement> vendors = driver.findElements(By.cssSelector(".tdb-povGroup__label--subhead~div"));
