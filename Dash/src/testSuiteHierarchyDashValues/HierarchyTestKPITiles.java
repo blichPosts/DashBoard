@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -17,9 +16,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.HierarchyHelper;
 import helperObjects.HierarchyTrendData;
 import helperObjects.ReadFilesHelper;
-import helperObjects.UsageHelper;
-import helperObjects.UsageOneMonth;
-import usage.UsageKPITilesActions;
+
 
 public class HierarchyTestKPITiles extends BaseClass{
 
@@ -37,26 +34,23 @@ public class HierarchyTestKPITiles extends BaseClass{
 	public static void HierarchyKPITilesTest() throws Exception
 	{
 		
-		
-		// Select the "VIEW BY HIERARCHY" button
+		// #1 Select the "VIEW BY HIERARCHY" button
 		HierarchyHelper.selectHierarchyView();
+					
 		
-
-			
+		// #2 Read data from file
 		String path = "D:\\Documents\\CMD Dashboard\\Hierarchy Dashboard\\";   //UsageHelper.path;
 		String fileName = "testJsonFile";
 		
 		String file = fileName + ".txt";
 		String completePath = path + file;
 			
-		// #2 Read data from file
 		List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getHierarchyTrendData(completePath); // new ArrayList<>();
 			
 		
-		// Get the last month listed on month selector 
+		// #3 Get the last month listed on month selector 
 		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 		
-		System.out.println("lastMonthListedMonthSelector: " + lastMonthListedMonthSelector);
 		
 		HierarchyTrendData trendData;
 		String year = "";
@@ -97,22 +91,22 @@ public class HierarchyTestKPITiles extends BaseClass{
 						
 //			month = Integer.toString(Integer.parseInt(month)-1);
 			
-//			totalExpense = trendData.getTotalExpense();
-//			optimizableExpense = trendData.getOptimizableExpense();
-//			roamingExpense = trendData.getRoamingExpense();
-//			totalExpenseRollup = trendData.getTotalExpenseRollup();
-//			optimizableExpenseRollup = trendData.getOptimizableExpenseRollup();
-//			roamingExpenseRollup = trendData.getRoamingExpenseRollup();
-//			numberOfLinesRollUp = trendData.getNumberOfLinesRollup();
+			totalExpense = trendData.getTotalExpense();
+			optimizableExpense = trendData.getOptimizableExpense();
+			roamingExpense = trendData.getRoamingExpense();
+			totalExpenseRollup = trendData.getTotalExpenseRollup();
+			optimizableExpenseRollup = trendData.getOptimizableExpenseRollup();
+			roamingExpenseRollup = trendData.getRoamingExpenseRollup();
+			numberOfLinesRollUp = trendData.getNumberOfLinesRollup();
 							
 			
-			totalExpense = "0";
-			optimizableExpense = "0";
-			roamingExpense = "0";
-			totalExpenseRollup = "0";
-			optimizableExpenseRollup = "0";
-			roamingExpenseRollup = "0";
-			numberOfLinesRollUp = "0";
+//			totalExpense = "0";
+//			optimizableExpense = "0";
+//			roamingExpense = "0";
+//			totalExpenseRollup = "0";
+//			optimizableExpenseRollup = "0";
+//			roamingExpenseRollup = "0";
+//			numberOfLinesRollUp = "0";
 			
 			
 			// #5 Compare the values displayed on the KPIs to the values from spreadsheet
