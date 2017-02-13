@@ -1,8 +1,6 @@
 package helperObjects;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,6 +16,8 @@ public class GeneralHelper extends BaseClass {
 	public static WebElement iframe;  
 	public static int x_iFrame;
 	public static int y_iFrame;
+	
+	
 	
 	public static void setUpiFrame() {
 		
@@ -40,20 +40,19 @@ public class GeneralHelper extends BaseClass {
 		String monthSelected = CommonTestStepActions.ConvertMonthToInt(monthSelectedParts[0].trim());
 		String yearSelected = monthSelectedParts[1].trim();
 		
-//			System.out.println("month/year selected: " + monthSelected + "/" + yearSelected);
+//		System.out.println("month/year selected: " + monthSelected + "/" + yearSelected);
 		
 		HashMap<String, Boolean> vendorsToBeDisplayedMap = new HashMap<>();
 		
 		// Initialize HashMap with all values set to false
 		for (UsageOneMonth u: allValuesFromFile.get(0)) {
-			
 			vendorsToBeDisplayedMap.put(u.getVendorName(), false);
 		}
 		
-//				System.out.println("Initial values: ");
+//		System.out.println("Initial values: ");
 		
 		for (UsageOneMonth u: allValuesFromFile.get(0)) {
-//					System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
+//			System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
 		}
 		
 		
@@ -77,9 +76,9 @@ public class GeneralHelper extends BaseClass {
 			
 		}
 		
-//				System.out.println("Updated values: ");
+//		System.out.println("Updated values: ");
 		for (UsageOneMonth u: allValuesFromFile.get(0)) {
-//					System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
+//			System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
 		}
 		
 		
@@ -88,32 +87,7 @@ public class GeneralHelper extends BaseClass {
 	} 	
 	
 	
-	// **** NOT USED ******
-	public static int getNumberOfLineForYCoordenate(List<WebElement> yAxisLabels) {
-		
-		List<Integer> labels = new ArrayList<Integer>();
-		
-		for (WebElement y: yAxisLabels) {
-			
-			String label = y.getText(); 
-			
-			if (label.toUpperCase().endsWith("K")) {
-				label = label.replace("K", "");
-			} else if (label.toUpperCase().endsWith("M")) {
-				label = label.replace("M", "");
-			}
-			
-			labels.add(Integer.parseInt(label));
-			
-		}
-		
-		Collections.sort(labels);
-		
-		
-		return 1;
-	}
-	
-	
+	// Get the location of the element on the UI 
 	public static Point getAbsoluteLocation(WebElement element) {
 		
         int x = x_iFrame;

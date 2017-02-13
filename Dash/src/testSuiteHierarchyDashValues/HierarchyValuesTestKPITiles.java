@@ -18,7 +18,7 @@ import helperObjects.HierarchyTrendData;
 import helperObjects.ReadFilesHelper;
 
 
-public class HierarchyTestKPITiles extends BaseClass{
+public class HierarchyValuesTestKPITiles extends BaseClass{
 
 	
 	@BeforeClass

@@ -102,44 +102,23 @@ public class HierarchyExpenseTrending extends BaseClass {
 		while (indexHighchart <= monthYearList.size()) {
 			
 			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(1)";
-			
-			// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
+						
+			// WebElement 'bar' will be used to set the position of the mouse on the chart
 			WebElement bar = driver.findElement(By.cssSelector(cssBar));
-			WebElement line = driver.findElement(By.cssSelector(cssLine));
-//			
+
 			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-			// Get the location of the second line of the chart -> to get the "y" coordinate
 			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-//			Point barCoordinates = bar.getLocation();
-//			Point lineCoordinates = line.getLocation();
 			
 			Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
-			
-			Robot robot = new Robot();
-			
-//			int y_offset = 0;
-			
-//			if (loginType.equals(LoginType.Command)) {
-//				
-//				y_offset = -400;  // these coordinates work for CMD :)
-//				
-//			} else if (loginType.equals(LoginType.ReferenceApp)) {
-//				
-//				y_offset = 150; // these coordinates work for Ref App :)  // was 100
-//				
-//			}
-			
-//			int x = barCoordinates.getX();
-//			int y = lineCoordinates.getY() + y_offset;  // these coordinates work for Dev Instance :)
-		
 			int x = coordinates.getX();
 			int y = coordinates.getY();
-			
+
+			Robot robot = new Robot();
 			robot.mouseMove(x, y);
-//				System.out.println("coordinates:  x: " + x + "  y: " + y);
 			
 			Thread.sleep(500);
+			
+			robot.mouseMove(x, y);
 			
 			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
@@ -199,7 +178,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 			String monthYearFound = tooltip.get(0).getText();
 			String monthYearExpected = monthYearList.get(indexMonth);
 				
-			Assert.assertEquals(monthYearFound, monthYearExpected); // **** UNCOMMENT FOR REF APP!! ****
+			Assert.assertEquals(monthYearFound, monthYearExpected);
 			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;
