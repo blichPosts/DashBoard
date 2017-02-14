@@ -27,6 +27,7 @@ public class ExpenseHelper extends BaseClass
 	public static String otherText = "Other";
 	public static String tempLocator = "";
 	public static String tempUrl = "";
+	public static String hierarchyPullDownUrl = ".tdb-space--half--top>select";
 	
 	public static List<WebElement> webElementListLegends;	
 	public static List<WebElement> webEleListBarGraphHoverValues;
@@ -65,6 +66,13 @@ public class ExpenseHelper extends BaseClass
 		disabling,
 	}
 	
+	// this is for indicating which tab is selected above the tile map. 
+	public static enum hierarchyTileMapTabSelection
+	{
+		Total,
+		Optimizable,
+		Roaming,
+	}
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// The xpaths below help in locating legend info in the controls.     
@@ -98,6 +106,12 @@ public class ExpenseHelper extends BaseClass
 	
 	// this is for selecting slices in the expense control and expense control spend category.
 	public static String partialXpathForSliceSelections = "/*/*[@class='highcharts-series-group']/*/*";	
+	
+	
+	public static String GetParentPulldownSelection()
+	{
+		return new Select(driver.findElement(By.cssSelector(".tdb-space--half--top>select"))).getFirstSelectedOption().getText();
+	}
 	
 	// setup - read comments below.
 	public static void SetupExpenseControSliceTesting()

@@ -30,7 +30,8 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	public static String chartId = "";
 	public static String tempString = "";
 	
-	public static String title = "Total Expense by Vendor and Spend Category";
+	public static String titleExpense = "Total Expense by Vendor and Spend Category";
+	public static String titleCountry = "Total Expense by Country and Spend Category";
 	static String errMessage = "";
 	
 	public static ViewType vType;
@@ -190,7 +191,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		}
 	}
 	
-	public static void VerifyLegendsTitleAndbarGraphCount() 
+	public static void VerifyLegendsTitleAndbarGraphCount(ViewType vType) 
 	{
 		errMessage = "Failed checks in TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndPieCount.";
 		
@@ -199,7 +200,15 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		Setupdata();
 		
 		// verify title
-		Assert.assertEquals(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[2]")).getText(), title, errMessage);
+		if(vType == ViewType.country)
+		{
+			Assert.assertEquals(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[2]")).getText(), titleCountry, errMessage);			
+		}
+		else
+		{
+			Assert.assertEquals(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[2]")).getText(), titleExpense, errMessage);		
+		}
+
 		
 		// verify correct names for legends.
 		// used array for actual, had problems with web element list. 

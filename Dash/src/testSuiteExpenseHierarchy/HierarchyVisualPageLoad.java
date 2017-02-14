@@ -34,19 +34,16 @@ public class HierarchyVisualPageLoad extends BaseClass
 
 		VisualPageLoad.SelectAndWaitForPageLoad();
 		
-		VisualPageLoad.VerifyInitialStatesAfterPageLoad();
+		// VisualPageLoad.VerifyInitialStatesAfterPageLoad();
 		
-		// VisualPageLoad.ConsoleOutForFileDiffActualValues(); // this is used if need to output the values found in the UI to console.
+		DebugTimeout(3, "start");
 		
-		// verify for desired month in  pulldown is desired month
-		// String selectedOption = new Select(driver.findElement(By.xpath("Type the xpath of the drop-down element"))).getFirstSelectedOption().getText(); 
-		//
-		// verify --- above KPI tiles "Expenses for 0:0 Hewson, Ed:3579086421 and its dependent units". 
-		// verify -- pulldown value - maximum displayed is 10 in 2 places. 
-		// verify in tiles - "Top 10 (out of 100) dependent units of 0:0 Hewson, Ed:3579086421 - Total Expense"
-		// verify css '.tdb-inlineBlock.tdb-boxSelector__option.tdb-boxSelector__option--selected' is enabled  -- this is one of 3 tabs default value.
+		VisualPageLoad.foo();
 		
+		// DebugTimeout(9999, "9999");
 		
+		// this is used if need to output the values found in the UI to console.
+		// VisualPageLoad.ConsoleOutForFileDiffActualValues(); 
 		
 		// DebugTimeout(9999, "9999");
 		
