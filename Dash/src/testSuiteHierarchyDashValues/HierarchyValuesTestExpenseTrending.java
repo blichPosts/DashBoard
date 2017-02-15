@@ -1,11 +1,9 @@
 package testSuiteHierarchyDashValues;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -13,12 +11,11 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyExpenseTrending;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.HierarchyTrendData;
 import helperObjects.ReadFilesHelper;
-import helperObjects.UsageHelper;
-import helperObjects.UsageOneMonth;
-import usage.UsageTrending;
+
 
 
 public class HierarchyValuesTestExpenseTrending extends BaseClass{
@@ -36,18 +33,20 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 	public static void HierarchyExpenseTrendingTestValuesTest() throws Exception
 	{
 
+		// Enable Start collecting data
+		ReadFilesHelper.startCollectingData();
+		
 		// #1 Select the "VIEW BY HIERARCHY" button
 		HierarchyHelper.selectHierarchyView();
-					
 		
-		// #2 Read data from file
-		String path = "D:\\Documents\\CMD Dashboard\\Hierarchy Dashboard\\";   //UsageHelper.path;
-		String fileName = "testJsonFile";
+		// #2 Select hierarchy from dropdown
+		HierarchyHelper.selectHierarchyFromDropdown(1);
 		
-		String file = fileName + ".txt";
-		String completePath = path + file;
-			
-		List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getHierarchyTrendData(completePath); // new ArrayList<>();
+		// #3 Select first month from dropdown
+		GeneralHelper.selectFirstMonth();
+		
+		// #4 Get data from JSON
+		List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(false);   //getHierarchyTrendData(completePath); // new ArrayList<>();
 		
 		
 		// #4 Select month on month/year selector
@@ -61,7 +60,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 		Thread.sleep(2000);
-				
+		 		
 		
 		// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
 		// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
@@ -89,7 +88,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 			System.out.println("chart not found");
 			
 		}
-					
+				
 	}
 
 	

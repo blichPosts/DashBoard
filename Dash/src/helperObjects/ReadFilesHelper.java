@@ -1,5 +1,6 @@
 package helperObjects;
 
+import java.awt.AWTException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,15 +9,165 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.selenium.JavascriptExecutor;
 
-public class ReadFilesHelper {
+import Dash.BaseClass;
 
-	// E.g. path: "D:/Documents/CMD Dashboard/CreateFilesProgram/AT&T Mobility.txt"
+
+public class ReadFilesHelper extends BaseClass {
+
+
+	static JavascriptExecutor js = (JavascriptExecutor)driver;
+	
+	
+	public static void startCollectingData() {
+		
+		js.executeScript("__TANGOE__setShouldCaptureTestData(true)");
+		
+	}
+	
+	// Get the data for the KPI tiles and Trending chart
+	public static List<HierarchyTrendData> getJsonDataTrend(boolean drillDown) throws JSONException, AWTException, InterruptedException{
+		
+		
+		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
+		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
+	  
+//		JavascriptExecutor js = (JavascriptExecutor)driver;
+//		js.executeScript("__TANGOE__setShouldCaptureTestData(true)");
+	  
+	    // Click on tile map to generate the call to get data 
+	    if (drillDown) {
+	    	HierarchyHelper.drillDownOnHierarchy();
+	    }
+	    
+//	    String trendDataTmp = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.trend')");
+	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.trend.payload.rows')");
+	   
+//	    ShowText(trendDataTmp);
+	    ShowText(trendData);
+	   
+	    // Get the rows with data
+//	    String trendData = trendDataTmp.split("\"rows\":")[1];
+	   
+	    // Convert the String with data into a JSONArray
+	    JSONArray array = new JSONArray(trendData); 
+
+	    for (int i = 0; i < array.length(); i++){
+	    	
+	    	JSONObject jsonObj  = array.getJSONObject(i);
+	    	trendDataOneMonth = new HierarchyTrendData();
+	        
+	    	trendDataOneMonth.setId(jsonObj.getString("id"));
+	    	trendDataOneMonth.setName(jsonObj.getString("name"));
+	    	trendDataOneMonth.setOrdinalYear(Long.toString(jsonObj.getLong("ordinal_year")));
+	    	trendDataOneMonth.setOrdinalMonth(Long.toString(jsonObj.getLong("ordinal_month")));
+	    	trendDataOneMonth.setNumberOfInvoices(Long.toString(jsonObj.getLong("no_of_invoices")));
+	    	trendDataOneMonth.setNumberOfLines(Long.toString(jsonObj.getLong("no_of_lines")));
+	    	trendDataOneMonth.setNumberOfAccounts(Long.toString(jsonObj.getLong("no_of_accounts")));
+	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("no_of_invoices_rollup")));
+	    	trendDataOneMonth.setNumberOfLinesRollup(Long.toString(jsonObj.getLong("no_of_lines_rollup")));
+	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("no_of_accounts_rollup")));
+	    	trendDataOneMonth.setCurrencyCode(jsonObj.getString("currency_code"));
+	    	trendDataOneMonth.setTotalExpense(Double.toString(jsonObj.getDouble("total_expense_ex")));
+	    	trendDataOneMonth.setOptimizableExpense(Double.toString(jsonObj.getDouble("optimizable_expense_ex")));
+	    	trendDataOneMonth.setRoamingExpense(Double.toString(jsonObj.getDouble("roaming_expense_ex")));
+	    	trendDataOneMonth.setTotalExpenseRollup(Double.toString(jsonObj.getDouble("total_expense_rollup_ex")));
+	    	trendDataOneMonth.setOptimizableExpenseRollup(Double.toString(jsonObj.getDouble("optimizable_expense_rollup_ex")));
+	    	trendDataOneMonth.setRoamingExpenseRollup(Double.toString(jsonObj.getDouble("roaming_expense_rollup_ex")));
+	    	
+//	    	trendDataOneMonth.set(jsonObj.getString("date"));
+//	    	trendDataOneMonth.set(jsonObj.getString("ordinal_year_month"));
+//	    	trendDataOneMonth.set(jsonObj.getString("total_expense_rollup_ex_3_month_avg"));
+//	    	trendDataOneMonth.set(jsonObj.getString("total_expense_rollup_ex_6_month_avg"));
+//	    	trendDataOneMonth.set(jsonObj.getString("optimizable_expense_rollup_ex_3_month_avg"));
+//	    	trendDataOneMonth.set(jsonObj.getString("optimizable_expense_rollup_ex_6_month_avg"));
+//	    	trendDataOneMonth.set(jsonObj.getString("roaming_expense_rollup_ex_3_month_avg"));
+//	    	trendDataOneMonth.set(jsonObj.getString("roaming_expense_rollup_ex_6_month_avg"));
+//	    	trendDataOneMonth.set(jsonObj.getString("cost_per_line_ex"));
+//	    	trendDataOneMonth.set(jsonObj.getString("cost_per_line_rollup_ex"));
+//	    	trendDataOneMonth.set(jsonObj.getString("cost_per_line_rollup_ex_3_month_avg"));
+//	    	trendDataOneMonth.set(jsonObj.getString("cost_per_line_rollup_ex_6_month_avg"));
+	        
+	        listValues.add(trendDataOneMonth);
+			
+	    }
+	    
+		return listValues;
+	
+	}
+	
+	
+	
+	// Get the data for Top Ten chart
+	public static List<HierarchyTopTenData> getJsonDataTopTen(boolean drillDown) throws JSONException, AWTException, InterruptedException{
+		
+		
+		HierarchyTopTenData topTenDataOneMonth = new HierarchyTopTenData();
+		List<HierarchyTopTenData> listValues = new ArrayList<HierarchyTopTenData>();
+	  
+//		JavascriptExecutor js = (JavascriptExecutor)driver;
+//	    js.executeScript("__TANGOE__setShouldCaptureTestData(true)"); 
+	  
+	    // Click on tile map to generate the call to get data 
+	    if (drillDown) {
+	    	HierarchyHelper.drillDownOnPoV();
+	    }
+	    
+	    String topTenDataTmp = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.topUsers.EXPENSE.TOTAL_EXPENSE')");
+	   
+	    ShowText(topTenDataTmp);
+	   
+	    // Get the rows with data
+	    String topTenData = topTenDataTmp.split("\"rows\":")[1];
+	   
+	    // Convert the String with data into a JSONArray
+	    JSONArray array = new JSONArray(topTenData); 
+
+	    for (int i = 0; i < array.length(); i++){
+	    	
+	    	JSONObject jsonObj  = array.getJSONObject(i);
+	    	topTenDataOneMonth = new HierarchyTopTenData();
+	        
+	    	String type = jsonObj.getString("type");
+	    	
+	    	switch (type) {
+	    	
+	    		case "EMPLOYEE":
+	    			topTenDataOneMonth = new HierarchyTopTenData(jsonObj.getString("service_id"), jsonObj.getString("service_number"), jsonObj.getString("employee_id"),
+	    					jsonObj.getString("company_employee_id"), jsonObj.getString("employee_firstname"), jsonObj.getString("employee_lastname"), 
+	    					jsonObj.getString("type"), jsonObj.getDouble("value"));
+	    			break;
+	    			
+	    		case "DEPARTMENT":
+	    			topTenDataOneMonth = new HierarchyTopTenData(jsonObj.getString("service_id"), jsonObj.getString("service_number"), jsonObj.getString("department_id"),
+	    					jsonObj.getString("department_name"), jsonObj.getString("type"), jsonObj.getDouble("value"));
+	    			break;
+
+	    		case "AVERAGE":
+	    			topTenDataOneMonth = new HierarchyTopTenData(jsonObj.getString("type"), jsonObj.getDouble("value"));
+	    			break;
+	    	
+	    	}
+	    	
+	        listValues.add(topTenDataOneMonth);
+			
+	    }
+	    
+		return listValues;
+	
+	}
+	
+	
 	
 	
 	// Reads the data needed for the "Fleet Manager Dashboard" tests
 	public static List<UsageOneMonth> getDataFromSpreadsheet(String filePath) throws IOException{
 		
+		// E.g. path: "D:/Documents/CMD Dashboard/CreateFilesProgram/AT&T Mobility.txt"
 		List<String> linesOfFile = getRowsfromFile(filePath);
 		
 		int linesAmount = linesOfFile.size() - 2; 
@@ -85,7 +236,6 @@ public class ReadFilesHelper {
 	}
 
 
-	
 	public static List<String> getRowsfromFile(String filePath) throws IOException{
 		
 		Path path = Paths.get(filePath);
@@ -124,8 +274,6 @@ public class ReadFilesHelper {
 	}
 
 
-
-	
 	// Reads the data needed for the "Hierarchy Dashboard" tests
 	public static List<HierarchyTrendData> getHierarchyTrendData(String filePath) throws IOException {
 

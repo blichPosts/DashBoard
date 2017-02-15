@@ -104,5 +104,16 @@ public class GeneralHelper extends BaseClass {
         return p; 
         
 	}
+
+
+
+	public static void selectFirstMonth() {
+
+		CommonTestStepActions.initializeMonthSelector();
+		List<WebElement> months = CommonTestStepActions.webListPulldown;
+		String monthToSelect = months.get(0).getText();
+		CommonTestStepActions.selectMonthYearPulldown(monthToSelect);
+		
+	}
 	
 }

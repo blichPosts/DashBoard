@@ -561,7 +561,7 @@ public class CommonTestStepActions extends BaseClass
 			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
 			if(listMonthNames.get(i).equals(monthYear)){
 				
-				driver.findElement(By.cssSelector("select>option:nth-of-type(" + (i+1) + ")")).click();;
+				driver.findElement(By.cssSelector("select>option:nth-of-type(" + (i+1) + ")")).click();
 				
 			}
 			

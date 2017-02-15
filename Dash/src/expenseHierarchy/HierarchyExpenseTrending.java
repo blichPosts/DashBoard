@@ -38,16 +38,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 		
 		Thread.sleep(2000);
 		
-		
-		List<WebElement> legendsElements = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
-		List<String> legends = new ArrayList<>();
-		
-		for (WebElement e: legendsElements) {
-			legends.add(e.getText());
-//				System.out.println("Legend: " + e.getText());
-		}
-		
-		
+		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
 
 		int amount = highchartSeries.size();
@@ -58,38 +49,41 @@ public class HierarchyExpenseTrending extends BaseClass {
 		List<String> monthYearList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		int indexMonth = monthYearList.size()-1;
 		
-				
+		
+		// Set up list with expected values
+		
 		List<HashMap<String, String>> expectedValues = new ArrayList<>();
-		List<String> expectedLabels = new ArrayList<>(); // it may be removed -- see if legends work as expected label
-		
-		
 				
 		for (int indexMonthValues = 0; indexMonthValues < allValuesFromFile.size(); indexMonthValues++) {
 			
 			HashMap<String, String> map = new HashMap<>();
-			
 			HierarchyTrendData dataOneMonth = allValuesFromFile.get(indexMonthValues);
 				
 			if (categorySelector == HierarchyHelper.categoryTotal){
 
+				double allocationDependentUnits = Double.parseDouble(dataOneMonth.getTotalExpenseRollup()) - Double.parseDouble(dataOneMonth.getTotalExpense());
+				map.put(HierarchyHelper.allocatedChildren, UsageCalculationHelper.roundNoDecimalDigits(allocationDependentUnits, true));
 				map.put(HierarchyHelper.directlyAllocated, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(dataOneMonth.getTotalExpense()), true));
-				map.put(HierarchyHelper.allocatedChildren, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(dataOneMonth.getTotalExpenseRollup()), true));
 				
 			} else if (categorySelector == HierarchyHelper.categoryOptimizable){
 
+				double allocationDependentUnits = Double.parseDouble(dataOneMonth.getOptimizableExpenseRollup()) - Double.parseDouble(dataOneMonth.getOptimizableExpense());
+				map.put(HierarchyHelper.allocatedChildren, UsageCalculationHelper.roundNoDecimalDigits(allocationDependentUnits, true));
 				map.put(HierarchyHelper.directlyAllocated, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(dataOneMonth.getOptimizableExpense()), true));
-				map.put(HierarchyHelper.allocatedChildren, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(dataOneMonth.getOptimizableExpenseRollup()), true));
 				
 			} else if (categorySelector == HierarchyHelper.categoryRoaming){
 
+				double allocationDependentUnits = Double.parseDouble(dataOneMonth.getRoamingExpenseRollup()) - Double.parseDouble(dataOneMonth.getRoamingExpense());
+				map.put(HierarchyHelper.allocatedChildren, UsageCalculationHelper.roundNoDecimalDigits(allocationDependentUnits, true));
 				map.put(HierarchyHelper.directlyAllocated, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(dataOneMonth.getRoamingExpense()), true));
-				map.put(HierarchyHelper.allocatedChildren, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(dataOneMonth.getRoamingExpenseRollup()), true));
 				
 			}				
 
 			expectedValues.add(map);
 			
 		}
+		
+		List<String> expectedLabels = new ArrayList<>();
 		
 		// Expected labels are: 
 		expectedLabels.add(HierarchyHelper.directlyAllocated);
@@ -118,8 +112,6 @@ public class HierarchyExpenseTrending extends BaseClass {
 			
 			Thread.sleep(500);
 			
-			robot.mouseMove(x, y);
-			
 			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 			
@@ -145,7 +137,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 			int expectedAmountItemsTooltip = (amount * 3) + 1;
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 			
-			
+
 			// For each vendor listed in the tooltip verify the label and the amount shown
 			for (int i = 1; i <= legends.size(); i++) {
 			
@@ -166,11 +158,10 @@ public class HierarchyExpenseTrending extends BaseClass {
 						
 				// Verify the labels' text and amounts shown on the tooltip
 				Assert.assertEquals(labelFound, labelExpected);
-//				Assert.assertEquals(valueFound, valueExpected);
-				
+				Assert.assertEquals(valueFound, valueExpected);
+
 				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
 				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
-				
 				
 			}
 			

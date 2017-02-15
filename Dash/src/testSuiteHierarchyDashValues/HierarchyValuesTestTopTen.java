@@ -14,11 +14,12 @@ import expenseHierarchy.HierarchyExpenseTrending;
 import expenseHierarchy.HierarchyTopTenValues;
 import helperObjects.CommonTestStepActions;
 import helperObjects.HierarchyHelper;
+import helperObjects.HierarchyTopTenData;
 import helperObjects.HierarchyTrendData;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 
-public class HierarchyTestValuesTopTen extends BaseClass {
+public class HierarchyValuesTestTopTen extends BaseClass {
 
 	
 	@BeforeClass
@@ -34,13 +35,18 @@ public class HierarchyTestValuesTopTen extends BaseClass {
 	public static void HierarchyTestValuesTopTenTest() throws Exception
 	{
 		
+		// Enable Start collecting data
+		ReadFilesHelper.startCollectingData();
+		
 		// #1 Select the "VIEW BY HIERARCHY" button
 		HierarchyHelper.selectHierarchyView();
 					
 		// #2 Select the "TOP TEN VIEW" 
 		HierarchyHelper.selectTopTenView();
 		
-		// #3 Read data from file ???
+		// #3 Get data 
+		List<HierarchyTopTenData> valuesFromFile = ReadFilesHelper.getJsonDataTopTen(false); 
+		
 		
 		// ...
 		
@@ -61,28 +67,28 @@ public class HierarchyTestValuesTopTen extends BaseClass {
 		// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
 		// will be displayed on the Usage Trending charts 
 		
-		try {
-			
-			HierarchyHelper.selectCategory(HierarchyHelper.categoryTotal);
-			
-			HierarchyTopTenValues.verifyTopTenValues(HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
-			Thread.sleep(2000);
-			
-			HierarchyHelper.selectCategory(HierarchyHelper.categoryOptimizable);
-			
-			HierarchyTopTenValues.verifyTopTenValues(HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
-			Thread.sleep(2000);
-			
-			HierarchyHelper.selectCategory(HierarchyHelper.categoryRoaming);
-			
-			HierarchyTopTenValues.verifyTopTenValues(HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
-			Thread.sleep(2000);
-			
-		} catch(NullPointerException e) {
-			
-			System.out.println("chart not found");
-			
-		}
+//		try {
+//			
+//			HierarchyHelper.selectCategory(HierarchyHelper.categoryTotal);
+//			
+//			HierarchyTopTenValues.verifyTopTenValues(HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+//			Thread.sleep(2000);
+//			
+//			HierarchyHelper.selectCategory(HierarchyHelper.categoryOptimizable);
+//			
+//			HierarchyTopTenValues.verifyTopTenValues(HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+//			Thread.sleep(2000);
+//			
+//			HierarchyHelper.selectCategory(HierarchyHelper.categoryRoaming);
+//			
+//			HierarchyTopTenValues.verifyTopTenValues(HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+//			Thread.sleep(2000);
+//			
+//		} catch(NullPointerException e) {
+//			
+//			System.out.println("chart not found");
+//			
+//		}
 		
 		
 		

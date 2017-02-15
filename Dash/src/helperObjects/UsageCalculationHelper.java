@@ -120,16 +120,16 @@ public class UsageCalculationHelper extends BaseClass{
 		double tmpAmount = 0.0;
 		String amountConvertedTmp = ""; 
 		
-		//System.out.println("Original amount: " + amount);
+//		System.out.println("Original amount: " + amount);
 			
-//		if (amount < 1000.0){
-//			tmpAmount = amount;
-//		}
-//		else if (amount > 1000.0 && amount < 1000000.0) { 
-		if (amount < 950.0){
+		if (amount < 1000.0){
 			tmpAmount = amount;
 		}
-		else if (amount > 950.0 && amount < 1000000.0) {
+		else if (amount > 1000.0 && amount < 1000000.0) { 
+//		if (amount < 950.0){
+//			tmpAmount = amount;
+//		}
+//		else if (amount > 950.0 && amount < 1000000.0) {
 			tmpAmount = amount / 1000;
 			unit = "K";
 		}
@@ -145,7 +145,6 @@ public class UsageCalculationHelper extends BaseClass{
 			tmpAmount = amount / 1000000000000.0;
 			unit = "T";
 		}
-		
 		
 		//System.out.println("Temp amount: " + tmpAmount);
 		
@@ -171,7 +170,7 @@ public class UsageCalculationHelper extends BaseClass{
 						
 		}
 				
-		//System.out.println("Value rounded for KPI: " + amountConverted);
+//		System.out.println("Value rounded for KPI: " + amountConverted);
 		
 		return amountConverted;
 		
