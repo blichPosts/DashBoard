@@ -124,4 +124,19 @@ public class HierarchyTrendData {
 		this.roamingExpenseRollup = roamingExpenseRollup;
 	} 
 	
+// Other data that comes in JSON but is not needed/used for now:	
+// date
+// ordinal_year_month
+// total_expense_rollup_ex_3_month_avg
+// total_expense_rollup_ex_6_month_avg
+// optimizable_expense_rollup_ex_3_month_avg
+// optimizable_expense_rollup_ex_6_month_avg
+// roaming_expense_rollup_ex_3_month_avg
+// roaming_expense_rollup_ex_6_month_avg
+// cost_per_line_ex
+// cost_per_line_rollup_ex
+// cost_per_line_rollup_ex_3_month_avg
+// cost_per_line_rollup_ex_6_month_avg
+	
+	
 }

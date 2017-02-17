@@ -5,19 +5,19 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
-import expenseHierarchy.HierarchyExpenseTrending;
 import expenseHierarchy.HierarchyTopTenValues;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.HierarchyTopTenData;
-import helperObjects.HierarchyTrendData;
 import helperObjects.ReadFilesHelper;
-import helperObjects.UsageHelper;
+
 
 public class HierarchyValuesTestTopTen extends BaseClass {
 
@@ -43,55 +43,97 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					
 		// #2 Select the "TOP TEN VIEW" 
 		HierarchyHelper.selectTopTenView();
+		Thread.sleep(3000);
 		
-		// #3 Get data 
-		List<HierarchyTopTenData> valuesFromFile = ReadFilesHelper.getJsonDataTopTen(false); 
+		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
+		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
 		
-		
-		// ...
-		
-		// #4 Select month on month/year selector
-		// Month to be selected on pulldown needs to be one of the months for which there's data in the source file
-//		String year = valuesFromFile.get(0).getOrdinalYear();
-//		String month = valuesFromFile.get(0).getOrdinalMonth();
-//		String monthYearToSelect = "";
-//		
-//		monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
-//		System.out.println("Month Year: " + monthYearToSelect);
-//		
-//		CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-//		Thread.sleep(2000);
+		for (int i = 1; i <= hierarchies.size(); i++) {
+			
+			GeneralHelper.selectFirstMonth();
+			HierarchyHelper.selectHierarchyFromDropdown(i);
+			boolean monthSelected = true;
+			Thread.sleep(3000);
 		
 		
-		// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
-		// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
-		// will be displayed on the Usage Trending charts 
-		
-//		try {
-//			
-//			HierarchyHelper.selectCategory(HierarchyHelper.categoryTotal);
-//			
-//			HierarchyTopTenValues.verifyTopTenValues(HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
-//			Thread.sleep(2000);
-//			
-//			HierarchyHelper.selectCategory(HierarchyHelper.categoryOptimizable);
-//			
-//			HierarchyTopTenValues.verifyTopTenValues(HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
-//			Thread.sleep(2000);
-//			
-//			HierarchyHelper.selectCategory(HierarchyHelper.categoryRoaming);
-//			
-//			HierarchyTopTenValues.verifyTopTenValues(HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
-//			Thread.sleep(2000);
-//			
-//		} catch(NullPointerException e) {
-//			
-//			System.out.println("chart not found");
-//			
-//		}
-		
-		
-		
+			// #3 Get the last month listed on month selector
+			List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown(); 
+	
+			String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);  // driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
+			String monthYearToSelect = "";
+			
+			int indexMonth = 0;
+			
+			do {
+				
+				if (!monthSelected) {
+					
+					monthYearToSelect = monthsInDropdown.get(indexMonth);
+					System.out.println("Month Year: " + monthYearToSelect);
+					
+					// #4 Select month on month/year selector
+					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
+					
+					// Wait for chart to be loaded
+					WaitForElementVisible(By.cssSelector("chart>div"), ExtremeTimeout);
+					
+				}
+				
+				List<HierarchyTopTenData> topTenValuesExpected; 
+				
+				// #5 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
+				
+				try {
+					
+					// Select category "Total Expense"
+					HierarchyHelper.selectCategory(HierarchyHelper.categoryTotal);
+	
+					// Wait for the data to be updated on chart
+					Thread.sleep(3000);
+				
+					// Get data from JSON
+					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(false, HierarchyHelper.categoryTotal, i); 
+					
+					// Verify values on Top Ten chart for category "Total Expense"
+					HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+	
+					// Select category "Optimizable Expense"
+					HierarchyHelper.selectCategory(HierarchyHelper.categoryOptimizable);
+					
+					// Wait for the data to be updated on chart
+					Thread.sleep(3000);
+					
+					// Get data from JSON
+					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(false, HierarchyHelper.categoryOptimizable, i); 
+					
+					// Verify values on Top Ten chart for category "Optimizable Expense"
+					HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+	
+					// Select category "Roaming Expense"
+					HierarchyHelper.selectCategory(HierarchyHelper.categoryRoaming);
+					
+					// Wait for the data to be updated on chart
+					Thread.sleep(3000);
+	
+					// Get data from JSON
+					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(false, HierarchyHelper.categoryRoaming, i); 
+	
+					// Verify values on Top Ten chart for category "Roaming Expense"				
+					HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+					
+				} catch(NullPointerException e) {
+					
+					System.out.println("chart not found");
+					
+				}
+				
+				indexMonth++;
+				monthSelected = false;
+				
+			} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
+			
+		}
+			
 	}
 	
 	
@@ -101,7 +143,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 		System.out.println("Close Browser.");		
 	    JOptionPane.showMessageDialog(frame, "Test for Hierarchy Top Ten values finished. Select OK to close browser.");
 		driver.close();
-		driver.quit();
+//		driver.quit();
 	}
 
 	

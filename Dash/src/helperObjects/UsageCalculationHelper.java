@@ -91,7 +91,7 @@ public class UsageCalculationHelper extends BaseClass{
 		long roundedValue = Math.round(notRoundedValue);
 		String amountConverted = Long.toString(roundedValue);
 		
-		double fractionalPart = notRoundedValue - roundedValue;
+//		double fractionalPart = notRoundedValue - roundedValue;
 		
 		// If the fractional part of the value is equal to .49, then the value will be rounded to the preceding integer.
 		// If the fractional part of the value starts with .49..., and has more than 2 fractional digits then the value will be rounded to the next integer. 
@@ -122,29 +122,47 @@ public class UsageCalculationHelper extends BaseClass{
 		
 //		System.out.println("Original amount: " + amount);
 			
-		if (amount < 1000.0){
+		if (amount < 950.0){
 			tmpAmount = amount;
 		}
-		else if (amount > 1000.0 && amount < 1000000.0) { 
-//		if (amount < 950.0){
-//			tmpAmount = amount;
-//		}
-//		else if (amount > 950.0 && amount < 1000000.0) {
+		else if (amount > 950.0 && amount < 950000.0) {
 			tmpAmount = amount / 1000;
 			unit = "K";
 		}
-		else if (amount > 1000000.0 && amount < 1000000000.0) {
+		else if (amount > 950000.0 && amount < 950000000.0) {
 			tmpAmount = amount / 1000000;
 			unit = "M";
 		}
-		else if (amount > 1000000000.0 && amount < 1000000000000.0) {
+		else if (amount > 950000000.0 && amount < 950000000000.0) {
 			tmpAmount = amount / 1000000000;
 			unit = "G";
 		}
-		else if (amount > 1000000000000.0) {
-			tmpAmount = amount / 1000000000000.0;
+		else if (amount > 950000000000.0) {
+			tmpAmount = amount / 950000000000.0;
 			unit = "T";
 		}
+		
+		
+//		if (amount < 1000.0){
+//			tmpAmount = amount;
+//		}
+//		else if (amount > 1000.0 && amount < 1000000.0) { 
+//			tmpAmount = amount / 1000;
+//			unit = "K";
+//		}
+//		else if (amount > 1000000.0 && amount < 1000000000.0) {
+//			tmpAmount = amount / 1000000;
+//			unit = "M";
+//		}
+//		else if (amount > 1000000000.0 && amount < 1000000000000.0) {
+//			tmpAmount = amount / 1000000000;
+//			unit = "G";
+//		}
+//		else if (amount > 1000000000000.0) {
+//			tmpAmount = amount / 1000000000000.0;
+//			unit = "T";
+//		}
+		
 		
 		//System.out.println("Temp amount: " + tmpAmount);
 		

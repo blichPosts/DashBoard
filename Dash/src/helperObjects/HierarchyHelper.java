@@ -5,6 +5,7 @@ package helperObjects;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -28,20 +29,20 @@ public class HierarchyHelper extends BaseClass {
 	public final static String allocatedChildren = "Allocation to Dependent Units";
 	
 	
-	
-	public static List<HierarchyTrendData> selectHierarchyViewAndGetData() throws Exception {
-		
-		WaitForElementClickable(By.cssSelector(".tdb-pov>div>a.tdb-button"), MediumTimeout, "VIEW BY HIERARCHY button not clickable");
-		WebElement viewByHierarchyToggle = driver.findElement(By.cssSelector(".tdb-pov>div>a.tdb-button"));
-		viewByHierarchyToggle.click();
-		
-		List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(false);
-		
-		waitForKPIsToLoad();
-		
-		return valuesFromFile;
-		
-	}
+//	not used ***
+//	public static List<HierarchyTrendData> selectHierarchyViewAndGetData() throws Exception {
+//		
+//		WaitForElementClickable(By.cssSelector(".tdb-pov>div>a.tdb-button"), MediumTimeout, "VIEW BY HIERARCHY button not clickable");
+//		WebElement viewByHierarchyToggle = driver.findElement(By.cssSelector(".tdb-pov>div>a.tdb-button"));
+//		viewByHierarchyToggle.click();
+//		
+//		List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(false);
+//		
+//		waitForKPIsToLoad();
+//		
+//		return valuesFromFile;
+//		
+//	}
 
 
 	
@@ -58,10 +59,10 @@ public class HierarchyHelper extends BaseClass {
 	
 	public static void waitForKPIsToLoad() throws Exception{
 		
-		WaitForElementVisible(By.xpath("//h3[text()='Total Expense']"), MediumTimeout);		
-		WaitForElementVisible(By.xpath("//h3[text()='Optimizable Expense']"), MediumTimeout);
-		WaitForElementVisible(By.xpath("//h3[text()='Roaming Expense']"), MediumTimeout);
-		WaitForElementVisible(By.xpath("//h3[text()='Cost per Service Number']"), MediumTimeout);
+		WaitForElementVisible(By.xpath("//h3[text()='Total Expense']"), MainTimeout);		
+		WaitForElementVisible(By.xpath("//h3[text()='Optimizable Expense']"), MainTimeout);
+		WaitForElementVisible(By.xpath("//h3[text()='Roaming Expense']"), MainTimeout);
+		WaitForElementVisible(By.xpath("//h3[text()='Cost per Service Number']"), MainTimeout);
 		
 	}
 
@@ -126,12 +127,45 @@ public class HierarchyHelper extends BaseClass {
 		Thread.sleep(2000);
 	}
 
-
+	
+	// Get the list of hierarchies listed on dropdown
+	public static List<WebElement> getHierarchiesFromDropdown() {
+		
+		return driver.findElements(By.cssSelector("app-hierarchy-selector>div>select>option"));
+		
+	}
+	
+	// Select a hierarchy on dropdown  
 	public static void selectHierarchyFromDropdown(int numHierarchy) {
 		
 		driver.findElement(By.cssSelector("app-hierarchy-selector>div>select>option:nth-child(" + numHierarchy + ")")).click();
 
 	}
+	
+	
+	// It returns a list with the months listed in dropdown month selector in the format MMM yyyy. E.g.: May 2016
+	public static List<String> getMonthsListedInDropdown() {
+		
+		List<WebElement> months = driver.findElements(By.cssSelector(".tdb-pov__monthPicker>div>select>option"));
+		List<String> monthsListedInDropdown = new ArrayList<>();
+		
+		for (WebElement month: months) {
+			
+			monthsListedInDropdown.add(month.getText());
+			
+		}
+		
+		return monthsListedInDropdown;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }

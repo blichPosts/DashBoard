@@ -29,25 +29,37 @@ public class ReadFilesHelper extends BaseClass {
 		
 	}
 	
+	
 	// Get the data for the KPI tiles and Trending chart
-	public static List<HierarchyTrendData> getJsonDataTrend(boolean drillDown) throws JSONException, AWTException, InterruptedException{
-		
+	public static List<HierarchyTrendData> getJsonDataTrend(boolean drillDown, int hierarchyNum) throws JSONException, AWTException, InterruptedException{
 		
 		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
 		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
-	  
-//		JavascriptExecutor js = (JavascriptExecutor)driver;
-//		js.executeScript("__TANGOE__setShouldCaptureTestData(true)");
 	  
 	    // Click on tile map to generate the call to get data 
 	    if (drillDown) {
 	    	HierarchyHelper.drillDownOnHierarchy();
 	    }
 	    
-//	    String trendDataTmp = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.trend')");
-	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.trend.payload.rows')");
+	    String hierarchyLevel = "";
+	    
+	    if (hierarchyNum == 1) {
+	    
+	    	hierarchyLevel = "PRIMARY";
+	    	
+	    } else if (hierarchyNum == 2) {
+	    	
+	    	hierarchyLevel = "SECONDARY";
+	    	
+	    } else if (hierarchyNum == 3) {
+	    	
+	    	hierarchyLevel = "TERTIARY";
+	    	
+	    }
+	    	
+	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyLevel + ".trend.payload.rows')");
 	   
-//	    ShowText(trendDataTmp);
+
 	    ShowText(trendData);
 	   
 	    // Get the rows with data
@@ -79,19 +91,6 @@ public class ReadFilesHelper extends BaseClass {
 	    	trendDataOneMonth.setOptimizableExpenseRollup(Double.toString(jsonObj.getDouble("optimizable_expense_rollup_ex")));
 	    	trendDataOneMonth.setRoamingExpenseRollup(Double.toString(jsonObj.getDouble("roaming_expense_rollup_ex")));
 	    	
-//	    	trendDataOneMonth.set(jsonObj.getString("date"));
-//	    	trendDataOneMonth.set(jsonObj.getString("ordinal_year_month"));
-//	    	trendDataOneMonth.set(jsonObj.getString("total_expense_rollup_ex_3_month_avg"));
-//	    	trendDataOneMonth.set(jsonObj.getString("total_expense_rollup_ex_6_month_avg"));
-//	    	trendDataOneMonth.set(jsonObj.getString("optimizable_expense_rollup_ex_3_month_avg"));
-//	    	trendDataOneMonth.set(jsonObj.getString("optimizable_expense_rollup_ex_6_month_avg"));
-//	    	trendDataOneMonth.set(jsonObj.getString("roaming_expense_rollup_ex_3_month_avg"));
-//	    	trendDataOneMonth.set(jsonObj.getString("roaming_expense_rollup_ex_6_month_avg"));
-//	    	trendDataOneMonth.set(jsonObj.getString("cost_per_line_ex"));
-//	    	trendDataOneMonth.set(jsonObj.getString("cost_per_line_rollup_ex"));
-//	    	trendDataOneMonth.set(jsonObj.getString("cost_per_line_rollup_ex_3_month_avg"));
-//	    	trendDataOneMonth.set(jsonObj.getString("cost_per_line_rollup_ex_6_month_avg"));
-	        
 	        listValues.add(trendDataOneMonth);
 			
 	    }
@@ -103,26 +102,59 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	// Get the data for Top Ten chart
-	public static List<HierarchyTopTenData> getJsonDataTopTen(boolean drillDown) throws JSONException, AWTException, InterruptedException{
+	public static List<HierarchyTopTenData> getJsonDataTopTen(boolean drillDown, int category, int hierarchyNum) throws JSONException, AWTException, InterruptedException{
 		
 		
 		HierarchyTopTenData topTenDataOneMonth = new HierarchyTopTenData();
 		List<HierarchyTopTenData> listValues = new ArrayList<HierarchyTopTenData>();
 	  
-//		JavascriptExecutor js = (JavascriptExecutor)driver;
-//	    js.executeScript("__TANGOE__setShouldCaptureTestData(true)"); 
-	  
+		
+		String hierarchyLevel = "";
+	    
+	    if (hierarchyNum == 1) {
+	    
+	    	hierarchyLevel = "PRIMARY";
+	    	
+	    } else if (hierarchyNum == 2) {
+	    	
+	    	hierarchyLevel = "SECONDARY";
+	    	
+	    } else if (hierarchyNum == 3) {
+	    	
+	    	hierarchyLevel = "TERTIARY";
+	    	
+	    }
+		
+		
+		String categoryForJS = "";
+		
+		if (category == HierarchyHelper.categoryTotal) {
+		
+			categoryForJS = "TOTAL_EXPENSE";
+			
+		} else if (category == HierarchyHelper.categoryOptimizable) {
+			
+			categoryForJS = "OPTIMIZABLE_EXPENSE";
+			
+		} else if (category == HierarchyHelper.categoryRoaming) {
+			
+			categoryForJS = "ROAMING_EXPENSE";
+			
+		}
+		
+
 	    // Click on tile map to generate the call to get data 
 	    if (drillDown) {
 	    	HierarchyHelper.drillDownOnPoV();
 	    }
 	    
-	    String topTenDataTmp = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.topUsers.EXPENSE.TOTAL_EXPENSE')");
+	    // E.g.: hierarchy.PRIMARY.topUsers.EXPENSE.TOTAL_EXPENSE'
+	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyLevel + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
 	   
-	    ShowText(topTenDataTmp);
+	    ShowText(topTenData);
 	   
 	    // Get the rows with data
-	    String topTenData = topTenDataTmp.split("\"rows\":")[1];
+//	    String topTenData = topTenDataTmp.split("\"rows\":")[1];
 	   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(topTenData); 
