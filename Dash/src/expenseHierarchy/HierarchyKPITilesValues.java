@@ -40,28 +40,28 @@ public class HierarchyKPITilesValues extends BaseClass{
 		String totalExpenseKPICalculated = UsageCalculationHelper.convertUnitsExpense(totalExpenseMainValue);
 		String totalExpenseKPIFromDash = kpiTileMainValues.get(0).getText();
 		
-		System.out.println("KPI Tile Total Expense Actual: " + totalExpenseKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalExpenseKPICalculated); 
+//		System.out.println("KPI Tile Total Expense Actual: " + totalExpenseKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalExpenseKPICalculated); 
 		Assert.assertEquals(totalExpenseKPIFromDash, totalExpenseKPICalculated);
 		
 		// Optimizable Expense
 		String optimizableKPICalculated = UsageCalculationHelper.convertUnitsExpense(optimizableExpenseMainValue);
 		String optimizableKPIFromDash = kpiTileMainValues.get(1).getText();
 		
-		System.out.println("KPI Tile Optimizable Actual: " + optimizableKPIFromDash + ",  KPI Tile Optimizable Expected: " + optimizableKPICalculated); 
+//		System.out.println("KPI Tile Optimizable Actual: " + optimizableKPIFromDash + ",  KPI Tile Optimizable Expected: " + optimizableKPICalculated); 
 		Assert.assertEquals(optimizableKPIFromDash, optimizableKPICalculated);
 		
 		// Roaming Expense
 		String roamingKPICalculated = UsageCalculationHelper.convertUnitsExpense(roamingExpenseMainValue);
 		String roamingKPIFromDash = kpiTileMainValues.get(2).getText();
 		
-		System.out.println("KPI Tile Roaming Actual: " + roamingKPIFromDash + ",  KPI Tile Roaming Expected: " + roamingKPICalculated); 
+//		System.out.println("KPI Tile Roaming Actual: " + roamingKPIFromDash + ",  KPI Tile Roaming Expected: " + roamingKPICalculated); 
 		Assert.assertEquals(roamingKPIFromDash, roamingKPICalculated);
 		
 		// Cost per Service Number
 		String costPerServNumKPICalculated = UsageCalculationHelper.convertUnitsExpense(costPerServiceNumberMainValue);
 		String costPerServNumKPIFromDash = kpiTileMainValues.get(3).getText();
 		
-		System.out.println("KPI Tile Cost Per Service Number Actual: " + costPerServNumKPIFromDash + ",  KPI Tile Cost Per Service Number Expected: " + costPerServNumKPICalculated); 
+//		System.out.println("KPI Tile Cost Per Service Number Actual: " + costPerServNumKPIFromDash + ",  KPI Tile Cost Per Service Number Expected: " + costPerServNumKPICalculated); 
 		Assert.assertEquals(costPerServNumKPIFromDash, costPerServNumKPICalculated);
 		
 		
@@ -74,28 +74,28 @@ public class HierarchyKPITilesValues extends BaseClass{
 		String totalExpenseDirectlyAllocatedKPICalculated = UsageCalculationHelper.convertUnitsExpense(totalExpenseDirectlyAllocatedValue) + directlyAllocated;
 		String totalExpenseDirectlyAllocatedKPIFromDash = kpiTileDirectlyAllocatedValues.get(0).getText();
 		
-		System.out.println("KPI Tile Total Expenses Directly Allocated Actual: " + totalExpenseDirectlyAllocatedKPIFromDash + ",  KPI Tile Total Expenses Directly Allocated Expected: " + totalExpenseDirectlyAllocatedKPICalculated); 
+//		System.out.println("KPI Tile Total Expenses Directly Allocated Actual: " + totalExpenseDirectlyAllocatedKPIFromDash + ",  KPI Tile Total Expenses Directly Allocated Expected: " + totalExpenseDirectlyAllocatedKPICalculated); 
 		Assert.assertEquals(totalExpenseDirectlyAllocatedKPIFromDash, totalExpenseDirectlyAllocatedKPICalculated);
 
 		// Optimizable Expense directly allocated
 		String optimizableDirectlyAllocatedKPICalculated = UsageCalculationHelper.convertUnitsExpense(optimizableExpenseDirectlyAllocatedValue) + directlyAllocated;
 		String optimizableDirectlyAllocatedKPIFromDash = kpiTileDirectlyAllocatedValues.get(1).getText();
 		
-		System.out.println("KPI Tile Optimizable Expenses Directly Allocated Actual: " + optimizableDirectlyAllocatedKPIFromDash + ",  KPI Tile Optimizable Expenses Directly Allocated Expected: " + optimizableDirectlyAllocatedKPICalculated); 
+//		System.out.println("KPI Tile Optimizable Expenses Directly Allocated Actual: " + optimizableDirectlyAllocatedKPIFromDash + ",  KPI Tile Optimizable Expenses Directly Allocated Expected: " + optimizableDirectlyAllocatedKPICalculated); 
 		Assert.assertEquals(optimizableDirectlyAllocatedKPIFromDash, optimizableDirectlyAllocatedKPICalculated);
 		
 		// Roaming Expense directly allocated
 		String roamingDirectlyAllocatedKPICalculated = UsageCalculationHelper.convertUnitsExpense(roamingExpenseDirectlyAllocatedValue) + directlyAllocated;
 		String roamingDirectlyAllocatedKPIFromDash = kpiTileDirectlyAllocatedValues.get(2).getText();
 		
-		System.out.println("KPI Tile Roaming Expenses Directly Allocated Actual: " + roamingDirectlyAllocatedKPIFromDash + ",  KPI Tile Roaming Expenses Directly Allocated Expected: " + roamingDirectlyAllocatedKPICalculated); 
+//		System.out.println("KPI Tile Roaming Expenses Directly Allocated Actual: " + roamingDirectlyAllocatedKPIFromDash + ",  KPI Tile Roaming Expenses Directly Allocated Expected: " + roamingDirectlyAllocatedKPICalculated); 
 		Assert.assertEquals(roamingDirectlyAllocatedKPIFromDash, roamingDirectlyAllocatedKPICalculated);
 		
 		// Amount of Service Numbers
 		String amountOfServNumKPICalculated = UsageCalculationHelper.convertUnits(numberOfLinesValue) + serviceNumbers;
 		String amountOfServNumKPIFromDash = kpiTileDirectlyAllocatedValues.get(3).getText();
 		
-		System.out.println("KPI Tile Amount of Service Numbers Actual: " + amountOfServNumKPIFromDash + ",  KPI Tile Amount of Service Numbers Expected: " + amountOfServNumKPICalculated); 
+//		System.out.println("KPI Tile Amount of Service Numbers Actual: " + amountOfServNumKPIFromDash + ",  KPI Tile Amount of Service Numbers Expected: " + amountOfServNumKPICalculated); 
 		Assert.assertEquals(amountOfServNumKPICalculated, amountOfServNumKPIFromDash);
 		
 		
@@ -197,7 +197,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 						
 				}
 				
-				System.out.println("3 Month Avg Actual: " + threeMonthAvgActual + ", 3 Month Avg Expected: " + threeMonthAvgExpected);
+//				System.out.println("3 Month Avg Actual: " + threeMonthAvgActual + ", 3 Month Avg Expected: " + threeMonthAvgExpected);
 				
 				// Verifies that the '3 month rolling average' displayed equals to the '3 month rolling average' calculated
 				Assert.assertEquals(threeMonthAvgActual, threeMonthAvgExpected);
@@ -210,13 +210,8 @@ public class HierarchyKPITilesValues extends BaseClass{
 					// System.out.println("rollingAverage: "  + rollingAverage);
 					
 					int trendValueExpected = calculateTrendingPercentage(kpiValue, rollingAverage);
-					//int trendTemp = calculateTrendingPercentage(kpiValue, rollingAverage);
-					//int trendCalculated = Math.abs(trendTemp);
 					
-					// System.out.println("Trend calculated: " + trendCalculated);
-					
-					
-					if (trendValueExpected > 0) {    //if (getTrendingValueWithNoSymbol(trendingElementKpi.get(1).getText()) > 0){
+					if (trendValueExpected > 0) {
 						
 						String trend = trendingElementKpi.get(1).getText();
 						int trendValueActual = getTrendingValueWithNoSymbol(trend); 
@@ -225,7 +220,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 						Assert.assertEquals(trendValueActual, trendValueExpected);   
 						Assert.assertTrue(trend.endsWith("%"));
 																		
-						System.out.println("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
+//						System.out.println("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
  
 					}
 					
@@ -320,7 +315,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 						
 				}
 				
-				System.out.println("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
+//				System.out.println("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
 				
 				// Verifies that the '6 months rolling average' displayed equals to the '6 months rolling average' calculated
 				Assert.assertEquals(sixMonthAvgActual, sixMonthAvgExpected);

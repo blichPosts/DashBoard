@@ -44,7 +44,7 @@ public class BaseClass
 	
 	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx 
 	public static String Developer_Url = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense"; // bladdxx 
-	public static String ReferenceApp_Url = "http://dc1devmule1.prod.tangoe.com:4000/manage/home"; // bladdxx
+	public static String ReferenceApp_Url = "http://dc1qaanalyticsapp01.corp.tangoe.com:4000/manage/home"; // bladdxx
 	
 	public static boolean testCaseStatus = false;
 	

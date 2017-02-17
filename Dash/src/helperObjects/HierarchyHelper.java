@@ -85,29 +85,22 @@ public class HierarchyHelper extends BaseClass {
 		
 	}
 
-
+	
+//	public static void drillDownOnPoV() throws AWTException, InterruptedException {
+//		
+//		List<WebElement> dependentUnitsPoV = driver.findElements(By.cssSelector(" .tdb-pov__itemList>li.tdb-pov__item"));
+//		
+//		dependentUnitsPoV.get(0).click();
+//		
+//		Thread.sleep(2000);
+//		
+//		
+//	}
 	
 	
 	
-	
-	//        .tdb-pov__itemList>li.tdb-pov__item:nth-child(1)
-	
-	
-	public static void drillDownOnPoV() throws AWTException, InterruptedException {
-		
-		List<WebElement> dependentUnitsPoV = driver.findElements(By.cssSelector(" .tdb-pov__itemList>li.tdb-pov__item"));
-		
-		dependentUnitsPoV.get(0).click();
-		
-		Thread.sleep(2000);
-		
-		
-	}
-	
-	
-	
-	public static void drillDownOnHierarchy() throws AWTException, InterruptedException {
-		
+	public static void drillDownOnTreeMap() throws AWTException, InterruptedException {
+				
 		String chartId = UsageHelper.getChartId(treeMapChart);
 		WebElement tile = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-series-group>g>g>rect:nth-child(1)"));
 		Point p = GeneralHelper.getAbsoluteLocation(tile);
@@ -127,6 +120,23 @@ public class HierarchyHelper extends BaseClass {
 		Thread.sleep(2000);
 	}
 
+	
+	
+	// Get the list of Dependent Units listed on PoV
+	public static List<WebElement> getDependentUnitsPoV() {
+			
+		return driver.findElements(By.cssSelector("li.tdb-pov__item"));
+			
+	}
+	
+	
+	// Click on Dependent Unit on PoV
+	public static void drillDownOnDependentUnitPoV(int numDepUnit) {
+			
+		driver.findElement(By.cssSelector("li.tdb-pov__item:nth-child(" + numDepUnit + ")")).click();
+
+	}
+	
 	
 	// Get the list of hierarchies listed on dropdown
 	public static List<WebElement> getHierarchiesFromDropdown() {
@@ -158,12 +168,19 @@ public class HierarchyHelper extends BaseClass {
 		return monthsListedInDropdown;
 		
 	}
-	
-	
-	
-	
-	
-	
+
+
+	public static List<WebElement> getBreadcrumbs() {
+		
+		return driver.findElements(By.cssSelector(".breadcrumbs>span>a"));
+	}
+
+
+	public static void clickOnBreadcrumb(int breadcrumbNum) {
+
+		driver.findElement(By.cssSelector(".breadcrumbs>span>a:nth-of-type(" + breadcrumbNum + ")"));
+		
+	}
 	
 	
 	

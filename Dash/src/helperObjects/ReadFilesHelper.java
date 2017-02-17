@@ -37,9 +37,9 @@ public class ReadFilesHelper extends BaseClass {
 		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
 	  
 	    // Click on tile map to generate the call to get data 
-	    if (drillDown) {
-	    	HierarchyHelper.drillDownOnHierarchy();
-	    }
+//	    if (drillDown) {
+//	    	HierarchyHelper.drillDownOnHierarchy();
+//	    }
 	    
 	    String hierarchyLevel = "";
 	    
@@ -143,10 +143,10 @@ public class ReadFilesHelper extends BaseClass {
 		}
 		
 
-	    // Click on tile map to generate the call to get data 
-	    if (drillDown) {
-	    	HierarchyHelper.drillDownOnPoV();
-	    }
+//	    // Click on tile map to generate the call to get data 
+//	    if (drillDown) {
+//	    	HierarchyHelper.drillDownOnPoV();
+//	    }
 	    
 	    // E.g.: hierarchy.PRIMARY.topUsers.EXPENSE.TOTAL_EXPENSE'
 	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyLevel + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
