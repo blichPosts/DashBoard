@@ -1,5 +1,6 @@
 package expenseHierarchy;
 
+import java.awt.Robot;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.List;
@@ -9,6 +10,8 @@ import javax.swing.JOptionPane;
 import javax.tools.DocumentationTool.Location;
 
 import org.bouncycastle.asn1.icao.CscaMasterList;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -19,6 +22,7 @@ import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.hierarchyTileMapTabSelection;
+import helperObjects.UsageHelper;
 
 public class VisualPageLoad extends BaseClass 
 {
@@ -44,12 +48,16 @@ public class VisualPageLoad extends BaseClass
 	public static String  totalExpenseEnd = " - Total Expense";
 	public static String  optimizableExpenseEnd = " - Optimizable Expense";
 	public static String  roamingExpenseEnd = " - Roaming Expense";
+
+	public static JavascriptExecutor js = (JavascriptExecutor) driver; // bladdxx
+	
 	
 	// for Expense Trend title.
 	public static String  expenseTrendingPartOne = "Expense Trend for ";
 	
 	public static void SelectAndWaitForPageLoad() throws Exception
 	{
+		js.executeScript("__TANGOE__setShouldCaptureTestData(true)"); // bladdxx
 		WaitForElementClickable(By.xpath("//a[text()='View by Hierarchy']"), MediumTimeout, "");
 		driver.findElement(By.xpath("//a[text()='View by Hierarchy']")).click();
 		WaitForElementVisible(By.xpath("//h2[text()='" + ExpenseHelper.desiredMonth + "']"), MediumTimeout); // this is month in top left corner tiles.
@@ -134,9 +142,14 @@ public class VisualPageLoad extends BaseClass
 		// .tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(1)>div:nth-of-type(2)
 		// .tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(1)>div
 		
-		List<WebElement> tabsList = driver.findElements(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(1)>div"));
+		// BELOW NEEDS  FIXED -- get correction for this -- By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(1)>div") in foo().  
+		
+		// List<WebElement> tabsList = driver.findElements(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(1)>div"));
 
-		Assert.assertTrue(tabsList.size() == 3); // fox later
+		List<WebElement> tabsList = driver.findElements(By.cssSelector(".tdb-card>div:nth-of-type(1)>div"));		
+		
+		
+		Assert.assertTrue(tabsList.size() == 3); // for later.
 		
 		for(int x = 0; x < tabsList.size(); x++)
 		{
@@ -154,9 +167,13 @@ public class VisualPageLoad extends BaseClass
 
 			tempString = ele.getText();
 			
+			// ShowText(tempString);
+			//ShowText(tempString.replace("\n", ""));
+			
 			//ShowText(tempString.replace("\n", "").replace("Total:", " ").replace("$", ""));
 			//pw.write(tempString.replace("\n", "").replace("Total:", " ").replace("$", "") + "\n");
 			
+
 			if(localSelection.name() == hierarchyTileMapTabSelection.Total.name())
 			{
 				ShowText(tempString.replace("\n", "").replace("Total:", " ").replace("$", ""));
@@ -164,7 +181,7 @@ public class VisualPageLoad extends BaseClass
 			}
 			else if(localSelection.name() == hierarchyTileMapTabSelection.Optimizable.name())
 			{
-				ShowText(tempString);
+				//ShowText(tempString);
 				ShowText(tempString.replace("\n", "").replace("Optimizable:", " ").replace("$", ""));
 				pw.write(tempString.replace("\n", "").replace("Optimizable:", " ").replace("$", "") + "\n");
 			}
@@ -194,88 +211,152 @@ public class VisualPageLoad extends BaseClass
 	
 	public static void foo() throws Exception
 	{
-
-			JavascriptExecutor js = (JavascriptExecutor)driver;
+			
+			boolean runLoop = true;
+		
+			WaitForElementClickable(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(1)>div:nth-of-type(1)"), ShortTimeout, "");
+			//driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(1)>div:nth-of-type(1)")).click(); // total  // old
+			//driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(1)>div:nth-of-type(2)")).click(); // optimizable  // old		
+			// driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(1)>div:nth-of-type(3)")).click(); // roaming  // old
+			//driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(1)")).click(); // total			
+			//driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(2)")).click(); // optimizable
+			driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(3)")).click(); // roaming
+			
+			new Select(driver.findElement(By.xpath("(//span[text()='Maximum Displayed:'])[2]/following::select"))).selectByVisibleText("100");
+			
+			
+			// select Hierarchy
+			new Select(driver.findElement(By.cssSelector(" .tdb-space--top>select"))).selectByVisibleText("Approval");
+			
+			// DebugTimeout(9999, "9999");
+		
+			// JavascriptExecutor js = (JavascriptExecutor)driver;
 			js.executeScript("__TANGOE__setShouldCaptureTestData(true)"); 
 		
-			
-			JOptionPane.showMessageDialog(frame, "Select  100 and then tile map.");
-			
-
-			String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child')");
-			ShowText(fleetJsonData);
-			
-			JOptionPane.showMessageDialog(frame, "Copy Json response ----------------------");
-			
-			
-			ConsoleOutForFileDiffActualValues();
-			
-			
-			JOptionPane.showMessageDialog(frame, "Copy list of data _______________________________");
-			
-			
-			ShowText("Done");
-		
-		/*
-		if (driver instanceof JavascriptExecutor) 
-		{
-			ShowText("in text");
-			//((JavascriptExecutor) driver)
-			//	.executeScript("alert('hello world');");
-			
-			// String myStr = (String)((JavascriptExecutor) driver).executeScript("prompt('hello world');");
-			// String myStr = (String)((JavascriptExecutor) driver).executeScript("prompt('hello world');");
-			
-			//JavascriptExecutor js = (JavascriptExecutor)driver;
-			//String sText =  js.executeScript("return document.title;").toString(); 
-			
-			//JavascriptExecutor js = (JavascriptExecutor)driver;
-			//String sText =  js.executeScript("prompt('Hello')").toString(); 
-			
- 
-
-			//String sText =  js.executeScript("window.prompt('Hello')").toString(); // nope 
-
-			//JavascriptExecutor js = (JavascriptExecutor)driver;
-			//Object sText =  js.executeScript("window.prompt('Hello')");
-			
-			
-			//if(sText != null)
-			//{ShowText("good");}
-			//else{ShowText("is null");}
+			while(runLoop)
+			{
+				JOptionPane.showMessageDialog(frame, "THIS IS THE BEGINNING>");
 				
-			// ////////////////////
-			// BELOW GOOD -- from Ed - uses window object.
-			// ////////////////////
-			JavascriptExecutor js = (JavascriptExecutor)driver;
-			String sText =  js.executeScript("window.hello = function(){return 'Hello';}; return hello();").toString();
-			
-			ShowText(sText);
-			
-			if(sText != null)
-			{
-				ShowText("good");
-			}
-			else
-			{
-				ShowText("is null");
-			}
-		}
-
-		// DebugTimeout(9999, "9999");
-		
-		//JavascriptExecutor js = (JavascriptExecutor)driver;
-		//js.executeScript("alert('hello world');");
-		
-		// ((JavascriptExecutor) driver).executeScript("alert('hello world');");
 	
-		
-		
-		//js.executeScript(alert("HELLO"));
-		//if (driver instanceof JavascriptExecutor) {
-		//	((JavascriptExecutor) driver).executeScript("alert('hello world');");
-		//}
+				// String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child')");
+				// String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.SECONDARY.child')");
+				String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.TERTIARY.child')");
+				// ED said to try this sometime ....
+				//Object testObject =  js.executeScript("return __TANGOE__getCapturedTestData('hierarchy.PRIMARY.child')");
+				//if(testObject != null){	ShowText("good");}
+				//else{ShowText("null");}
+				
+				ShowText(fleetJsonData);
+				
+				JOptionPane.showMessageDialog(frame, "THIS IS START --  get json response and run utility with it.");
+
+				JOptionPane.showMessageDialog(frame, "COMPLETE for selenium part.");
+				
+				ConsoleOutForFileDiffActualValues();
+				
+				int result = JOptionPane.showConfirmDialog(null,  "Are you sure you wish to exit?",null, JOptionPane.YES_NO_OPTION);
+				
+				if(result == JOptionPane.YES_OPTION) 
+				{
+					runLoop = false;
+				} 		
+			}			
+			
+			ShowText("Exiting Loop.");
 	}
-	*/
+
+	public static void Hover() throws Exception
+	{
+		
+		List<WebElement> eleList;
+		
+		String tempString = UsageHelper.getChartId(0);
+		
+		// maybe for x/y coordinates.
+		//ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(5)>g>g>rect:nth-of-type(1)")).getAttribute("x"));
+		//ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(5)>g>g>rect:nth-of-type(1)")).getAttribute("y"));
+		
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// this tries to use this x/y  -- NOPE --  off the charts. 
+		// <rect class="highcharts-point highcharts-color-1 " x="6.5" y="-0.5" width="168" height="216" fill="rgb(7,30,74)" stroke="#e6e6e6" stroke-width="1"/>
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//DebugTimeout(8, "five");
+		//double x =   Double.valueOf(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(5)>g>g>rect:nth-of-type(1)")).getAttribute("x"));
+		//double y =   Double.valueOf(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(5)>g>g>rect:nth-of-type(1)")).getAttribute("y"));
+
+		//Robot robot = new Robot(); 
+		//robot.mouseMove((int)x, (int)y);
+		
+		// robot.
+		
+		
+		// highlights numbers.
+		// #highcharts-ahgmc1i-37>svg>g:nth-of-type(6)>g:nth-of-type(1)
+
+		// ///////////////////////////////
+		//  click below with number one. 
+		// ///////////////////////////////
+
+		/*
+		ShowText((driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(1)>a")).getText())); // ---------- get before click()
+
+		driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(6)>g:nth-of-type(1)")).click(); // ------------- CLICK 
+		
+		Thread.sleep(2000);
+		
+		ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText()); // ---------- SHOW
+		// ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(2)")).getText());
+
+		ShowText((driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(2)>a")).getText())); // ---------- get before click()
+
+		driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(6)>g:nth-of-type(2)")).click(); // ------------- CLICK
+
+		Thread.sleep(2000);
+		
+		ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText()); // ---------- SHOW
+		// ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(2)")).getText());
+
+		
+		DebugTimeout(9999, "9999");
+		*/
+
+		String dependentUnits = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child.payload.rows')");
+		
+		ShowText(dependentUnits);
+		
+		// Get the rows with data
+		// String dependentUnits = tempDependentUnits.split("\"rows\":")[1];
+
+		JSONArray array = new JSONArray(dependentUnits); 
+		JSONObject jsonObj = array.getJSONObject(0);
+		ShowText(jsonObj.getString("id"));
+		
+		
+		//for (int i = 0; i < array.length(); i++)
+		//{
+              //JSONObject jsonObj  = array.getJSONObject(i);
+              //System.out.println(jsonObj.getLong("total_expense_rollup_ex"));
+		//}
+		
+		
+		
+		
+		for(int x = 1; x < 9; x++)
+		{ 
+			ShowText((driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText())); // ---------- show before click()
+			
+			Thread.sleep(2000);
+			
+			driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(6)>g:nth-of-type(" + x + ")")).click(); // ------------- CLICK
+			
+			Thread.sleep(2000);
+			
+			ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText()); // ---------- SHOW AFTER
+			
+			driver.findElement(By.cssSelector(".breadcrumbs>span>a")).click(); // ------------- kill bread crumb
+			
+			Thread.sleep(2000);
+			
+		}
 	}
 }

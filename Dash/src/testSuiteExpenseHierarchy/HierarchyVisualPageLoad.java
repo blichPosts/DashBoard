@@ -24,7 +24,7 @@ public class HierarchyVisualPageLoad extends BaseClass
 	}
 	
 	@Test
-	public static void CostPerServiceNumberTrendVendorTest() throws Exception
+	public static void HierarchyTest() throws Exception
 	{
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
@@ -36,9 +36,11 @@ public class HierarchyVisualPageLoad extends BaseClass
 		
 		// VisualPageLoad.VerifyInitialStatesAfterPageLoad();
 		
-		DebugTimeout(3, "start");
+		// DebugTimeout(3, "start");
 		
-		VisualPageLoad.foo();
+		//VisualPageLoad.foo();
+		
+		VisualPageLoad.Hover();
 		
 		// DebugTimeout(9999, "9999");
 		
