@@ -11,12 +11,15 @@ import javax.tools.DocumentationTool.Location;
 
 import org.bouncycastle.asn1.icao.CscaMasterList;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
+
+import com.google.gson.JsonArray;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
@@ -34,6 +37,10 @@ public class VisualPageLoad extends BaseClass
 	public static String tempString;
 	public static String parentUnitPullDownText = "";
 	public static String fullTitleAboveKpiTiles = "";
+	public static String tempOne = "";
+	public static String tempTwo = "";
+	public static String dependentUnitValue = "";
+	public static String hoverValue = "";
 	
 	// for title above KPI tiles
 	public static String  firstPartTitleAboveKpiTiles = "Expenses for ";
@@ -48,7 +55,7 @@ public class VisualPageLoad extends BaseClass
 	public static String  totalExpenseEnd = " - Total Expense";
 	public static String  optimizableExpenseEnd = " - Optimizable Expense";
 	public static String  roamingExpenseEnd = " - Roaming Expense";
-
+	
 	public static JavascriptExecutor js = (JavascriptExecutor) driver; // bladdxx
 	
 	
@@ -231,7 +238,7 @@ public class VisualPageLoad extends BaseClass
 			// DebugTimeout(9999, "9999");
 		
 			// JavascriptExecutor js = (JavascriptExecutor)driver;
-			js.executeScript("__TANGOE__setShouldCaptureTestData(true)"); 
+			// js.executeScript("__TANGOE__setShouldCaptureTestData(true)"); 
 		
 			while(runLoop)
 			{
@@ -248,6 +255,8 @@ public class VisualPageLoad extends BaseClass
 				
 				ShowText(fleetJsonData);
 				
+				
+				
 				JOptionPane.showMessageDialog(frame, "THIS IS START --  get json response and run utility with it.");
 
 				JOptionPane.showMessageDialog(frame, "COMPLETE for selenium part.");
@@ -262,7 +271,7 @@ public class VisualPageLoad extends BaseClass
 				} 		
 			}			
 			
-			ShowText("Exiting Loop.");
+			ShowText("Exiting Loop BYE.");
 	}
 
 	public static void Hover() throws Exception
@@ -270,93 +279,96 @@ public class VisualPageLoad extends BaseClass
 		
 		List<WebElement> eleList;
 		
+		String dependentUnits = "";
+		
 		String tempString = UsageHelper.getChartId(0);
 		
-		// maybe for x/y coordinates.
-		//ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(5)>g>g>rect:nth-of-type(1)")).getAttribute("x"));
-		//ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(5)>g>g>rect:nth-of-type(1)")).getAttribute("y"));
-		
-		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// this tries to use this x/y  -- NOPE --  off the charts. 
-		// <rect class="highcharts-point highcharts-color-1 " x="6.5" y="-0.5" width="168" height="216" fill="rgb(7,30,74)" stroke="#e6e6e6" stroke-width="1"/>
-		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//DebugTimeout(8, "five");
-		//double x =   Double.valueOf(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(5)>g>g>rect:nth-of-type(1)")).getAttribute("x"));
-		//double y =   Double.valueOf(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(5)>g>g>rect:nth-of-type(1)")).getAttribute("y"));
+		ShowText("HOVER START");
 
-		//Robot robot = new Robot(); 
-		//robot.mouseMove((int)x, (int)y);
+		// ED said to try this sometime ....
+		//Object testObject =  js.executeScript("return __TANGOE__getCapturedTestData('hierarchy.PRIMARY.child')");
+		//if(testObject != null){	ShowText("good");} else{ShowText("null");}
 		
-		// robot.
-		
-		
-		// highlights numbers.
-		// #highcharts-ahgmc1i-37>svg>g:nth-of-type(6)>g:nth-of-type(1)
-
-		// ///////////////////////////////
-		//  click below with number one. 
-		// ///////////////////////////////
-
-		/*
-		ShowText((driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(1)>a")).getText())); // ---------- get before click()
-
-		driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(6)>g:nth-of-type(1)")).click(); // ------------- CLICK 
-		
-		Thread.sleep(2000);
-		
-		ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText()); // ---------- SHOW
-		// ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(2)")).getText());
-
-		ShowText((driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(2)>a")).getText())); // ---------- get before click()
-
-		driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(6)>g:nth-of-type(2)")).click(); // ------------- CLICK
-
-		Thread.sleep(2000);
-		
-		ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText()); // ---------- SHOW
-		// ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(2)")).getText());
-
-		
-		DebugTimeout(9999, "9999");
-		*/
-
-		String dependentUnits = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child.payload.rows')");
-		
-		ShowText(dependentUnits);
-		
-		// Get the rows with data
-		// String dependentUnits = tempDependentUnits.split("\"rows\":")[1];
-
-		JSONArray array = new JSONArray(dependentUnits); 
-		JSONObject jsonObj = array.getJSONObject(0);
-		ShowText(jsonObj.getString("id"));
+		Thread.sleep(1000);
 		
 		
-		//for (int i = 0; i < array.length(); i++)
-		//{
-              //JSONObject jsonObj  = array.getJSONObject(i);
-              //System.out.println(jsonObj.getLong("total_expense_rollup_ex"));
-		//}
+		new Select(driver.findElement(By.xpath("(//span[text()='Maximum Displayed:'])[2]/following::select"))).selectByVisibleText("50");
 		
 		
-		
-		
-		for(int x = 1; x < 9; x++)
+		for(int x = 1; x <= 5; x++)
 		{ 
-			ShowText((driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText())); // ---------- show before click()
+			// get the json of the current tile map being shown
+			dependentUnits =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child.payload.rows')");
+
+			Thread.sleep(1000);
+
+			// verify json fetch is OK and load array of expected tiles.
+			Assert.assertTrue(dependentUnits != null); 
+
+			// do this here to also make sure json fetch worked
+			JSONArray array = new JSONArray(dependentUnits);			
+
+			// ShowText(dependentUnits.substring(0,50)); // DEBUG show some of the json return.
+
+			tempOne = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText();
+			tempTwo = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace("Total:","");
+			
+			dependentUnitValue = tempOne + " " + tempTwo;
+			
+			Thread.sleep(1000);
+			
+			// click tile x.
+			driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(6)>g:nth-of-type(" + x + ")")).click();
 			
 			Thread.sleep(2000);
 			
-			driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(6)>g:nth-of-type(" + x + ")")).click(); // ------------- CLICK
+			tempOne = driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText().split("\\.")[1].trim();
+			// tempOne = driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText();
+			tempTwo = driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(2)")).getText();
 			
-			Thread.sleep(2000);
+			hoverValue = (tempOne + " " + tempTwo); 
 			
-			ShowText(driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText()); // ---------- SHOW AFTER
+			Assert.assertEquals(dependentUnitValue, hoverValue); // verify hover value and it's corresponding dependent unit value are equal.  
 			
-			driver.findElement(By.cssSelector(".breadcrumbs>span>a")).click(); // ------------- kill bread crumb
+			ShowText(hoverValue);
+			Double dbl = Double.valueOf(hoverValue.split("\\$")[1]);
 			
-			Thread.sleep(2000);
+			System.out.println(dbl);
+			
+			// now find the dependent unit user in the json array that was stored. 
+			GetExpectedTotal(array, tempOne);
+			
+			
+			// click the bread crumb.
+			driver.findElement(By.cssSelector(".breadcrumbs>span>a")).click();
+			
+			Thread.sleep(1000);
+		}
+
+		JOptionPane.showMessageDialog(frame, "THIS IS STOP");
+		
+	}
+	
+	public static double GetExpectedTotal(JSONArray jArray, String name) throws Exception
+	{
+		JSONObject obj;
+		
+		for(int x = 0; x < jArray.length(); x++)
+		{
+			obj  = jArray.getJSONObject(x);
+			
+			// ShowText(jArray.getJSONObject(x).getString("name"));
+			if(obj.getString("name").equals(name))
+			{
+				//System.out.println(obj.getDouble("total_expense_rollup_ex"));
+				return obj.getDouble("total_expense_rollup_ex");
+			}
 			
 		}
+		
+		Assert.fail("FAIL XXXXX");
+		return 0;
 	}
+	
+	
 }

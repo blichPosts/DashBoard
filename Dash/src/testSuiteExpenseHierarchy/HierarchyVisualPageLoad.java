@@ -34,9 +34,9 @@ public class HierarchyVisualPageLoad extends BaseClass
 
 		VisualPageLoad.SelectAndWaitForPageLoad();
 		
-		// VisualPageLoad.VerifyInitialStatesAfterPageLoad();
+		//VisualPageLoad.VerifyInitialStatesAfterPageLoad();
 		
-		// DebugTimeout(3, "start");
+		DebugTimeout(2, "start");
 		
 		//VisualPageLoad.foo();
 		
