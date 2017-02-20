@@ -11,6 +11,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 
 import Dash.BaseClass;
 
@@ -85,43 +86,8 @@ public class HierarchyHelper extends BaseClass {
 		
 	}
 
-	
-//	public static void drillDownOnPoV() throws AWTException, InterruptedException {
-//		
-//		List<WebElement> dependentUnitsPoV = driver.findElements(By.cssSelector(" .tdb-pov__itemList>li.tdb-pov__item"));
-//		
-//		dependentUnitsPoV.get(0).click();
-//		
-//		Thread.sleep(2000);
-//		
-//		
-//	}
-	
-	
-	
-	public static void drillDownOnTreeMap() throws AWTException, InterruptedException {
-				
-		String chartId = UsageHelper.getChartId(treeMapChart);
-		WebElement tile = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-series-group>g>g>rect:nth-child(1)"));
-		Point p = GeneralHelper.getAbsoluteLocation(tile);
 		
-		int x_offset = tile.getSize().getHeight() / 2;
-		int y_offset = tile.getSize().getWidth() / 2;
 		
-		int x = p.getX() + x_offset;
-		int y = p.getY() + y_offset;
-		
-		Robot robot = new Robot();
-		robot.mouseMove(x, y);
-				
-		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-		
-		Thread.sleep(2000);
-	}
-
-	
-	
 	// Get the list of Dependent Units listed on PoV
 	public static List<WebElement> getDependentUnitsPoV() {
 			
@@ -131,8 +97,10 @@ public class HierarchyHelper extends BaseClass {
 	
 	
 	// Click on Dependent Unit on PoV
-	public static void drillDownOnDependentUnitPoV(int numDepUnit) {
+	public static void drillDownOnDependentUnitPoV(int numDepUnit) throws Exception {
 			
+//		WaitForElementPresent(By.cssSelector(".tdb-pov__itemList"), MainTimeout);
+		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(" + numDepUnit + ")"), MainTimeout);
 		driver.findElement(By.cssSelector("li.tdb-pov__item:nth-child(" + numDepUnit + ")")).click();
 
 	}
@@ -146,9 +114,10 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 	// Select a hierarchy on dropdown  
-	public static void selectHierarchyFromDropdown(int numHierarchy) {
+	public static void selectHierarchyFromDropdown(int numHierarchy) throws Exception {
 		
 		driver.findElement(By.cssSelector("app-hierarchy-selector>div>select>option:nth-child(" + numHierarchy + ")")).click();
+		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
 
 	}
 	
@@ -169,20 +138,104 @@ public class HierarchyHelper extends BaseClass {
 		
 	}
 
-
+	
+	// Returns a list of breadcrumbs
 	public static List<WebElement> getBreadcrumbs() {
 		
 		return driver.findElements(By.cssSelector(".breadcrumbs>span>a"));
 	}
 
 
-	public static void clickOnBreadcrumb(int breadcrumbNum) {
+	// Clicks on the selected breadcrumb to go up on hierarchy
+	public static void clickOnBreadcrumb(int breadcrumbNum) throws Exception {
 
-		driver.findElement(By.cssSelector(".breadcrumbs>span>a:nth-of-type(" + breadcrumbNum + ")"));
+		driver.findElement(By.cssSelector(".breadcrumbs>span>a:nth-of-type(" + breadcrumbNum + ")")).click();
+		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
 		
 	}
 	
 	
+	// Verifies that the difference between the expected value and the value found is less than one.
+	// Due to rounding there may be some case where the value found and the value expected differ on 1, e.g.: Value found = 28, Value expected = 27 
+	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
+		
+		valueActual = getNumericValue(valueActual);
+		valueExpected = getNumericValue(valueExpected);
+		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
+		Assert.assertTrue(Math.abs(Double.parseDouble(valueActual) - Double.parseDouble(valueExpected)) <= 1 );
+		
+	}
+	
+	
+	private static String getNumericValue(String value) {
+		
+		String numericValue = value;
+		
+		if (numericValue.startsWith("$"))
+			numericValue = numericValue.replace("$", "");
+		
+		if (numericValue.endsWith(" directly allocated")) 
+			numericValue = numericValue.replace(" directly allocated", "");  
+		
+		if (numericValue.endsWith(" service numbers"))
+			numericValue = numericValue.replace(" service numbers", "");
+		
+		if (numericValue.endsWith("K"))
+			numericValue = numericValue.replace("K", "");
+			
+		if (numericValue.endsWith("M"))
+			numericValue = numericValue.replace("M", "");
+		
+		if (numericValue.endsWith("G"))
+			numericValue = numericValue.replace("G", "");
+		
+		if (numericValue.endsWith("T"))
+			numericValue = numericValue.replace("T", "");
+					
+		return numericValue.trim();
+		
+	}
+
+
+	public static void verifyExpectedAndActualValues(double valueActual, double valueExpected) {
+		
+		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
+		
+	}
+	
+	
+	public static void verifyExpectedAndActualValues(long valueActual, long valueExpected) {
+		
+		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
+		
+	}
+
+	
+	
+	
+	public static void drillDownOnTreeMap() throws AWTException, InterruptedException {
+		
+		String chartId = UsageHelper.getChartId(treeMapChart);
+		WebElement tile = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-series-group>g>g>rect:nth-child(1)"));
+		Point p = GeneralHelper.getAbsoluteLocation(tile);
+		
+		int x_offset = tile.getSize().getHeight() / 2;
+		int y_offset = tile.getSize().getWidth() / 2;
+		
+		int x = p.getX() + x_offset;
+		int y = p.getY() + y_offset;
+		
+		Robot robot = new Robot();
+		robot.mouseMove(x, y);
+				
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		
+		Thread.sleep(2000);
+	}
+
+	
+
 	
 	
 }

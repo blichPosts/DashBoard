@@ -107,12 +107,15 @@ public class GeneralHelper extends BaseClass {
 
 
 
-	public static void selectFirstMonth() {
+	public static void selectFirstMonth() throws Exception {
 
 		CommonTestStepActions.initializeMonthSelector();
 		List<WebElement> months = CommonTestStepActions.webListPulldown;
+		
 		String monthToSelect = months.get(0).getText();
 		CommonTestStepActions.selectMonthYearPulldown(monthToSelect);
+		
+		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
 		
 	}
 	

@@ -92,7 +92,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					Thread.sleep(3000);
 				
 					// Get data from JSON
-					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(false, HierarchyHelper.categoryTotal, i); 
+					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(HierarchyHelper.categoryTotal, i); 
 					
 					// Verify values on Top Ten chart for category "Total Expense"
 					HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
@@ -104,7 +104,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					Thread.sleep(3000);
 					
 					// Get data from JSON
-					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(false, HierarchyHelper.categoryOptimizable, i); 
+					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(HierarchyHelper.categoryOptimizable, i); 
 					
 					// Verify values on Top Ten chart for category "Optimizable Expense"
 					HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
@@ -116,7 +116,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					Thread.sleep(3000);
 	
 					// Get data from JSON
-					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(false, HierarchyHelper.categoryRoaming, i); 
+					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(HierarchyHelper.categoryRoaming, i); 
 	
 					// Verify values on Top Ten chart for category "Roaming Expense"				
 					HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);

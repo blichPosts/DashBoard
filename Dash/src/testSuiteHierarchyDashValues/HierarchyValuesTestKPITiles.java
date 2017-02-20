@@ -53,7 +53,7 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 			Thread.sleep(3000);
 			
 			// #3 Get data from JSON
-			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(false, i);	
+			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
 					
 					
 			// #4 Get the last month listed on month selector 

@@ -49,7 +49,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 			Thread.sleep(3000);
 			
 			// #3 Get data from JSON
-			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(false, i);	
+			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
 					
 			
 			// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file

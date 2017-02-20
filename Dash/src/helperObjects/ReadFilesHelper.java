@@ -31,7 +31,7 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	// Get the data for the KPI tiles and Trending chart
-	public static List<HierarchyTrendData> getJsonDataTrend(boolean drillDown, int hierarchyNum) throws JSONException, AWTException, InterruptedException{
+	public static List<HierarchyTrendData> getJsonDataTrend(int hierarchyNum) throws JSONException, AWTException, InterruptedException{
 		
 		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
 		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
@@ -102,7 +102,7 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	// Get the data for Top Ten chart
-	public static List<HierarchyTopTenData> getJsonDataTopTen(boolean drillDown, int category, int hierarchyNum) throws JSONException, AWTException, InterruptedException{
+	public static List<HierarchyTopTenData> getJsonDataTopTen(int category, int hierarchyNum) throws JSONException, AWTException, InterruptedException{
 		
 		
 		HierarchyTopTenData topTenDataOneMonth = new HierarchyTopTenData();
