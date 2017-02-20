@@ -73,7 +73,7 @@ public class BaseClass
 	
 	// names for the three KPI blocks in Usage page, under Domestic
 	public static String [] UsageKpiNames = {"Voice (min)", "Data", "Messages", "Data"};
-	
+
 	
 	public static JFrame frame;	
 	

@@ -28,6 +28,9 @@ public class ExpenseHelper extends BaseClass
 	public static String tempLocator = "";
 	public static String tempUrl = "";
 	public static String hierarchyPullDownUrl = ".tdb-space--half--top>select";
+	public static String hierarchyFilterString = ""; // this holds the text for a certain type of value (Total, Optimizable, Roaming).
+	public static hierarchyTileMapTabSelection currentHierarchyCostFilter; // this holds !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
 	
 	public static List<WebElement> webElementListLegends;	
 	public static List<WebElement> webEleListBarGraphHoverValues;
@@ -48,6 +51,8 @@ public class ExpenseHelper extends BaseClass
 	public static List<WebElement> expenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control. 	
 	public static HashMap<String, String> expenseControlHMap; // this holds a hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
 
+
+	
 	
 	// this is for  distinguishing a control type in the expenses page. 
 	public static enum controlType
@@ -949,6 +954,54 @@ public class ExpenseHelper extends BaseClass
 		
 		Assert.assertEquals(actualList, copy, errMessage + "vendor.");
 	}
+	
+	// this sets the pulldown in the hierarchy dash board tile map section. 
+	public static void SetHierarchyMaxDisplayed(int numTilesToDisplay)
+	{
+		new Select(driver.findElement(By.cssSelector(".tdb-align--right.tdb-text--smaller>select"))).selectByValue(String.valueOf(numTilesToDisplay));
+	}
+
+	// this sets the hierarchy tile map tab for what cost filter is sent in. 
+	// it also sets a text variable that is used in string filtering. 
+	public static void SetHierarchyCostFilter(hierarchyTileMapTabSelection tabSelect)
+	{
+
+		currentHierarchyCostFilter = tabSelect;
+		
+		switch(tabSelect)
+		{
+			case Total:
+			{
+				WaitForElementClickable(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(1)"), ShortTimeout, "");
+				driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(1)")).click(); // total
+				hierarchyFilterString = "Total:";
+				break;
+			}
+			case Optimizable:
+			{
+				WaitForElementClickable(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(2)"), ShortTimeout, "");
+				driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(2)")).click(); // optimizable
+				hierarchyFilterString = "Optimizable:";
+				break;
+			}
+			case Roaming:
+			{
+				WaitForElementClickable(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(3)"), ShortTimeout, "");
+				driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(3)")).click(); // roaming
+				hierarchyFilterString = "Roaming:";
+				break;
+			}
+		}
+	}
+	
+	
+	/*
+				//driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(1)")).click(); // total			
+			//driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(2)")).click(); // optimizable
+			driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(3)")).click(); // roaming
+			*/
+	
+	
 	
 	
 	

@@ -3,12 +3,10 @@ package testSuiteExpenseHierarchy;
 import Dash.BaseClass;
 import expenseHierarchy.VisualPageLoad;
 
-import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import expenses.CostPerServiceNumberTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
@@ -24,7 +22,7 @@ public class HierarchyVisualPageLoad extends BaseClass
 	}
 	
 	@Test
-	public static void HierarchyTest() throws Exception
+	public static void HierarchyVisualPageLoadTest() throws Exception
 	{
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
