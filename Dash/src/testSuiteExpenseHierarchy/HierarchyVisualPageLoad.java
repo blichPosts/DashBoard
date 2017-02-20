@@ -36,9 +36,7 @@ public class HierarchyVisualPageLoad extends BaseClass
 		
 		//VisualPageLoad.VerifyInitialStatesAfterPageLoad();
 		
-		DebugTimeout(2, "start");
-		
-		//VisualPageLoad.foo();
+		//VisualPageLoad.ManualDependencyUnits();
 		
 		VisualPageLoad.Hover();
 		

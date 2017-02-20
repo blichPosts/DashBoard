@@ -39,8 +39,8 @@ public class VisualPageLoad extends BaseClass
 	public static String fullTitleAboveKpiTiles = "";
 	public static String tempOne = "";
 	public static String tempTwo = "";
-	public static String dependentUnitValue = "";
-	public static String hoverValue = "";
+	public static String dependentUnitInfo = "";
+	public static String hoverInfo = "";
 	
 	// for title above KPI tiles
 	public static String  firstPartTitleAboveKpiTiles = "Expenses for ";
@@ -55,9 +55,13 @@ public class VisualPageLoad extends BaseClass
 	public static String  totalExpenseEnd = " - Total Expense";
 	public static String  optimizableExpenseEnd = " - Optimizable Expense";
 	public static String  roamingExpenseEnd = " - Roaming Expense";
+
+	public static double expectedValueDouble = 0;
+	public static double actualValueDouble = 0;
+	
+	public static int createErrorCounter = 0; // this can be used in 'GetExpectedValue'method to create an intentional error. 
 	
 	public static JavascriptExecutor js = (JavascriptExecutor) driver; // bladdxx
-	
 	
 	// for Expense Trend title.
 	public static String  expenseTrendingPartOne = "Expense Trend for ";
@@ -216,7 +220,7 @@ public class VisualPageLoad extends BaseClass
 		pw.close();
 	}
 	
-	public static void foo() throws Exception
+	public static void ManualDependencyUnits() throws Exception
 	{
 			
 			boolean runLoop = true;
@@ -255,8 +259,6 @@ public class VisualPageLoad extends BaseClass
 				
 				ShowText(fleetJsonData);
 				
-				
-				
 				JOptionPane.showMessageDialog(frame, "THIS IS START --  get json response and run utility with it.");
 
 				JOptionPane.showMessageDialog(frame, "COMPLETE for selenium part.");
@@ -276,33 +278,25 @@ public class VisualPageLoad extends BaseClass
 
 	public static void Hover() throws Exception
 	{
-		
-		List<WebElement> eleList;
-		
 		String dependentUnits = "";
 		
 		String tempString = UsageHelper.getChartId(0);
 		
-		ShowText("HOVER START");
+		DebugTimeout(2, "HOVER TEST START");
 
 		// ED said to try this sometime ....
 		//Object testObject =  js.executeScript("return __TANGOE__getCapturedTestData('hierarchy.PRIMARY.child')");
 		//if(testObject != null){	ShowText("good");} else{ShowText("null");}
 		
-		Thread.sleep(1000);
+		new Select(driver.findElement(By.xpath("(//span[text()='Maximum Displayed:'])[2]/following::select"))).selectByVisibleText("100");
 		
-		
-		new Select(driver.findElement(By.xpath("(//span[text()='Maximum Displayed:'])[2]/following::select"))).selectByVisibleText("50");
-		
-		
-		for(int x = 1; x <= 5; x++)
+		for(int x = 1; x <= 90; x++) // this loop can't go further than 90.
 		{ 
 			// get the json of the current tile map being shown
 			dependentUnits =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child.payload.rows')");
-
 			Thread.sleep(1000);
 
-			// verify json fetch is OK and load array of expected tiles.
+			// verify json fetch is OK.
 			Assert.assertTrue(dependentUnits != null); 
 
 			// do this here to also make sure json fetch worked
@@ -310,33 +304,36 @@ public class VisualPageLoad extends BaseClass
 
 			// ShowText(dependentUnits.substring(0,50)); // DEBUG show some of the json return.
 
-			tempOne = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText();
-			tempTwo = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace("Total:","");
+			// these get the name info and the cost from the dependent in the UI. both of these are put in dependentUnitInfo string.
+			tempOne = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText(); // name and id(s).
+			tempTwo = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace("Total:",""); // numeric value and cost type.
 			
-			dependentUnitValue = tempOne + " " + tempTwo;
+			dependentUnitInfo = tempOne + " " + tempTwo; 
 			
-			Thread.sleep(1000);
+			// Thread.sleep(1000);
 			
 			// click tile x.
 			driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(6)>g:nth-of-type(" + x + ")")).click();
 			
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 			
+			// these get the name info and the cost that was in the hover, after the click above. both of these are put in hoverInfo string.
 			tempOne = driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText().split("\\.")[1].trim();
-			// tempOne = driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText();
 			tempTwo = driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(2)")).getText();
 			
-			hoverValue = (tempOne + " " + tempTwo); 
+			hoverInfo = (tempOne + " " + tempTwo); 
 			
-			Assert.assertEquals(dependentUnitValue, hoverValue); // verify hover value and it's corresponding dependent unit value are equal.  
+			Assert.assertEquals(dependentUnitInfo, hoverInfo); // verify hover value and it's corresponding dependent unit value are equal.  
 			
-			ShowText(hoverValue);
-			Double dbl = Double.valueOf(hoverValue.split("\\$")[1]);
+			// get the double value found in the dependent info 
+			expectedValueDouble = Double.valueOf(dependentUnitInfo.split("\\$")[1]);
 			
-			System.out.println(dbl);
+			// now get the dependent unit user cost value in the json array that was stored before the click to get hover info. 
+			// send in tempOne, the user name info, and this call will return the expected value as double.
+			actualValueDouble = GetExpectedValue(array, tempOne);
 			
-			// now find the dependent unit user in the json array that was stored. 
-			GetExpectedTotal(array, tempOne);
+			Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
+			ShowText("Pass " + String.valueOf(x));
 			
 			
 			// click the bread crumb.
@@ -344,12 +341,12 @@ public class VisualPageLoad extends BaseClass
 			
 			Thread.sleep(1000);
 		}
-
+		
 		JOptionPane.showMessageDialog(frame, "THIS IS STOP");
 		
 	}
 	
-	public static double GetExpectedTotal(JSONArray jArray, String name) throws Exception
+	public static double GetExpectedValue(JSONArray jArray, String name) throws Exception
 	{
 		JSONObject obj;
 		
@@ -360,15 +357,15 @@ public class VisualPageLoad extends BaseClass
 			// ShowText(jArray.getJSONObject(x).getString("name"));
 			if(obj.getString("name").equals(name))
 			{
-				//System.out.println(obj.getDouble("total_expense_rollup_ex"));
-				return obj.getDouble("total_expense_rollup_ex");
+				return obj.getDouble("total_expense_rollup_ex");					
 			}
-			
 		}
-		
+
 		Assert.fail("FAIL XXXXX");
 		return 0;
 	}
+	
+	
 	
 	
 }
