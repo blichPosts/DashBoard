@@ -158,10 +158,10 @@ public class HierarchyExpenseTrending extends BaseClass {
 						
 				// Verify the labels' text and amounts shown on the tooltip
 				Assert.assertEquals(labelFound, labelExpected);
-				Assert.assertEquals(valueFound, valueExpected);
+				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 
-				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+//				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+//				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 				
 			}
 			
@@ -170,7 +170,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 			String monthYearExpected = monthYearList.get(indexMonth);
 				
 			Assert.assertEquals(monthYearFound, monthYearExpected);
-			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+//			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;
 			indexMonth--;

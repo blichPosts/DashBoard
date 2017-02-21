@@ -20,7 +20,7 @@ import helperObjects.HierarchyTrendData;
 import helperObjects.ReadFilesHelper;
 
 
-public class HierarchyValuesTestKPITilesDrillDown extends BaseClass{
+public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 
 	
 	@BeforeClass
@@ -33,7 +33,7 @@ public class HierarchyValuesTestKPITilesDrillDown extends BaseClass{
 	
 	
 	@Test
-	public static void HierarchyKPITilesDrillDownTest() throws Exception
+	public static void HierarchyValuesTestDrillDownKPITilesTest() throws Exception
 	{
 		
 		// Enable Start collecting data
@@ -50,6 +50,9 @@ public class HierarchyValuesTestKPITilesDrillDown extends BaseClass{
 		
 			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
 			
+			HierarchyHelper.selectHierarchyFromDropdown(i);
+			Thread.sleep(2000);
+			
 			List<WebElement> dependentUnits = HierarchyHelper.getDependentUnitsPoV();
 			List<WebElement> breadcrumbs = HierarchyHelper.getBreadcrumbs();
 			
@@ -58,23 +61,25 @@ public class HierarchyValuesTestKPITilesDrillDown extends BaseClass{
 			if (dependentUnits.isEmpty() && !breadcrumbs.isEmpty()) {
 				
 				HierarchyHelper.clickOnBreadcrumb(1);
-				Thread.sleep(3000);
+				Thread.sleep(2000);
 				
 			}
 			
 			
-			for (int j = 1; j <= 3; j++) {
+			int j = 1;
+			int levelsToDrillDown = 3;  // Drill down up to 3 levels
 			
+			while (j <= levelsToDrillDown && !HierarchyHelper.getDependentUnitsPoV().isEmpty()) {
+			
+				System.out.println("j: " + j + ", dependent units empty: " + HierarchyHelper.getDependentUnitsPoV().isEmpty());
 				System.out.println(" **** Drilling down Level #" + j);
 				
 				GeneralHelper.selectFirstMonth();
-				
-				HierarchyHelper.selectHierarchyFromDropdown(i);
 				boolean monthSelected = true;
-				Thread.sleep(3000);
+				Thread.sleep(2000);
 				
 				HierarchyHelper.drillDownOnDependentUnitPoV(j);
-				Thread.sleep(3000);
+				Thread.sleep(2000);
 				
 				// #3 Get data from JSON
 				List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
@@ -184,6 +189,8 @@ public class HierarchyValuesTestKPITilesDrillDown extends BaseClass{
 					
 				} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
 				
+				j++;
+				
 			}
 		
 		}
@@ -197,7 +204,7 @@ public class HierarchyValuesTestKPITilesDrillDown extends BaseClass{
 		System.out.println("Close Browser.");		
 	    JOptionPane.showMessageDialog(frame, "Test for Hierarchy KPI Tiles Drill Down values finished. Select OK to close browser.");
 		driver.close();
-//		driver.quit();
+		driver.quit();
 	}
 
 	

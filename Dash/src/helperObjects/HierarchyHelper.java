@@ -1,7 +1,5 @@
 package helperObjects;
 
-
-
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
@@ -11,7 +9,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
-import org.testng.Assert;
 
 import Dash.BaseClass;
 
@@ -29,24 +26,7 @@ public class HierarchyHelper extends BaseClass {
 	public final static String directlyAllocated = "Direct Allocation";
 	public final static String allocatedChildren = "Allocation to Dependent Units";
 	
-	
-//	not used ***
-//	public static List<HierarchyTrendData> selectHierarchyViewAndGetData() throws Exception {
-//		
-//		WaitForElementClickable(By.cssSelector(".tdb-pov>div>a.tdb-button"), MediumTimeout, "VIEW BY HIERARCHY button not clickable");
-//		WebElement viewByHierarchyToggle = driver.findElement(By.cssSelector(".tdb-pov>div>a.tdb-button"));
-//		viewByHierarchyToggle.click();
-//		
-//		List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(false);
-//		
-//		waitForKPIsToLoad();
-//		
-//		return valuesFromFile;
-//		
-//	}
-
-
-	
+		
 	// Select the "VIEW BY HIERARCHY" button
 	public static void selectHierarchyView() throws Exception {
 
@@ -75,6 +55,7 @@ public class HierarchyHelper extends BaseClass {
 		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(2)"));
 		viewTopTenToggle.click();
 		WaitForElementVisible(By.xpath("//h3[text()='Top 10 Service Numbers by Expense Amount - ']"), MediumTimeout);	
+		waitForTopTenChartToLoad();
 		
 	}
 	
@@ -85,8 +66,16 @@ public class HierarchyHelper extends BaseClass {
 		categoryToSelect.click();
 		
 	}
-
 		
+	
+	public static void waitForTopTenChartToLoad() throws Exception {
+		
+		String cssSelector = "#" + UsageHelper.getChartId(HierarchyHelper.topTenChart) + ">svg>g>g>rect.highcharts-point:nth-child(1)";
+		WaitForElementPresent(By.cssSelector(cssSelector), MediumTimeout);
+		
+	}
+	
+	
 		
 	// Get the list of Dependent Units listed on PoV
 	public static List<WebElement> getDependentUnitsPoV() {
@@ -99,7 +88,6 @@ public class HierarchyHelper extends BaseClass {
 	// Click on Dependent Unit on PoV
 	public static void drillDownOnDependentUnitPoV(int numDepUnit) throws Exception {
 			
-//		WaitForElementPresent(By.cssSelector(".tdb-pov__itemList"), MainTimeout);
 		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(" + numDepUnit + ")"), MainTimeout);
 		driver.findElement(By.cssSelector("li.tdb-pov__item:nth-child(" + numDepUnit + ")")).click();
 
@@ -155,64 +143,6 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 	
-	// Verifies that the difference between the expected value and the value found is less than one.
-	// Due to rounding there may be some case where the value found and the value expected differ on 1, e.g.: Value found = 28, Value expected = 27 
-	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
-		
-		valueActual = getNumericValue(valueActual);
-		valueExpected = getNumericValue(valueExpected);
-		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
-		Assert.assertTrue(Math.abs(Double.parseDouble(valueActual) - Double.parseDouble(valueExpected)) <= 1 );
-		
-	}
-	
-	
-	private static String getNumericValue(String value) {
-		
-		String numericValue = value;
-		
-		if (numericValue.startsWith("$"))
-			numericValue = numericValue.replace("$", "");
-		
-		if (numericValue.endsWith(" directly allocated")) 
-			numericValue = numericValue.replace(" directly allocated", "");  
-		
-		if (numericValue.endsWith(" service numbers"))
-			numericValue = numericValue.replace(" service numbers", "");
-		
-		if (numericValue.endsWith("K"))
-			numericValue = numericValue.replace("K", "");
-			
-		if (numericValue.endsWith("M"))
-			numericValue = numericValue.replace("M", "");
-		
-		if (numericValue.endsWith("G"))
-			numericValue = numericValue.replace("G", "");
-		
-		if (numericValue.endsWith("T"))
-			numericValue = numericValue.replace("T", "");
-					
-		return numericValue.trim();
-		
-	}
-
-
-	public static void verifyExpectedAndActualValues(double valueActual, double valueExpected) {
-		
-		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
-		
-	}
-	
-	
-	public static void verifyExpectedAndActualValues(long valueActual, long valueExpected) {
-		
-		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
-		
-	}
-
-	
-	
-	
 	public static void drillDownOnTreeMap() throws AWTException, InterruptedException {
 		
 		String chartId = UsageHelper.getChartId(treeMapChart);
@@ -235,7 +165,5 @@ public class HierarchyHelper extends BaseClass {
 	}
 
 	
-
-	
-	
 }
+

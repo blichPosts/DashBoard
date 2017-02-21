@@ -32,7 +32,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 	
 	
 	@Test
-	public static void HierarchyTestValuesTopTenTest() throws Exception
+	public static void HierarchyValuesTestTopTenTest() throws Exception
 	{
 		
 		// Enable Start collecting data
@@ -43,7 +43,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					
 		// #2 Select the "TOP TEN VIEW" 
 		HierarchyHelper.selectTopTenView();
-		Thread.sleep(3000);
+		Thread.sleep(2000);
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
@@ -53,7 +53,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 			GeneralHelper.selectFirstMonth();
 			HierarchyHelper.selectHierarchyFromDropdown(i);
 			boolean monthSelected = true;
-			Thread.sleep(3000);
+			Thread.sleep(2000);
 		
 		
 			// #3 Get the last month listed on month selector
@@ -89,7 +89,8 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					HierarchyHelper.selectCategory(HierarchyHelper.categoryTotal);
 	
 					// Wait for the data to be updated on chart
-					Thread.sleep(3000);
+					HierarchyHelper.waitForTopTenChartToLoad();
+					Thread.sleep(2000);
 				
 					// Get data from JSON
 					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(HierarchyHelper.categoryTotal, i); 
@@ -101,7 +102,8 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					HierarchyHelper.selectCategory(HierarchyHelper.categoryOptimizable);
 					
 					// Wait for the data to be updated on chart
-					Thread.sleep(3000);
+					HierarchyHelper.waitForTopTenChartToLoad();
+					Thread.sleep(2000);
 					
 					// Get data from JSON
 					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(HierarchyHelper.categoryOptimizable, i); 
@@ -113,7 +115,8 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					HierarchyHelper.selectCategory(HierarchyHelper.categoryRoaming);
 					
 					// Wait for the data to be updated on chart
-					Thread.sleep(3000);
+					HierarchyHelper.waitForTopTenChartToLoad();
+					Thread.sleep(2000);
 	
 					// Get data from JSON
 					topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(HierarchyHelper.categoryRoaming, i); 
@@ -143,7 +146,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 		System.out.println("Close Browser.");		
 	    JOptionPane.showMessageDialog(frame, "Test for Hierarchy Top Ten values finished. Select OK to close browser.");
 		driver.close();
-//		driver.quit();
+		driver.quit();
 	}
 
 	

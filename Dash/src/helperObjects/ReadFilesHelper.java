@@ -35,11 +35,6 @@ public class ReadFilesHelper extends BaseClass {
 		
 		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
 		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
-	  
-	    // Click on tile map to generate the call to get data 
-//	    if (drillDown) {
-//	    	HierarchyHelper.drillDownOnHierarchy();
-//	    }
 	    
 	    String hierarchyLevel = "";
 	    
@@ -60,7 +55,7 @@ public class ReadFilesHelper extends BaseClass {
 	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyLevel + ".trend.payload.rows')");
 	   
 
-	    ShowText(trendData);
+//	    ShowText(trendData);
 	   
 	    // Get the rows with data
 //	    String trendData = trendDataTmp.split("\"rows\":")[1];
@@ -142,16 +137,11 @@ public class ReadFilesHelper extends BaseClass {
 			
 		}
 		
-
-//	    // Click on tile map to generate the call to get data 
-//	    if (drillDown) {
-//	    	HierarchyHelper.drillDownOnPoV();
-//	    }
 	    
 	    // E.g.: hierarchy.PRIMARY.topUsers.EXPENSE.TOTAL_EXPENSE'
 	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyLevel + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
 	   
-	    ShowText(topTenData);
+//	    ShowText(topTenData);
 	   
 	    // Get the rows with data
 //	    String topTenData = topTenDataTmp.split("\"rows\":")[1];
@@ -275,11 +265,6 @@ public class ReadFilesHelper extends BaseClass {
 		List<String> lines = new ArrayList<String>();
 		
 		rows.forEach(s ->lines.add((String)s));
-		
-		for(String line: lines){	
-			//System.out.println("line: " + line);
-		}
-		
 		rows.close();
 		
 		return lines;
@@ -288,7 +273,6 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	public static String[] splitLine(String lineToBeSplited){
-		
 		
 		String itemsOfLine[];
 				 		
@@ -306,7 +290,9 @@ public class ReadFilesHelper extends BaseClass {
 	}
 
 
-	// Reads the data needed for the "Hierarchy Dashboard" tests
+	//  *** THE 3 METHODS LISTED BELOW ARE NOT USED ***
+	
+	//Reads the data needed for the "Hierarchy Dashboard" tests
 	public static List<HierarchyTrendData> getHierarchyTrendData(String filePath) throws IOException {
 
 		List<String> linesOfFile = getRowsfromFile(filePath);
@@ -432,7 +418,6 @@ public class ReadFilesHelper extends BaseClass {
 		}
 		
 		
-		
 		for (HierarchyTrendData h: listValues) {
 			
 			System.out.println("id: " + h.getId()); 
@@ -455,59 +440,6 @@ public class ReadFilesHelper extends BaseClass {
 			
 		}
 		
-		
-		
-		int linesAmount = linesOfFile.size() - 2; 
-		
-		// This list will contain one UsageOneMonth object per month 
-
-		
-//		for (int i = 0; i < linesAmount; i++){
-//			
-//			//System.out.println("line # " + i);
-//			
-//			String lineToBeSplited = linesOfFile.get(i+2);
-//			String[] splitedline = splitLine(lineToBeSplited);
-//		
-//			HierarchyTrendData trendData = new HierarchyTrendData();
-//		
-//			trendData.setId("...");
-//			trendData.setName("...");
-//			trendData.setOrdinalYear("...");
-//			trendData.setOrdinalMonth("...");
-//			
-//			trendData.setNumberOfInvoices("...");
-//			trendData.setNumberOfLines("...");
-//			trendData.setNumberOfAccounts("...");
-//			trendData.setNumberOfInvoicesRollup("...");
-//			trendData.setNumberOfLinesRollup("...");
-//			trendData.setNumberOfAccountsRollup("...");
-//			trendData.setCurrencyCode("...");
-//			trendData.setTotalExpense("...");
-//			trendData.setOptimizableExpense("...");
-//			trendData.setRoamingExpense("...");
-//			trendData.setTotalExpenseRollup("...");
-//			trendData.setOptimizableExpenseRollup("...");
-//			trendData.setRoamingExpenseRollup("...");
-//			
-//			listValues.add(trendData);
-			
-//			System.out.print("Row " + (i+1) + ":  | ");
-//			System.out.print(listValues.get(i).getVendorName() + "  | "); 
-//			System.out.print(listValues.get(i).getInvoiceMonth() + "  | ");
-//			System.out.print(listValues.get(i).getOrdinalYear() + "  | ");
-//			System.out.print(listValues.get(i).getOrdinalMonth() + "  | ");
-//			System.out.print(listValues.get(i).getDomesticVoice() + "  | ");
-//			System.out.print(listValues.get(i).getDomesticOverageVoice() + "  | ");
-//			System.out.print(listValues.get(i).getDomesticMessages() + "  | ");
-//			System.out.print(listValues.get(i).getDomesticDataUsageKb() + "  | ");
-//			System.out.print(listValues.get(i).getRoamingVoice() + "  | ");
-//			System.out.print(listValues.get(i).getRoamingDataUsageKb() + "  | ");
-//			System.out.print(listValues.get(i).getRoamingMessages() + "  | ");
-//			System.out.println("");
-			
-//		}
-		
 		return listValues;
 		
 	}
@@ -525,7 +457,6 @@ public class ReadFilesHelper extends BaseClass {
 		
 		jsonItem = jsonItem.trim();
 		return (jsonItem.split("\":")[1].trim().replace("\"", "").replace(",", ""));
-//		return (jsonItem.substring(jsonItem.trim().indexOf(":") + 1,jsonItem.length() - 1)).trim().replace("\"","");
 		
 	}
 	 

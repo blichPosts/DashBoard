@@ -78,7 +78,7 @@ public class HierarchyTopTenValues extends BaseClass{
 		}
 
 		
-		// Verify that there are 11 elements listed on the chart
+		// Verify that there are 11 elements listed on the chart: the Top Ten Service Numbers + Average
 		Assert.assertTrue(chartElementNames.size() == 11);
 		
 		// Verify that the values are sorted in descendant order by "value"
@@ -108,8 +108,6 @@ public class HierarchyTopTenValues extends BaseClass{
 			int x = coordinates.getX() + x_offset;
 			int y = coordinates.getY() + y_offset;
 
-
-			
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);
 			Thread.sleep(500);
@@ -135,27 +133,20 @@ public class HierarchyTopTenValues extends BaseClass{
 			// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
 			String valueFound = tooltip.getText().split(":")[1].trim().replace(" ", "");
 			
-			// Get the expected label 
-			String labelVerticalAxisExpected = chartLabelsFound.get(indexHighchart-1);
-			String labelExpected = expectedLabels.get(indexHighchart-1);
-			
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-			
-			System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-			System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+//			System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+//			System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 					
-			// Verify the labels' text and amounts shown on the tooltip
+			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
+			// They cannot be verified by order, since if there are 2 elements that have the same value (expenses value) the order in which they'll be listed cannot be known
 			Assert.assertTrue(expectedLabels.contains(labelFound));
-			Assert.assertEquals(valueFound, valueExpected);
+			GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 			
-			
-
 			indexHighchart++;
 				
 		}
-		
 		
 	}
 
@@ -191,5 +182,6 @@ public class HierarchyTopTenValues extends BaseClass{
 		return numberFormatted;
 		
 	}
+	
 	
 }

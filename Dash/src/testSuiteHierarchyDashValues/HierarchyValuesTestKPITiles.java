@@ -33,7 +33,7 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 	
 	
 	@Test
-	public static void HierarchyKPITilesTest() throws Exception
+	public static void HierarchyValuesTestKPITilesTest() throws Exception
 	{
 		
 		// Enable Start collecting data
@@ -50,7 +50,7 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 			GeneralHelper.selectFirstMonth();
 			HierarchyHelper.selectHierarchyFromDropdown(i);
 			boolean monthSelected = true;
-			Thread.sleep(3000);
+			Thread.sleep(2000);
 			
 			// #3 Get data from JSON
 			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
@@ -92,7 +92,7 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 					
 					// Wait for KPI tiles to be loaded
-					Thread.sleep(3000);
+					Thread.sleep(2000);
 					
 				}
 				
@@ -171,7 +171,7 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 		System.out.println("Close Browser.");		
 	    JOptionPane.showMessageDialog(frame, "Test for Hierarchy KPI Tiles values finished. Select OK to close browser.");
 		driver.close();
-//		driver.quit();
+		driver.quit();
 	}
 
 	

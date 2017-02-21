@@ -30,7 +30,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 
 
 	@Test
-	public static void HierarchyExpenseTrendingTestValuesTest() throws Exception
+	public static void HierarchyValuesTestExpenseTrendingTest() throws Exception
 	{
 
 		// Enable Start collecting data
@@ -46,13 +46,13 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 			
 			GeneralHelper.selectFirstMonth();
 			HierarchyHelper.selectHierarchyFromDropdown(i);
-			Thread.sleep(3000);
+			Thread.sleep(2000);
 			
 			// #3 Get data from JSON
 			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
 					
 			
-			// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
+			// #4 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
 			// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
 			// will be displayed on the Usage Trending charts 
 			
@@ -92,7 +92,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		System.out.println("Close Browser.");		
 	    JOptionPane.showMessageDialog(frame, "Test for Usage Trending values finished. Select OK to close browser.");
 		driver.close();
-//		driver.quit();
+		driver.quit();
 	}
 	
 	
