@@ -35,7 +35,8 @@ public class VisualPageLoad extends BaseClass
 	public static String []  strArrayOne;
 	public static String []  strArrayTwo;
 	public static String tempString;
-	public static String parentUnitPullDownText = "";
+	// public static String parentUnitPullDownText = "";
+	public static String parentUnit = "";
 	public static String fullTitleAboveKpiTiles = "";
 	public static String tempOne = "";
 	public static String tempTwo = "";
@@ -80,29 +81,35 @@ public class VisualPageLoad extends BaseClass
 	{
 		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), ExpenseHelper.desiredMonth, "");
 		
-		// wait for parent unit pulldown visible.
-		WaitForElementVisible(By.cssSelector(".tdb-kpi__header.tdb-h3.tdb-kpiSection__title.tdb-text--bold>span:nth-of-type(1)"), MediumTimeout);
+		// wait for parent unit pulldown visible. -- GONE
+		// WaitForElementVisible(By.cssSelector(".tdb-kpi__header.tdb-h3.tdb-kpiSection__title.tdb-text--bold>span:nth-of-type(1)"), MediumTimeout);
 		
 		// /////////////////////
 		// verify all titles
 		// /////////////////////
 		
 		// this gets the complete string above the KPI tiles.
-		fullTitleAboveKpiTiles =  driver.findElement(By.cssSelector(".tdb-kpi__header.tdb-h3.tdb-kpiSection__title.tdb-text--bold>span:nth-of-type(1)")).getText();
+		fullTitleAboveKpiTiles =  driver.findElement(By.cssSelector(".tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)")).getText();
 		
-		// now get the parent unit name in the parent unit pulldown. 
-		parentUnitPullDownText =  new Select(driver.findElement(By.cssSelector(".tdb-space--half--top>select"))).getFirstSelectedOption().getText();
+		// now get the parent unit from the string above the KPI tiles.
+		parentUnit =  fullTitleAboveKpiTiles.replace(firstPartTitleAboveKpiTiles, "").replace(lastPartTitleAboveKpiTiles, "");
 		
-		// verify the full text above the KPI tiles is correct.  
-		Assert.assertEquals(fullTitleAboveKpiTiles, firstPartTitleAboveKpiTiles + parentUnitPullDownText + lastPartTitleAboveKpiTiles,
-							"Failed check for title above KPI toles in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
+		// .tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)
+		
+		
+		// now get the parent unit name in the parent unit pulldown. -- GONE 
+		// parentUnitPullDownText =  new Select(driver.findElement(By.cssSelector(".tdb-space--half--top>select"))).getFirstSelectedOption().getText();
+		
+		// verify the full text above the KPI tiles is correct. -- pull downs GONE.    
+		//Assert.assertEquals(fullTitleAboveKpiTiles, firstPartTitleAboveKpiTiles + parentUnitPullDownText + lastPartTitleAboveKpiTiles,
+		//					"Failed check for title above KPI toles in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
 
 		// get complete title above tile map
 		tempString = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>h3")).getText();
 		
-		// verify title above tile map. 
-		Assert.assertEquals(tileMapTitlePartOne + maximumDisplaedExpected + tileMapTitlePartTwo + parentUnitPullDownText + totalExpenseEnd, tempString, 
-				            "Failed check for title above tile map in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
+		// verify title above tile map. -- NO pulldown 
+		//Assert.assertEquals(tileMapTitlePartOne + maximumDisplaedExpected + tileMapTitlePartTwo + parentUnitPullDownText + totalExpenseEnd, tempString, 
+		//		            "Failed check for title above tile map in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
 		
 		// verify 'Expense Trend' part of expense trending title.
 		WaitForElementVisible(By.xpath("//h2[text()='Expense Trending']"), ShortTimeout);
@@ -110,9 +117,9 @@ public class VisualPageLoad extends BaseClass
 		// get complete title above the expense trending. 
 		tempString = driver.findElement(By.xpath("(//h2[text()='Expense Trending']/following ::h3)[1]")).getText();
 		
-		// verify title below 'Expense Trending'.
-		Assert.assertEquals(expenseTrendingPartOne +  parentUnitPullDownText + totalExpenseEnd, tempString, 
-				"Failed check for long title above 'Expense Trending' in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
+		// verify title below 'Expense Trending'. - NO PULLDOWN.
+		//Assert.assertEquals(expenseTrendingPartOne +  parentUnitPullDownText + totalExpenseEnd, tempString, 
+		//		"Failed check for long title above 'Expense Trending' in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
 		
 		// //////////////////////////////////
 		// verify max displayed pull downs.

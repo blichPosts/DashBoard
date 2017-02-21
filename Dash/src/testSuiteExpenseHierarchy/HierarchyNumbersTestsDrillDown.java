@@ -1,25 +1,19 @@
 package testSuiteExpenseHierarchy;
 
-import Dash.BaseClass;
-import expenseHierarchy.HierarchyNumbersDependents;
-import expenseHierarchy.VisualPageLoad;
-
-import javax.swing.JOptionPane;
-import javax.xml.xpath.XPath;
-
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import Dash.BaseClass;
+import expenseHierarchy.HierarchyNumbersDependents;
+import expenseHierarchy.VisualPageLoad;
 import helperObjects.CommonTestStepActions;
-import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.hierarchyPulldownSelection;
-import helperObjects.ExpenseHelper.hierarchyTileMapTabSelection;
 
-public class HierarchyNumbersTests extends BaseClass
+public class HierarchyNumbersTestsDrillDown extends BaseClass 
 {
 
 	@BeforeClass
@@ -30,7 +24,7 @@ public class HierarchyNumbersTests extends BaseClass
 	}
 	
 	@Test
-	public static void HierarchyNumbersTest() throws Exception
+	public static void HierarchyNumbersTestDrillDown() throws Exception
 	{	
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
@@ -42,6 +36,7 @@ public class HierarchyNumbersTests extends BaseClass
 		HierarchyNumbersDependents.SetChartId();
 
 		ExpenseHelper.failedtestNgTest = false;
+		
 		
 		// this sets the number of tiles to test and the number of tiles to show.
 		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(15, 50);
@@ -65,8 +60,9 @@ public class HierarchyNumbersTests extends BaseClass
 		if(ExpenseHelper.failedtestNgTest)
 		{
 			Assert.fail("Failure in HierarchyNumbersTest()");
-		}
+		}	
 	}
+	
 	
 	@AfterClass
 	public static void closeDriver() throws Exception
@@ -77,4 +73,7 @@ public class HierarchyNumbersTests extends BaseClass
 		driver.close();
 		driver.quit();
 	}	
+	
+	
+	
 }

@@ -41,33 +41,55 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	public static void TestPhaseOne() throws Exception
 	{
+		ShowText("Run Total Cost Filter --");
+		
 		ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Total);
-		
 		Thread.sleep(1500);
 		
-		HierarchyNumbersDependents.RunAllTilesTwo();
-		//HierarchyNumbersDependents.RunThroughMonths();
-
+		try
+		{
+			HierarchyNumbersDependents.RunAllTilesTwo();
+			// HierarchyNumbersDependents.RunThroughMonths();
+		}
+		catch(AssertionError es)
+		{
+			ShowText("Failed Total Cost Filter");
+			ShowText(es.getMessage());
+			ExpenseHelper.failedtestNgTest = true;
+		}
+		
+		ShowText("Run Optimizable Cost Filter --");
 		ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Optimizable);
-		
 		Thread.sleep(1500);
 		
-		HierarchyNumbersDependents.RunAllTilesTwo();
-		//HierarchyNumbersDependents.RunThroughMonths();
-		
+		try
+		{
+			HierarchyNumbersDependents.RunAllTilesTwo();
+			// HierarchyNumbersDependents.RunThroughMonths();
+		}
+		catch(AssertionError es)
+		{
+			ShowText("Failed Optimizable Cost Filter");
+			ShowText(es.getMessage());
+			ExpenseHelper.failedtestNgTest = true;
+		}
+
+		ShowText("Run Roaming Cost Filter --");
 		ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Roaming);
-		
 		Thread.sleep(1500);
 		
-		HierarchyNumbersDependents.RunAllTilesTwo();
-		//HierarchyNumbersDependents.RunThroughMonths();
-		
-		Thread.sleep(1000);
-		
+		try
+		{
+			HierarchyNumbersDependents.RunAllTilesTwo();
+			// HierarchyNumbersDependents.RunThroughMonths();
+		}
+		catch(AssertionError es)
+		{
+			ShowText("Failed Roaming Cost Filter");
+			ShowText(es.getMessage());
+			ExpenseHelper.failedtestNgTest = true;
+		}
 	}
-	
-	
-	
 	
 	public static void SetupNumberOfTilesToTestAndShow(int numToTest, int numToDisplay)
 	{
@@ -86,7 +108,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		ExpenseHelper.SetHierarchyMaxDisplayed(numToDisplay);	
 	}
 
-	// need work !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// needs work !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	public static void SetLoopTestStartTile(int startTile)
 	{
 		if(startTile > maxNumberOfTileMapsThatCanBeTested)
@@ -112,68 +134,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// ShowText(ele.getText()); // DEBUG
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
 			Thread.sleep(3000);
-			RunAllTiles();
-		}
-	}
-	
-	
-	
-	// this is called after a number of tiles to test has been setup, a month has been selected, and a tile level has been setup (unless the top level is being tested).
-	public static void RunAllTiles() throws Exception
-	{
-		for(int x = 1; x <= numberOfTileMapsToTest; x++) // this loop can't go further than 90.
-		{ 
-			// get the json of the current tile map being shown
-			dependentUnits =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child.payload.rows')");
-			Thread.sleep(1000);
-
-			// verify json fetch is OK.
-			Assert.assertTrue(dependentUnits != null); 
-
-			// do this here to also make sure json fetch worked
-			JSONArray array = new JSONArray(dependentUnits);			
-
-			// ShowText(dependentUnits.substring(0,50)); // DEBUG show some of the json return.
-
-			// these get the name info and the cost from the dependent in the UI. both of these are put in dependentUnitInfo string.
-			tempOne = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText(); // name and id(s).
-			//tempTwo = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace("Total:",""); // numeric value and cost type.
-			tempTwo = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace(ExpenseHelper.hierarchyFilterString,""); // numeric value and cost type.			
-			
-			dependentUnitInfo = tempOne + " " + tempTwo; 
-			
-			// Thread.sleep(1000);
-			
-			// click tile x.
-			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + x + ")")).click();
-			
-			Thread.sleep(1000);
-			
-			// these get the name info and the cost that was in the hover, after the click above. both of these are put in hoverInfo string.
-			tempOne = driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText().split("\\.")[1].trim();
-			tempTwo = driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(2)")).getText();
-			
-			hoverInfo = (tempOne + " " + tempTwo); 
-			
-			Assert.assertEquals(dependentUnitInfo, hoverInfo); // verify hover value and it's corresponding dependent unit value are equal.  
-			
-			// get the double value found in the dependent info 
-			expectedValueDouble = Double.valueOf(dependentUnitInfo.split("\\$")[1]);
-			
-			// now get the dependent unit user cost value in the json array that was stored before the click to get hover info. 
-			// send in tempOne, the user name info, and this call will return the expected value as double.
-			actualValueDouble = GetExpectedValue(array, tempOne);
-			actualValueDouble = GetExpectedValueTwo(array, tempOne, ExpenseHelper.currentHierarchyCostFilter);
-			
-			
-			Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
-			ShowText("Pass " + String.valueOf(x));
-			
-			
-			// click the bread crumb.
-			driver.findElement(By.cssSelector(".breadcrumbs>span>a")).click();
-			
-			Thread.sleep(1000);
+			RunAllTilesTwo();
 		}
 	}
 
@@ -182,7 +143,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		for(int x = 1; x <= numberOfTileMapsToTest; x++) // loop through selected tiles.
 		{ 
-			// this gets the json request text, depending on what selection is in the hierarchy pulldown.
+			// this gets the json request text tp be used below. this depends on what selection is in the hierarchy pulldown.
 			tempString = BuildJsonRequestPath(); 
 			
 			// get the json of the current tile map being shown
@@ -206,7 +167,6 @@ public class HierarchyNumbersDependents extends BaseClass
 			// these two calls get the name info and the cost info from the dependent user in the UI. both of these are put in dependentUnitInfo string. 
 			// the type of cost string ("total", "optimizable", or "roaming") is filtered out of dependentUnitInfo string. 
 			tempOne = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText(); // name and id(s).
-			//tempTwo = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace(ExpenseHelper.hierarchyFilterString,""); // numeric value (cost type removed).			
 			tempTwo = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace(filterString,""); // numeric value (cost type removed).
 			
 			// put name, id, and cost together..
@@ -217,7 +177,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// click tile number x.
 			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + x + ")")).click();
 			
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 			
 			// these get the name info and the cost that was in the hover, after the click above. both of these are put in hoverInfo string.
 			tempOne = driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText().split("\\.")[1].trim();
@@ -234,7 +194,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// send in tempOne, the user name info, and this call will return the expected value as double.
 			//actualValueDouble = GetExpectedValue(array, tempOne);
 			actualValueDouble = GetExpectedValueTwo(array, tempOne, ExpenseHelper.currentHierarchyCostFilter);
-			
+			 
 			
 			Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
 			ShowText("Pass " + String.valueOf(x));
@@ -270,12 +230,13 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	// this builds the json request string for getting the json rows of dependent unit values. 
-	// it gets  the current hierarchy 
+
 	public static String BuildJsonRequestPath()
 	{
 		
-		String pullDownValue = ExpenseHelper.GetSelectedHierarchy();
+		String pullDownValue = ExpenseHelper.GetSelectedHierarchy(); // get the selected hierarchy.
 		
+		// depending in the 
 		switch(pullDownValue)
 		{
 			case "Cost Center":
@@ -322,8 +283,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		return "";
 	}
 	
-	
-	
 	public static double GetExpectedValueTwo(JSONArray jArray, String name, hierarchyTileMapTabSelection selection) throws Exception
 	{
 		JSONObject obj;
@@ -352,11 +311,11 @@ public class HierarchyNumbersDependents extends BaseClass
 				}
 			}
 		}
-
-		// Assert.fail("FAIL XXXXX");
-		DebugTimeout(9999, "Didn't find hover value " + name);
-
 		
+		String errString = "Didn't find hover value for " + name + " in HierarchyNumbersDependents.GetExpectedValueTwo with cost filter " + selection.name();
+		String errStringTwo = "Size of java array is " + jArray.length();
+		
+		Assert.fail(errString + "\n " + errStringTwo);
 		return 0;
 	}	
 	

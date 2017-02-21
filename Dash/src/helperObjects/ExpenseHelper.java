@@ -28,8 +28,8 @@ public class ExpenseHelper extends BaseClass
 	public static String tempLocator = "";
 	public static String tempUrl = "";
 	public static String hierarchyPullDownUrl = ".tdb-space--half--top>select";
-	public static String hierarchyFilterString = ""; // this holds the text for a certain type of cost filter value (Total, Optimizable, Roaming).
-	public static hierarchyTileMapTabSelection currentHierarchyCostFilter; // this holds !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	public static hierarchyTileMapTabSelection currentHierarchyCostFilter; // this keeps track of the cost filter selected in the hierarchy page. 
+	public static boolean failedtestNgTest = false;
 	
 	
 	public static List<WebElement> webElementListLegends;	
@@ -985,21 +985,18 @@ public class ExpenseHelper extends BaseClass
 			{
 				WaitForElementClickable(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(1)"), ShortTimeout, "");
 				driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(1)")).click(); // total
-				hierarchyFilterString = "Total:";
 				break;
 			}
 			case Optimizable:
 			{
 				WaitForElementClickable(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(2)"), ShortTimeout, "");
 				driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(2)")).click(); // optimizable
-				hierarchyFilterString = "Optimizable:";
 				break;
 			}
 			case Roaming:
 			{
 				WaitForElementClickable(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(3)"), ShortTimeout, "");
 				driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(3)")).click(); // roaming
-				hierarchyFilterString = "Roaming:";
 				break;
 			}
 		}
