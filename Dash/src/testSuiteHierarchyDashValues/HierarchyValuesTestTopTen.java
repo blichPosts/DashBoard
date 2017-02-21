@@ -59,7 +59,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 			// #3 Get the last month listed on month selector
 			List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown(); 
 	
-			String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);  // driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
+			String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);
 			String monthYearToSelect = "";
 			
 			int indexMonth = 0;

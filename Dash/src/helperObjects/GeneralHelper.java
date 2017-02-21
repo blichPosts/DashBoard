@@ -127,7 +127,7 @@ public class GeneralHelper extends BaseClass {
 		
 		valueActual = getNumericValue(valueActual);
 		valueExpected = getNumericValue(valueExpected);
-//			System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
+		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
 		Assert.assertTrue(Math.abs(Double.parseDouble(valueActual) - Double.parseDouble(valueExpected)) <= 1 );
 		
 	}
