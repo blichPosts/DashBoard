@@ -93,7 +93,10 @@ public class TotalExpensesTrend extends BaseClass
 		Thread.sleep(1000);
 		
 		// get the 'expense trending' control visible by moving to it. 
-		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(1)"));
+		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(1)"));
+		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));
+		// .tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)
+		
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
 		Thread.sleep(1000);
@@ -121,7 +124,10 @@ public class TotalExpensesTrend extends BaseClass
 	public static void clickBarIndex(int barIndex) throws Exception
 	{
 		cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + barIndex + ")";
-		cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)";
+		// cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)";
+		
+		cssLine = "#" + chartId + ">svg>g:nth-of-type(3)";
+
 		
 		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -139,7 +145,7 @@ public class TotalExpensesTrend extends BaseClass
 		
 		// 1/11/16 - moves cursor arrow up.
 		int x = barCoordinates.getX() + 30;
-		int y = lineCoordinates.getY() + 200;
+		int y = lineCoordinates.getY() + 300;
 		
 		robot.mouseMove(x, y);
 		//System.out.println("coordinates - x: " + x + "  y: " + y);
@@ -148,10 +154,6 @@ public class TotalExpensesTrend extends BaseClass
 		
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-		if(barIndex == 1) // it takes a while for the hover to become visible on first bar graph.
-		{
-			//Thread.sleep(2000); // quit happening
-		}
 	}
 	
 	// --------------------- FAILURE - keeping here for reference -----------------
