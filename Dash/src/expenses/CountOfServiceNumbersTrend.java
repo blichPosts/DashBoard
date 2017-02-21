@@ -108,7 +108,13 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		Thread.sleep(1000);
 		
 		// get the 'Cost per Service Number trending' control visible by moving to it. 
-		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(3)"));
+		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(3)"));
+		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)>div:nth-of-type(6)"));
+		
+		
+		//.tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)>div:nth-of-type(4)
+		
+		
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
 		Thread.sleep(1000);

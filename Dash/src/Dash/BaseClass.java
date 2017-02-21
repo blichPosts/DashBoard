@@ -44,7 +44,7 @@ public class BaseClass
 	
 	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx 
 	public static String Developer_Url = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense"; // bladdxx 
-	public static String ReferenceApp_Url = "http://dc1qaanalyticsapp01.corp.tangoe.com:4000/manage/home"; // bladdxx
+	public static String ReferenceApp_Url = "http://dc1qaanalyticsapp01.corp.tangoe.com:4000/manage"; // bladdxx
 	
 	public static boolean testCaseStatus = false;
 	
@@ -72,7 +72,7 @@ public class BaseClass
 	
 	// names for the three KPI blocks in Usage page, under Domestic
 	public static String [] UsageKpiNames = {"Voice (min)", "Data", "Messages", "Data"};
-	
+
 	
 	public static JFrame frame;	
 	

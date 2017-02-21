@@ -27,6 +27,10 @@ public class ExpenseHelper extends BaseClass
 	public static String otherText = "Other";
 	public static String tempLocator = "";
 	public static String tempUrl = "";
+	public static String hierarchyPullDownUrl = ".tdb-space--half--top>select";
+	public static String hierarchyFilterString = ""; // this holds the text for a certain type of cost filter value (Total, Optimizable, Roaming).
+	public static hierarchyTileMapTabSelection currentHierarchyCostFilter; // this holds !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
 	
 	public static List<WebElement> webElementListLegends;	
 	public static List<WebElement> webEleListBarGraphHoverValues;
@@ -47,6 +51,8 @@ public class ExpenseHelper extends BaseClass
 	public static List<WebElement> expenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control. 	
 	public static HashMap<String, String> expenseControlHMap; // this holds a hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
 
+
+	
 	
 	// this is for  distinguishing a control type in the expenses page. 
 	public static enum controlType
@@ -65,6 +71,21 @@ public class ExpenseHelper extends BaseClass
 		disabling,
 	}
 	
+	// this is for indicating which tab is selected above the tile map. 
+	public static enum hierarchyTileMapTabSelection
+	{
+		Total,
+		Optimizable,
+		Roaming,
+	}
+	
+	// this is for indicating which hierarchy is selected in hierarchy pull down selector. 
+	public static enum hierarchyPulldownSelection
+	{
+		CostCenter,
+		Management,
+		Approval,
+	}
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// The xpaths below help in locating legend info in the controls.     
@@ -98,6 +119,12 @@ public class ExpenseHelper extends BaseClass
 	
 	// this is for selecting slices in the expense control and expense control spend category.
 	public static String partialXpathForSliceSelections = "/*/*[@class='highcharts-series-group']/*/*";	
+	
+	
+	public static String GetParentPulldownSelection()
+	{
+		return new Select(driver.findElement(By.cssSelector(".tdb-space--half--top>select"))).getFirstSelectedOption().getText();
+	}
 	
 	// setup - read comments below.
 	public static void SetupExpenseControSliceTesting()
@@ -935,6 +962,84 @@ public class ExpenseHelper extends BaseClass
 		
 		Assert.assertEquals(actualList, copy, errMessage + "vendor.");
 	}
+	
+	// //////////////////////////////////////////////////////////////////////////
+	//					Hierarchy Helpers  
+	// //////////////////////////////////////////////////////////////////////////
+	// this sets the pulldown in the hierarchy dash board tile map section. 
+	public static void SetHierarchyMaxDisplayed(int numTilesToDisplay)
+	{
+		new Select(driver.findElement(By.cssSelector(".tdb-align--right.tdb-text--smaller>select"))).selectByValue(String.valueOf(numTilesToDisplay));
+	}
+
+	// this sets the hierarchy tile map tab for what cost filter is sent in. 
+	// it also sets a text variable that is used in string hierarchyFilterString. 
+	public static void SetHierarchyCostFilter(hierarchyTileMapTabSelection tabSelect)
+	{
+
+		currentHierarchyCostFilter = tabSelect;
+		
+		switch(tabSelect)
+		{
+			case Total:
+			{
+				WaitForElementClickable(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(1)"), ShortTimeout, "");
+				driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(1)")).click(); // total
+				hierarchyFilterString = "Total:";
+				break;
+			}
+			case Optimizable:
+			{
+				WaitForElementClickable(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(2)"), ShortTimeout, "");
+				driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(2)")).click(); // optimizable
+				hierarchyFilterString = "Optimizable:";
+				break;
+			}
+			case Roaming:
+			{
+				WaitForElementClickable(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(3)"), ShortTimeout, "");
+				driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(1)>div:nth-of-type(3)")).click(); // roaming
+				hierarchyFilterString = "Roaming:";
+				break;
+			}
+		}
+	}
+	
+	// this selects the tile map hierarchy pulldown depending on what enum is passed in. 
+	public static void SelectHierarchy(hierarchyPulldownSelection select) throws Exception
+	{
+		switch(select)
+		{
+		
+			case CostCenter:
+			{
+				new Select(driver.findElement(By.cssSelector(".tdb-space--top>select"))).selectByVisibleText("Cost Center");
+				break;
+			}
+			case Management:
+			{
+				new Select(driver.findElement(By.cssSelector(".tdb-space--top>select"))).selectByVisibleText("Management");
+				break;
+			}		
+			case Approval:
+			{
+				new Select(driver.findElement(By.cssSelector(".tdb-space--top>select"))).selectByVisibleText("Approval");
+				break;
+			}
+			default:
+			{
+				Assert.fail("Error in ExoenseHelper.SelectHierarchy. Enum passed in is not found.");
+			}
+		}
+	}
+	
+	// this gets the tile map hierarchy pulldown selection.
+	public static String GetSelectedHierarchy()
+	{
+		return new Select(driver.findElement(By.cssSelector(".tdb-space--top>select"))).getFirstSelectedOption().getText();
+	}
+	
+	
 	
 	
 	

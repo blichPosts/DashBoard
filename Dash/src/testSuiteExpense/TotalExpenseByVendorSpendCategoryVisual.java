@@ -63,7 +63,7 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 
 		// The vendors listed match the vendors listed in the 'Total Expense' pie control.  
 	    // It there are five or more vendors selected there will be an 'other' vendor type listed, the same as in the 'Total Expense' pie control.  
-		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
+		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount(ViewType.vendor);
 		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
 
 		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
@@ -80,7 +80,7 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		
 	    // All of the countries are listed next to the horizontal bar graph in the same fashion as they are listed in the 'Total Expense' control.
 	    // The hover behavior matches the behavior in step one.
-		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount();
+		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount(ViewType.country);
 		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
 	}
 	
