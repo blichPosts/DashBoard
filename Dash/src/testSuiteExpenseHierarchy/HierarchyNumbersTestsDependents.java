@@ -1,17 +1,17 @@
 package testSuiteExpenseHierarchy;
 
-import Dash.BaseClass;
-import expenseHierarchy.VisualPageLoad;
-
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import Dash.BaseClass;
+import expenseHierarchy.HierarchyNumbersDependents;
+import expenseHierarchy.VisualPageLoad;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 
-public class HierarchyVisualPageLoad extends BaseClass
+public class HierarchyNumbersTestsDependents extends BaseClass
 {
 
 	@BeforeClass
@@ -22,9 +22,9 @@ public class HierarchyVisualPageLoad extends BaseClass
 	}
 	
 	@Test
-	public static void HierarchyVisualPageLoadTest() throws Exception
-	{
-		// setup page for test.
+	public static void HierarchyNumbersTest() throws Exception
+	{	
+	
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
@@ -32,19 +32,16 @@ public class HierarchyVisualPageLoad extends BaseClass
 
 		VisualPageLoad.SelectAndWaitForPageLoad();
 		
-		//VisualPageLoad.VerifyInitialStatesAfterPageLoad();
+		HierarchyNumbersDependents.BuildDependentChildObjects();
 		
-		VisualPageLoad.ManualDependencyUnits();
 		
-		// VisualPageLoad.Hover();
 		
-		// DebugTimeout(9999, "9999");
 		
-		// this is used if need to output the values found in the UI to console.
-		// VisualPageLoad.ConsoleOutForFileDiffActualValues(); 
+		DebugTimeout(9999, "9999");
+
 		
-		// DebugTimeout(9999, "9999");
 		
+	
 	}
 	
 	@AfterClass
@@ -56,7 +53,6 @@ public class HierarchyVisualPageLoad extends BaseClass
 		driver.close();
 		driver.quit();
 	}	
-	
 	
 	
 	
