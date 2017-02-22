@@ -72,12 +72,14 @@ public class ReadFilesHelper extends BaseClass {
 	    	trendDataOneMonth.setName(jsonObj.getString("name"));
 	    	trendDataOneMonth.setOrdinalYear(Long.toString(jsonObj.getLong("ordinal_year")));
 	    	trendDataOneMonth.setOrdinalMonth(Long.toString(jsonObj.getLong("ordinal_month")));
-	    	trendDataOneMonth.setNumberOfInvoices(Long.toString(jsonObj.getLong("no_of_invoices")));
+//	    	trendDataOneMonth.setNumberOfInvoices(Long.toString(jsonObj.getLong("no_of_invoices"))); <-- REMOVED
+	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("total_no_of_invoices")));  // <-- NEW
 	    	trendDataOneMonth.setNumberOfLines(Long.toString(jsonObj.getLong("no_of_lines")));
-	    	trendDataOneMonth.setNumberOfAccounts(Long.toString(jsonObj.getLong("no_of_accounts")));
-	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("no_of_invoices_rollup")));
+//	    	trendDataOneMonth.setNumberOfAccounts(Long.toString(jsonObj.getLong("no_of_accounts")));  <-- REMOVED
+	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("total_no_of_accounts")));   // <-- NEW
+//	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("no_of_invoices_rollup")));  <-- REMOVED
 	    	trendDataOneMonth.setNumberOfLinesRollup(Long.toString(jsonObj.getLong("no_of_lines_rollup")));
-	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("no_of_accounts_rollup")));
+//	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("no_of_accounts_rollup")));  <-- REMOVED
 	    	trendDataOneMonth.setCurrencyCode(jsonObj.getString("currency_code"));
 	    	trendDataOneMonth.setTotalExpense(Double.toString(jsonObj.getDouble("total_expense_ex")));
 	    	trendDataOneMonth.setOptimizableExpense(Double.toString(jsonObj.getDouble("optimizable_expense_ex")));
@@ -175,6 +177,110 @@ public class ReadFilesHelper extends BaseClass {
 	    	
 	    	}
 	    	
+	        listValues.add(topTenDataOneMonth);
+			
+	    }
+	    
+		return listValues;
+	
+	}
+	
+	
+	
+	
+	// Get the data for Top Ten chart
+	public static List<FleetTopTenData> getJsonDataTopTenFleet(int chartId, int category) throws JSONException, AWTException, InterruptedException{
+		
+		
+		FleetTopTenData topTenDataOneMonth = new FleetTopTenData();
+		List<FleetTopTenData> listValues = new ArrayList<FleetTopTenData>();
+	  
+		String categoryForJS = "";
+		String chartNameForJS = "";
+		
+		if (chartId == FleetTopTenHelper.expenseChart) {
+			
+			chartNameForJS = "EXPENSE";
+			
+			if (category == FleetTopTenHelper.categoryExpenseAll) {
+				
+				categoryForJS = "ALL";
+				
+			} else if (category == FleetTopTenHelper.categoryExpenseVoice) {
+				
+				categoryForJS = "VOICE";
+				
+			} else if (category == FleetTopTenHelper.categoryExpenseData) {
+				
+				categoryForJS = "DATA";
+				
+			} else if (category == FleetTopTenHelper.categoryExpenseMessages) {
+				
+				categoryForJS = "MESSAGES";
+				
+			} else if (category == FleetTopTenHelper.categoryExpenseRoaming) {
+				
+				categoryForJS = "ROAMING";
+				
+			}
+			
+		} else if (chartId == FleetTopTenHelper.domesticUsageChart) {
+			
+			chartNameForJS = "DOMESTIC_USAGE";
+			
+			if (category == FleetTopTenHelper.categoryDomesticUsageVoice) {
+				
+				categoryForJS = "VOICE";
+				
+			} else if (category == FleetTopTenHelper.categoryDomesticUsageVoiceOverage) {
+				
+				categoryForJS = "VOICE_OVERAGE";
+				
+			} else if (category == FleetTopTenHelper.categoryDomesticUsageData) {
+				
+				categoryForJS = "DATA";
+				
+			} else if (category == FleetTopTenHelper.categoryDomesticUsageMessages) {
+				
+				categoryForJS = "MESSAGES";
+				
+			} 
+		
+		} else if (chartId == FleetTopTenHelper.roamingUsageChart) {
+			
+			chartNameForJS = "ROAMING_USAGE";
+			
+			if (category == FleetTopTenHelper.categoryRoamingUsageVoice) {
+				
+				categoryForJS = "VOICE";
+				
+			} else if (category == FleetTopTenHelper.categoryRoamingUsageData) {
+				
+				categoryForJS = "DATA";
+				
+			} else if (category == FleetTopTenHelper.categoryRoamingUsageMessages) {
+				
+				categoryForJS = "MESSAGES";
+				
+			} 
+		
+		}
+	    
+	    // E.g.: fleet.topUsers.EXPENSE.ALL.payload.rows'
+	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('fleet.topUsers." + chartNameForJS + "." + categoryForJS + ".payload.rows')");
+	   
+		    ShowText(topTenData);
+	   
+	    // Get the rows with data
+//		    String topTenData = topTenDataTmp.split("\"rows\":")[1];
+	   
+	    // Convert the String with data into a JSONArray
+	    JSONArray array = new JSONArray(topTenData); 
+
+	    for (int i = 0; i < array.length(); i++){
+	    	
+	    	JSONObject jsonObj  = array.getJSONObject(i);
+	    	topTenDataOneMonth = new FleetTopTenData(jsonObj.getString("service_number"), jsonObj.getDouble("value"));
 	        listValues.add(topTenDataOneMonth);
 			
 	    }
@@ -424,9 +530,9 @@ public class ReadFilesHelper extends BaseClass {
 			System.out.println("name: " + h.getName());
 			System.out.println("ordinal_year: " + h.getOrdinalYear());
 			System.out.println("ordinal_month: " + h.getOrdinalMonth());
-			System.out.println("no_of_invoices: " + h.getNumberOfInvoices());
+//			System.out.println("no_of_invoices: " + h.getNumberOfInvoices());
 			System.out.println("no_of_lines: " + h.getNumberOfLines());
-			System.out.println("no_of_accounts: " + h.getNumberOfAccounts());
+//			System.out.println("no_of_accounts: " + h.getNumberOfAccounts());
 			System.out.println("no_of_invoices_rollup: " + h.getNumberOfInvoicesRollup());
 			System.out.println("no_of_lines_rollup: " + h.getNumberOfLinesRollup());
 			System.out.println("no_of_accounts_rollup: " + h.getNumberOfAccountsRollup());

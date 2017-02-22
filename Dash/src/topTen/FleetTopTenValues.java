@@ -1,8 +1,7 @@
-package expenseHierarchy;
+package topTen;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,22 +9,55 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import helperObjects.FleetTopTenData;
 import helperObjects.FleetTopTenHelper;
 import helperObjects.GeneralHelper;
-import helperObjects.HierarchyTopTenData;
+import helperObjects.HierarchyHelper;
+import helperObjects.ReadFilesHelper;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
 
 
-public class HierarchyTopTenValues extends BaseClass{
+public class FleetTopTenValues extends BaseClass {
 
 	
-	public static void verifyTopTenValues(List<HierarchyTopTenData> topTenValues, int barChartId, int category) throws ParseException, AWTException, InterruptedException {
+	
+	public static void verifyTopTenChartValues(int barChartId, int category) throws Exception {
+		
+		// Select category
+		HierarchyHelper.selectCategory(barChartId, category);
+		
+		// Wait for the data to be updated on chart
+		HierarchyHelper.waitForTopTenChartToLoad();
+		Thread.sleep(2000);
+	
+		// Get data from JSON
+		List<FleetTopTenData> valuesExpected = ReadFilesHelper.getJsonDataTopTenFleet(barChartId, category); 
+		
+		// Verify values on the selected Top Ten chart and for the selected category
+		if (!allValuesAreZero(valuesExpected)) {
+		
+			verifyTooltipTopTenChart(valuesExpected, barChartId, category);
+			
+		}
+		
+		
+	}
+	
+	
+	
+	public static void verifyTooltipTopTenChart(List<FleetTopTenData> topTenValues, int barChartId, int category) throws AWTException, InterruptedException {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
+		
+		WebElement expenseTrendingSection = driver.findElement(By.cssSelector("#" + chartId));
+		new Actions(driver).moveToElement(expenseTrendingSection).perform();
+		
+		Thread.sleep(2000);
 		
 		List<WebElement> chartElementNames = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels>text>tspan"));
 		List<String> chartLabelsFound = new ArrayList<String>();
@@ -43,35 +75,11 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		
 		// Set up lists with expected values and labels		
-		for (HierarchyTopTenData data: topTenValues) {
+		for (FleetTopTenData data: topTenValues) {
 			
-			String type = data.getType();
-			String label = "";
-			String serviceNumber = "";
-			
-			// Set up the label according to whether the type is Employee, Department or Average 
-	    	switch (type) {
-	    	
-	    		case "EMPLOYEE":
-	    			serviceNumber = FleetTopTenHelper.formatPhoneNumber(data.getServiceNumber());
-	    			label = serviceNumber + " " + data.getEmployeeFirstname().substring(0, 1) + "." + data.getEmployeeLastname();
-	    			expectedLabels.add(label);
-	    			break;
-	    			
-	    		case "DEPARTMENT":
-	    			serviceNumber = FleetTopTenHelper.formatPhoneNumber(data.getServiceNumber());
-	    			label = serviceNumber + " " + data.getDepartmentName();
-	    			expectedLabels.add(label);
-	    			break;
-
-	    		case "AVERAGE":
-	    			label = "Average";
-	    			expectedLabels.add(label);
-	    			break;
-	    	
-	    	}
-			
-
+			String label = FleetTopTenHelper.formatPhoneNumber(data.getServiceNumber());
+	    	expectedLabels.add(label);
+	    				   
 	    	String value = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
 	    	expectedValuesList.add(value);
 	    	expectedValues.put(label, value);
@@ -79,14 +87,11 @@ public class HierarchyTopTenValues extends BaseClass{
 		}
 
 		
-		// Verify that there are 11 elements listed on the chart: the Top Ten Service Numbers + Average
-		Assert.assertTrue(chartElementNames.size() == 11);
+		// Verify that there are 10 elements listed on the chart: the Top Ten Service Numbers
+//		Assert.assertTrue(chartElementNames.size() == 10);
 		
 		// Verify that the values are sorted in descendant order by "value"
-		FleetTopTenHelper.verifyValuesSortedDescendantOrder(expectedValuesList); 
-		
-		// Verify that the element "Average" exists on the Top Ten chart.
-		Assert.assertTrue(chartLabelsFound.contains("Average"));
+//		FleetTopTenHelper.verifyValuesSortedDescendantOrder(expectedValuesList); 
 		
 		// Verify the info contained on each of the tooltips for the values listed on the chart 	
 		
@@ -149,8 +154,23 @@ public class HierarchyTopTenValues extends BaseClass{
 				
 		}
 		
+		
 	}
 
-	
-	
+
+	// Temporal solution - Will need to review it with real data 
+	private static boolean allValuesAreZero(List<FleetTopTenData> topTenValues) {
+		
+		boolean zeroValues = false;
+		
+		for (FleetTopTenData data: topTenValues) {
+			
+			if (data.getValue() == 0)
+				zeroValues = true;
+		}
+		
+		return zeroValues;
+		
+	}
+
 }

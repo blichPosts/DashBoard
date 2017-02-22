@@ -49,20 +49,21 @@ public class HierarchyHelper extends BaseClass {
 
 	
 	// Select the "VIEW TOP TEN" button
-	public static void selectTopTenView() throws Exception {
+	public static void selectTopTenView(int toggleNum) throws Exception {
 
-		WaitForElementClickable(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(2)"), MediumTimeout, "VIEW TOP TEN button not clickable");
-		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(2)"));
+		WaitForElementClickable(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"), MediumTimeout, "VIEW TOP TEN button not clickable");
+		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"));
 		viewTopTenToggle.click();
 		WaitForElementVisible(By.xpath("//h3[text()='Top 10 Service Numbers by Expense Amount - ']"), MediumTimeout);	
 		waitForTopTenChartToLoad();
 		
 	}
 	
-	
-	public static void selectCategory(int category){
+	// ** NOTE: move this method to GeneralHelper **
+	public static void selectCategory(int chartNum, int category){
 				
-		WebElement categoryToSelect = driver.findElement(By.cssSelector("div.tdb-boxSelector__option:nth-child(" + category + ")"));
+//		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-card>div>div.tdb-inlineBlock:nth-child(" + category + ")"));
+		WebElement categoryToSelect = driver.findElement(By.xpath("//div[@class='tdb-card'][" + (chartNum+1) + "]/div/div[" + category + "]"));
 		categoryToSelect.click();
 		
 	}

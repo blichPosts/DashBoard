@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
-import expenseHierarchy.HierarchyExpenseTrending;
+import expenseHierarchy.HierarchyTreeMap;
 import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.HierarchyTrendData;
@@ -18,7 +18,7 @@ import helperObjects.ReadFilesHelper;
 
 
 
-public class HierarchyValuesTestExpenseTrending extends BaseClass{
+public class HierarchyValuesTestTileMap extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -30,7 +30,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 
 
 	@Test
-	public static void HierarchyValuesTestExpenseTrendingTest() throws Exception
+	public static void HierarchyValuesTestTileMapTest() throws Exception
 	{
 
 		// Enable Start collecting data
@@ -42,14 +42,15 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
 		
-		for (int i = 1; i <= hierarchies.size(); i++) {
+		for (int i = 1; i <= 1; i++) {  // hierarchies.size(); i++) {
 			
+			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
 			GeneralHelper.selectFirstMonth();
 			HierarchyHelper.selectHierarchyFromDropdown(i);
 			Thread.sleep(2000);
 			
 			// #3 Get data from JSON
-			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
+//			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
 					
 			
 			// #4 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
@@ -58,20 +59,16 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 			
 			try {
 				
-				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
+				HierarchyHelper.selectCategory(HierarchyHelper.treeMapChart, HierarchyHelper.categoryTotal);
+				HierarchyTreeMap.hoverThroughTiles();
 				
-				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryTotal);
 				Thread.sleep(2000);
 				
-				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
+//				HierarchyHelper.selectCategory(HierarchyHelper.categoryOptimizable);
 				
-				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryOptimizable);
-				Thread.sleep(2000);
+//				HierarchyHelper.selectCategory(HierarchyHelper.categoryRoaming);
 				
-				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
 				
-				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryRoaming);
-				Thread.sleep(2000);
 				
 			} catch(NullPointerException e) {
 				

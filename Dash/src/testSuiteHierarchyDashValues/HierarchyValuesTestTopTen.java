@@ -42,7 +42,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 		HierarchyHelper.selectHierarchyView();
 					
 		// #2 Select the "TOP TEN VIEW" 
-		HierarchyHelper.selectTopTenView();
+		HierarchyHelper.selectTopTenView(2);
 		Thread.sleep(2000);
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
@@ -86,7 +86,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 				try {
 					
 					// Select category "Total Expense"
-					HierarchyHelper.selectCategory(HierarchyHelper.categoryTotal);
+					HierarchyHelper.selectCategory(HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
 	
 					// Wait for the data to be updated on chart
 					HierarchyHelper.waitForTopTenChartToLoad();
@@ -99,7 +99,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
 	
 					// Select category "Optimizable Expense"
-					HierarchyHelper.selectCategory(HierarchyHelper.categoryOptimizable);
+					HierarchyHelper.selectCategory(HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
 					
 					// Wait for the data to be updated on chart
 					HierarchyHelper.waitForTopTenChartToLoad();
@@ -112,7 +112,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
 	
 					// Select category "Roaming Expense"
-					HierarchyHelper.selectCategory(HierarchyHelper.categoryRoaming);
+					HierarchyHelper.selectCategory(HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
 					
 					// Wait for the data to be updated on chart
 					HierarchyHelper.waitForTopTenChartToLoad();
