@@ -38,16 +38,20 @@ public class HierarchyValuesTestTileMap extends BaseClass{
 		
 		// #1 Select the "VIEW BY HIERARCHY" button
 		HierarchyHelper.selectHierarchyView();
+		Thread.sleep(2000);
+		
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
 		
-		for (int i = 1; i <= 1; i++) {  // hierarchies.size(); i++) {
-			
-			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
-			GeneralHelper.selectFirstMonth();
-			HierarchyHelper.selectHierarchyFromDropdown(i);
-			Thread.sleep(2000);
+		System.out.println("size: " + hierarchies.size());
+		
+//		for (int i = 1; i <= 1; i++) {  // hierarchies.size(); i++) {
+//			
+//			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
+//			GeneralHelper.selectFirstMonth();
+//			HierarchyHelper.selectHierarchyFromDropdown(i);
+//			Thread.sleep(2000);
 			
 			// #3 Get data from JSON
 //			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
@@ -57,26 +61,26 @@ public class HierarchyValuesTestTileMap extends BaseClass{
 			// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
 			// will be displayed on the Usage Trending charts 
 			
-			try {
-				
-				HierarchyHelper.selectCategory(HierarchyHelper.treeMapChart, HierarchyHelper.categoryTotal);
-				HierarchyTreeMap.hoverThroughTiles();
-				
-				Thread.sleep(2000);
-				
-//				HierarchyHelper.selectCategory(HierarchyHelper.categoryOptimizable);
-				
-//				HierarchyHelper.selectCategory(HierarchyHelper.categoryRoaming);
-				
-				
-				
-			} catch(NullPointerException e) {
-				
-				System.out.println("chart not found");
-				
-			}
+//			try {
+//				
+//				HierarchyHelper.selectCategory(HierarchyHelper.treeMapChart, HierarchyHelper.categoryTotal);
+//				HierarchyTreeMap.hoverThroughTiles();
+//				
+//				Thread.sleep(2000);
+//				
+//				HierarchyHelper.selectCategory(HierarchyHelper.treeMapChart, HierarchyHelper.categoryOptimizable);
+//				
+//				HierarchyHelper.selectCategory(HierarchyHelper.treeMapChart, HierarchyHelper.categoryRoaming);
+//				
+//				
+//				
+//			} catch(NullPointerException e) {
+//				
+//				System.out.println("chart not found");
+//				
+//			}
 		
-		}
+//		}
 				
 	}
 

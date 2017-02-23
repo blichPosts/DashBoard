@@ -41,6 +41,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
+		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
 		for (int i = 1; i <= hierarchies.size(); i++) {
 			
@@ -49,7 +50,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 			Thread.sleep(2000);
 			
 			// #3 Get data from JSON
-			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
+			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));
 					
 			
 			// #4 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file

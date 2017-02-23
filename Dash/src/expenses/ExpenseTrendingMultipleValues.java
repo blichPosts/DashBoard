@@ -32,19 +32,20 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
-		WebElement expenseTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
-		new Actions(driver).moveToElement(expenseTrendingSection).perform();
+		String chartId = UsageHelper.getChartId(barChartId);
+		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
+		
+//		WebElement expenseTrendingSection = driver.findElement(By.xpath("//div[@class='tdb-card'][2]"));  // driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
+//		new Actions(driver).moveToElement(expenseTrendingSection).perform();
 		
 		Thread.sleep(2000);
-		
-		String chartId = UsageHelper.getChartId(barChartId);
 			
 		List<WebElement> legendsElements = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		List<String> legends = new ArrayList<>();
 		
 		for (WebElement e: legendsElements) {
 			legends.add(e.getText());
-//					System.out.println("Legend: " + e.getText());
+//			System.out.println("Legend: " + e.getText());
 		}
 		
 		

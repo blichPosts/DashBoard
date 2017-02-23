@@ -14,7 +14,7 @@ import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.FleetTopTenData;
-import helperObjects.FleetTopTenHelper;
+import helperObjects.GeneralTopTenHelper;
 import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
@@ -39,7 +39,7 @@ public class FleetTopTenValues extends BaseClass {
 		List<FleetTopTenData> valuesExpected = ReadFilesHelper.getJsonDataTopTenFleet(barChartId, category); 
 		
 		// Verify values on the selected Top Ten chart and for the selected category
-		if (!allValuesAreZero(valuesExpected)) {
+		if (!GeneralTopTenHelper.allValuesAreZero(valuesExpected)) {
 		
 			verifyTooltipTopTenChart(valuesExpected, barChartId, category);
 			
@@ -77,7 +77,7 @@ public class FleetTopTenValues extends BaseClass {
 		// Set up lists with expected values and labels		
 		for (FleetTopTenData data: topTenValues) {
 			
-			String label = FleetTopTenHelper.formatPhoneNumber(data.getServiceNumber());
+			String label = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
 	    	expectedLabels.add(label);
 	    				   
 	    	String value = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
@@ -154,22 +154,6 @@ public class FleetTopTenValues extends BaseClass {
 				
 		}
 		
-		
-	}
-
-
-	// Temporal solution - Will need to review it with real data 
-	private static boolean allValuesAreZero(List<FleetTopTenData> topTenValues) {
-		
-		boolean zeroValues = false;
-		
-		for (FleetTopTenData data: topTenValues) {
-			
-			if (data.getValue() == 0)
-				zeroValues = true;
-		}
-		
-		return zeroValues;
 		
 	}
 

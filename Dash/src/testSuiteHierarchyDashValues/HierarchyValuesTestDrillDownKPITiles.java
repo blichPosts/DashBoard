@@ -44,7 +44,7 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-		
+		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
 		for (int i = 1; i <= hierarchies.size(); i++) {
 		
@@ -82,7 +82,7 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 				Thread.sleep(2000);
 				
 				// #3 Get data from JSON
-				List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
+				List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));
 			
 			
 				// #4 Get the last month listed on month selector 

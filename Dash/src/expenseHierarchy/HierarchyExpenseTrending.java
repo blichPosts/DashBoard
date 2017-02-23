@@ -100,6 +100,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 			// WebElement 'bar' will be used to set the position of the mouse on the chart
 			WebElement bar = driver.findElement(By.cssSelector(cssBar));
 
+			
 			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 			
@@ -107,6 +108,15 @@ public class HierarchyExpenseTrending extends BaseClass {
 			int x = coordinates.getX();
 			int y = coordinates.getY();
 
+			if (loginType.equals(LoginType.Command)) {
+				
+				String cssLine = "#" + chartId + ">svg>g>path:nth-of-type(2)";
+				WebElement line = driver.findElement(By.cssSelector(cssLine));
+				Point coordinatesLine = GeneralHelper.getAbsoluteLocation(line);
+				y = coordinatesLine.getY();
+				
+			}
+			
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);
 			
@@ -114,7 +124,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 			
 			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-			
+				
 			
 			try {
 				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);

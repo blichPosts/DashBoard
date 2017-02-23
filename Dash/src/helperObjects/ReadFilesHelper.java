@@ -31,30 +31,13 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	// Get the data for the KPI tiles and Trending chart
-	public static List<HierarchyTrendData> getJsonDataTrend(int hierarchyNum) throws JSONException, AWTException, InterruptedException{
+	public static List<HierarchyTrendData> getJsonDataTrend(String hierarchyId) throws JSONException, AWTException, InterruptedException{
 		
 		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
 		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
-	    
-	    String hierarchyLevel = "";
-	    
-	    if (hierarchyNum == 1) {
-	    
-	    	hierarchyLevel = "PRIMARY";
-	    	
-	    } else if (hierarchyNum == 2) {
-	    	
-	    	hierarchyLevel = "SECONDARY";
-	    	
-	    } else if (hierarchyNum == 3) {
-	    	
-	    	hierarchyLevel = "TERTIARY";
-	    	
-	    }
-	    	
-	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyLevel + ".trend.payload.rows')");
+	    	    	
+	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.rows')");
 	   
-
 //	    ShowText(trendData);
 	   
 	    // Get the rows with data
@@ -73,10 +56,10 @@ public class ReadFilesHelper extends BaseClass {
 	    	trendDataOneMonth.setOrdinalYear(Long.toString(jsonObj.getLong("ordinal_year")));
 	    	trendDataOneMonth.setOrdinalMonth(Long.toString(jsonObj.getLong("ordinal_month")));
 //	    	trendDataOneMonth.setNumberOfInvoices(Long.toString(jsonObj.getLong("no_of_invoices"))); <-- REMOVED
-	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("total_no_of_invoices")));  // <-- NEW
+//	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("total_no_of_invoices")));  // <-- NEW - not added to CMD env, so it's commented out, since it's not used by my tests, Ana
 	    	trendDataOneMonth.setNumberOfLines(Long.toString(jsonObj.getLong("no_of_lines")));
 //	    	trendDataOneMonth.setNumberOfAccounts(Long.toString(jsonObj.getLong("no_of_accounts")));  <-- REMOVED
-	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("total_no_of_accounts")));   // <-- NEW
+//	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("total_no_of_accounts")));   // <-- NEW - not added to CMD env, so it's commented out, since it's not used by my tests, Ana
 //	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("no_of_invoices_rollup")));  <-- REMOVED
 	    	trendDataOneMonth.setNumberOfLinesRollup(Long.toString(jsonObj.getLong("no_of_lines_rollup")));
 //	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("no_of_accounts_rollup")));  <-- REMOVED
@@ -99,30 +82,12 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	// Get the data for Top Ten chart
-	public static List<HierarchyTopTenData> getJsonDataTopTen(int category, int hierarchyNum) throws JSONException, AWTException, InterruptedException{
+	public static List<HierarchyTopTenData> getJsonDataTopTen(int category, String hierarchyId) throws JSONException, AWTException, InterruptedException{
 		
 		
 		HierarchyTopTenData topTenDataOneMonth = new HierarchyTopTenData();
 		List<HierarchyTopTenData> listValues = new ArrayList<HierarchyTopTenData>();
-	  
-		
-		String hierarchyLevel = "";
-	    
-	    if (hierarchyNum == 1) {
-	    
-	    	hierarchyLevel = "PRIMARY";
-	    	
-	    } else if (hierarchyNum == 2) {
-	    	
-	    	hierarchyLevel = "SECONDARY";
-	    	
-	    } else if (hierarchyNum == 3) {
-	    	
-	    	hierarchyLevel = "TERTIARY";
-	    	
-	    }
-		
-		
+	  		
 		String categoryForJS = "";
 		
 		if (category == HierarchyHelper.categoryTotal) {
@@ -141,7 +106,7 @@ public class ReadFilesHelper extends BaseClass {
 		
 	    
 	    // E.g.: hierarchy.PRIMARY.topUsers.EXPENSE.TOTAL_EXPENSE'
-	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyLevel + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
+	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
 	   
 //	    ShowText(topTenData);
 	   
@@ -198,67 +163,67 @@ public class ReadFilesHelper extends BaseClass {
 		String categoryForJS = "";
 		String chartNameForJS = "";
 		
-		if (chartId == FleetTopTenHelper.expenseChart) {
+		if (chartId == GeneralTopTenHelper.expenseChart) {
 			
 			chartNameForJS = "EXPENSE";
 			
-			if (category == FleetTopTenHelper.categoryExpenseAll) {
+			if (category == GeneralTopTenHelper.categoryExpenseAll) {
 				
 				categoryForJS = "ALL";
 				
-			} else if (category == FleetTopTenHelper.categoryExpenseVoice) {
+			} else if (category == GeneralTopTenHelper.categoryExpenseVoice) {
 				
 				categoryForJS = "VOICE";
 				
-			} else if (category == FleetTopTenHelper.categoryExpenseData) {
+			} else if (category == GeneralTopTenHelper.categoryExpenseData) {
 				
 				categoryForJS = "DATA";
 				
-			} else if (category == FleetTopTenHelper.categoryExpenseMessages) {
+			} else if (category == GeneralTopTenHelper.categoryExpenseMessages) {
 				
 				categoryForJS = "MESSAGES";
 				
-			} else if (category == FleetTopTenHelper.categoryExpenseRoaming) {
+			} else if (category == GeneralTopTenHelper.categoryExpenseRoaming) {
 				
 				categoryForJS = "ROAMING";
 				
 			}
 			
-		} else if (chartId == FleetTopTenHelper.domesticUsageChart) {
+		} else if (chartId == GeneralTopTenHelper.domesticUsageChart) {
 			
 			chartNameForJS = "DOMESTIC_USAGE";
 			
-			if (category == FleetTopTenHelper.categoryDomesticUsageVoice) {
+			if (category == GeneralTopTenHelper.categoryDomesticUsageVoice) {
 				
 				categoryForJS = "VOICE";
 				
-			} else if (category == FleetTopTenHelper.categoryDomesticUsageVoiceOverage) {
+			} else if (category == GeneralTopTenHelper.categoryDomesticUsageVoiceOverage) {
 				
 				categoryForJS = "VOICE_OVERAGE";
 				
-			} else if (category == FleetTopTenHelper.categoryDomesticUsageData) {
+			} else if (category == GeneralTopTenHelper.categoryDomesticUsageData) {
 				
 				categoryForJS = "DATA";
 				
-			} else if (category == FleetTopTenHelper.categoryDomesticUsageMessages) {
+			} else if (category == GeneralTopTenHelper.categoryDomesticUsageMessages) {
 				
 				categoryForJS = "MESSAGES";
 				
 			} 
 		
-		} else if (chartId == FleetTopTenHelper.roamingUsageChart) {
+		} else if (chartId == GeneralTopTenHelper.roamingUsageChart) {
 			
 			chartNameForJS = "ROAMING_USAGE";
 			
-			if (category == FleetTopTenHelper.categoryRoamingUsageVoice) {
+			if (category == GeneralTopTenHelper.categoryRoamingUsageVoice) {
 				
 				categoryForJS = "VOICE";
 				
-			} else if (category == FleetTopTenHelper.categoryRoamingUsageData) {
+			} else if (category == GeneralTopTenHelper.categoryRoamingUsageData) {
 				
 				categoryForJS = "DATA";
 				
-			} else if (category == FleetTopTenHelper.categoryRoamingUsageMessages) {
+			} else if (category == GeneralTopTenHelper.categoryRoamingUsageMessages) {
 				
 				categoryForJS = "MESSAGES";
 				
@@ -533,9 +498,9 @@ public class ReadFilesHelper extends BaseClass {
 //			System.out.println("no_of_invoices: " + h.getNumberOfInvoices());
 			System.out.println("no_of_lines: " + h.getNumberOfLines());
 //			System.out.println("no_of_accounts: " + h.getNumberOfAccounts());
-			System.out.println("no_of_invoices_rollup: " + h.getNumberOfInvoicesRollup());
+//			System.out.println("no_of_invoices_rollup: " + h.getNumberOfInvoicesRollup());
 			System.out.println("no_of_lines_rollup: " + h.getNumberOfLinesRollup());
-			System.out.println("no_of_accounts_rollup: " + h.getNumberOfAccountsRollup());
+//			System.out.println("no_of_accounts_rollup: " + h.getNumberOfAccountsRollup());
 			System.out.println("currency_code: " + h.getCurrencyCode());
 			System.out.println("total_expense_ex: " + h.getTotalExpense());
 			System.out.println("optimizable_expense_ex: " + h.getOptimizableExpense());
