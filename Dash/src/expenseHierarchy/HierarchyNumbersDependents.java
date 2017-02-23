@@ -64,6 +64,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			ShowText("ERROR CAUGHT in Try Catch ----- Failed Total Cost Filter");
 			ShowText(es.getMessage());
 			ExpenseHelper.failedtestNgTest = true;
+			DebugTimeout(9999, "9999");
 		}
 
 		ShowText("Run Optimizable Cost Filter --");
@@ -80,6 +81,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			ShowText("ERROR CAUGHT in Try Catch ----- Failed Optimizable Cost Filter");
 			ShowText(es.getMessage());
 			ExpenseHelper.failedtestNgTest = true;
+			DebugTimeout(9999, "9999");
 		}
 
 		ShowText("Run Roaming Cost Filter --");
@@ -96,6 +98,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			ShowText("ERROR CAUGHT in Try Catch ----- Failed Roaming Cost Filter");
 			ShowText(es.getMessage());
 			ExpenseHelper.failedtestNgTest = true;
+			DebugTimeout(9999, "9999");
 		}
 	}
 	
@@ -108,7 +111,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		try
 		{
-			// HierarchyNumbersDependents.RunAllTilesThree();
 			HierarchyNumbersDependents.RunThroughMonths();
 		}
 		catch(AssertionError es)
@@ -116,6 +118,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			ShowText("ERROR CAUGHT in Try Catch ----- Failed Total Cost Filter");
 			ShowText(es.getMessage());
 			ExpenseHelper.failedtestNgTest = true;
+			DebugTimeout(9999, "9999");
 		}
 
 		ShowText("Run Optimizable Cost Filter --");
@@ -124,14 +127,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		try
 		{
-			// HierarchyNumbersDependents.RunAllTilesThree();
-			HierarchyNumbersDependents.RunThroughMonths();
+				HierarchyNumbersDependents.RunThroughMonths();
 		}
 		catch(AssertionError es)
 		{
 			ShowText("ERROR CAUGHT in Try Catch ----- Failed Optimizable Cost Filter");
 			ShowText(es.getMessage());
 			ExpenseHelper.failedtestNgTest = true;
+			DebugTimeout(9999, "9999");
 		}
 
 		ShowText("Run Roaming Cost Filter --");
@@ -140,14 +143,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		try
 		{
-			// HierarchyNumbersDependents.RunAllTilesThree();
-			HierarchyNumbersDependents.RunThroughMonths();
+				HierarchyNumbersDependents.RunThroughMonths();
 		}
 		catch(AssertionError es)
 		{
 			ShowText("ERROR CAUGHT in Try Catch ----- Failed Roaming Cost Filter");
 			ShowText(es.getMessage());
 			ExpenseHelper.failedtestNgTest = true;
+			DebugTimeout(9999, "9999");
 		}
 	}
 	
@@ -289,6 +292,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		// one more check
 		Assert.assertTrue(array.length() ==  100, "Error in HierarchyNumbersDependents.RunAllTilesThree. The json array read in is the wrong size.");
 
+		
 		// ////////////////////////////////////////////////////////////////////////////////////
 		// loop through tile maps.
 		// ////////////////////////////////////////////////////////////////////////////////////
@@ -303,13 +307,14 @@ public class HierarchyNumbersDependents extends BaseClass
 			// the type of cost string ("total", "optimizable", or "roaming") is filtered out of dependentUnitInfo string. 
 			nameAndIds = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText(); // name and id(s).
 			numericValue = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace(filterString,""); // numeric value (cost type removed).
-			
+
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
 			//ShowText(currentDependentUnitInfo);
 			Assert.assertEquals(hoverInfo, currentDependentUnitInfo, "Error in HierarchyNumbersDependents.RunAllTilesThree. "
-					                                               + "The hover value doesn't match its corresponding dependent user."); 
+					                                               + "The hover value doesn't match its corresponding dependent user."
+					                                               + "The loop counter is " + x); 
 			
 			// now get the dependent unit user cost value in the json array that was stored before the click to get hover info. 
 			// send in nameAndId, the user name info, and this call will return the expected value as double.

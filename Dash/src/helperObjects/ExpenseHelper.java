@@ -51,6 +51,7 @@ public class ExpenseHelper extends BaseClass
 	public static List<WebElement> expenseControlSlicesElemntsList; // this holds web elements containing the slices in the 'total expense' control. 	
 	public static HashMap<String, String> expenseControlHMap; // this holds a hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
 
+	public static expenseFilters currentExpenseFilter; // this is used to indicate which expense filter is being tested. 
 
 	
 	
@@ -85,6 +86,14 @@ public class ExpenseHelper extends BaseClass
 		CostCenter,
 		Management,
 		Approval,
+	}
+	
+	// this is for indicating which trend graph expense filter is being tested. 
+	public static enum expenseFilters
+	{
+		Expense,
+		CostPerServiceNumber,
+		CountOfServiceNumbers,
 	}
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1037,7 +1046,11 @@ public class ExpenseHelper extends BaseClass
 	}
 	
 	
-	
+	// this sets currentExpenseFilter to what expense filter is being tested.
+	public static void SetExpenseFilter(expenseFilters expFilter)
+	{
+		currentExpenseFilter = expFilter;
+	}
 	
 	
 	// //////////////////////////////////////////////////////////////////////	

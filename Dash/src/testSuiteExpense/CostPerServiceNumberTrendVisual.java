@@ -10,8 +10,10 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenses.CostPerServiceNumberTrend;
 import expenses.CountOfServiceNumbersTrend;
+import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.expenseFilters;
 
 public class CostPerServiceNumberTrendVisual extends BaseClass 
 {
@@ -36,7 +38,13 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
 		CostPerServiceNumberTrend.SetupChartId(); // setup unique id for this control test.
+		
 
+		// next two lines below use method in 'TotalExpensesTrend' class to test the trend tabs that were added to the 
+		// cost per service number trend control in 17.1
+		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
+		TotalExpensesTrend.VerifyTrendValues();
+		
 		// #1 View the 'Cost per Line Trend for Top 5 Spend' component.
 
 		// The title is 'Cost per Service Number - All Categories'.

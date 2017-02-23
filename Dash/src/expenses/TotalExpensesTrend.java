@@ -24,6 +24,7 @@ import org.w3c.dom.Element;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.expenseFilters;
 import helperObjects.UsageHelper;
 
 
@@ -209,13 +210,18 @@ public class TotalExpensesTrend extends BaseClass
 		}
 	}
 	
-	
-	// partialXpathForHoverInfo
-	
+	/*
 	public static void Setupdata()
 	{
 		// get the actual trend selections.
-		webEleListTrends = driver.findElements(By.cssSelector(".tdb-boxSelector.tdb-align--right > div"));
+		// webEleListTrends = driver.findElements(By.cssSelector(".tdb-boxSelector.tdb-align--right > div"));
+		webEleListTrends = driver.findElements(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)> div:nth-of-type(3) > div"));
+
+		
+		// .tdb-card>div:nth-of-type(3) // 2
+		// .tdb-card>div:nth-of-type(5)
+		// .tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)> div:nth-of-type(1)
+		
  
 		// load the actual trend selections
 		for(WebElement ele : webEleListTrends)
@@ -234,7 +240,58 @@ public class TotalExpensesTrend extends BaseClass
 		expectedTrends.add("Other");
 		expectedTrends.add("Account");
 	}
+	*/
+	
+	public static void Setupdata()
+	{
+		// get the actual trend selections.
+		// webEleListTrends = driver.findElements(By.cssSelector(".tdb-boxSelector.tdb-align--right > div"));
+		switch(ExpenseHelper.currentExpenseFilter)
+		{
+			case Expense:
+			{
+				webEleListTrends = driver.findElements(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)> div:nth-of-type(3) > div"));
+				break;
+			}
+			case CostPerServiceNumber:
+			{
+				webEleListTrends = driver.findElements(By.cssSelector(".tdb-card>div:nth-of-type(3)>div"));				
+				break;
+			}
+			case CountOfServiceNumbers:
+			{
+				webEleListTrends = driver.findElements(By.cssSelector(".tdb-card>div:nth-of-type(5)>div"));
+				break;
+			}
+		}
+		
+		
+		// webEleListTrends = driver.findElements(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)> div:nth-of-type(3) > div"));
 
+		
+		// .tdb-card>div:nth-of-type(3) // 2
+		// .tdb-card>div:nth-of-type(5)
+		// .tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)> div:nth-of-type(1)
+		
+ 
+		// load the actual trend selections
+		for(WebElement ele : webEleListTrends)
+		{
+			actualTrends.add(ele.getText());
+		}
+
+		// load the expected trend selections 
+		expectedTrends.add("All");
+		expectedTrends.add("Voice");
+		expectedTrends.add("Data");
+		expectedTrends.add("Messages");
+		expectedTrends.add("Roaming");
+		expectedTrends.add("Equipment");
+		expectedTrends.add("Taxes");
+		expectedTrends.add("Other");
+		expectedTrends.add("Account");
+	}
+	
 	
 	public static void VerifyTrendValues()
 	{

@@ -13,6 +13,7 @@ import expenses.TotalExpenseByVendorSpendCategory;
 import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.expenseFilters;
 
 public class TotalExpensesTrendVisual extends BaseClass 
 {
@@ -39,6 +40,8 @@ public class TotalExpensesTrendVisual extends BaseClass
 		CommonTestStepActions.SelectAllVendors();
 
 		TotalExpensesTrend.SetupChartId();
+		
+		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested.
 		
 		
 		// #1

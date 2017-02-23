@@ -38,13 +38,13 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 		ExpenseHelper.failedtestNgTest = false;
 
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(50, 50);
+		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(15, 50);
 		
-		//ShowText("\nDefault Cost Center Hierarchy Is Set ***** \n");
+		ShowText("\nDefault Cost Center Hierarchy Is Set ***** \n");
 		
 		// the first number is how many levels to attempt to drill down to.
 		// the second number is how many tiles are available to click when drilling down.
-		//HierarchyNumbersDependents.DrillDownAcrossCostFilters(7, 50);
+		HierarchyNumbersDependents.DrillDownAcrossCostFilters(3, 50); // TEST --------------------------------------
 		
 		ShowText("\nHave Set Management Hierarchy  ***** \n");
 		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.Management);
@@ -52,7 +52,7 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 
 		// the first number is how many levels to attempt to drill down to. 
 		// the second number is how many tiles are available to click when drilling down.
-		HierarchyNumbersDependents.DrillDownAcrossCostFilters(7, 50);
+		HierarchyNumbersDependents.DrillDownAcrossCostFilters(3, 50); // TEST --------------------------------------
 		
 		ShowText("\nHave Set Approval Hierarchy  ***** \n");
 		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.Approval);
@@ -60,25 +60,8 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 
 		// the first number is how many levels to attempt to drill down to.
 		// the second number is how many tiles are available to click when drilling down.
-		HierarchyNumbersDependents.DrillDownAcrossCostFilters(7, 50);
+		HierarchyNumbersDependents.DrillDownAcrossCostFilters(2, 50); // TEST --------------------------------------
 		
-		
-		/*
-		ShowText("\nDefault Cost Center Hierarchy Is Set ***** \n");
-		HierarchyNumbersDependents.TestPhaseOne(); // TEST --------------------------------------
-		
-		ShowText("\nHave Set Management Hierarchy  ***** \n");
-		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.Management);
-		Thread.sleep(2000);
-		
-		HierarchyNumbersDependents.TestPhaseOne(); // TEST --------------------------------------
-
-		ShowText("\nHave Set Approval Hierarchy  ***** \n");
-		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.Approval);
-		Thread.sleep(2000);
-		
-		HierarchyNumbersDependents.TestPhaseOne(); // TEST --------------------------------------
-		*/
 		// see if there were errors and raise testNG error if there were any.
 		if(ExpenseHelper.failedtestNgTest)
 		{

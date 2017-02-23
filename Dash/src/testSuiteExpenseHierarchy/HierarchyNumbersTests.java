@@ -4,6 +4,7 @@ import Dash.BaseClass;
 import expenseHierarchy.HierarchyNumbersDependents;
 import expenseHierarchy.VisualPageLoad;
 
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -11,6 +12,7 @@ import org.testng.annotations.Test;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
+import helperObjects.ExpenseHelper.hierarchyPulldownSelection;
 
 public class HierarchyNumbersTests extends BaseClass
 {
@@ -37,13 +39,13 @@ public class HierarchyNumbersTests extends BaseClass
 		ExpenseHelper.failedtestNgTest = false;
 
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(10, 50);
+		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(30, 50);
 		
 		Thread.sleep(3000);
 
 		ShowText("Default Cost Center Hierarchy Is Set *****");
-		HierarchyNumbersDependents.TestPhaseOne(); // TEST --------------------------------------
-		/*
+		HierarchyNumbersDependents.TestPhaseOne(); // TEST --------------------------------------  
+
 		ShowText("Have Set Management Hierarchy  *****");
 		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.Management);
 		Thread.sleep(2000);
@@ -56,45 +58,37 @@ public class HierarchyNumbersTests extends BaseClass
 		
 		HierarchyNumbersDependents.TestPhaseOne(); // TEST --------------------------------------
 		
-		// see if there were errors and raise testNG error if there were any.
-		if(ExpenseHelper.failedtestNgTest)
-		{
-			Assert.fail("Failure in HierarchyNumbersTest()");
-		}
-		*/
-		
-		// ///////////////////////////////  MONTHS ////////////////////////////////////////////////////////////////////////
-		// ///////////////////////////////  MONTHS ////////////////////////////////////////////////////////////////////////
-		// ///////////////////////////////  MONTHS ////////////////////////////////////////////////////////////////////////
 		/*
+		// ////////////////////////////////////////////////////////////////////////
+		// 							GO THROUGH MONTHS
+		// ////////////////////////////////////////////////////////////////////////
+
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(4, 50);
+		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(3, 50);
 		
-		ShowText("Have Set Cost Center Hierarchy  *****");
+		ShowText("Have Set Cost Center Hierarchy Is Set *****");
 		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.CostCenter);
-		Thread.sleep(2000);
 		
 		HierarchyNumbersDependents.TestPhaseWithMonths(); // TEST --------------------------------------
-		
-		
-		ShowText("Have Management Hierarchy  *****");
+
+		ShowText("Have Set Management Hierarchy  *****");
 		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.Management);
 		Thread.sleep(2000);
 		
 		HierarchyNumbersDependents.TestPhaseWithMonths(); // TEST --------------------------------------
-		
-		ShowText("Have Set Cost Center Approval  *****");
+
+		ShowText("Have Set Approval Hierarchy  *****");
 		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.Approval);
 		Thread.sleep(2000);
 		
 		HierarchyNumbersDependents.TestPhaseWithMonths(); // TEST --------------------------------------
+		*/
 		
 		// see if there were errors and raise testNG error if there were any.
 		if(ExpenseHelper.failedtestNgTest)
 		{
 			Assert.fail("Failure in HierarchyNumbersTest()");
 		}
-		*/
 	}
 	
 	@AfterClass

@@ -13,9 +13,11 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import expenses.CountOfServiceNumbersTrend;
+import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.UsageHelper;
+import helperObjects.ExpenseHelper.expenseFilters;
 
 public class CountOfServiceNumbersTrendVisual extends BaseClass 
 {
@@ -40,6 +42,12 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
 		CountOfServiceNumbersTrend.SetChartId(4); // setup unique id for this control test.
+		
+		// next two lines below use method in 'TotalExpensesTrend' class to test the trend tabs that were added to the 
+		// count of service number trend control in 17.1.
+		ExpenseHelper.SetExpenseFilter(expenseFilters.CountOfServiceNumbers); // this indicates which expense filter is being tested.
+		TotalExpensesTrend.VerifyTrendValues();
+
 		
 		// The title is 'Count of Service Number by Vendor/Country'
 		CountOfServiceNumbersTrend.VerifyTitle(CommonTestStepActions.ExpensesViewMode.vendor);
