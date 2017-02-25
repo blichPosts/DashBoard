@@ -134,6 +134,18 @@ public class ExpenseHelper extends BaseClass
 	{
 		return new Select(driver.findElement(By.cssSelector(".tdb-space--half--top>select"))).getFirstSelectedOption().getText();
 	}
+
+	// ((//div[@class='tdb-card'])[2]/div)[1]/div
+	
+	
+	// ////////////////////////////////////////////////////////////////
+	// The xpaths below help in getting cost filters in  trend graphs    
+	// ////////////////////////////////////////////////////////////////
+	
+	public static String  expenseTrendFilters = "((//div[@class='tdb-card'])[2]/div)[1]/div";  
+	public static String  costPerServiceNumberFilters = "((//div[@class='tdb-card'])[2]/div)[3]/div"; 
+	public static String  countofServiceNumberFilters = "((//div[@class='tdb-card'])[2]/div)[5]/div"; 
+	
 	
 	// setup - read comments below.
 	public static void SetupExpenseControSliceTesting()
@@ -941,7 +953,7 @@ public class ExpenseHelper extends BaseClass
 	}
 
 	// this receives expected and actual lists and verifies. 
-	public static void VerifyToolTipTwo(List<String> expectList, String expectedMonth) throws Exception // bladdxx
+	public static void VerifyToolTipTwo(List<String> expectList, String expectedMonth) throws Exception 
 	{
 		List<String> actualList = new ArrayList<String>();
 		List<String> copy = new ArrayList<String>();
@@ -1052,6 +1064,63 @@ public class ExpenseHelper extends BaseClass
 		currentExpenseFilter = expFilter;
 	}
 	
+	// 
+	public static void VerifySpendCateoryFilter() // bladdxx
+	{
+		switch(currentExpenseFilter)
+		{
+			case Expense:
+			{
+				ClickThroughFiltersAndVerify(expenseTrendFilters);
+				break;
+			}
+			case CostPerServiceNumber:
+			{
+		
+				break;
+			}
+			case CountOfServiceNumbers:
+			{
+		
+				break;
+			}
+			default:
+			{
+				
+			}
+		}
+	}
+	
+
+	public static void ClickThroughFiltersAndVerify(String xPath)
+	{
+		List<WebElement> eleList = driver.findElements(By.xpath(xPath));
+		
+		int x = 0;
+		
+		//  go through the 
+		for(WebElement ele : eleList)
+		{
+			ele.click();
+			VerifyCorrctSelection(eleList, x);
+			x++;
+		}
+	}
+	
+	public static void VerifyCorrctSelection(List<WebElement> eleList,  int x)
+	{
+		for(int y = 0; y < eleList.size(); y++)
+		{
+			if(y == x)
+			{
+				Assert.assertTrue(eleList.get(y).getAttribute("class").contains("option--selected"));
+			}
+			else
+			{
+				Assert.assertFalse(eleList.get(y).getAttribute("class").contains("option--selected"));
+			}
+		}
+	}
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers
