@@ -39,7 +39,7 @@ public class HierarchyNumbersTests extends BaseClass
 		ExpenseHelper.failedtestNgTest = false;
 
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(30, 50);
+		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(45, 50);
 		
 		Thread.sleep(3000);
 

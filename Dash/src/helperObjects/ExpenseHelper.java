@@ -14,7 +14,9 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import expenses.CountOfServiceNumbersTrend;
 import junit.framework.AssertionFailedError;
+import testSuiteExpenseActions.CountOfServiceNumbersCountry;
 
 public class ExpenseHelper extends BaseClass
 {
@@ -35,7 +37,8 @@ public class ExpenseHelper extends BaseClass
 	public static List<WebElement> webElementListLegends;	
 	public static List<WebElement> webEleListBarGraphHoverValues;
 	public static List<String> legendsListTotalExpense = new ArrayList<String>();	
-
+	public static List<String> expectedCostFilters = new ArrayList<>();
+	
 	// these are for VerifyMonths method 
 	public static List<String> expectedYearMonthList = new ArrayList<String>();
 	public static List<String> tempStringList = new ArrayList<String>();
@@ -43,6 +46,9 @@ public class ExpenseHelper extends BaseClass
 	public static List<String> actualYearMonthList = new ArrayList<String>();
 	public static List<WebElement> ctryList; 
 	public static List<WebElement> vndrList;	
+
+	
+	
 	public static String errNeedToCallInitializeMethod = "Failed in method call. You first need to call SetupCountryAndVendorData() to use this method.";
 	public static int maxNumberOfLegends = 5; // max number of legends that are not labeled 'other'.
 	public static int numOfLegendsInExpenseSpendCategory = 8; // number of legends in the spend category
@@ -134,9 +140,6 @@ public class ExpenseHelper extends BaseClass
 	{
 		return new Select(driver.findElement(By.cssSelector(".tdb-space--half--top>select"))).getFirstSelectedOption().getText();
 	}
-
-	// ((//div[@class='tdb-card'])[2]/div)[1]/div
-	
 	
 	// ////////////////////////////////////////////////////////////////
 	// The xpaths below help in getting cost filters in  trend graphs    
@@ -1058,14 +1061,29 @@ public class ExpenseHelper extends BaseClass
 	}
 	
 	
-	// this sets currentExpenseFilter to what expense filter is being tested.
+	public static void SetupExpectedCostFilters()
+	{
+
+		expectedCostFilters.add("All Categories");
+		expectedCostFilters.add("Voice Charges");
+		expectedCostFilters.add("Data Charges");
+		expectedCostFilters.add("Messaging Charges");
+		expectedCostFilters.add("Roaming Charges");
+		expectedCostFilters.add("Equipment Charges");
+		expectedCostFilters.add("Taxes");
+		expectedCostFilters.add("Other Charges");
+		expectedCostFilters.add("Account Level Charges");
+	}
+	
+	// this sets currentExpenseFilter to what expense filter is being used to click each selection.
 	public static void SetExpenseFilter(expenseFilters expFilter)
 	{
 		currentExpenseFilter = expFilter;
 	}
 	
-	// 
-	public static void VerifySpendCateoryFilter() // bladdxx
+	// this uses the 'currentExpenseFilter' value to decide which set of cost filters will be used to make the clicks across all the filters. 
+	// the 'ClickThroughFiltersAndVerify' method does the clicks and then calls the method that handles all the testing. 
+	public static void VerifySpendCateoryFilter() throws Exception // bladdxx
 	{
 		switch(currentExpenseFilter)
 		{
@@ -1076,51 +1094,109 @@ public class ExpenseHelper extends BaseClass
 			}
 			case CostPerServiceNumber:
 			{
-		
+				ClickThroughFiltersAndVerify(costPerServiceNumberFilters);
 				break;
 			}
 			case CountOfServiceNumbers:
 			{
-		
+				ClickThroughFiltersAndVerify(countofServiceNumberFilters);
 				break;
 			}
 			default:
 			{
-				
+				Assert.fail("Bad case sent to sent to ExpenseHelper.VerifySpendCateoryFilter.");
 			}
 		}
 	}
 	
-
-	public static void ClickThroughFiltersAndVerify(String xPath)
+	public static void ClickThroughFiltersAndVerify(String xPath) throws Exception
 	{
-		List<WebElement> eleList = driver.findElements(By.xpath(xPath));
+		// get a list of the web elements that are related to the xPath passed in.
+		// the xPath is pointing to one of the spend/cost filters. 
+		List<WebElement> listToClickThrough = driver.findElements(By.xpath(xPath));
 		
 		int x = 0;
 		
-		//  go through the 
-		for(WebElement ele : eleList)
+		// go through the each filter selection and select them one at a time.
+		for(WebElement ele : listToClickThrough)
 		{
 			ele.click();
-			VerifyCorrctSelection(eleList, x);
+			
+			// these two waits verify the correct text is found in the tile for 'Expense Trending' and 'Cost Per Service Number'. 
+			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[1]"), MediumTimeout); 
+			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[2]"), MediumTimeout); 
+			
+			// CountOfServiceNumbersTrend.vendorTitle // FINISH THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
+			VerifyCorrectSelection(listToClickThrough, x); // verify the correct enable/disable states for control xPath sent in to this method.
+			VerifyRemainingCostSelectors(x);
 			x++;
 		}
 	}
 	
-	public static void VerifyCorrctSelection(List<WebElement> eleList,  int x)
+	// this is sent a web list of cost filters to look through. one of them is selected and the rest aren't.
+	// the one that is selected is indicated by the integer sent in. the rest of the cost filters are not selected.
+	// this verifies that the list element with the index 'x' is enabled and all the other list elements are not.  
+	public static void VerifyCorrectSelection(List<WebElement> eleList,  int x)
 	{
+		errMessage = "Failed testing of enabled/disabled cost filters in ExpenseHelper.VerifyCorrectSelection";
+		
 		for(int y = 0; y < eleList.size(); y++)
 		{
 			if(y == x)
 			{
-				Assert.assertTrue(eleList.get(y).getAttribute("class").contains("option--selected"));
+				Assert.assertTrue(eleList.get(y).getAttribute("class").contains("option--selected"),errMessage); 
 			}
 			else
 			{
-				Assert.assertFalse(eleList.get(y).getAttribute("class").contains("option--selected"));
+				Assert.assertFalse(eleList.get(y).getAttribute("class").contains("option--selected"), errMessage);
 			}
 		}
 	}
+	
+	// 
+	public static void VerifyRemainingCostSelectors(int x) // bladdxx
+	{
+		// errMessage = "Failed testing of enabled/disabled cost filters in ExpenseHelper.VerifyCorrectSelection";
+		
+		List<WebElement> tempListOne;
+		List<WebElement> tempListTwo;
+
+		switch(currentExpenseFilter)
+		{
+			case Expense:
+			{
+				tempListOne = driver.findElements(By.xpath(costPerServiceNumberFilters));  
+				VerifyCorrectSelection(tempListOne, x);
+				tempListTwo  = driver.findElements(By.xpath(countofServiceNumberFilters));
+				VerifyCorrectSelection(tempListTwo, x);
+				break;
+				
+			}
+			case CostPerServiceNumber:
+			{
+				tempListOne = driver.findElements(By.xpath(expenseTrendFilters));
+				VerifyCorrectSelection(tempListOne, x);
+				tempListTwo  = driver.findElements(By.xpath(countofServiceNumberFilters));
+				VerifyCorrectSelection(tempListTwo, x);
+				break;
+				
+			}
+			case CountOfServiceNumbers:
+			{
+				tempListOne = driver.findElements(By.xpath(expenseTrendFilters));
+				VerifyCorrectSelection(tempListOne, x);
+				tempListTwo  = driver.findElements(By.xpath(costPerServiceNumberFilters));
+				VerifyCorrectSelection(tempListTwo, x);
+				break;
+			}
+			default:
+			{
+				Assert.fail("Bad case parameter in ExpenseHelper.VerifyRemainingCostSelectors.");
+			}
+		}
+	}
+	
 	
 	// //////////////////////////////////////////////////////////////////////	
 	// 								helpers

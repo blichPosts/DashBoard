@@ -38,7 +38,7 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 		ExpenseHelper.failedtestNgTest = false;
 
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(15, 50);
+		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(30, 50);
 		
 		ShowText("\nDefault Cost Center Hierarchy Is Set ***** \n");
 		

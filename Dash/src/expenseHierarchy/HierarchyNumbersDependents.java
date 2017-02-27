@@ -169,6 +169,8 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		numberOfTileMapsToTest = numToTest;
 		
+		ShowText("The number of tiles to tested is " + numToTest);
+		
 		ExpenseHelper.SetHierarchyMaxDisplayed(numToDisplay);	
 	}
 
