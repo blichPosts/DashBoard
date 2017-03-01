@@ -349,7 +349,6 @@ public class CommonTestStepActions extends BaseClass
 			
 			// add integer month and as string and string year to list to be returned.
 			tmpList.add(tmpMonthInt + "-" + ele.getText().split(" ")[1]);  // on Dashboard 1.1.0 it changed from "-" to "/". So changed it to "/". Ana - 01/04/17
-																		   // Dashboard 1.1.12 changed back to "-". bob 2/14/17	
 		}
 		return tmpList;
 	}

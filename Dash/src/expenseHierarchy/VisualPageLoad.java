@@ -42,6 +42,7 @@ public class VisualPageLoad extends BaseClass
 	public static String tempTwo = "";
 	public static String dependentUnitInfo = "";
 	public static String hoverInfo = "";
+	public static String chartId = "";
 	
 	// for title above KPI tiles
 	public static String  firstPartTitleAboveKpiTiles = "Expenses for ";
@@ -75,6 +76,8 @@ public class VisualPageLoad extends BaseClass
 		WaitForElementVisible(By.xpath("//h2[text()='" + ExpenseHelper.desiredMonth + "']"), MediumTimeout); // this is month in top left corner tiles.
 		WaitForElementVisible(By.xpath("//span[text()='Total Expense']"), MediumTimeout); // this is text in top left corner tiles. 
 		WaitForElementVisible(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select"), MediumTimeout); // this is drop down in top left corner POV.
+		chartId =  UsageHelper.getChartId(0);
+		WaitForElementClickable(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(10)"), MediumTimeout, "");
 	}
 	
 	public static void VerifyInitialStatesAfterPageLoad() throws Exception 

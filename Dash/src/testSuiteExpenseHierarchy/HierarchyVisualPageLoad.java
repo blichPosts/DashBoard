@@ -32,12 +32,12 @@ public class HierarchyVisualPageLoad extends BaseClass
 
 		VisualPageLoad.SelectAndWaitForPageLoad();
 		
-		//VisualPageLoad.VerifyInitialStatesAfterPageLoad();
+		// VisualPageLoad.VerifyInitialStatesAfterPageLoad();
 	
 		// ///////////////////////////////////////////////////////////////////////////////
 		// 							MANUAL TEST
 		// ///////////////////////////////////////////////////////////////////////////////
-		VisualPageLoad.ManualDependencyUnits();
+		// VisualPageLoad.ManualDependencyUnits();
 		
 		// VisualPageLoad.Hover();
 		

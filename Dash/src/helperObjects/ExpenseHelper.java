@@ -990,6 +990,7 @@ public class ExpenseHelper extends BaseClass
 	// //////////////////////////////////////////////////////////////////////////
 	//					Hierarchy Helpers  
 	// //////////////////////////////////////////////////////////////////////////
+	
 	// this sets the pulldown in the hierarchy dash board tile map section. 
 	public static void SetHierarchyMaxDisplayed(int numTilesToDisplay)
 	{
@@ -1060,6 +1061,9 @@ public class ExpenseHelper extends BaseClass
 		return new Select(driver.findElement(By.cssSelector(".tdb-space--top>select"))).getFirstSelectedOption().getText();
 	}
 	
+	// //////////////////////////////////////////////////////////////////////////
+	//					Hierarchy Helpers   DONE ???
+	// //////////////////////////////////////////////////////////////////////////
 	
 	public static void SetupExpectedCostFilters()
 	{
@@ -1109,10 +1113,11 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
+	// this clicks through the category selectors and does the testing described below.
 	public static void ClickThroughFiltersAndVerify(String xPath) throws Exception
 	{
 		// get a list of the web elements that are related to the xPath passed in.
-		// the xPath is pointing to one of the spend/cost filters. 
+		// the xPath is pointing to one of the category filters. 
 		List<WebElement> listToClickThrough = driver.findElements(By.xpath(xPath));
 		
 		int x = 0;
@@ -1123,18 +1128,21 @@ public class ExpenseHelper extends BaseClass
 			ele.click();
 			
 			// these two waits verify the correct text is found in the tile for 'Expense Trending' and 'Cost Per Service Number'. 
-			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[1]"), MediumTimeout); 
+			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[1]"), MediumTimeout);  
 			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[2]"), MediumTimeout); 
 			
-			// CountOfServiceNumbersTrend.vendorTitle // FINISH THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			// this waits for the correct text in Cost per Service Number.
+			WaitForElementVisible(By.xpath("//h3[contains(text(), 'Count of Service Numbers by')]"), MediumTimeout);
 			
 			VerifyCorrectSelection(listToClickThrough, x); // verify the correct enable/disable states for control xPath sent in to this method.
-			VerifyRemainingCostSelectors(x);
+			
+			// this verifies other two category selectors that are not being clicked through. 
+			VerifyRemainingCategorySelectors(x);
 			x++;
 		}
 	}
 	
-	// this is sent a web list of cost filters to look through. one of them is selected and the rest aren't.
+	// this is sent a web list of selectors to look through. one of them is selected and the rest aren't.
 	// the one that is selected is indicated by the integer sent in. the rest of the cost filters are not selected.
 	// this verifies that the list element with the index 'x' is enabled and all the other list elements are not.  
 	public static void VerifyCorrectSelection(List<WebElement> eleList,  int x)
@@ -1154,17 +1162,16 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	// 
-	public static void VerifyRemainingCostSelectors(int x) // bladdxx
+	// this verifies the remaining category selectors. These two selectors were not clicked on. 
+	public static void VerifyRemainingCategorySelectors(int x) // bladdxx
 	{
-		// errMessage = "Failed testing of enabled/disabled cost filters in ExpenseHelper.VerifyCorrectSelection";
-		
+
 		List<WebElement> tempListOne;
 		List<WebElement> tempListTwo;
 
 		switch(currentExpenseFilter)
 		{
-			case Expense:
+			case Expense: // expense trend is being clicked, verify other two category selectors.
 			{
 				tempListOne = driver.findElements(By.xpath(costPerServiceNumberFilters));  
 				VerifyCorrectSelection(tempListOne, x);
@@ -1173,7 +1180,7 @@ public class ExpenseHelper extends BaseClass
 				break;
 				
 			}
-			case CostPerServiceNumber:
+			case CostPerServiceNumber: // cost per service number trend is being clicked, verify other two category selectors.
 			{
 				tempListOne = driver.findElements(By.xpath(expenseTrendFilters));
 				VerifyCorrectSelection(tempListOne, x);
@@ -1182,7 +1189,7 @@ public class ExpenseHelper extends BaseClass
 				break;
 				
 			}
-			case CountOfServiceNumbers:
+			case CountOfServiceNumbers:// count of service number trend is being clicked, verify other two category selectors.
 			{
 				tempListOne = driver.findElements(By.xpath(expenseTrendFilters));
 				VerifyCorrectSelection(tempListOne, x);

@@ -29,22 +29,16 @@ public class SpendCategoryFilters extends BaseClass
 
 		ExpenseHelper.SetupExpectedCostFilters();
 		
-		ShowText("run");
-		
 		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested.
 		
 		// verify selecting expense trending 
 		ExpenseHelper.VerifySpendCateoryFilter();
 		
-		ShowText("run");
-
 		ExpenseHelper.SetExpenseFilter(expenseFilters.CountOfServiceNumbers); // this indicates which expense filter is being tested.
 		
 		// verify selecting expense trending 
 		ExpenseHelper.VerifySpendCateoryFilter();
 
-		ShowText("run");
-		
 		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
 		
 		// verify selecting expense trending 
