@@ -110,8 +110,20 @@ public class HierarchyExpenseTrending extends BaseClass {
 
 			if (loginType.equals(LoginType.Command)) {
 				
-				String cssLine = "#" + chartId + ">svg>g>path:nth-of-type(2)";
+				// If there are negative values on the y axis use line 1. Otherwise use line 2 
+				List<WebElement> yAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-yaxis-labels>text>tspan"));
+				String lineNumber = "2";
+				
+				for (WebElement yLabel: yAxisLabels) {
+					
+					if (yLabel.getText().startsWith("-")) {
+						lineNumber = "1";
+					}	
+				}
+				
+				String cssLine = "#" + chartId + ">svg>g>path:nth-of-type(" + lineNumber + ")";
 				WebElement line = driver.findElement(By.cssSelector(cssLine));
+				
 				Point coordinatesLine = GeneralHelper.getAbsoluteLocation(line);
 				y = coordinatesLine.getY();
 				
@@ -167,20 +179,21 @@ public class HierarchyExpenseTrending extends BaseClass {
 				 
 						
 				// Verify the labels' text and amounts shown on the tooltip
+				
+				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+				
 				Assert.assertEquals(labelFound, labelExpected);
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
-
-//				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-//				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 				
 			}
 			
 			// Verify month and year shown on the tooltip (first line)
 			String monthYearFound = tooltip.get(0).getText();
-			String monthYearExpected = monthYearList.get(indexMonth);
+			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
 				
 			Assert.assertEquals(monthYearFound, monthYearExpected);
-//			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;
 			indexMonth--;

@@ -42,12 +42,13 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 		}
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
-		
+			
 		String path = UsageHelper.path;
 		int amountOfVendors = 5;
 
-		if (amountOfVendors > vendorNames.size())
+		if (amountOfVendors > vendorNames.size()) {
 			amountOfVendors = vendorNames.size();
+		}
 		
 		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
 		
@@ -125,26 +126,26 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
-			Thread.sleep(1000);				
+			Thread.sleep(2000);				
 			
 			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
-			Thread.sleep(1000);				
+			Thread.sleep(2000);				
 			
 			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 			
 			TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 						
 			indexMonth++;
 

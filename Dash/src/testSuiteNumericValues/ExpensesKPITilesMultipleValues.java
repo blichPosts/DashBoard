@@ -43,7 +43,7 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 12;
+		int amountOfVendors = 5;
 		
 		// #1 Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();

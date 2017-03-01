@@ -28,6 +28,83 @@ public class ReadFilesHelper extends BaseClass {
 		js.executeScript("__TANGOE__setShouldCaptureTestData(true)");
 		
 	}
+
+
+	// Get the data for Expenses and Usage pages - Fleet Dashboard
+	public static List<UsageOneMonth> getJsonDataExpenseUsage(String vendor) throws Exception{
+		
+		UsageOneMonth usageOneMonth = new UsageOneMonth();
+		List<UsageOneMonth> listValues = new ArrayList<UsageOneMonth>();
+	    	
+		String usageExpenseData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('fleet.expenseUsage.payload.rows')");
+		
+//		boolean jsonEmpty = false;
+//		
+//		do {
+//			try {
+//				usageExpenseData.isEmpty();
+//				
+//			} catch (NullPointerException e) {
+//				GoToDashboard();
+//				jsonEmpty = true;
+//			}
+//			
+//		} while (!jsonEmpty);
+		
+	    ShowText(usageExpenseData);
+	   
+	    // Get the rows with data
+//		    String trendData = trendDataTmp.split("\"rows\":")[1];
+	   
+	    // Convert the String with data into a JSONArray
+	    JSONArray array = new JSONArray(usageExpenseData); 
+
+	    for (int i = 0; i < array.length(); i++){
+	    	
+	    	JSONObject jsonObj  = array.getJSONObject(i);
+	    	usageOneMonth = new UsageOneMonth();
+	        
+	    	if (jsonObj.getString("vendor_name").equals(vendor)) {
+	    		
+	    		usageOneMonth.setVendorName(jsonObj.getString("vendor_name"));
+				usageOneMonth.setInvoiceMonth(jsonObj.getString("invoice_month"));
+				usageOneMonth.setOrdinalYear(Integer.toString(jsonObj.getInt("ordinal_year")));
+				usageOneMonth.setOrdinalMonth(Integer.toString(jsonObj.getInt("ordinal_month")));
+				
+				usageOneMonth.setDomesticVoice(Double.toString(jsonObj.getDouble("domestic_mou")));
+				usageOneMonth.setDomesticOverageVoice(Double.toString(jsonObj.getDouble("domestic_overage_mou")));
+				usageOneMonth.setDomesticMessages(Double.toString(jsonObj.getDouble("domestic_messages")));
+				usageOneMonth.setDomesticDataUsageKb(Double.toString(jsonObj.getDouble("domestic_data_usage_kb")));
+				usageOneMonth.setRoamingVoice(Double.toString(jsonObj.getDouble("roaming_mou")));
+				usageOneMonth.setRoamingDataUsageKb(Double.toString(jsonObj.getDouble("roaming_data_usage_kb")));
+				usageOneMonth.setRoamingMessages(Double.toString(jsonObj.getDouble("roaming_messages")));
+				
+				usageOneMonth.setNumberOfInvoices(Long.toString(jsonObj.getLong("no_of_invoices")));
+				usageOneMonth.setNumberOfLines(Long.toString(jsonObj.getLong("no_of_lines")));
+				usageOneMonth.setTotalSubscriberCharges(Double.toString(jsonObj.getDouble("total_subscriber_charges_ex")));
+				usageOneMonth.setVoiceCharges(Double.toString(jsonObj.getDouble("voice_charges_ex")));
+				usageOneMonth.setDataCharges(Double.toString(jsonObj.getDouble("data_charges_ex")));
+				usageOneMonth.setMessagesCharges(Double.toString(jsonObj.getDouble("messaging_charges_ex")));
+				usageOneMonth.setEquipmentCharges(Double.toString(jsonObj.getDouble("equipment_charges_ex")));
+				usageOneMonth.setTaxCharges(Double.toString(jsonObj.getDouble("tax_charges_ex")));
+				usageOneMonth.setRoamingMsgCharges(Double.toString(jsonObj.getDouble("roaming_msg_charges_ex")));
+				usageOneMonth.setRoamingDataCharges(Double.toString(jsonObj.getDouble("roaming_data_charges_ex")));
+				usageOneMonth.setRoamingVoiceCharges(Double.toString(jsonObj.getDouble("roaming_voice_charges_ex")));
+				usageOneMonth.setTotalAccountLevelCharges(Double.toString(jsonObj.getDouble("total_account_level_charges_ex")));
+				usageOneMonth.setRoamingCharges(Double.toString(jsonObj.getDouble("roaming_charges_ex")));
+				usageOneMonth.setOtherCharges(Double.toString(jsonObj.getDouble("other_charges_ex")));
+				usageOneMonth.setTotalCharge(Double.toString(jsonObj.getDouble("total_charge_ex")));
+	    		
+				listValues.add(usageOneMonth);
+				
+	    	}
+	    	
+	    }
+	    
+		return listValues;
+	
+	}
+	
 	
 	
 	// Get the data for the KPI tiles and Trending chart
@@ -38,7 +115,7 @@ public class ReadFilesHelper extends BaseClass {
 	    	    	
 	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.rows')");
 	   
-//	    ShowText(trendData);
+	    ShowText(trendData);
 	   
 	    // Get the rows with data
 //	    String trendData = trendDataTmp.split("\"rows\":")[1];

@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import Dash.BaseClass;
-import Dash.BaseClass.LoginType;
+
 
 public class GeneralHelper extends BaseClass {
 
@@ -164,12 +164,12 @@ public class GeneralHelper extends BaseClass {
 	// Due to rounding there may be some case where the value found and the value expected differ on 1, e.g.: Value found = 28, Value expected = 27 
 	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
 		
-		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
+//		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
 		
 		double numActual = Double.parseDouble(getNumericValue(valueActual));
 		double numExpected = Double.parseDouble(getNumericValue(valueExpected));
 		
-		System.out.println("numActual: " + numActual + "; numExpected: " + numExpected);
+//		System.out.println("numActual: " + numActual + "; numExpected: " + numExpected);
 		
 		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
 		
@@ -219,5 +219,7 @@ public class GeneralHelper extends BaseClass {
 		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
 		
 	}
+	
+	
 	
 }

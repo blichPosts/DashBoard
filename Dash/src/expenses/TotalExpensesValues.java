@@ -183,16 +183,15 @@ public class TotalExpensesValues extends BaseClass {
 		}
 		
 		
-		//System.out.println("domestic list size: " + domesticValue.size());
-//			System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
-		for(String s: vendorsInChartNames){
-//				System.out.println("*** " + s);
-		}
-		
-		//System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
-		for(WebElement w: vendorsSelectedCheckBox){
-//				System.out.println("*** " + w.getText());
-		}
+//		System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
+//		for(String s: vendorsInChartNames){
+//			System.out.println("*** " + s);
+//		}
+//		
+//		System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
+//		for(WebElement w: vendorsSelectedCheckBox){
+//			System.out.println("*** " + w.getText());
+//		}
 
 		
 		int indexVendorSelected = 0;
@@ -206,19 +205,11 @@ public class TotalExpensesValues extends BaseClass {
 		// **************************************************************************************
 		while (indexVendorSelected < vendorsSelectedCheckBox.size() && indexVendorInChart < vendorsInChartNames.size()) {
 			
-//			System.out.println("indexVendorSelected: " + indexVendorSelected + ", vendorsSelectedCheckBox.size(): " + vendorsSelectedCheckBox.size());
-//		    System.out.println("indexVendorInChart: " + indexVendorInChart + ", vendorsInChartNames.size(): " + vendorsInChartNames.size()); 
-//			System.out.println("Vendor name chart: " +  vendorsInChartNames.get(indexVendorInChart));
-//			System.out.println("Vendor name checkbox: " +  vendorsSelectedCheckBox.get(indexVendorSelected).getText());
-//			System.out.println("Condition is: " +  vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()));
-			
 			// If the vendor in vendorsSelectedCheckBox list is present in the vendorsInChartList, or if the current element from chart is "Other", 
 			// then run the test. Else, move to the next vendor
 			if (vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()) || vendorsInChartNames.get(indexVendorInChart).equals("Other")) {
 				
 				String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-				
-				//System.out.println("cssSelector: " + cssSelector);
 				
 				// The 'bar' WebElement will be used to set the position of the mouse on the chart
 				WebElement bar = driver.findElement(By.cssSelector(cssSelector));
@@ -238,33 +229,24 @@ public class TotalExpensesValues extends BaseClass {
 				int x_offset = (int) (width * 0.5);
 				int y_offset = (int) (height * 0.5);
 				
-				robot.mouseMove(x + x_offset, y + y_offset); 
+				
+				if (loginType.equals(LoginType.Command)) {
+					
+					y_offset = y_offset + 260;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+					
+				}						
+
+				x = x + x_offset;
+				y = y + y_offset;
+				
+				robot.mouseMove(x, y); 
 				
 				
-				/*
-				
-				Point coordinates = bar.getLocation();
-				Robot robot = new Robot(); 
-				
-				int x = coordinates.getX();
-				int y = coordinates.getY() + 70;
-				
-				int x_offset = 5;
-				int y_offset = 100;
-				
-				robot.mouseMove(x, y); // these coordinates work for REF APP :)
-				
-				
-				if (loginType.equals(LoginType.Command) || loginType.equals(LoginType.ReferenceApp)) {
-					robot.mouseMove(x + x_offset, y + y_offset); // these coordinates work for CMD :)
-				}
-				*/
-				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) > 10.0) {
+				if (height > 10.0) {
 					bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
 				}
 				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) < 10.0) {
+				if (height < 10.0) {
 					robot.mousePress(InputEvent.BUTTON1_MASK);
 					robot.mouseRelease(InputEvent.BUTTON1_MASK);
 				}	
@@ -355,7 +337,7 @@ public class TotalExpensesValues extends BaseClass {
 					}
 						
 					Assert.assertEquals(labelFound, labelExpected);
-					Assert.assertEquals(valueFound, valueExpected);
+					GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 					
 					System.out.println("  labelFound: " + labelFound + ", labelExpected: " + labelExpected);
 					System.out.println("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
@@ -475,15 +457,15 @@ public class TotalExpensesValues extends BaseClass {
 		
 //		System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
 		
-		System.out.println(" * Vendors In Chart * "); 
-		for(String s: vendorsInChartNames){
-			System.out.println("*** " + s);
-		}
-		
-		//System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
-		for(WebElement w: vendorsSelectedCheckBox){
+//		System.out.println(" * Vendors In Chart * "); 
+//		for(String s: vendorsInChartNames){
+//			System.out.println("*** " + s);
+//		}
+//		
+//		System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
+//		for(WebElement w: vendorsSelectedCheckBox){
 //			System.out.println("*** " + w.getText());
-		}
+//		}
 
 		
 		
@@ -534,8 +516,19 @@ public class TotalExpensesValues extends BaseClass {
 				int x_offset = (int) (width * 0.5);
 				int y_offset = (int) (height * 0.5);
 				
-				robot.mouseMove(x + x_offset, y + y_offset); 
+							
+				if (loginType.equals(LoginType.Command)) {
+					
+					y_offset = y_offset + 260;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+					
+				}						
 
+				x = x + x_offset;
+				y = y + y_offset;
+				
+				robot.mouseMove(x, y); 
+				
+				
 				
 				try {
 					WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
@@ -580,7 +573,7 @@ public class TotalExpensesValues extends BaseClass {
 				String labelExpected = "Expense";
 								
 				Assert.assertEquals(labelFound, labelExpected);
-				Assert.assertEquals(valueFound, valueExpected);
+				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				
 //				System.out.println("  labelFound: " + labelFound + ", labelExpected: " + labelExpected);
 //				System.out.println("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
@@ -595,9 +588,7 @@ public class TotalExpensesValues extends BaseClass {
 			
 		}	
 		
-		// .. to be removed
-		System.out.println("Vendors in chart equal to vendors found by test??: " + tmpListVendorFound.containsAll(vendorsInChartNames));
-		// ...............	
+		
 	}
 
 	

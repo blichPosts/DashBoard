@@ -52,7 +52,7 @@ public class GeneralTopTenHelper {
 	// Format number NEW 
 	public static String formatPhoneNumber(String serviceNumber) {
 		
-		System.out.println("serviceNumber: " + serviceNumber);
+//		System.out.println("serviceNumber: " + serviceNumber);
 		
 		String numberFormatted = serviceNumber;
 		
@@ -72,7 +72,7 @@ public class GeneralTopTenHelper {
 		// Remove leading and trailing spaces
 		numberFormatted = numberFormatted.trim();
 		
-		System.out.println("Service Number Formatted: " + numberFormatted);
+//		System.out.println("Service Number Formatted: " + numberFormatted);
 		
 		return numberFormatted;
 		

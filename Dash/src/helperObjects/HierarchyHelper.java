@@ -147,7 +147,7 @@ public class HierarchyHelper extends BaseClass {
 		for (WebElement h: hierarchyValues) {
 			
 			hierarchyIds.add(h.getAttribute("value"));
-			System.out.println("Hierarchy ID: " + h.getAttribute("value"));
+//			System.out.println("Hierarchy ID: " + h.getAttribute("value"));
 		}
 		
 		return hierarchyIds;

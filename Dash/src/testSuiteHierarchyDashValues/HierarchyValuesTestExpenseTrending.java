@@ -60,19 +60,20 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 			try {
 				
 				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
+				Thread.sleep(2000);
 				
 				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryTotal);
-				Thread.sleep(2000);
 				
 				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
+				Thread.sleep(2000);
 				
 				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryOptimizable);
-				Thread.sleep(2000);
 				
 				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
+				Thread.sleep(2000);
 				
 				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryRoaming);
-				Thread.sleep(2000);
+				
 				
 			} catch(NullPointerException e) {
 				

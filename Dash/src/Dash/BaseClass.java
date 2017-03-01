@@ -28,6 +28,7 @@ import org.testng.Assert;
 
 import helperObjects.Country;
 import helperObjects.GeneralHelper;
+import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 
 public class BaseClass
@@ -62,8 +63,8 @@ public class BaseClass
 	//public static String commandPassword = "hop*ititmb9";	
 	
 	
-	public static String commandUserName = "bob.l.vis";
-	public static String commandPassword = "tngo222";	
+	public static String commandUserName = "helpdeskvistl1";  // "bob.l.vis";  <-- line changed by Ana 2/23/17
+	public static String commandPassword = "tngo111";  // "tngo222";  <-- line changed by Ana 2/23/17	
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
 	public static LoginType loginType; // bladdxx // new
@@ -112,7 +113,7 @@ public class BaseClass
 	{
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
-		loginType = LoginType.ReferenceApp; // bladdxx
+		loginType = LoginType.ReferenceApp; // bladdxx     <-- line changed by Ana 2/23/17
 	}
 	
 	public static void ShowArray(String [] strArray)
@@ -603,7 +604,7 @@ public class BaseClass
 						
 			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 			// Get the location of the second line of the chart -> to get the "y" coordinate
-			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+			// These coordinates will be used to put the mouse pointer over the button
 			Point coordinates = menu.getLocation();
 			
 			Robot robot = new Robot(); 
@@ -626,12 +627,30 @@ public class BaseClass
 		    
 		    // get to frame one.
 		    driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
-			
+		    
 		    // this timeout is here because when at frame id "CONTENT" there is no DOM element to wait for.    
 		    DebugTimeout(1, ""); 
-
+		    
 		    // this will get to dash board frame. at this pint the dash board test code will wait for the dash page to load. 
-			driver.switchTo().frame(driver.findElement(By.id("dashboard_iframe")));
+		    driver.switchTo().frame(driver.findElement(By.id("dashboard_iframe")));
+
+			// --> following lines added by Ana 2/24/17
+			// Enable Start collecting data
+
+//			boolean stop = true;
+//			
+//			do {
+//				System.out.println("Start collecting data");
+//				ReadFilesHelper.startCollectingData();  
+//				Thread.sleep(500);
+//				try{
+//					driver.findElement(By.cssSelector("div.tdb-currentContextMonth"));
+//				} catch (Exception e) {
+//					stop = false;
+//				}
+//				
+//			} while (!stop);
+			
 		}
 
 		// bladdxx - new

@@ -16,7 +16,6 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 
 import Dash.BaseClass;
-import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
@@ -434,23 +433,43 @@ public class TotalUsageActions extends BaseClass{
 			WebElement bar = driver.findElement(By.cssSelector(cssSelector));
 
 			// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
-			Point coordinates = bar.getLocation();
-			Robot robot = new Robot(); 
-			robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work for REF APP :)
+			Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
 			
-			if (loginType.equals(LoginType.Command) || loginType.equals(LoginType.ReferenceApp)) {
-				robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 200); // these coordinates work for CMD :)
-			}
+			int x = coordinates.getX();
+			int y = coordinates.getY();
 			
-			if (!(bar.getAttribute("height").toString().equals("0"))){
-				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
+			Dimension d = bar.getSize();
+			int height = d.getHeight();
+			int width = d.getWidth();
 
-			}
+						
+			Robot robot = new Robot();
 			
-			if (bar.getAttribute("height").toString().equals("0")){
-				robot.mousePress(InputEvent.BUTTON1_MASK);
-				robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			}
+			int x_offset = (int) (width * 0.5);
+			int y_offset = (int) (height * 0.5);
+			
+			// If the bar's width is zero (it means the value represented is zero) then the coordinates passed to robot.mouseMove will not be useful to get the tooltip visible.
+			// We add 20 to "x" so the mouse is hovered over the chart and the tooltip is displayed. 
+			if (width == 0)
+				x_offset = 50;
+			
+			if (loginType.equals(LoginType.Command)) {
+				
+				y_offset = y_offset -50;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+				
+			}						
+
+			x = x + x_offset;
+			y = y + y_offset;
+			
+			robot.mouseMove(x + 20, y); 
+			Thread.sleep(500);
+			
+			robot.mouseMove(x, y); 
+			
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			
 				
 						
 			try {
@@ -495,7 +514,7 @@ public class TotalUsageActions extends BaseClass{
 			String vendorNameFound = tooltip.get(0).getText();
 			String vendorNameExpected = oneMonthData.getVendorName();
 			
-			System.out.println("firstLineFound: " + vendorNameFound + ", firstLineExpected: " + vendorNameExpected);
+			System.out.println("vendorNameFound: " + vendorNameFound + ", vendorNameExpected: " + vendorNameExpected);
 			Assert.assertEquals(vendorNameFound, vendorNameExpected);
 									
 			
@@ -510,31 +529,36 @@ public class TotalUsageActions extends BaseClass{
 				// Get the value on tooltip and remove all blank spaces
 				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
 				
-				System.out.println("label: " + labelFound + ", value: " + valueFound); 
-							
+				System.out.println("label: " + labelFound); 
+				
+				String valueExpected = "";
+				
 				// Verify the labels' text and amounts shown on the tooltip 					
 				if (barChartId == UsageHelper.totalUsageDomesticChart) {
 					
 					if (index == 2) {
 						Assert.assertEquals(labelFound, "Domestic");
-						Assert.assertEquals(valueFound, domesticValue);
+						valueExpected = domesticValue;
 					}
 					
 					if (categorySelector == UsageHelper.categoryVoice && index == 5) {
 						
 						Assert.assertEquals(labelFound, "Domestic Overage"); 
-						Assert.assertEquals(valueFound, overageValue);
+						valueExpected = overageValue;
 					}
 					
 				} else if (barChartId == UsageHelper.totalUsageRoamingChart) {
 					
 					Assert.assertEquals(labelFound, "Roaming"); 
-					Assert.assertEquals(valueFound, roamingValue);
+					valueExpected = roamingValue;
 					
 				}
 
+				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected); 
+				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
+				
 			}
-			
+						
 			indexHighchart++;
 			
 		}
@@ -611,6 +635,7 @@ public class TotalUsageActions extends BaseClass{
 			}
 			
 		}
+		
 		
 		
 		List<WebElement> vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
@@ -730,10 +755,10 @@ public class TotalUsageActions extends BaseClass{
 		
 		
 		
-		System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
-		for(String s: vendorsInChartNames){
-			System.out.println("*** " + s);
-		}
+//		System.out.println("vendorsInChartNames: " + vendorsInChartNames.size()); 
+//		for(String s: vendorsInChartNames){
+//			System.out.println("*** " + s);
+//		}
 		
 //		System.out.println("vendorsSelectedCheckBox: " + vendorsSelectedCheckBox.size()); 
 //		for(WebElement w: vendorsSelectedCheckBox){
@@ -784,16 +809,23 @@ public class TotalUsageActions extends BaseClass{
 				if (width == 0)
 					x_offset = 20;
 				
-				robot.mouseMove(x + x_offset, y + y_offset); 
+				if (loginType.equals(LoginType.Command)) {
+					
+					y_offset = y_offset -50;  //  these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+					
+				}						
+
+				x = x + x_offset;
+				y = y + y_offset;
 				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) > 10.0) {
-					bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-				}
+				robot.mouseMove(x + 20, y); 
+				Thread.sleep(500);
 				
-				if (Double.parseDouble(bar.getAttribute("height").toString()) < 10.0) {
-					robot.mousePress(InputEvent.BUTTON1_MASK);
-					robot.mouseRelease(InputEvent.BUTTON1_MASK);
-				}
+				robot.mouseMove(x, y); 
+				
+				robot.mousePress(InputEvent.BUTTON1_MASK);
+				robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
 				
 				
 				try {
@@ -823,14 +855,14 @@ public class TotalUsageActions extends BaseClass{
 				// 2 Roaming:
 				// 3 <Amount for Roaming>
 				
-				Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+//				Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 				
 				// Verify country/vendor shown on the tooltip
 				String vendorNameFound = tooltip.get(0).getText();
 				String vendorNameExpected = vendorsInChartNames.get(indexVendorInChart);
 					
 				Assert.assertEquals(vendorNameFound, vendorNameExpected);
-				System.out.println("firstLineFound: " + vendorNameFound + ", firstLineExpected: " + vendorNameExpected);
+				System.out.println("vendorNameFound: " + vendorNameFound + ", vendorNameExpected: " + vendorNameExpected);
 				
 				
 				// Verify the label and the amount shown on the tooltip
@@ -855,8 +887,6 @@ public class TotalUsageActions extends BaseClass{
 							valueExpected = domesticValue.get(vendorNameExpected);
 							labelExpected = "Domestic";
 							
-							Assert.assertEquals(labelFound, labelExpected);
-							Assert.assertEquals(valueFound, valueExpected);
 							System.out.println(" Assert Domestic");
 						}
 						
@@ -865,8 +895,6 @@ public class TotalUsageActions extends BaseClass{
 							valueExpected = overageValue.get(vendorNameExpected);
 							labelExpected = "Domestic Overage";
 							
-							Assert.assertEquals(labelFound, labelExpected);
-							Assert.assertEquals(valueFound, valueExpected);
 							System.out.println(" Assert Overage");
 						}
 						
@@ -875,14 +903,16 @@ public class TotalUsageActions extends BaseClass{
 						valueExpected = roamingValue.get(vendorNameExpected);
 						labelExpected = "Roaming";
 						
-						Assert.assertEquals(labelFound, labelExpected);
-						Assert.assertEquals(valueFound, valueExpected);
 						System.out.println(" Assert Roaming");
 					}
+					
+					Assert.assertEquals(labelFound, labelExpected);
 					
 					System.out.println("  labelFound: " + labelFound + ", labelExpected: " + labelExpected);
 					System.out.println("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 	
+					GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
+					
 				}
 				
 				indexHighchart++;
