@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageOneMonth;
 
@@ -26,19 +27,19 @@ public class ExpensesKPITilesValues extends BaseClass{
 		String totalChargeKPIFromDash = kpiTileValues.get(0).getText();
 		
 		System.out.println("KPI Tile Total Expense Actual: " + totalChargeKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalChargeKPICalculated); 
-		Assert.assertEquals(totalChargeKPIFromDash, totalChargeKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(totalChargeKPIFromDash, totalChargeKPICalculated);
 		
 		String countServNumKPICalculated = UsageCalculationHelper.convertUnits(numberLines);
 		String countServNumKPIFromDash = kpiTileValues.get(1).getText();
 		
 		System.out.println("KPI Tile Cost per Service Number Actual: " + countServNumKPIFromDash + ",  KPI Tile Cost per Service Number Expected: " + countServNumKPICalculated); 
-		Assert.assertEquals(countServNumKPIFromDash, countServNumKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(countServNumKPIFromDash, countServNumKPICalculated);
 		
 		String costServNumKPICalculated = UsageCalculationHelper.convertUnitsExpense(costPerServiceNumber);
 		String costServNumKPIFromDash = kpiTileValues.get(2).getText();
 		
 		System.out.println("KPI Tile Count of Service Numbers Actual: " + costServNumKPIFromDash + ",  KPI Tile Count of Service Numbers Expected: " + costServNumKPICalculated); 
-		Assert.assertEquals(costServNumKPIFromDash, costServNumKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(costServNumKPIFromDash, costServNumKPICalculated);
 		
 		
 	}
@@ -137,7 +138,7 @@ public class ExpensesKPITilesValues extends BaseClass{
 				System.out.println("3 Month Avg Actual: " + threeMonthAvgActual + ", 3 Month Avg Expected: " + threeMonthAvgExpected);
 				
 				// Verifies that the '3 month rolling average' displayed equals to the '3 month rolling average' calculated
-				Assert.assertEquals(threeMonthAvgActual, threeMonthAvgExpected);
+				GeneralHelper.verifyExpectedAndActualValues(threeMonthAvgActual, threeMonthAvgExpected);
 				
 				// If KPI value is different from the 3 month rolling average, then trending % will be different from 0%.
 				// --> If trending % is 0%, it won't be displayed
@@ -147,8 +148,6 @@ public class ExpensesKPITilesValues extends BaseClass{
 					// System.out.println("rollingAverage: "  + rollingAverage);
 					
 					int trendValueExpected = calculateTrendingPercentage(kpiValue, rollingAverage);
-					//int trendTemp = calculateTrendingPercentage(kpiValue, rollingAverage);
-					//int trendCalculated = Math.abs(trendTemp);
 					
 					// System.out.println("Trend calculated: " + trendCalculated);
 					
@@ -167,15 +166,7 @@ public class ExpensesKPITilesValues extends BaseClass{
 						// Very unlikely to happen, but if it happens I'd like the test not to stop, 
 						// and to continue running the asserts. 
 						// If the difference between expected value and found value is greater than 1%, then it is unacceptable and the test will fail. 
-						if (Math.abs(trendValueExpected - trendValueActual) < 1){
-							Assert.assertEquals(trendValueActual, trendValueExpected);
-						} else {
-							System.out.println("Trending percentage found is incorrect");
-							break;
-						}
-						
-//						System.out.println(trendValueActual);
-//						System.out.println(trendValueExpected);
+						GeneralHelper.verifyExpectedAndActualValues(trendValueActual, trendValueExpected);
 						 
 					}
 					
@@ -269,7 +260,7 @@ public class ExpensesKPITilesValues extends BaseClass{
 				System.out.println("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
 				
 				// Verifies that the '6 months rolling average' displayed equals to the '6 months rolling average' calculated
-				Assert.assertEquals(sixMonthAvgActual, sixMonthAvgExpected);
+				GeneralHelper.verifyExpectedAndActualValues(sixMonthAvgActual, sixMonthAvgExpected);
 				
 			}
 			

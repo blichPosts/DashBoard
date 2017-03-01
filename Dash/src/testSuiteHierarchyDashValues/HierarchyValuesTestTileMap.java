@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
-import expenseHierarchy.HierarchyExpenseTrending;
+import expenseHierarchy.HierarchyTreeMap;
 import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.HierarchyTrendData;
@@ -18,7 +18,7 @@ import helperObjects.ReadFilesHelper;
 
 
 
-public class HierarchyValuesTestExpenseTrending extends BaseClass{
+public class HierarchyValuesTestTileMap extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -30,7 +30,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 
 
 	@Test
-	public static void HierarchyValuesTestExpenseTrendingTest() throws Exception
+	public static void HierarchyValuesTestTileMapTest() throws Exception
 	{
 
 		// Enable Start collecting data
@@ -38,50 +38,49 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		// #1 Select the "VIEW BY HIERARCHY" button
 		HierarchyHelper.selectHierarchyView();
+		Thread.sleep(2000);
+		
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
-		for (int i = 1; i <= hierarchies.size(); i++) {
-			
-			GeneralHelper.selectFirstMonth();
-			HierarchyHelper.selectHierarchyFromDropdown(i);
-			Thread.sleep(2000);
+		System.out.println("size: " + hierarchies.size());
+		
+//		for (int i = 1; i <= 1; i++) {  // hierarchies.size(); i++) {
+//			
+//			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
+//			GeneralHelper.selectFirstMonth();
+//			HierarchyHelper.selectHierarchyFromDropdown(i);
+//			Thread.sleep(2000);
 			
 			// #3 Get data from JSON
-			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));
+//			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(i);	
 					
 			
 			// #4 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
 			// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
 			// will be displayed on the Usage Trending charts 
 			
-			try {
-				
-				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
-				Thread.sleep(2000);
-				
-				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryTotal);
-				
-				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
-				Thread.sleep(2000);
-				
-				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryOptimizable);
-				
-				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
-				Thread.sleep(2000);
-				
-				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryRoaming);
-				
-				
-			} catch(NullPointerException e) {
-				
-				System.out.println("chart not found");
-				
-			}
+//			try {
+//				
+//				HierarchyHelper.selectCategory(HierarchyHelper.treeMapChart, HierarchyHelper.categoryTotal);
+//				HierarchyTreeMap.hoverThroughTiles();
+//				
+//				Thread.sleep(2000);
+//				
+//				HierarchyHelper.selectCategory(HierarchyHelper.treeMapChart, HierarchyHelper.categoryOptimizable);
+//				
+//				HierarchyHelper.selectCategory(HierarchyHelper.treeMapChart, HierarchyHelper.categoryRoaming);
+//				
+//				
+//				
+//			} catch(NullPointerException e) {
+//				
+//				System.out.println("chart not found");
+//				
+//			}
 		
-		}
+//		}
 				
 	}
 

@@ -26,14 +26,13 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 	{
 		setUpDriver();
 		MainLogin();
-		
 	}
 
 
 	@Test
 	public static void CostPerServiceNumberMultipleValuesTest() throws Exception
 	{
-
+		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		

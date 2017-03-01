@@ -568,8 +568,10 @@ public class UsageHelper extends BaseClass{
 		List<String> months = CommonTestStepActions.YearMonthIntergerFromPulldown(); 
 		
 		boolean monthEqualToInvoiceMonth = false;
+		String ordinalMonth = listUsageVendorsSelected.get(0).get(0).getOrdinalMonth();
+		String monthFromInvoiceMonth = getMonthOfInvoiceMonth(listUsageVendorsSelected.get(0).get(0).getInvoiceMonth());
 		
-		if (listUsageVendorsSelected.get(0).get(0).getOrdinalMonth().equals(getMonthOfInvoiceMonth(listUsageVendorsSelected.get(0).get(0).getInvoiceMonth()))){
+		if (ordinalMonth.equals(monthFromInvoiceMonth)){
 			monthEqualToInvoiceMonth = true;
 		}
 		

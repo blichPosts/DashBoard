@@ -15,7 +15,6 @@ import expenseHierarchy.HierarchyTopTenValues;
 import helperObjects.CommonTestStepActions;
 import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
-import helperObjects.HierarchyTopTenData;
 import helperObjects.ReadFilesHelper;
 
 
@@ -42,11 +41,12 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 		HierarchyHelper.selectHierarchyView();
 					
 		// #2 Select the "TOP TEN VIEW" 
-		HierarchyHelper.selectTopTenView();
+		HierarchyHelper.selectTopTenView(2);
 		Thread.sleep(2000);
 		
 		// #3 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
+		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
 		for (int i = 1; i <= hierarchies.size(); i++) {
 			
@@ -104,50 +104,20 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 						
 					}
 					
-					List<HierarchyTopTenData> topTenValuesExpected; 
 					
 					// #6 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
 					
 					try {
 						
-						// Select category "Total Expense"
-						HierarchyHelper.selectCategory(HierarchyHelper.categoryTotal);
+						// Run test for "Expense" chart and category "Total"
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
 						
-						// Wait for the data to be updated on chart
-						HierarchyHelper.waitForTopTenChartToLoad();
-						Thread.sleep(2000);
-					
-						// Get data from JSON
-						topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(HierarchyHelper.categoryTotal, i); 
+						// Run test for "Expense" chart and category "Optimizable"
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
 						
-						// Verify values on Top Ten chart for category "Total Expense"
-						HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
-		
-						// Select category "Optimizable Expense"
-						HierarchyHelper.selectCategory(HierarchyHelper.categoryOptimizable);
+						// Run test for "Expense" chart and category "Roaming"
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
 						
-						// Wait for the data to be updated on chart
-						HierarchyHelper.waitForTopTenChartToLoad();
-						Thread.sleep(2000);
-						
-						// Get data from JSON
-						topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(HierarchyHelper.categoryOptimizable, i); 
-						
-						// Verify values on Top Ten chart for category "Optimizable Expense"
-						HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
-		
-						// Select category "Roaming Expense"
-						HierarchyHelper.selectCategory(HierarchyHelper.categoryRoaming);
-						
-						// Wait for the data to be updated on chart
-						HierarchyHelper.waitForTopTenChartToLoad();
-						Thread.sleep(2000);
-		
-						// Get data from JSON
-						topTenValuesExpected = ReadFilesHelper.getJsonDataTopTen(HierarchyHelper.categoryRoaming, i); 
-		
-						// Verify values on Top Ten chart for category "Roaming Expense"				
-						HierarchyTopTenValues.verifyTopTenValues(topTenValuesExpected, HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
 						
 					} catch(NullPointerException e) {
 						

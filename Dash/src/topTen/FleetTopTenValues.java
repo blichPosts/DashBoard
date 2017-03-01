@@ -1,8 +1,7 @@
-package expenseHierarchy;
+package topTen;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,38 +9,37 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
-import Dash.BaseClass.LoginType;
-import helperObjects.GeneralTopTenHelper;
-import helperObjects.HierarchyHelper;
 import helperObjects.FleetTopTenData;
+import helperObjects.GeneralTopTenHelper;
 import helperObjects.GeneralHelper;
-import helperObjects.HierarchyTopTenData;
+import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
 
 
-public class HierarchyTopTenValues extends BaseClass{
+public class FleetTopTenValues extends BaseClass {
 
 	
 	
-	public static void verifyTopTenChartValues(String hierarchyId, int barChartId, int category) throws Exception {
+	public static void verifyTopTenChartValues(int barChartId, int category) throws Exception {
 		
 		// Select category
-		HierarchyHelper.selectCategoryTopTen(barChartId, category);
+		HierarchyHelper.selectCategory(barChartId, category);
 		
 		// Wait for the data to be updated on chart
 		HierarchyHelper.waitForTopTenChartToLoad();
 		Thread.sleep(2000);
 	
 		// Get data from JSON
-		List<HierarchyTopTenData> valuesExpected = ReadFilesHelper.getJsonDataTopTen(category, hierarchyId); 
+		List<FleetTopTenData> valuesExpected = ReadFilesHelper.getJsonDataTopTenFleet(barChartId, category); 
 		
 		// Verify values on the selected Top Ten chart and for the selected category
-		if (!GeneralTopTenHelper.allValuesAreZeroHierarchy(valuesExpected)) {
+		if (!GeneralTopTenHelper.allValuesAreZero(valuesExpected)) {
 		
 			verifyTooltipTopTenChart(valuesExpected, barChartId, category);
 			
@@ -52,9 +50,14 @@ public class HierarchyTopTenValues extends BaseClass{
 	
 	
 	
-	public static void verifyTooltipTopTenChart(List<HierarchyTopTenData> topTenValues, int barChartId, int category) throws ParseException, AWTException, InterruptedException {
+	public static void verifyTooltipTopTenChart(List<FleetTopTenData> topTenValues, int barChartId, int category) throws AWTException, InterruptedException {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
+		
+		WebElement expenseTrendingSection = driver.findElement(By.cssSelector("#" + chartId));
+		new Actions(driver).moveToElement(expenseTrendingSection).perform();
+		
+		Thread.sleep(2000);
 		
 		List<WebElement> chartElementNames = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels>text>tspan"));
 		List<String> chartLabelsFound = new ArrayList<String>();
@@ -72,56 +75,23 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		
 		// Set up lists with expected values and labels		
-		for (HierarchyTopTenData data: topTenValues) {
+		for (FleetTopTenData data: topTenValues) {
 			
-			String type = data.getType();
-			String label = "";
-			String serviceNumber = "";
-			
-			// Set up the label according to whether the type is Employee, Department or Average 
-	    	switch (type) {
-	    	
-	    		case "EMPLOYEE":
-	    			serviceNumber = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
-	    			label = serviceNumber + data.getEmployeeFirstname().substring(0, 1) + "." + data.getEmployeeLastname();
-	    			expectedLabels.add(label);
-	    			break;
-	    			
-	    		case "DEPARTMENT":
-	    			serviceNumber = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
-	    			label = serviceNumber + data.getDepartmentName();
-	    			expectedLabels.add(label);
-	    			break;
-
-	    		case "AVERAGE":
-	    			label = "Average";
-	    			expectedLabels.add(label);
-	    			break;
-	    	
-	    	}
-			
-
+			String label = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
+	    	expectedLabels.add(label);
+	    				   
 	    	String value = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
 	    	expectedValuesList.add(value);
 	    	expectedValues.put(label, value);
 	    	
 		}
 
-		System.out.println("Expected labels:");
-		for (String s: expectedLabels) {
-			
-			System.out.println(s);
-			
-		}
 		
-		// Verify that there are 11 elements listed on the chart: the Top Ten Service Numbers + Average
-		Assert.assertTrue(chartElementNames.size() == 11);
+		// Verify that there are 10 elements listed on the chart: the Top Ten Service Numbers
+//		Assert.assertTrue(chartElementNames.size() == 10);
 		
 		// Verify that the values are sorted in descendant order by "value"
-		GeneralTopTenHelper.verifyValuesSortedDescendantOrder(expectedValuesList); 
-		
-		// Verify that the element "Average" exists on the Top Ten chart.
-		Assert.assertTrue(chartLabelsFound.contains("Average"));
+//		FleetTopTenHelper.verifyValuesSortedDescendantOrder(expectedValuesList); 
 		
 		// Verify the info contained on each of the tooltips for the values listed on the chart 	
 		
@@ -136,19 +106,14 @@ public class HierarchyTopTenValues extends BaseClass{
 
 			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-			Point coordinates = GeneralHelper.getAbsoluteLocationTopTenBar(bar);
+			Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
 			
 			int x_offset = (int) (bar.getSize().width * 0.5);
 			int y_offset = (int) (bar.getSize().height * 0.7);
-
-			if (loginType.equals(LoginType.Command)) {
-				y_offset = (int) (bar.getSize().height * 1.5);
-			}
 			
 			int x = coordinates.getX() + x_offset;
 			int y = coordinates.getY() + y_offset;
 
-			
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);
 			Thread.sleep(500);
@@ -169,16 +134,15 @@ public class HierarchyTopTenValues extends BaseClass{
 			// Verify the label and the amount shown in the tooltip 
 			
 			// Get the label and remove colon at the end of its text
-			String labelFoundTmp = tooltip.getText().split(":")[0].trim();
-			String labelFound = GeneralTopTenHelper.formatPhoneNumber(labelFoundTmp); 
-			
+			String labelFound = tooltip.getText().split(":")[0].trim();
+
 			// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
 			String valueFound = tooltip.getText().split(":")[1].trim().replace(" ", "");
 			
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-			System.out.println("labelFound: " + labelFound);
+//			System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
 //			System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
@@ -190,8 +154,7 @@ public class HierarchyTopTenValues extends BaseClass{
 				
 		}
 		
+		
 	}
 
-	
-	
 }

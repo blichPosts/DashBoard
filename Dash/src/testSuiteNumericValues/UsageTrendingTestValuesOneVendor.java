@@ -98,26 +98,34 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 			
 			try {
 				
+				// Domestic chart
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
 				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
+
+				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
+				
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryData);
+				Thread.sleep(2000);
+				
+				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
+				
+				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
+				
+				// Roaming chart				
+				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
 				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryVoice);
 				Thread.sleep(2000);				
 			
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryData);
-				Thread.sleep(2000);
-				
 				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryData);
 				Thread.sleep(2000);				
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
-				
-				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingDomesticChart, valuesFromFile, UsageHelper.categoryMessages);
-				Thread.sleep(2000);
 				
 				UsageTrending.verifyUsageTrendingChartTooltipOneVendor(UsageHelper.usageTrendingRoamingChart, valuesFromFile, UsageHelper.categoryMessages);
 				Thread.sleep(2000);

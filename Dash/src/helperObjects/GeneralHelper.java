@@ -11,6 +11,7 @@ import org.testng.Assert;
 
 import Dash.BaseClass;
 
+
 public class GeneralHelper extends BaseClass {
 
 	
@@ -98,8 +99,19 @@ public class GeneralHelper extends BaseClass {
 		int headerHeight = header.getSize().getHeight();
         
         Point elementLoc = element.getLocation();
-        x += elementLoc.getX();
-        y += elementLoc.getY() + headerHeight;
+
+        if (loginType.equals(LoginType.ReferenceApp)) {
+        	
+            x += elementLoc.getX();
+            y += elementLoc.getY() + headerHeight;
+            
+        	
+        } else if (loginType.equals(LoginType.Command)) {
+        	
+        	x += elementLoc.getX();
+            y += elementLoc.getY() - (headerHeight * 1.3);
+            
+        }
         
         Point p = new Point(x, y);
         return p; 
@@ -107,6 +119,33 @@ public class GeneralHelper extends BaseClass {
 	}
 
 
+	public static Point getAbsoluteLocationTopTenBar(WebElement element) {
+		
+        int x = x_iFrame;
+        int y = y_iFrame;
+        
+        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
+		int headerHeight = header.getSize().getHeight();
+        
+        Point elementLoc = element.getLocation();
+
+        if (loginType.equals(LoginType.ReferenceApp)) {
+        	
+            x += elementLoc.getX();
+            y += elementLoc.getY() + headerHeight;
+            
+        	
+        } else if (loginType.equals(LoginType.Command)) {
+        	
+        	x += elementLoc.getX();
+            y += elementLoc.getY() + (headerHeight * 3);
+            
+        }
+        
+        Point p = new Point(x, y);
+        return p; 
+        
+	}
 
 	public static void selectFirstMonth() throws Exception {
 
@@ -125,10 +164,14 @@ public class GeneralHelper extends BaseClass {
 	// Due to rounding there may be some case where the value found and the value expected differ on 1, e.g.: Value found = 28, Value expected = 27 
 	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
 		
-		valueActual = getNumericValue(valueActual);
-		valueExpected = getNumericValue(valueExpected);
-		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
-		Assert.assertTrue(Math.abs(Double.parseDouble(valueActual) - Double.parseDouble(valueExpected)) <= 1 );
+//		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
+		
+		double numActual = Double.parseDouble(getNumericValue(valueActual));
+		double numExpected = Double.parseDouble(getNumericValue(valueExpected));
+		
+//		System.out.println("numActual: " + numActual + "; numExpected: " + numExpected);
+		
+		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
 		
 	}
 	
@@ -176,5 +219,7 @@ public class GeneralHelper extends BaseClass {
 		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
 		
 	}
+	
+	
 	
 }

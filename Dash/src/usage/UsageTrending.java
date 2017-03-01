@@ -15,7 +15,6 @@ import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
-import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
@@ -256,10 +255,8 @@ public class UsageTrending extends BaseClass {
 	// It does not verify the amounts... SEE following method
 	public static void verifyUsageTrendingChartTooltip(int barChartId) throws InterruptedException, ParseException, AWTException{
 		
-		WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
-		new Actions(driver).moveToElement(usageTrendingSection).perform();
-		
 		String chartId = UsageHelper.getChartId(barChartId);
+		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
 		
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
@@ -356,11 +353,8 @@ public class UsageTrending extends BaseClass {
 	public static void verifyUsageTrendingChartTooltipOneVendor(int barChartId, List<UsageOneMonth> allValuesFromFile, int categorySelector) throws ParseException, InterruptedException, AWTException {
 		
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
-		
-		WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
-		new Actions(driver).moveToElement(usageTrendingSection).perform();
-		
 		String chartId = UsageHelper.getChartId(barChartId);
+		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
 			
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
@@ -440,27 +434,38 @@ public class UsageTrending extends BaseClass {
 			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 			// Get the location of the second line of the chart -> to get the "y" coordinate
 			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-			Point barCoordinates = bar.getLocation();
-			Point lineCoordinates = line.getLocation();
+			
+			Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);  // bar.getLocation();
+			Point lineCoordinates = GeneralHelper.getAbsoluteLocation(line); // line.getLocation();   
 			
 			Robot robot = new Robot(); 
-			int x = barCoordinates.getX() + 10;
-			int y = lineCoordinates.getY();  // these coordinates work for Dev Instance :)
+			
+			int x = barCoordinates.getX();
+			int y = lineCoordinates.getY();
+			
 			
 			if (loginType.equals(LoginType.Command)) {
 				
-				y = y - 400;  // these coordinates work for CMD :)
+				if (barChartId == UsageHelper.usageTrendingDomesticChart) {
+				
+					y = y - 100;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+					System.out.println("domestic chart, y = " + y);
+				}  else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
+					
+					y = y - 400;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+					System.out.println("roaming chart, y = " + y);
+				}
 				
 			} else if (loginType.equals(LoginType.ReferenceApp)) {
 				
-				y = y + 100; // these coordinates work for Ref App :)
+				// nothing needs to be modified as of now - Dash v.1.1.13 - March 1st
 				
 			}
 			
 			robot.mouseMove(x, y);
-			//System.out.println("coordinates - x: " + x + "  y: " + y);
+//			System.out.println("coordinates - x: " + x + "  y: " + y);
 			
-			Thread.sleep(1000);
+			Thread.sleep(500);
 			
 			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
@@ -486,7 +491,6 @@ public class UsageTrending extends BaseClass {
 			// 3 <amount shown for the vendor>
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 			
-			//System.out.println("Index month : " + indexMonth + "  --Month-year from tooltip: " + tooltip.get(0).getText());
 			
 			// Verify the vendor's name and the amount shown on the tooltip
 			for(int i = 1; i <= legends.size(); i++){
@@ -499,9 +503,7 @@ public class UsageTrending extends BaseClass {
 
 				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: 15 256 985. Value needed is: 15256985
 				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
-				
-				//System.out.println("label: " + labelFound + ", value: " + valueFound); 
-							
+						
 				// Verify the labels' text and amounts shown on the tooltip
 				String labelExpected = allValuesFromFile.get(indexMonth).getVendorName();
 				Assert.assertEquals(labelFound, labelExpected); 
@@ -511,24 +513,26 @@ public class UsageTrending extends BaseClass {
 				if (barChartId == UsageHelper.usageTrendingDomesticChart) {
 					
 					valueExpected = domesticValue.get(indexMonth);
-					Assert.assertEquals(valueFound, valueExpected);
-					
+										
 				} else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
 					
 					valueExpected = roamingValue.get(indexMonth);
-					Assert.assertEquals(valueFound, valueExpected);
-					
+										
 				}
+				
+				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				
 				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
 				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 				
 			}
 			
-			// Verify month and year shown on the tooltip
-			// --> UNCOMMENT LINE BELOW FOR REF APP. FOR CMD FAILS BECAUSE IT HAS AN OLDER DASH VERSION, WHERE THE MONTH YEAR ARE REPRESENTED AS MM-YYYY, INSTEAD OF MM/YYYY. 
-			Assert.assertEquals(tooltip.get(0).getText(), monthYearList.get(indexMonth)); 
-			System.out.println("First line found: " + tooltip.get(0).getText() + ", First line expected: " + monthYearList.get(indexMonth));
+			// Verify month and year shown on the tooltip (first line)
+			String monthYearFound = tooltip.get(0).getText();
+			String monthYearExpected = monthYearList.get(indexMonth);
+				
+			Assert.assertEquals(monthYearFound, monthYearExpected); 
+			System.out.println("Month/Year Found: " + monthYearFound + ", Month/Year Expected: " + monthYearExpected);
 			
 			indexHighchart++;
 			indexMonth--;
@@ -546,13 +550,11 @@ public class UsageTrending extends BaseClass {
 		
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
-		WebElement usageTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
-		new Actions(driver).moveToElement(usageTrendingSection).perform();
+		String chartId = UsageHelper.getChartId(barChartId);
+		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
 		
 		Thread.sleep(2000);
 		
-		String chartId = UsageHelper.getChartId(barChartId);
-			
 		List<WebElement> legendsElements = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		List<String> legends = new ArrayList<>();
 		
@@ -686,7 +688,7 @@ public class UsageTrending extends BaseClass {
 					String v = vendorsSelectedCheckBox.get(i).getText();
 					
 					// ************ SEE NOTE NEXT TO NEXT LINE - CHANGE TO BE MADE **************************
-					if (!vendorsInChartNames.contains(v)) {  // && vendorHasData.get(v)){ // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
+					if (!vendorsInChartNames.contains(v) && vendorHasData.get(v)){ // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
 					
 						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(v);
 							
@@ -766,25 +768,35 @@ public class UsageTrending extends BaseClass {
 			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 			// Get the location of the second line of the chart -> to get the "y" coordinate
 			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-			Point barCoordinates = bar.getLocation();
-			Point lineCoordinates = line.getLocation();
+			Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);  // bar.getLocation();
+			Point lineCoordinates = GeneralHelper.getAbsoluteLocation(line); // line.getLocation();   
 			
 			Robot robot = new Robot(); 
-			int x = barCoordinates.getX() + 10;
-			int y = lineCoordinates.getY();  // these coordinates work for Dev Instance :)
+			
+			int x = barCoordinates.getX();
+			int y = lineCoordinates.getY();
+			
 			
 			if (loginType.equals(LoginType.Command)) {
 				
-				y = y - 400;  // these coordinates work for CMD :)
+				if (barChartId == UsageHelper.usageTrendingDomesticChart) {
+					
+					y = y - 100;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+					System.out.println("domestic chart, y = " + y);
+				}  else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
+					
+					y = y - 400;  // not yet --> these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+					System.out.println("roaming chart, y = " + y);
+				}
 				
 			} else if (loginType.equals(LoginType.ReferenceApp)) {
 				
-				y = y + 100; // these coordinates work for Ref App :)
+				// nothing needs to be modified as of now - Dash v.1.1.13 - March 1st
 				
 			}
 			
 			robot.mouseMove(x, y);
-			//System.out.println("coordinates - x: " + x + "  y: " + y);
+//			System.out.println("coordinates - x: " + x + "  y: " + y);
 			
 			Thread.sleep(500);
 			
@@ -830,14 +842,10 @@ public class UsageTrending extends BaseClass {
 				
 				String valueExpected = expectedValues.get(indexMonth).get(labelFound);  //labelExpected);
 				
-				Assert.assertEquals(valueFound, valueExpected);
-				
-				System.out.println("Vendor: " + labelFound + " --> found, expected");
-//				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+				System.out.println("Vendor: " + labelFound);
 				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
-
-//				System.out.println(valueFound);
-//				System.out.println(valueExpected);
+				
+				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				
 			}
 			
@@ -845,8 +853,8 @@ public class UsageTrending extends BaseClass {
 			String monthYearFound = tooltip.get(0).getText();
 			String monthYearExpected = monthYearList.get(indexMonth);
 				
-			Assert.assertEquals(monthYearFound, monthYearExpected); // **** UNCOMMENT FOR REF APP!! ****
-			System.out.println("Month/Year Found: " + monthYearFound + ", Month/Year Expected: " + monthYearExpected);
+			Assert.assertEquals(monthYearFound, monthYearExpected); 
+//			System.out.println("Month/Year Found: " + monthYearFound + ", Month/Year Expected: " + monthYearExpected);
 			
 			indexHighchart++;
 			indexMonth--;

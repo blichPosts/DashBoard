@@ -40,18 +40,6 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 			vendorNames.add(vendor.getText());
 		}
 		
-		//String vendor = "Telstra Australia";
-		//String vendor = "Vivo Brazil";
-		//String vendor = "Rogers";
-		//String vendor = "Telcel Mexico";
-		//String vendor = "SingTel Singapore";
-		//String vendor = "Etisalat";
-		//String vendor = "O2 UK";
-		//String vendor = "Vodafone United Kingdom";
-		//String vendor = "AT&T Mobility";
-		//String vendor = "Tangoe, Inc.";
-		//String vendor = "Verizon Wireless";
-		
 		String path = UsageHelper.path;
 
 		// Run the test for each vendor 
@@ -99,12 +87,12 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 					
 					if (!(month.equals(null) && year.equals(null))) {
 						monthYearNull = false;
-						System.out.println("Month and year NOT null");
+//						System.out.println("Month and year NOT null");
 					}
 							
 				} catch (NullPointerException e) {
 					monthYearNull = true;
-					System.out.println("Month and year ARE null");
+//					System.out.println("Month and year ARE null");
 				}
 					
 				if (!monthYearNull) {

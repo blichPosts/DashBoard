@@ -32,19 +32,17 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
-		WebElement expenseTrendingSection = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)"));
-		new Actions(driver).moveToElement(expenseTrendingSection).perform();
-		
-		Thread.sleep(2000);
-		
 		String chartId = UsageHelper.getChartId(barChartId);
+		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
+				
+		Thread.sleep(2000);
 			
 		List<WebElement> legendsElements = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		List<String> legends = new ArrayList<>();
 		
 		for (WebElement e: legendsElements) {
 			legends.add(e.getText());
-//					System.out.println("Legend: " + e.getText());
+//			System.out.println("Legend: " + e.getText());
 		}
 		
 		
@@ -398,11 +396,6 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			}
 			
 			
-//			String cssYLabels = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-yaxis-labels>text";
-//			int numberLine = GeneralHelper.getNumberOfLineForYCoordenate(driver.findElements(By.cssSelector(cssYLabels)));
-//			
-//			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(" + numberLine + ")";
-			
 			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(1)";
 			
 			// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
@@ -412,24 +405,37 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 			// Get the location of the second line of the chart -> to get the "y" coordinate
 			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-			Point barCoordinates = bar.getLocation();
-			Point lineCoordinates = line.getLocation();
+			
+			Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);  // bar.getLocation();
+			Point lineCoordinates = GeneralHelper.getAbsoluteLocation(line); // line.getLocation();   
 			Robot robot = new Robot();
 			
 			int y_offset = 0;
 			
 			if (loginType.equals(LoginType.Command)) {
 				
-				y_offset = -400;  // these coordinates work for CMD :)
+				if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart) {
+					
+					y_offset = -50;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
+					
+				}
 				
-			} else if (loginType.equals(LoginType.ReferenceApp)) {
+				if (barChartId == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
+					
+					y_offset = -300;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
+					
+				}
 				
-				y_offset = 150; // these coordinates work for Ref App :)  // was 100
+				if (barChartId == ExpenseHelperMultipleVendors.countServiceNumbersChart) {
 				
-			}
+					y_offset = -600;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
+					
+				}
+				
+			} 
 			
 			int x = barCoordinates.getX();
-			int y = lineCoordinates.getY() + y_offset;  // these coordinates work for Dev Instance :)
+			int y = lineCoordinates.getY() + y_offset;
 			
 			robot.mouseMove(x, y);
 //			System.out.println("coordinates:  x: " + x + "  y: " + y);
@@ -482,13 +488,14 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				System.out.println("Vendor: " + labelFound);
 				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 
-				Assert.assertEquals(valueFound, valueExpected);
+				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
+//				Assert.assertEquals(valueFound, valueExpected);
 				
 			}
 			
 			// Verify month and year shown on the tooltip (first line)
 			String monthYearFound = tooltip.get(0).getText();
-			String monthYearExpected = monthYearList.get(indexMonth);
+			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
 				
 			Assert.assertEquals(monthYearFound, monthYearExpected); // **** UNCOMMENT FOR REF APP!! ****
 			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);

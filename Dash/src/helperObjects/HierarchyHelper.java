@@ -49,24 +49,61 @@ public class HierarchyHelper extends BaseClass {
 
 	
 	// Select the "VIEW TOP TEN" button
-	public static void selectTopTenView() throws Exception {
+	public static void selectTopTenView(int toggleNum) throws Exception {
 
-		WaitForElementClickable(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(2)"), MediumTimeout, "VIEW TOP TEN button not clickable");
-		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(2)"));
+		WaitForElementClickable(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"), MediumTimeout, "VIEW TOP TEN button not clickable");
+		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"));
 		viewTopTenToggle.click();
 		WaitForElementVisible(By.xpath("//h3[text()='Top 10 Service Numbers by Expense Amount - ']"), MediumTimeout);	
 		waitForTopTenChartToLoad();
 		
 	}
 	
+
+	// *** NOT WORKING FINE, REPLACE BY THE TWO METHODS BELOW .. SEE IF IT NEEDS TO BE ADDED BACK FOR OTHER TEST
 	
-	public static void selectCategory(int category){
-				
-		WebElement categoryToSelect = driver.findElement(By.cssSelector("div.tdb-boxSelector__option:nth-child(" + category + ")"));
+//	public static void selectCategory(int chartNum, int category){
+		
+//		String xpath = "//div[@class='tdb-card'][" + Integer.toString(chartNum+1) + "]/div/div[" + Integer.toString(category) + "]"; 
+		
+//		String xpath = "//div[@class='tdb-card'][2]/div/div[1]";
+//		
+//		System.out.println("xpath: " + xpath);
+//		driver.findElement(By.xpath(xpath)).click();
+		
+//		driver.findElement(By.xpath("//div[@class='tdb-card'][2]/div/div[1]")).click();
+		
+//		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-card>div>div.tdb-inlineBlock:nth-child(" + category + ")"));
+//		WebElement categoryToSelect = driver.findElement(By.xpath("//div[@class='tdb-card'][" + (chartNum+1) + "]/div/div[" + category + "]"));
+//		categoryToSelect.click();
+		
+//	}
+		
+	
+	
+	public static void selectCategory(int section, int category){
+		
+		String sectionToSelect = "";
+		if(section == 0) sectionToSelect = "odd"; 
+		if(section == 1) sectionToSelect = "even";
+		
+		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-boxSelector.tdb-align--right:nth-child(" + sectionToSelect + ")>div:nth-of-type(" + category + ")"));
 		categoryToSelect.click();
 		
 	}
+	
+	
+
+	public static void selectCategoryTopTen(int section, int category){
 		
+		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-boxSelector.tdb-align--right>div:nth-of-type(" + category + ")"));
+		categoryToSelect.click();
+		
+	}
+	
+
+	
+	
 	
 	public static void waitForTopTenChartToLoad() throws Exception {
 		
@@ -100,6 +137,23 @@ public class HierarchyHelper extends BaseClass {
 		return driver.findElements(By.cssSelector("app-hierarchy-selector>div>select>option"));
 		
 	}
+	
+	
+	public static List<String> getHierarchiesValues() {
+		
+		List<String> hierarchyIds = new ArrayList<>();
+		List<WebElement> hierarchyValues = driver.findElements(By.cssSelector("app-hierarchy-selector>div>select>option"));
+		
+		for (WebElement h: hierarchyValues) {
+			
+			hierarchyIds.add(h.getAttribute("value"));
+//			System.out.println("Hierarchy ID: " + h.getAttribute("value"));
+		}
+		
+		return hierarchyIds;
+		
+	}
+	
 	
 	// Select a hierarchy on dropdown  
 	public static void selectHierarchyFromDropdown(int numHierarchy) throws Exception {

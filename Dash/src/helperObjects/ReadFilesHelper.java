@@ -28,34 +28,94 @@ public class ReadFilesHelper extends BaseClass {
 		js.executeScript("__TANGOE__setShouldCaptureTestData(true)");
 		
 	}
+
+
+	// Get the data for Expenses and Usage pages - Fleet Dashboard
+	public static List<UsageOneMonth> getJsonDataExpenseUsage(String vendor) throws Exception{
+		
+		UsageOneMonth usageOneMonth = new UsageOneMonth();
+		List<UsageOneMonth> listValues = new ArrayList<UsageOneMonth>();
+	    	
+		String usageExpenseData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('fleet.expenseUsage.payload.rows')");
+		
+//		boolean jsonEmpty = false;
+//		
+//		do {
+//			try {
+//				usageExpenseData.isEmpty();
+//				
+//			} catch (NullPointerException e) {
+//				GoToDashboard();
+//				jsonEmpty = true;
+//			}
+//			
+//		} while (!jsonEmpty);
+		
+	    ShowText(usageExpenseData);
+	   
+	    // Get the rows with data
+//		    String trendData = trendDataTmp.split("\"rows\":")[1];
+	   
+	    // Convert the String with data into a JSONArray
+	    JSONArray array = new JSONArray(usageExpenseData); 
+
+	    for (int i = 0; i < array.length(); i++){
+	    	
+	    	JSONObject jsonObj  = array.getJSONObject(i);
+	    	usageOneMonth = new UsageOneMonth();
+	        
+	    	if (jsonObj.getString("vendor_name").equals(vendor)) {
+	    		
+	    		usageOneMonth.setVendorName(jsonObj.getString("vendor_name"));
+				usageOneMonth.setInvoiceMonth(jsonObj.getString("invoice_month"));
+				usageOneMonth.setOrdinalYear(Integer.toString(jsonObj.getInt("ordinal_year")));
+				usageOneMonth.setOrdinalMonth(Integer.toString(jsonObj.getInt("ordinal_month")));
+				
+				usageOneMonth.setDomesticVoice(Double.toString(jsonObj.getDouble("domestic_mou")));
+				usageOneMonth.setDomesticOverageVoice(Double.toString(jsonObj.getDouble("domestic_overage_mou")));
+				usageOneMonth.setDomesticMessages(Double.toString(jsonObj.getDouble("domestic_messages")));
+				usageOneMonth.setDomesticDataUsageKb(Double.toString(jsonObj.getDouble("domestic_data_usage_kb")));
+				usageOneMonth.setRoamingVoice(Double.toString(jsonObj.getDouble("roaming_mou")));
+				usageOneMonth.setRoamingDataUsageKb(Double.toString(jsonObj.getDouble("roaming_data_usage_kb")));
+				usageOneMonth.setRoamingMessages(Double.toString(jsonObj.getDouble("roaming_messages")));
+				
+				usageOneMonth.setNumberOfInvoices(Long.toString(jsonObj.getLong("no_of_invoices")));
+				usageOneMonth.setNumberOfLines(Long.toString(jsonObj.getLong("no_of_lines")));
+				usageOneMonth.setTotalSubscriberCharges(Double.toString(jsonObj.getDouble("total_subscriber_charges_ex")));
+				usageOneMonth.setVoiceCharges(Double.toString(jsonObj.getDouble("voice_charges_ex")));
+				usageOneMonth.setDataCharges(Double.toString(jsonObj.getDouble("data_charges_ex")));
+				usageOneMonth.setMessagesCharges(Double.toString(jsonObj.getDouble("messaging_charges_ex")));
+				usageOneMonth.setEquipmentCharges(Double.toString(jsonObj.getDouble("equipment_charges_ex")));
+				usageOneMonth.setTaxCharges(Double.toString(jsonObj.getDouble("tax_charges_ex")));
+				usageOneMonth.setRoamingMsgCharges(Double.toString(jsonObj.getDouble("roaming_msg_charges_ex")));
+				usageOneMonth.setRoamingDataCharges(Double.toString(jsonObj.getDouble("roaming_data_charges_ex")));
+				usageOneMonth.setRoamingVoiceCharges(Double.toString(jsonObj.getDouble("roaming_voice_charges_ex")));
+				usageOneMonth.setTotalAccountLevelCharges(Double.toString(jsonObj.getDouble("total_account_level_charges_ex")));
+				usageOneMonth.setRoamingCharges(Double.toString(jsonObj.getDouble("roaming_charges_ex")));
+				usageOneMonth.setOtherCharges(Double.toString(jsonObj.getDouble("other_charges_ex")));
+				usageOneMonth.setTotalCharge(Double.toString(jsonObj.getDouble("total_charge_ex")));
+	    		
+				listValues.add(usageOneMonth);
+				
+	    	}
+	    	
+	    }
+	    
+		return listValues;
+	
+	}
+	
 	
 	
 	// Get the data for the KPI tiles and Trending chart
-	public static List<HierarchyTrendData> getJsonDataTrend(int hierarchyNum) throws JSONException, AWTException, InterruptedException{
+	public static List<HierarchyTrendData> getJsonDataTrend(String hierarchyId) throws JSONException, AWTException, InterruptedException{
 		
 		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
 		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
-	    
-	    String hierarchyLevel = "";
-	    
-	    if (hierarchyNum == 1) {
-	    
-	    	hierarchyLevel = "PRIMARY";
-	    	
-	    } else if (hierarchyNum == 2) {
-	    	
-	    	hierarchyLevel = "SECONDARY";
-	    	
-	    } else if (hierarchyNum == 3) {
-	    	
-	    	hierarchyLevel = "TERTIARY";
-	    	
-	    }
-	    	
-	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyLevel + ".trend.payload.rows')");
+	    	    	
+	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.rows')");
 	   
-
-//	    ShowText(trendData);
+	    ShowText(trendData);
 	   
 	    // Get the rows with data
 //	    String trendData = trendDataTmp.split("\"rows\":")[1];
@@ -72,12 +132,14 @@ public class ReadFilesHelper extends BaseClass {
 	    	trendDataOneMonth.setName(jsonObj.getString("name"));
 	    	trendDataOneMonth.setOrdinalYear(Long.toString(jsonObj.getLong("ordinal_year")));
 	    	trendDataOneMonth.setOrdinalMonth(Long.toString(jsonObj.getLong("ordinal_month")));
-	    	trendDataOneMonth.setNumberOfInvoices(Long.toString(jsonObj.getLong("no_of_invoices")));
+//	    	trendDataOneMonth.setNumberOfInvoices(Long.toString(jsonObj.getLong("no_of_invoices"))); <-- REMOVED
+//	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("total_no_of_invoices")));  // <-- NEW - not added to CMD env, so it's commented out, since it's not used by my tests, Ana
 	    	trendDataOneMonth.setNumberOfLines(Long.toString(jsonObj.getLong("no_of_lines")));
-	    	trendDataOneMonth.setNumberOfAccounts(Long.toString(jsonObj.getLong("no_of_accounts")));
-	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("no_of_invoices_rollup")));
+//	    	trendDataOneMonth.setNumberOfAccounts(Long.toString(jsonObj.getLong("no_of_accounts")));  <-- REMOVED
+//	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("total_no_of_accounts")));   // <-- NEW - not added to CMD env, so it's commented out, since it's not used by my tests, Ana
+//	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("no_of_invoices_rollup")));  <-- REMOVED
 	    	trendDataOneMonth.setNumberOfLinesRollup(Long.toString(jsonObj.getLong("no_of_lines_rollup")));
-	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("no_of_accounts_rollup")));
+//	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("no_of_accounts_rollup")));  <-- REMOVED
 	    	trendDataOneMonth.setCurrencyCode(jsonObj.getString("currency_code"));
 	    	trendDataOneMonth.setTotalExpense(Double.toString(jsonObj.getDouble("total_expense_ex")));
 	    	trendDataOneMonth.setOptimizableExpense(Double.toString(jsonObj.getDouble("optimizable_expense_ex")));
@@ -97,30 +159,12 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	// Get the data for Top Ten chart
-	public static List<HierarchyTopTenData> getJsonDataTopTen(int category, int hierarchyNum) throws JSONException, AWTException, InterruptedException{
+	public static List<HierarchyTopTenData> getJsonDataTopTen(int category, String hierarchyId) throws JSONException, AWTException, InterruptedException{
 		
 		
 		HierarchyTopTenData topTenDataOneMonth = new HierarchyTopTenData();
 		List<HierarchyTopTenData> listValues = new ArrayList<HierarchyTopTenData>();
-	  
-		
-		String hierarchyLevel = "";
-	    
-	    if (hierarchyNum == 1) {
-	    
-	    	hierarchyLevel = "PRIMARY";
-	    	
-	    } else if (hierarchyNum == 2) {
-	    	
-	    	hierarchyLevel = "SECONDARY";
-	    	
-	    } else if (hierarchyNum == 3) {
-	    	
-	    	hierarchyLevel = "TERTIARY";
-	    	
-	    }
-		
-		
+	  		
 		String categoryForJS = "";
 		
 		if (category == HierarchyHelper.categoryTotal) {
@@ -139,7 +183,7 @@ public class ReadFilesHelper extends BaseClass {
 		
 	    
 	    // E.g.: hierarchy.PRIMARY.topUsers.EXPENSE.TOTAL_EXPENSE'
-	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyLevel + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
+	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
 	   
 //	    ShowText(topTenData);
 	   
@@ -175,6 +219,110 @@ public class ReadFilesHelper extends BaseClass {
 	    	
 	    	}
 	    	
+	        listValues.add(topTenDataOneMonth);
+			
+	    }
+	    
+		return listValues;
+	
+	}
+	
+	
+	
+	
+	// Get the data for Top Ten chart
+	public static List<FleetTopTenData> getJsonDataTopTenFleet(int chartId, int category) throws JSONException, AWTException, InterruptedException{
+		
+		
+		FleetTopTenData topTenDataOneMonth = new FleetTopTenData();
+		List<FleetTopTenData> listValues = new ArrayList<FleetTopTenData>();
+	  
+		String categoryForJS = "";
+		String chartNameForJS = "";
+		
+		if (chartId == GeneralTopTenHelper.expenseChart) {
+			
+			chartNameForJS = "EXPENSE";
+			
+			if (category == GeneralTopTenHelper.categoryExpenseAll) {
+				
+				categoryForJS = "ALL";
+				
+			} else if (category == GeneralTopTenHelper.categoryExpenseVoice) {
+				
+				categoryForJS = "VOICE";
+				
+			} else if (category == GeneralTopTenHelper.categoryExpenseData) {
+				
+				categoryForJS = "DATA";
+				
+			} else if (category == GeneralTopTenHelper.categoryExpenseMessages) {
+				
+				categoryForJS = "MESSAGES";
+				
+			} else if (category == GeneralTopTenHelper.categoryExpenseRoaming) {
+				
+				categoryForJS = "ROAMING";
+				
+			}
+			
+		} else if (chartId == GeneralTopTenHelper.domesticUsageChart) {
+			
+			chartNameForJS = "DOMESTIC_USAGE";
+			
+			if (category == GeneralTopTenHelper.categoryDomesticUsageVoice) {
+				
+				categoryForJS = "VOICE";
+				
+			} else if (category == GeneralTopTenHelper.categoryDomesticUsageVoiceOverage) {
+				
+				categoryForJS = "VOICE_OVERAGE";
+				
+			} else if (category == GeneralTopTenHelper.categoryDomesticUsageData) {
+				
+				categoryForJS = "DATA";
+				
+			} else if (category == GeneralTopTenHelper.categoryDomesticUsageMessages) {
+				
+				categoryForJS = "MESSAGES";
+				
+			} 
+		
+		} else if (chartId == GeneralTopTenHelper.roamingUsageChart) {
+			
+			chartNameForJS = "ROAMING_USAGE";
+			
+			if (category == GeneralTopTenHelper.categoryRoamingUsageVoice) {
+				
+				categoryForJS = "VOICE";
+				
+			} else if (category == GeneralTopTenHelper.categoryRoamingUsageData) {
+				
+				categoryForJS = "DATA";
+				
+			} else if (category == GeneralTopTenHelper.categoryRoamingUsageMessages) {
+				
+				categoryForJS = "MESSAGES";
+				
+			} 
+		
+		}
+	    
+	    // E.g.: fleet.topUsers.EXPENSE.ALL.payload.rows'
+	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('fleet.topUsers." + chartNameForJS + "." + categoryForJS + ".payload.rows')");
+	   
+		    ShowText(topTenData);
+	   
+	    // Get the rows with data
+//		    String topTenData = topTenDataTmp.split("\"rows\":")[1];
+	   
+	    // Convert the String with data into a JSONArray
+	    JSONArray array = new JSONArray(topTenData); 
+
+	    for (int i = 0; i < array.length(); i++){
+	    	
+	    	JSONObject jsonObj  = array.getJSONObject(i);
+	    	topTenDataOneMonth = new FleetTopTenData(jsonObj.getString("service_number"), jsonObj.getDouble("value"));
 	        listValues.add(topTenDataOneMonth);
 			
 	    }
@@ -424,12 +572,12 @@ public class ReadFilesHelper extends BaseClass {
 			System.out.println("name: " + h.getName());
 			System.out.println("ordinal_year: " + h.getOrdinalYear());
 			System.out.println("ordinal_month: " + h.getOrdinalMonth());
-			System.out.println("no_of_invoices: " + h.getNumberOfInvoices());
+//			System.out.println("no_of_invoices: " + h.getNumberOfInvoices());
 			System.out.println("no_of_lines: " + h.getNumberOfLines());
-			System.out.println("no_of_accounts: " + h.getNumberOfAccounts());
-			System.out.println("no_of_invoices_rollup: " + h.getNumberOfInvoicesRollup());
+//			System.out.println("no_of_accounts: " + h.getNumberOfAccounts());
+//			System.out.println("no_of_invoices_rollup: " + h.getNumberOfInvoicesRollup());
 			System.out.println("no_of_lines_rollup: " + h.getNumberOfLinesRollup());
-			System.out.println("no_of_accounts_rollup: " + h.getNumberOfAccountsRollup());
+//			System.out.println("no_of_accounts_rollup: " + h.getNumberOfAccountsRollup());
 			System.out.println("currency_code: " + h.getCurrencyCode());
 			System.out.println("total_expense_ex: " + h.getTotalExpense());
 			System.out.println("optimizable_expense_ex: " + h.getOptimizableExpense());

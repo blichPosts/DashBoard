@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageOneMonth;
 
@@ -27,25 +28,25 @@ public class UsageKPITilesActions extends BaseClass{
 		String voiceAmountKPIFromDash = kpiTileValues.get(0).getText();
 		
 		//System.out.println("KPI Tile Voice Actual: " + voiceAmountKPIFromDash + ",  KPI Tile Voice Expected: " + voiceAmountKPICalculated); 
-		Assert.assertEquals(voiceAmountKPIFromDash, voiceAmountKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(voiceAmountKPIFromDash, voiceAmountKPICalculated);
 		
 		String dataAmountKPICalculated = UsageCalculationHelper.convertDataUnits(domesticData);
 		String dataAmountKPIFromDash = kpiTileValues.get(1).getText();
 		
 		//System.out.println("KPI Tile Data Actual: " + dataAmountKPIFromDash + ",  KPI Tile Data Expected: " + dataAmountKPICalculated); 
-		Assert.assertEquals(dataAmountKPIFromDash, dataAmountKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(dataAmountKPIFromDash, dataAmountKPICalculated);
 		
 		String msgAmountKPICalculated = UsageCalculationHelper.convertUnits(domesticMessages);
 		String msgAmountKPIFromDash = kpiTileValues.get(2).getText();
 		
 		//System.out.println("KPI Tile Mesages Actual: " + msgAmountKPIFromDash + ",  KPI Tile Messages Expected: " + msgAmountKPICalculated); 
-		Assert.assertEquals(msgAmountKPIFromDash, msgAmountKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(msgAmountKPIFromDash, msgAmountKPICalculated);
 		
 		String roamingDataAmountKPICalculated = UsageCalculationHelper.convertDataUnits(roamingData);
 		String roamingDataAmountKPIFromDash = kpiTileValues.get(3).getText();
 		
 		//System.out.println("KPI Tile Roaming Data Actual: " + roamingDataAmountKPIFromDash + ",  KPI Tile Roaming Data Expected: " + roamingDataAmountKPICalculated); 
-		Assert.assertEquals(roamingDataAmountKPIFromDash, roamingDataAmountKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(roamingDataAmountKPIFromDash, roamingDataAmountKPICalculated);
 		
 		
 	}
@@ -144,7 +145,7 @@ public class UsageKPITilesActions extends BaseClass{
 				System.out.println("3 Month Avg Actual: " + threeMonthAvgActual + ", 3 Month Avg Expected: " + threeMonthAvgExpected);
 				
 				// Verifies that the '3 month rolling average' displayed equals to the '3 month rolling average' calculated
-				Assert.assertEquals(threeMonthAvgActual, threeMonthAvgExpected);
+				GeneralHelper.verifyExpectedAndActualValues(threeMonthAvgActual, threeMonthAvgExpected);
 				
 				// If KPI value is different from the 3 month rolling average, then trending % will be different from 0%.
 				// --> If trending % is 0%, it won't be displayed
@@ -154,9 +155,6 @@ public class UsageKPITilesActions extends BaseClass{
 					// System.out.println("rollingAverage: "  + rollingAverage);
 					
 					int trendValueExpected = calculateTrendingPercentage(kpiValue, rollingAverage);
-					//int trendTemp = calculateTrendingPercentage(kpiValue, rollingAverage);
-					//int trendCalculated = Math.abs(trendTemp);
-					
 					// System.out.println("Trend calculated: " + trendCalculated);
 					
 					if(trendValueExpected > 0){
@@ -165,19 +163,11 @@ public class UsageKPITilesActions extends BaseClass{
 						int trendValueActual = getTrendingValueWithNoSymbol(trend); 
 						
 						Assert.assertTrue(trendingElementKpi.size() == 2);
-						Assert.assertEquals(trendValueActual, trendValueExpected);   
+						GeneralHelper.verifyExpectedAndActualValues(trendValueActual, trendValueExpected);   
 						Assert.assertTrue(trend.endsWith("%"));
-						
-						/*String arrowIcon = trendingElementKpi.get(0).getText();
-						if(trendTemp < 0){
-							Assert.assertEquals(arrowIcon, "");
-						} else if (trendTemp > 0){
-							Assert.assertEquals(arrowIcon, "");
-						}*/
-						
 												
 						System.out.println("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
-						//System.out.println("arrow: " + trendingElementKpi.get(0).getText()); 
+						
 					}
 					
 				}
@@ -267,7 +257,7 @@ public class UsageKPITilesActions extends BaseClass{
 				System.out.println("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
 				
 				// Verifies that the '6 months rolling average' displayed equals to the '6 months rolling average' calculated
-				Assert.assertEquals(sixMonthAvgActual, sixMonthAvgExpected);
+//				GeneralHelper.verifyExpectedAndActualValues(sixMonthAvgActual, sixMonthAvgExpected);
 				
 			}
 			

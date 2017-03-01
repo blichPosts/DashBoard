@@ -100,6 +100,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 			// WebElement 'bar' will be used to set the position of the mouse on the chart
 			WebElement bar = driver.findElement(By.cssSelector(cssBar));
 
+			
 			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 			
@@ -107,6 +108,27 @@ public class HierarchyExpenseTrending extends BaseClass {
 			int x = coordinates.getX();
 			int y = coordinates.getY();
 
+			if (loginType.equals(LoginType.Command)) {
+				
+				// If there are negative values on the y axis use line 1. Otherwise use line 2 
+				List<WebElement> yAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-yaxis-labels>text>tspan"));
+				String lineNumber = "2";
+				
+				for (WebElement yLabel: yAxisLabels) {
+					
+					if (yLabel.getText().startsWith("-")) {
+						lineNumber = "1";
+					}	
+				}
+				
+				String cssLine = "#" + chartId + ">svg>g>path:nth-of-type(" + lineNumber + ")";
+				WebElement line = driver.findElement(By.cssSelector(cssLine));
+				
+				Point coordinatesLine = GeneralHelper.getAbsoluteLocation(line);
+				y = coordinatesLine.getY();
+				
+			}
+			
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);
 			
@@ -114,7 +136,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 			
 			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-			
+				
 			
 			try {
 				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
@@ -157,20 +179,21 @@ public class HierarchyExpenseTrending extends BaseClass {
 				 
 						
 				// Verify the labels' text and amounts shown on the tooltip
+				
+				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+				
 				Assert.assertEquals(labelFound, labelExpected);
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
-
-//				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-//				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 				
 			}
 			
 			// Verify month and year shown on the tooltip (first line)
 			String monthYearFound = tooltip.get(0).getText();
-			String monthYearExpected = monthYearList.get(indexMonth);
+			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
 				
 			Assert.assertEquals(monthYearFound, monthYearExpected);
-//			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;
 			indexMonth--;
