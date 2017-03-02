@@ -2,6 +2,7 @@ package expenseHierarchy;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -15,6 +16,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import helperObjects.Child;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.hierarchyTileMapTabSelection;
@@ -40,12 +42,13 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static String filterString = "";
 	public static String chartId = "";
 	
+	public static List<Child> childList = new ArrayList<Child>();
+	
 	public static double expectedValueDouble = 0;
 	public static double actualValueDouble = 0;
 	public static int createErrorCounter = 0; // this can be used in 'GetExpectedValueTwo'method to create an intentional error. 
-	
+
 	public static JavascriptExecutor js = (JavascriptExecutor) driver;	
-	
 	
 	public static void TestPhaseOne() throws Exception
 	{
@@ -446,14 +449,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		return 0;
 	}	
 	
-	public static void BuildDependentChildObjects() throws Exception
+	public static void BuildDependentChildObjects() throws Exception // bladd
 	{
 		JSONObject obj;
 		double tempDouble;
 		
 		Thread.sleep(2000);
 		
-		// this gets the json request text tp be used below. this depends on what selection is in the hierarchy pulldown.
+		// this gets the json request text to be used below. this depends on what selection is in the hierarchy pulldown.
 		tempString = BuildJsonRequestPath(); 
 		
 		// get the json of the current tile map being shown
@@ -468,12 +471,76 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(int x = 0; x < array.length(); x++)
 		{
 			obj  = array.getJSONObject(x);
-			ShowText(obj.getString("name"));
-			ShowInt(obj.getInt("total_expense_rollup_ex"));
-
+			
+			switch (ExpenseHelper.currentHierarchyCostFilter)
+			{
+				case Total:
+				{
+					childList.add(new Child(obj.getString("name"), obj.getInt("total_expense_rollup_ex")));
+					break;
+				}
+				case Optimizable:
+				{
+					childList.add(new Child(obj.getString("name"), obj.getInt("optimizable_expense_rollup_ex")));
+					break;
+				}
+				case Roaming:
+				{
+					childList.add(new Child(obj.getString("name"), obj.getInt("roaming_expense_rollup_ex")));
+					break;
+				}
+				default:
+				{
+					Assert.fail("Failed to find case stateent in HierarchyNumbersTestsDependents.BuildDependentChildObjects");
+				}
+			}
 		}
 	}
 	
+	public static void VerifyActualExpectedDependentUnits() throws Exception // bladd
+	{
+		
+		// get the actual dependent units from the list of dependent units in the UI.
+		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
+		
+		int actualInt = 0;
+		int expectedInt = 0;
+		int loopCntr = 0;
+		int previousInt = 0;
+		
+		for(WebElement ele : eleList)
+		{
+			actualInt = Integer.valueOf(ele.getText().split("\n")[1].replace(GetCostFilterString(),""));
+			expectedInt  = childList.get(loopCntr).cost; 
+			
+			if(previousInt == expectedInt)
+			{
+				System.out.print("Name mismatch: " + ele.getText().split("\n")[0] + " " + childList.get(loopCntr).childName + " " + expectedInt);
+			}
+			
+			Assert.assertEquals(actualInt, expectedInt, "");
+			
+			previousInt = expectedInt;
+
+			try
+			{
+				Assert.assertEquals(ele.getText().split("\n")[0], childList.get(loopCntr).childName, "");				
+			}
+			catch (AssertionError sertErr)
+			{
+				System.out.print("Name mismatch: " + ele.getText().split("\n")[0] + " " + childList.get(loopCntr).childName + expectedInt);
+			}
+
+			// DEBUG - show both names.
+			//System.out.print("Actual: " + ele.getText().split("\n")[0]);
+			//System.out.print(" Expected: " +  childList.get(x).childName + "\n");
+			//ShowText("------------------------");
+			
+			ShowInt(loopCntr);
+			
+			loopCntr++;
+		}
+	}
 	
 	// 					------------ this does the drill down test ------------ 
 	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
@@ -504,6 +571,15 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
+	public static void ShowChildList()
+	{
+		for(Child chl : HierarchyNumbersDependents.childList){chl.Show();} // DEBUG
+	}
+	
+	// 		// for(Child chl : HierarchyNumbersDependents.childList){chl.Show();} // DEBUG
+	
+	
+	
 	//  THIS IS DEMO FROM ANA.
 	public static void HoverThroughTiles() throws AWTException, InterruptedException 
 	{	             
@@ -533,4 +609,57 @@ public class HierarchyNumbersDependents extends BaseClass
            }
     
     }
+
+
+
+	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 													HELPERS
+	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public static String GetCostFilterString()
+	{
+		switch(ExpenseHelper.currentHierarchyCostFilter)
+		{
+			case Total:
+			{
+				return "Total:$";
+			}
+			case Optimizable:
+			{
+				return "Optimizable:$";
+			}
+			case Roaming:
+			{
+				return "Roaming:$";
+			}
+			default:
+			{
+				Assert.fail();
+				return "";
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

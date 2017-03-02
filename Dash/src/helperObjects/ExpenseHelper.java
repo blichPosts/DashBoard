@@ -135,6 +135,13 @@ public class ExpenseHelper extends BaseClass
 	// this is for selecting slices in the expense control and expense control spend category.
 	public static String partialXpathForSliceSelections = "/*/*[@class='highcharts-series-group']/*/*";	
 	
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CSS for hierarchy dash    
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// this is used to get a list of web elements that hold the items in the  
+	public static String hierarchyDependentsList = ".tdb-pov__itemList>li";
+	
 	
 	public static String GetParentPulldownSelection()
 	{
@@ -1001,7 +1008,6 @@ public class ExpenseHelper extends BaseClass
 	// it also sets a text variable that is used in string hierarchyFilterString. 
 	public static void SetHierarchyCostFilter(hierarchyTileMapTabSelection tabSelect)
 	{
-
 		currentHierarchyCostFilter = tabSelect;
 		
 		switch(tabSelect)
