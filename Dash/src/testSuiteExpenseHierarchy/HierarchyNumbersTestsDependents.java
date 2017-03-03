@@ -2,6 +2,8 @@ package testSuiteExpenseHierarchy;
 
 import java.util.Collections;
 
+import javax.swing.JOptionPane;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.AfterClass;
@@ -40,26 +42,46 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 		new Select(driver.findElement(By.xpath("(//span[text()='Maximum Displayed:'])[2]/following::select"))).selectByVisibleText("100");
 
 		// /////////////////////////////
-		ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Total); // set category filter.
+		//ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Total); // set category filter.
 		
-		HierarchyNumbersDependents.BuildDependentChildObjects(); // create list of dependent units from Json call.
-		Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
+		//HierarchyNumbersDependents.BuildDependentChildObjects(); // create list of dependent units from Json call.
+		//Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
 		
-		// HierarchyNumbersDependents.ShowChildList();
+		// HierarchyNumbersDependents.ShowChildList(); // DEBUG
 		
-		HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
-		
+		//HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
+
+		//HierarchyNumbersDependents.childList.clear(); // clear list before re-use.
 
 		// /////////////////////////////
-		ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Optimizable); // set category filter.
+		ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Roaming); // set category filter.
 		
-		DebugTimeout(3, "Three");
+		Thread.sleep(1000);
 		
-		HierarchyNumbersDependents.BuildDependentChildObjects(); // create list of dependent units from Json call.
-		Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
-		HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
+		//for(int x = 9; x < 30; x++)
+		//{
+			HierarchyNumbersDependents.BuildDependentChildObjects(); // create list of dependent units from Json call.
+			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
+			
+			HierarchyNumbersDependents.ShowChildList(); // DEBUG
+			
+			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
+
+			HierarchyNumbersDependents.FinishFinalTest();
 		
-		// DebugTimeout(9999, "9999");
+		    JOptionPane.showMessageDialog(frame, "Stop Early.");
+			
+			HierarchyNumbersDependents.childList.clear(); // clear list before re-use.
+			
+		    //JOptionPane.showMessageDialog(frame, "Loop");
+		//}
+		
+		
+		
+		
+
+		
+		//DebugTimeout(9999, "9999");
 	
 	}
 	
@@ -68,7 +90,7 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 	{
 		System.out.println("Close Browser.");	
 		ExpenseHelper.SetWaitDefault();
-	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
+	    JOptionPane.showMessageDialog(frame, "Select OK. Test Done and Passed.");
 		driver.close();
 		driver.quit();
 	}	

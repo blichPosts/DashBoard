@@ -44,6 +44,11 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	public static List<Child> childList = new ArrayList<Child>();
 	
+	
+	public static List<Integer> debugList = new ArrayList<Integer>(); // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<    REMOVE
+	public static List<String> actualList = new ArrayList<String>();
+	public static List<String> expectedList = new ArrayList<String>();
+	
 	public static double expectedValueDouble = 0;
 	public static double actualValueDouble = 0;
 	public static int createErrorCounter = 0; // this can be used in 'GetExpectedValueTwo'method to create an intentional error. 
@@ -506,21 +511,15 @@ public class HierarchyNumbersDependents extends BaseClass
 		int actualInt = 0;
 		int expectedInt = 0;
 		int loopCntr = 0;
-		int previousInt = 0;
+		int latestCost = -9999;
+		String costSelectorString = "";
 		
 		for(WebElement ele : eleList)
 		{
 			actualInt = Integer.valueOf(ele.getText().split("\n")[1].replace(GetCostFilterString(),""));
 			expectedInt  = childList.get(loopCntr).cost; 
 			
-			if(previousInt == expectedInt)
-			{
-				System.out.print("Name mismatch: " + ele.getText().split("\n")[0] + " " + childList.get(loopCntr).childName + " " + expectedInt);
-			}
-			
 			Assert.assertEquals(actualInt, expectedInt, "");
-			
-			previousInt = expectedInt;
 
 			try
 			{
@@ -528,19 +527,47 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 			catch (AssertionError sertErr)
 			{
-				System.out.print("Name mismatch: " + ele.getText().split("\n")[0] + " " + childList.get(loopCntr).childName + expectedInt);
+				ShowText("Try error");
+				
+				if(childList.get(loopCntr).cost != latestCost)
+				{
+					//if(debugList.size() != 0){ShowDebugList(debugList);}
+					//debugList.clear();
+					
+					if(expectedList.size() != 0)
+					{
+						ShowExpectedList();
+						ShowActualList();
+					}
+					expectedList.clear();
+					actualList.clear();
+					latestCost = childList.get(loopCntr).cost;
+				}
+				
+				// this gets the string to filtered out of the actual data.
+				costSelectorString = HierarchyNumbersDependents.GetCostFilterString();  
+				
+				ShowText(costSelectorString);
+				
+				
+				actualList.add(ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " "));
+				expectedList.add(childList.get(loopCntr).childName + " " +  String.valueOf(expectedInt));
+				
 			}
-
-			// DEBUG - show both names.
-			//System.out.print("Actual: " + ele.getText().split("\n")[0]);
-			//System.out.print(" Expected: " +  childList.get(x).childName + "\n");
-			//ShowText("------------------------");
-			
-			ShowInt(loopCntr);
 			
 			loopCntr++;
 		}
 	}
+
+	public static void FinishFinalTest()
+	{
+		if(actualList.size() != 0)
+		{
+			ShowActualList();
+			ShowExpectedList();
+		}
+	}
+	
 	
 	// 					------------ this does the drill down test ------------ 
 	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
@@ -616,6 +643,38 @@ public class HierarchyNumbersDependents extends BaseClass
 	// 													HELPERS
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+
+
+	
+	
+	
+	public static void ShowDebugList(List<Integer> iList)
+	{
+		for(int i : iList)
+		{
+			ShowInt(i);
+		}
+	}
+	
+	public static void ShowExpectedList()
+	{
+
+		for(String str : expectedList)
+		{
+			ShowText(str);
+		}
+	}
+	
+	public static void ShowActualList()
+	{
+
+		for(String str : actualList)
+		{
+			ShowText(str);
+		}
+	
+	}
+	
 	public static String GetCostFilterString()
 	{
 		switch(ExpenseHelper.currentHierarchyCostFilter)
@@ -639,27 +698,4 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
