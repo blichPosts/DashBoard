@@ -9,6 +9,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 import Dash.BaseClass;
 
@@ -92,7 +93,6 @@ public class HierarchyHelper extends BaseClass {
 		
 	}
 	
-	
 
 	public static void selectCategoryTopTen(int section, int category){
 		
@@ -100,9 +100,6 @@ public class HierarchyHelper extends BaseClass {
 		categoryToSelect.click();
 		
 	}
-	
-
-	
 	
 	
 	public static void waitForTopTenChartToLoad() throws Exception {
@@ -131,6 +128,15 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 	
+	// Get the Dependent Unit's name from PoV
+	public static String getDependentUnitNamePoV(int numDepUnit) throws Exception {
+			
+		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(" + numDepUnit + ")>a"), MainTimeout);
+		return driver.findElement(By.cssSelector("li.tdb-pov__item:nth-child(" + numDepUnit + ")>a")).getText().trim();
+
+	}
+	
+	
 	// Get the list of hierarchies listed on dropdown
 	public static List<WebElement> getHierarchiesFromDropdown() {
 		
@@ -147,7 +153,6 @@ public class HierarchyHelper extends BaseClass {
 		for (WebElement h: hierarchyValues) {
 			
 			hierarchyIds.add(h.getAttribute("value"));
-//			System.out.println("Hierarchy ID: " + h.getAttribute("value"));
 		}
 		
 		return hierarchyIds;
@@ -216,8 +221,32 @@ public class HierarchyHelper extends BaseClass {
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 		
 		Thread.sleep(2000);
+		
+	}
+
+
+	public static String getHierarchySelected() {
+		
+		return new Select(driver.findElement(By.cssSelector("app-hierarchy-selector>div>select"))).getFirstSelectedOption().getText();
+		
+	}
+
+
+	public static String getDependentUnitOnTitle() {
+		
+		return driver.findElement(By.cssSelector(".tdb-kpi__header>span>span")).getText().trim();
+		
 	}
 
 	
+	// Get the latest added breadcrumb
+	public static String getLastAddedBreadcrumb() throws Exception {
+
+		WaitForElementPresent(By.cssSelector(".breadcrumbs"), MainTimeout);
+		return driver.findElement(By.cssSelector(".breadcrumbs>span:last-child")).getText().replace("/", "").trim();
+
+	}
+
+		
 }
 

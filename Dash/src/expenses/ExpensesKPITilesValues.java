@@ -52,7 +52,7 @@ public class ExpensesKPITilesValues extends BaseClass{
 		List<String> totalExpenseValues = new ArrayList<String>();
 		List<String> countServNumberValues = new ArrayList<String>();
 		List<String> costServNumberValues = new ArrayList<String>();
-				
+			
 		for(UsageOneMonth monthValues: valuesForRollingAvg){
 			
 			totalExpenseValues.add(monthValues.getTotalCharge());
@@ -73,7 +73,6 @@ public class ExpensesKPITilesValues extends BaseClass{
 		double rollingAvgTotalExpense = calculateRollingAverage(totalExpenseValues);
 		double rollingAvgCountServNum = calculateRollingAverage(countServNumberValues);
 		double rollingAvgCostServNum = calculateRollingAverage(costServNumberValues);
-		
 		
 //		System.out.println("rollingAvgTotalExpense: " + rollingAvgTotalExpense);
 //		System.out.println("rollingAvgCountServNum: " + rollingAvgCountServNum);

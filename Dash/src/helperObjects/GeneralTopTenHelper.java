@@ -109,39 +109,4 @@ public class GeneralTopTenHelper {
 	}
 	
 	
-	// Format Number OLD - Converts a service number with format 203-555-1119 to (203) 555-1119
-//	public static String formatPhoneNumber(String serviceNumber) {
-//		
-//		System.out.println("serviceNumber: " + serviceNumber);
-//		
-//		String[] serviceNumberParts = serviceNumber.split("-"); 
-//		String numberFormatted  ="";
-//		
-//		if (serviceNumberParts.length == 3) {
-//		
-//			String prefix = serviceNumberParts[0];
-//			String number = serviceNumberParts[1] + "-" + serviceNumberParts[2];
-//			
-//			numberFormatted = "(" + prefix + ") " + number;
-//			
-//		} 
-//		
-//		if (serviceNumberParts.length == 2 && serviceNumberParts[0].contains("(") && serviceNumberParts[0].contains(")")) {
-//			
-//			numberFormatted = serviceNumberParts[0].replace(" ", "") + "-" + serviceNumberParts[1].replace(" ", "");
-//			
-//		}
-//		
-//		if (serviceNumberParts.length == 1) {
-//		
-//			numberFormatted = serviceNumberParts[0].replace("+", "").replace(" ", "");
-//			
-//		}
-//		
-//		System.out.println("serviceNumberFormatted: " + numberFormatted.trim());
-//		return numberFormatted.trim();
-//		
-//	}
-	
-	
 }

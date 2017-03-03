@@ -116,10 +116,7 @@ public class ReadFilesHelper extends BaseClass {
 	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.rows')");
 	   
 	    ShowText(trendData);
-	   
-	    // Get the rows with data
-//	    String trendData = trendDataTmp.split("\"rows\":")[1];
-	   
+		   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(trendData); 
 
@@ -186,9 +183,6 @@ public class ReadFilesHelper extends BaseClass {
 	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
 	   
 //	    ShowText(topTenData);
-	   
-	    // Get the rows with data
-//	    String topTenData = topTenDataTmp.split("\"rows\":")[1];
 	   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(topTenData); 
@@ -311,11 +305,8 @@ public class ReadFilesHelper extends BaseClass {
 	    // E.g.: fleet.topUsers.EXPENSE.ALL.payload.rows'
 	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('fleet.topUsers." + chartNameForJS + "." + categoryForJS + ".payload.rows')");
 	   
-		    ShowText(topTenData);
-	   
-	    // Get the rows with data
-//		    String topTenData = topTenDataTmp.split("\"rows\":")[1];
-	   
+		ShowText(topTenData);
+   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(topTenData); 
 

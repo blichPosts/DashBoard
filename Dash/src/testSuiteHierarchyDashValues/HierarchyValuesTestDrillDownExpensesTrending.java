@@ -77,9 +77,9 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 				// #3 Get data from JSON
 				List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));	
 			
-				// #4 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
+				// #4 Verify that the values displayed on the tooltips of "Expenses Trending" chart are the same as the ones read from ajax calls 
 				// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
-				// will be displayed on the Usage Trending charts 
+				// will be displayed on the chart 
 				
 				try {
 					

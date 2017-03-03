@@ -52,10 +52,9 @@ public class GeneralHelper extends BaseClass {
 		}
 		
 //		System.out.println("Initial values: ");
-		
-		for (UsageOneMonth u: allValuesFromFile.get(0)) {
+//		for (UsageOneMonth u: allValuesFromFile.get(0)) {
 //			System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
-		}
+//		}
 		
 		
 		for (int i = 0; i < allValuesFromFile.size(); i++) {
@@ -79,9 +78,9 @@ public class GeneralHelper extends BaseClass {
 		}
 		
 //		System.out.println("Updated values: ");
-		for (UsageOneMonth u: allValuesFromFile.get(0)) {
+//		for (UsageOneMonth u: allValuesFromFile.get(0)) {
 //			System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
-		}
+//		}
 		
 		
 		return vendorsToBeDisplayedMap;
@@ -147,6 +146,7 @@ public class GeneralHelper extends BaseClass {
         
 	}
 
+	
 	public static void selectFirstMonth() throws Exception {
 
 		CommonTestStepActions.initializeMonthSelector();
@@ -201,7 +201,19 @@ public class GeneralHelper extends BaseClass {
 		
 		if (numericValue.endsWith("T"))
 			numericValue = numericValue.replace("T", "");
-					
+		
+		if (numericValue.endsWith("KB"))
+			numericValue = numericValue.replace("KB", "");
+			
+		if (numericValue.endsWith("MB"))
+			numericValue = numericValue.replace("MB", "");
+		
+		if (numericValue.endsWith("GB"))
+			numericValue = numericValue.replace("GB", "");
+		
+		if (numericValue.endsWith("TB"))
+			numericValue = numericValue.replace("TB", "");
+		
 		return numericValue.trim();
 		
 	}
@@ -217,7 +229,7 @@ public class GeneralHelper extends BaseClass {
 	public static void verifyExpectedAndActualValues(long valueActual, long valueExpected) {
 		
 		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
-		
+				
 	}
 	
 	

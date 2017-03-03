@@ -38,6 +38,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 		
 		for(WebElement vendor: vendors){
 			vendorNames.add(vendor.getText());
+			System.out.println(vendor.getText());
 		}
 		
 		String path = UsageHelper.path;
@@ -55,9 +56,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 				
 			// #1 Read data from file
 			List<UsageOneMonth> valuesFromFile = ReadFilesHelper.getDataFromSpreadsheet(completePath);
-			
-			List<UsageOneMonth> valuesOneVendorAllMonths = UsageHelper.addMissingMonthsForVendor(valuesFromFile);
-				
+							
 			// #2 Select only one vendor
 			CommonTestStepActions.UnSelectAllVendors();
 			CommonTestStepActions.selectOneVendor(vendor);
@@ -75,12 +74,12 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 			
 			do {
 			
-				oneMonthData = valuesOneVendorAllMonths.get(indexMonth);   
-				
+				oneMonthData = valuesFromFile.get(indexMonth);   
+								
 				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
 				month = monthYear[0];
 				year = monthYear[1];
-				
+								
 				boolean monthYearNull = false; 
 				
 				try {
@@ -98,7 +97,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 				if (!monthYearNull) {
 				
 					monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
-	//				System.out.println("Month Year: " + monthYearToSelect);
+					System.out.println("Month Year: " + monthYearToSelect);
 					
 					// #3 Select month on month/year selector
 					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
@@ -110,8 +109,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 									
 					// #4 Compare the values displayed on the KPIs to the values from spreadsheet
 					ExpensesKPITilesValues.verifyKPItileValues(totalChargeExpenses, numberOfLinesExpenses);
-					
-					
+										
 					// #5 Calculate 3 Month Rolling Averages and Trending Percentage
 					// Get the values needed to calculate the 3 month Rolling Averages, and the Trending values
 					// ONLY if there's data for two months before the current month. 
@@ -126,7 +124,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 						valuesForTrendingValue.add(valuesFromFile.get(indexMonth+1));
 						// Adds values from 2 months ago to the list
 						valuesForTrendingValue.add(valuesFromFile.get(indexMonth+2));
-					 
+					 						
 						ExpensesKPITilesValues.verifyThreeMonthRollingAverageAndTrendingValues(valuesForTrendingValue);
 						
 					}

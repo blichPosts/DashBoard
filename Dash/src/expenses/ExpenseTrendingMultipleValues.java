@@ -406,8 +406,8 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			// Get the location of the second line of the chart -> to get the "y" coordinate
 			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 			
-			Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);  // bar.getLocation();
-			Point lineCoordinates = GeneralHelper.getAbsoluteLocation(line); // line.getLocation();   
+			Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
+			Point lineCoordinates = GeneralHelper.getAbsoluteLocation(line);   
 			Robot robot = new Robot();
 			
 			int y_offset = 0;
@@ -478,18 +478,14 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 
 				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
 				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
-							
-				// Verify the labels' text and amounts shown on the tooltip
-//						String labelExpected = legends.get(i-1);   //expectedLabels.get(i-1);
-//						Assert.assertEquals(labelFound, labelExpected); 
-				
-				String valueExpected = expectedValues.get(indexMonth).get(labelFound);  //labelExpected);
+					
+				// Get the value expected
+				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
 				
 				System.out.println("Vendor: " + labelFound);
 				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
-//				Assert.assertEquals(valueFound, valueExpected);
 				
 			}
 			
@@ -497,7 +493,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			String monthYearFound = tooltip.get(0).getText();
 			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
 				
-			Assert.assertEquals(monthYearFound, monthYearExpected); // **** UNCOMMENT FOR REF APP!! ****
+			Assert.assertEquals(monthYearFound, monthYearExpected);
 			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;

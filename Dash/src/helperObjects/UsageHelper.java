@@ -146,7 +146,7 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	
-	// Used to scroll down simulating the mouse wheel moves
+	// Used to scroll down simulating the mouse wheel moves ---  *** NOT USED ***
 	public static void scrollMouseToChart(int num){
 		
 		try{
