@@ -58,12 +58,15 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 		
 		Thread.sleep(1000);
 		
-		//for(int x = 9; x < 30; x++)
+		//for(int x = 0; x < 30; x++)
 		//{
 			HierarchyNumbersDependents.BuildDependentChildObjects(); // create list of dependent units from Json call.
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
+
+			Thread.sleep(1000); // need pause 
 			
 			HierarchyNumbersDependents.ShowChildList(); // DEBUG
+			ShowText("List out done --------------------"); // DEBUG
 			
 			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
 

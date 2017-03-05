@@ -516,26 +516,26 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		for(WebElement ele : eleList)
 		{
+			// get the actual value (from UI) and the expected value (from sorted json list) into variables.  
 			actualInt = Integer.valueOf(ele.getText().split("\n")[1].replace(GetCostFilterString(),""));
 			expectedInt  = childList.get(loopCntr).cost; 
 			
-			Assert.assertEquals(actualInt, expectedInt, "");
+			Assert.assertEquals(actualInt, expectedInt, ""); // verify cost in json list equals cost in actual list. 
 
+			// compare names. sometimes the names won't match because .................................................... 
 			try
 			{
 				Assert.assertEquals(ele.getText().split("\n")[0], childList.get(loopCntr).childName, "");				
 			}
 			catch (AssertionError sertErr)
 			{
-				ShowText("Try error");
+				ShowText("Try catch");
 				
 				if(childList.get(loopCntr).cost != latestCost)
 				{
-					//if(debugList.size() != 0){ShowDebugList(debugList);}
-					//debugList.clear();
-					
 					if(expectedList.size() != 0)
 					{
+						VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));
 						ShowExpectedList();
 						ShowActualList();
 					}
@@ -544,15 +544,11 @@ public class HierarchyNumbersDependents extends BaseClass
 					latestCost = childList.get(loopCntr).cost;
 				}
 				
-				// this gets the string to filtered out of the actual data.
+				// this gets the string to be filtered out of the actual data.
 				costSelectorString = HierarchyNumbersDependents.GetCostFilterString();  
-				
-				ShowText(costSelectorString);
-				
 				
 				actualList.add(ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " "));
 				expectedList.add(childList.get(loopCntr).childName + " " +  String.valueOf(expectedInt));
-				
 			}
 			
 			loopCntr++;
@@ -563,10 +559,60 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		if(actualList.size() != 0)
 		{
-			ShowActualList();
+			VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));
 			ShowExpectedList();
+			ShowActualList();
 		}
 	}
+	
+	public static void VerifyAllDependentChildren(String expectedTotal) // bladd
+	{
+		ShowText("verify -------------");
+		Assert.assertTrue(actualList.size() == expectedList.size(), "");
+		
+		// verify all actual values have total value equal to 'expectedTotal' passed in.
+		for(String str : actualList)
+		{
+			Assert.assertEquals(GetCostFromString(str), expectedTotal, "Actual total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
+		}
+		
+		// verify all expected values have total value equal to 'expectedTotal' passed in.
+		for(String str : expectedList)
+		{
+			Assert.assertEquals(GetCostFromString(str), expectedTotal, "Expected total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
+		}
+		
+		
+		// ++++++++++++++++
+		
+		int x = 0;
+		
+		// verify cross check.
+		for(String str : expectedList)
+		{
+			//Assert.assertTrue(actualList.contains(str), "Failure in comparing actual and expected lists. Expected list has " + str + " and actual list has " + actualList.get(x));
+			if(actualList.contains(str))
+			{
+				ShowText(str);
+				ShowText(actualList.get(x));
+			}
+			//ShowText(actualList.get(x));
+			//ShowText(str);
+			x++;
+			
+
+			
+		}
+
+		
+	}
+	
+	public static String GetCostFromString(String stringWithExpectedCost)
+	{
+		String [] arr = stringWithExpectedCost.split(" "); 
+		return arr[arr.length - 1];
+	}
+	
 	
 	
 	// 					------------ this does the drill down test ------------ 
@@ -602,10 +648,6 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		for(Child chl : HierarchyNumbersDependents.childList){chl.Show();} // DEBUG
 	}
-	
-	// 		// for(Child chl : HierarchyNumbersDependents.childList){chl.Show();} // DEBUG
-	
-	
 	
 	//  THIS IS DEMO FROM ANA.
 	public static void HoverThroughTiles() throws AWTException, InterruptedException 
@@ -658,7 +700,6 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	public static void ShowExpectedList()
 	{
-
 		for(String str : expectedList)
 		{
 			ShowText(str);
@@ -667,7 +708,6 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	public static void ShowActualList()
 	{
-
 		for(String str : actualList)
 		{
 			ShowText(str);
