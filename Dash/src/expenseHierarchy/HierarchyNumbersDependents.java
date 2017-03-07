@@ -3,8 +3,11 @@ package expenseHierarchy;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import javax.swing.JOptionPane;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,6 +35,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static int maxNumberOfTileMapsThatCanBeShown = 100;
 	public static int tileNumberToStartLoop = 0;
 	public static int maxLevelsToDo = 4;
+
 	
 	public static String dependentUnits = "";
 	public static String nameAndIds = "";
@@ -41,9 +45,10 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static String hoverInfo = "";
 	public static String filterString = "";
 	public static String chartId = "";
+	public static String currentHierarchyId = "";
 	
 	public static List<Child> childList = new ArrayList<Child>();
-	
+	public static List<String> hierarchyIdsList = new ArrayList<>();	
 	
 	public static List<Integer> debugList = new ArrayList<Integer>(); // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<    REMOVE
 	public static List<String> actualList = new ArrayList<String>();
@@ -59,13 +64,13 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		ShowText("Run Total Cost Filter --");
 		
-		ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Total);
+		ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Total); 
 		Thread.sleep(1500);
 		
 		try
 		{
 			HierarchyNumbersDependents.RunAllTilesThree();
-			// HierarchyNumbersDependents.RunThroughMonths();
+			// HierarchyNumbersDependents.RunThroughMonths(); // old --  not run here.
 		}
 		catch(AssertionError es)
 		{
@@ -213,6 +218,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 
+	/*
 	// this is called after a number of tiles to test has been setup, a month has been selected, and a tile level has been setup (unless the top level is being tested).
 	public static void RunAllTilesTwo() throws Exception
 	{
@@ -280,7 +286,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			Thread.sleep(1000);
 		}
 	}
-	
+	*/
 	
 	// this is called after a number of tiles to test has been setup, a month has been selected, and a tile level has been setup (unless the top level is being tested).
 	public static void RunAllTilesThree() throws Exception
@@ -288,19 +294,19 @@ public class HierarchyNumbersDependents extends BaseClass
 		int x = 0;
 		
 		// this gets the json request text to be used below. this depends on what selection is in the hierarchy pulldown.
-		tempString = BuildJsonRequestPath(); 
+		//tempString = BuildJsonRequestPath(); 
 		
 		// get the json of the current tile map being shown
-		dependentUnits =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('" + tempString + "')");
+		//dependentUnits =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('" + tempString + "')");
 		
 		// verify json fetch is OK.
-		Assert.assertTrue(dependentUnits != null); 
+		//Assert.assertTrue(dependentUnits != null); 
 
 		// do this here to also make sure json fetch worked
-		JSONArray array = new JSONArray(dependentUnits);		
+		//JSONArray array = new JSONArray(dependentUnits);		
 		
 		// one more check
-		Assert.assertTrue(array.length() ==  100, "Error in HierarchyNumbersDependents.RunAllTilesThree. The json array read in is the wrong size.");
+		//Assert.assertTrue(array.length() ==  100, "Error in HierarchyNumbersDependents.RunAllTilesThree. The json array read in is the wrong size.");
 
 		
 		// ////////////////////////////////////////////////////////////////////////////////////
@@ -326,14 +332,18 @@ public class HierarchyNumbersDependents extends BaseClass
 					                                               + "The hover value doesn't match its corresponding dependent user."
 					                                               + "The loop counter is " + x); 
 			
+			// IMPORTANT NOTE -- this may not always work because the json sorting can be different then ED's sort when it comes to 
+			//                   dependent units with the same numeric value.
+			//                -- next sections below are commented.
+			
 			// now get the dependent unit user cost value in the json array that was stored before the click to get hover info. 
 			// send in nameAndId, the user name info, and this call will return the expected value as double.
-			actualValueDouble = GetExpectedValueTwo(array, nameAndIds, ExpenseHelper.currentHierarchyCostFilter);
+			//actualValueDouble = GetExpectedValueTwo(array, nameAndIds, ExpenseHelper.currentHierarchyCostFilter);
 			
 			// get the double value found in the dependent info 
-			expectedValueDouble = Double.valueOf(currentDependentUnitInfo.split("\\$")[1]);
+			//expectedValueDouble = Double.valueOf(currentDependentUnitInfo.split("\\$")[1]);
 			
-			Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
+			//Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
 		}
         // System.out.println("Number of Tile maps tested = " + (x  - 1));
 	}
@@ -354,9 +364,11 @@ public class HierarchyNumbersDependents extends BaseClass
         
         Robot robot = new Robot();
         robot.mouseMove(a, b);
-                     
-        // Thread.sleep(2000); / orig
-        Thread.sleep(1500); 
+
+        // DebugTimeout(9999, "Freeze in GetTooltipText");
+        
+        Thread.sleep(2000); // orig - back to orig.
+        //Thread.sleep(1500); 
         
         
         WebElement tooltip = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip"));
@@ -396,6 +408,12 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 		
 		return "";
+	}
+	
+	// this builds the json request string for getting the json list of dependent unit values. 
+	public static String BuildJsonRequestPathTwo()
+	{
+		return "hierarchy." + currentHierarchyId +  ".child.payload.rows";
 	}
 	
 	// this will find which cost filter is selected. depending on which cost filter is selected, this will return a text string related to the selected cost filter.
@@ -454,7 +472,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		return 0;
 	}	
 	
-	public static void BuildDependentChildObjects() throws Exception // bladd
+	public static void BuildDependentChildObjects() throws Exception 
 	{
 		JSONObject obj;
 		double tempDouble;
@@ -462,7 +480,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		Thread.sleep(2000);
 		
 		// this gets the json request text to be used below. this depends on what selection is in the hierarchy pulldown.
-		tempString = BuildJsonRequestPath(); 
+		tempString = BuildJsonRequestPathTwo(); 
 		
 		// get the json of the current tile map being shown
 		dependentUnits =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('" + tempString + "')");
@@ -502,9 +520,17 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
-	public static void VerifyActualExpectedDependentUnits() throws Exception // bladd
+	// * get the dependent units list using a json call. this list is sorted by numeric value. (expected list)
+	// * get the dependent units list in the UI. (Actual list)
+	// * go through  the lists and verify the numeric values are sorted identically between the actual and expected.
+	// * go through  the lists and verify the names info is identical between the actual and expected. sometimes when
+	//   there are two or more users with the same numeric value the sorting of the names can be in different order, 
+	//   between the actual and expected list. in this case, store these names into  their own separate actual and expected 
+	//   lists into and send both lists to the 'VerifyAllDependentChildren' method.
+	// * the 'VerifyAllDependentChildren' method will verify that the names between the two list are identical and the numeric
+	//   values are all the same.
+	public static void VerifyActualExpectedDependentUnits() throws Exception 
 	{
-		
 		// get the actual dependent units from the list of dependent units in the UI.
 		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
 		
@@ -520,24 +546,26 @@ public class HierarchyNumbersDependents extends BaseClass
 			actualInt = Integer.valueOf(ele.getText().split("\n")[1].replace(GetCostFilterString(),""));
 			expectedInt  = childList.get(loopCntr).cost; 
 			
-			Assert.assertEquals(actualInt, expectedInt, ""); // verify cost in json list equals cost in actual list. 
+			Assert.assertEquals(actualInt, expectedInt, "Fail in sorting compare for numeric cost in HierarchyNumbersDependents.VerifyActualExpectedDependentUnits"); // verify cost in json list equals cost in actual list. 
 
-			// compare names. sometimes the names won't match because .................................................... 
+			// compare names. sometimes the numeric values will match and the names won't match. this happens when two or more
+			// units have the same numeric value in each list but the units are in different orders.  
 			try
 			{
 				Assert.assertEquals(ele.getText().split("\n")[0], childList.get(loopCntr).childName, "");				
 			}
 			catch (AssertionError sertErr)
 			{
-				ShowText("Try catch");
+				// ShowText("Try catch"); // DEBUG
 				
 				if(childList.get(loopCntr).cost != latestCost)
 				{
 					if(expectedList.size() != 0)
 					{
-						VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));
-						ShowExpectedList();
-						ShowActualList();
+						// this verifies all the names have the same value, the actual and expected lists are the same size, and 
+						VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));  
+						//ShowExpectedList();
+						//ShowActualList();
 					}
 					expectedList.clear();
 					actualList.clear();
@@ -550,7 +578,6 @@ public class HierarchyNumbersDependents extends BaseClass
 				actualList.add(ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " "));
 				expectedList.add(childList.get(loopCntr).childName + " " +  String.valueOf(expectedInt));
 			}
-			
 			loopCntr++;
 		}
 	}
@@ -560,14 +587,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		if(actualList.size() != 0)
 		{
 			VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));
-			ShowExpectedList();
-			ShowActualList();
+			//ShowExpectedList();
+			//ShowActualList();
 		}
 	}
 	
-	public static void VerifyAllDependentChildren(String expectedTotal) // bladd
+	public static void VerifyAllDependentChildren(String expectedTotal) 
 	{
-		ShowText("verify -------------");
+		// ShowText("VerifyAllDependentChildren START"); // debug
 		Assert.assertTrue(actualList.size() == expectedList.size(), "");
 		
 		// verify all actual values have total value equal to 'expectedTotal' passed in.
@@ -582,29 +609,15 @@ public class HierarchyNumbersDependents extends BaseClass
 			Assert.assertEquals(GetCostFromString(str), expectedTotal, "Expected total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
 		}
 		
-		
-		// ++++++++++++++++
-		
-		int x = 0;
-		
 		// verify cross check.
 		for(String str : expectedList)
 		{
-			//Assert.assertTrue(actualList.contains(str), "Failure in comparing actual and expected lists. Expected list has " + str + " and actual list has " + actualList.get(x));
-			if(actualList.contains(str))
+			if(!actualList.contains(str))
 			{
-				ShowText(str);
-				ShowText(actualList.get(x));
+				Assert.fail("Actual list does not contain item in expected list. Item not found in actual list is " + str);
 			}
-			//ShowText(actualList.get(x));
-			//ShowText(str);
-			x++;
-			
-
-			
 		}
-
-		
+		// ShowText("VerifyAllDependentChildren DONE"); // DEBUG
 	}
 	
 	public static String GetCostFromString(String stringWithExpectedCost)
@@ -619,7 +632,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
 	//   reaches the maxNumberOfLevels passed in.
 	// * each time a level is drilled down to some test are run that test the three cost filters.
-	public static void DrillDownAcrossCostFilters(int maxNumberOfLevels, int totalNumberOfTilesShown) throws Exception 
+	public static void DrillDownAcrossCostFiltersTileMap(int maxNumberOfLevels, int totalNumberOfTilesShown) throws Exception 
 	{
 		
 		int tileToSelect;
@@ -644,9 +657,108 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
+	// 					------------ this does the drill down test ------------ 
+	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
+	//   reaches the maxNumberOfLevels passed in.
+	// * each time a level is drilled down to some test are run that test the three cost filters.
+	public static void DrillDownDependentUnits(int maxNumberOfLevels) throws Exception 
+	{
+		int tileToSelect;
+		int cntr = 0;
+		int numberOfDependentUnits =  100;
+		
+		Random rand = new Random();
+		
+		// get list of web elements, one for each hierarchy.
+		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));
+
+		if(hierarchyIdsList != null)
+		{
+			hierarchyIdsList.clear();
+		}
+		
+		// this method get the Ids for the hierarchy pulldown values. The Ids are used as a key in the Json request (example: "hierarchy." + currentHierarchyId +  ".child.payload.rows").   
+		hierarchyIdsList = HierarchyHelper.getHierarchiesValues();
+		
+		currentHierarchyId = hierarchyIdsList.get(0);
+		
+		List<WebElement> unitsList = driver.findElements(By.cssSelector(".tdb-pov__itemList>li"));
+		
+		
+		while (cntr != maxNumberOfLevels)
+		{
+			tileToSelect = rand.nextInt(numberOfDependentUnits) + 1;
+			System.out.println("** Dependent Unit " + tileToSelect + " **");
+			//driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
+			
+			unitsList.get(tileToSelect).click(); 
+			
+			
+			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+			{
+				System.out.println("Finished drill down testing to level " + cntr);
+				System.out.println("The last click found the 'No Depenents' message\n");
+				break;
+			}
+			HierarchyNumbersDependents.LoopThroughCatergoriesDependentUnits();
+			cntr++;
+		}
+	}
+	
 	public static void ShowChildList()
 	{
 		for(Child chl : HierarchyNumbersDependents.childList){chl.Show();} // DEBUG
+	}
+	
+	// go through each category selector in  
+	public static void LoopThroughCatergoriesDependentUnits() throws Exception 
+	{
+		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values();
+		
+		ExpenseHelper.SetHierarchyCostFilter(values[0]);
+
+		Thread.sleep(1000);
+		
+		for(int x = 0; x < values.length; x++)
+		{
+			ExpenseHelper.SetHierarchyCostFilter(values[x]);
+			Thread.sleep(1000);
+			
+			HierarchyNumbersDependents.BuildDependentChildObjects(); // create list of dependent units from Json call.
+			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
+			Thread.sleep(1000);
+
+			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
+			
+			HierarchyNumbersDependents.FinishFinalTest();
+			childList.clear();
+			
+			ShowText("Pass complete for " + values[x].name() +".");
+		}
+	}
+	
+	public static void LoopThroughHierarchies() throws Exception 
+	{
+		// get list of web elements, one for each hierarchy.
+		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));
+		
+		// this method get the Ids for the hierarchy pulldown values. The Ids are used as a key in the Json request (example: "hierarchy." + currentHierarchyId +  ".child.payload.rows").   
+		hierarchyIdsList = HierarchyHelper.getHierarchiesValues();
+		
+		ShowText(" ------------ Start Looping Through Hierarchies. -----------------");
+		
+		int hierarchyCntr = 0;
+
+		// got through the available hierarchies one at a time. call 'LoopThroughCatergoriesDependentUnits()' on each loop.
+		for(WebElement ele : hierarchyList)
+		{
+				ShowText("Hierarchy Name: " + ele.getText());
+				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr);
+				ele.click();
+				Thread.sleep(1000);
+				LoopThroughCatergoriesDependentUnits();
+				hierarchyCntr++;
+		}
 	}
 	
 	//  THIS IS DEMO FROM ANA.
@@ -680,6 +792,9 @@ public class HierarchyNumbersDependents extends BaseClass
     }
 
 
+	
+	
+	
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 													HELPERS

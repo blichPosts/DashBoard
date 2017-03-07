@@ -38,7 +38,6 @@ public class HierarchyNumbersTests extends BaseClass
 
 		ExpenseHelper.failedtestNgTest = false;
 
-		/*
 		// this sets the number of tiles to test and the number of tiles to show.
 		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(45, 50);
 		
@@ -58,7 +57,7 @@ public class HierarchyNumbersTests extends BaseClass
 		Thread.sleep(2000);
 		
 		HierarchyNumbersDependents.TestPhaseOne(); // TEST --------------------------------------
-		*/
+
 		
 
 		// ////////////////////////////////////////////////////////////////////////
@@ -66,7 +65,7 @@ public class HierarchyNumbersTests extends BaseClass
 		// ////////////////////////////////////////////////////////////////////////
 
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(15, 50);
+		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(30, 50);
 		
 		ShowText("Have Set Cost Center Hierarchy Is Set *****");
 		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.CostCenter);
@@ -91,6 +90,7 @@ public class HierarchyNumbersTests extends BaseClass
 		{
 			Assert.fail("Failure in HierarchyNumbersTest()");
 		}
+
 	}
 	
 	@AfterClass

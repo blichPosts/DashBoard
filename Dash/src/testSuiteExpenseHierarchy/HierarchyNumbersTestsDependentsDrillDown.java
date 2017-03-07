@@ -1,11 +1,7 @@
 package testSuiteExpenseHierarchy;
 
-import java.util.Collections;
-
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -13,13 +9,11 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyNumbersDependents;
 import expenseHierarchy.VisualPageLoad;
-import helperObjects.Child;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
-import helperObjects.ExpenseHelper.hierarchyTileMapTabSelection;
 
-public class HierarchyNumbersTestsDependents extends BaseClass
+public class HierarchyNumbersTestsDependentsDrillDown extends BaseClass 
 {
 
 	@BeforeClass
@@ -30,8 +24,8 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 	}
 	
 	@Test
-	public static void HierarchyNumbersTestDependents() throws Exception
-	{	
+	public static void HierarchyNumbersTestDependentsDrillDown() throws Exception
+	{		
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
@@ -42,7 +36,10 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 		ExpenseHelper.SetHierarchyMaxDisplayed(100);
 		Thread.sleep(1000);
 		
-		HierarchyNumbersDependents.LoopThroughHierarchies();
+		HierarchyNumbersDependents.DrillDownDependentUnits(3);
+
+	
+	
 	}
 	
 	@AfterClass
@@ -53,8 +50,5 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 	    JOptionPane.showMessageDialog(frame, "Select OK. Test Done and Passed.");
 		driver.close();
 		driver.quit();
-	}	
-	
-	
-	
+	}		
 }
