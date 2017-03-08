@@ -36,10 +36,14 @@ public class HierarchyNumbersTestsDependentsDrillDown extends BaseClass
 		ExpenseHelper.SetHierarchyMaxDisplayed(100);
 		Thread.sleep(1000);
 		
-		HierarchyNumbersDependents.DrillDownDependentUnits(3);
+		// set how many levels to drill down to.
+		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(3);
+		
+		// this will do drill down tests by looping through each hierarchy and doing drill down tests in each hierarchy.  
+		HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown();
+		
 
-	
-	
+
 	}
 	
 	@AfterClass

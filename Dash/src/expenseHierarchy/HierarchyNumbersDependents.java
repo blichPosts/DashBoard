@@ -16,6 +16,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
@@ -33,8 +34,8 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static int numberOfTileMapsToTest = 0;
 	public static int maxNumberOfTileMapsThatCanBeTested = 100;
 	public static int maxNumberOfTileMapsThatCanBeShown = 100;
-	public static int tileNumberToStartLoop = 0;
-	public static int maxLevelsToDo = 4;
+	public static int tileNumberToStartLoop = 0; // remove?
+	public static int maxLevelsToDrillDownTo = 0; 
 
 	
 	public static String dependentUnits = "";
@@ -50,7 +51,6 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static List<Child> childList = new ArrayList<Child>();
 	public static List<String> hierarchyIdsList = new ArrayList<>();	
 	
-	public static List<Integer> debugList = new ArrayList<Integer>(); // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<    REMOVE
 	public static List<String> actualList = new ArrayList<String>();
 	public static List<String> expectedList = new ArrayList<String>();
 	
@@ -60,6 +60,11 @@ public class HierarchyNumbersDependents extends BaseClass
 
 	public static JavascriptExecutor js = (JavascriptExecutor) driver;	
 	
+	public static void SetMaxNumberOfLevelsToDrillDown(int numLevels)
+	{
+		maxLevelsToDrillDownTo = numLevels;
+	}
+
 	public static void TestPhaseOne() throws Exception
 	{
 		ShowText("Run Total Cost Filter --");
@@ -546,6 +551,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			actualInt = Integer.valueOf(ele.getText().split("\n")[1].replace(GetCostFilterString(),""));
 			expectedInt  = childList.get(loopCntr).cost; 
 			
+			// System.out.println("Actual Int: " + actualInt + " Expected Int: " + expectedInt); DEBUG			
+			
 			Assert.assertEquals(actualInt, expectedInt, "Fail in sorting compare for numeric cost in HierarchyNumbersDependents.VerifyActualExpectedDependentUnits"); // verify cost in json list equals cost in actual list. 
 
 			// compare names. sometimes the numeric values will match and the names won't match. this happens when two or more
@@ -634,7 +641,6 @@ public class HierarchyNumbersDependents extends BaseClass
 	// * each time a level is drilled down to some test are run that test the three cost filters.
 	public static void DrillDownAcrossCostFiltersTileMap(int maxNumberOfLevels, int totalNumberOfTilesShown) throws Exception 
 	{
-		
 		int tileToSelect;
 		int cntr = 0;
 		
@@ -657,50 +663,71 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
-	// 					------------ this does the drill down test ------------ 
+	// this loops through the hierarchies and does a series of drill down tests for each hierarchy. 
+	public static void LoopThroughHierarchiesDependentUnitsDrillDown() throws Exception // bladd
+	{
+		// get list of web elements, one for each hierarchy.
+		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));
+		
+		// this method get the Ids for the hierarchy pulldown values. The Ids are used as a key in the Json request (example: "hierarchy." + currentHierarchyId +  ".child.payload.rows").   
+		hierarchyIdsList = HierarchyHelper.getHierarchiesValues();
+		
+		ShowText(" ------------ Start Looping Through Hierarchies With Drilldowns. -----------------\n\n");
+		
+		int hierarchyCntr = 0; // this is used to index hierarchy Ids from 'hierarchyIdsList' created above.
+
+		// got through the available hierarchies one at a time. call 'DrillDownDependentUnitsTwo()' on each loop.
+		for(WebElement ele : hierarchyList)
+		{
+				ShowText(" -------------------------Hierarchy Name: " + ele.getText() + " ---------------------------------------- ");
+				
+				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr); // set the current hierarchy Id. this hierarchyId is global to this class.  
+				ele.click(); 
+				Thread.sleep(1000);
+				DrillDownDependentUnitsTwo(maxLevelsToDrillDownTo); // run the drill down tests for each category selector.
+				hierarchyCntr++;
+		}
+	}
+	
+	// 					------------ this does the drill down test for dependent units ------------ 
 	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
 	//   reaches the maxNumberOfLevels passed in.
 	// * each time a level is drilled down to some test are run that test the three cost filters.
-	public static void DrillDownDependentUnits(int maxNumberOfLevels) throws Exception 
+	public static void DrillDownDependentUnitsTwo(int maxNumberOfLevels) throws Exception  // bladd
 	{
-		int tileToSelect;
+		int dependentUnitToSelect;
 		int cntr = 0;
 		int numberOfDependentUnits =  100;
 		
 		Random rand = new Random();
 		
-		// get list of web elements, one for each hierarchy.
-		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));
-
-		if(hierarchyIdsList != null)
-		{
-			hierarchyIdsList.clear();
-		}
-		
-		// this method get the Ids for the hierarchy pulldown values. The Ids are used as a key in the Json request (example: "hierarchy." + currentHierarchyId +  ".child.payload.rows").   
-		hierarchyIdsList = HierarchyHelper.getHierarchiesValues();
-		
-		currentHierarchyId = hierarchyIdsList.get(0);
-		
-		List<WebElement> unitsList = driver.findElements(By.cssSelector(".tdb-pov__itemList>li"));
-		
+		ShowText("Starting drill down.");
 		
 		while (cntr != maxNumberOfLevels)
 		{
-			tileToSelect = rand.nextInt(numberOfDependentUnits) + 1;
-			System.out.println("** Dependent Unit " + tileToSelect + " **");
-			//driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
+			// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
+			List<WebElement> unitsList = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")); 
+			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
 			
-			unitsList.get(tileToSelect).click(); 
+			Thread.sleep(500);
 			
+			System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **");
 			
+			unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
+
+			// wait to see if 'No Dependents' message is found.
 			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
 			{
 				System.out.println("Finished drill down testing to level " + cntr);
-				System.out.println("The last click found the 'No Depenents' message\n");
+				System.out.println("The last click found the 'No Dependents' message\n");
 				break;
 			}
-			HierarchyNumbersDependents.LoopThroughCatergoriesDependentUnits();
+
+			// move to top of page to make the testing visible.
+			WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
+			new Actions(driver).moveToElement(topSection).perform();
+
+			HierarchyNumbersDependents.LoopThroughCatergoriesDependentUnits(); // this test loops through all of the category selectors.
 			cntr++;
 		}
 	}
@@ -710,24 +737,29 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(Child chl : HierarchyNumbersDependents.childList){chl.Show();} // DEBUG
 	}
 	
-	// go through each category selector in  
+	// go through each category selector in  the tile map section.
 	public static void LoopThroughCatergoriesDependentUnits() throws Exception 
 	{
-		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values();
+		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
 		
-		ExpenseHelper.SetHierarchyCostFilter(values[0]);
+		// ExpenseHelper.SetHierarchyCostFilter(values[0]);
 
 		Thread.sleep(1000);
 		
 		for(int x = 0; x < values.length; x++)
 		{
-			ExpenseHelper.SetHierarchyCostFilter(values[x]);
+			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
 			Thread.sleep(1000);
 			
-			HierarchyNumbersDependents.BuildDependentChildObjects(); // create list of dependent units from Json call.
+			/*HierarchyNumbersDependents.*/ BuildDependentChildObjects(); // create list of dependent units from Json call.
+			
+			// ShowChildList(); // DEBUG
+			
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
 			Thread.sleep(1000);
 
+			// ShowChildList(); // DEBUG
+			
 			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
 			
 			HierarchyNumbersDependents.FinishFinalTest();
@@ -737,7 +769,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
-	public static void LoopThroughHierarchies() throws Exception 
+	public static void LoopThroughHierarchiesDependentUnits() throws Exception 
 	{
 		// get list of web elements, one for each hierarchy.
 		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));

@@ -42,7 +42,7 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 		ExpenseHelper.SetHierarchyMaxDisplayed(100);
 		Thread.sleep(1000);
 		
-		HierarchyNumbersDependents.LoopThroughHierarchies();
+		HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnits();
 	}
 	
 	@AfterClass
