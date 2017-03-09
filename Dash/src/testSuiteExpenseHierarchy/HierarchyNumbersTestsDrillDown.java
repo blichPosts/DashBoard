@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyNumbersDependents;
 import expenseHierarchy.VisualPageLoad;
+import expenseHierarchy.HierarchyNumbersDependents.TileMapTestType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
@@ -37,9 +38,19 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 
 		ExpenseHelper.failedtestNgTest = false;
 
-		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(45, 50);
+		// set how many levels to drill down to.
+		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(2);
+
 		
+		// this sets the number of tiles to test and the number of tiles to show.
+		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(1, 50);
+		
+		// set which tile map test should be run in the loop below. 
+		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.drillDown);
+
+		HierarchyNumbersDependents.LoopThroughHierarchiesTileMapTests();
+		
+		/*
 		ShowText("\nDefault Cost Center Hierarchy Is Set ***** \n");
 		
 		// the first number is how many levels to attempt to drill down to.
@@ -66,7 +77,8 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 		if(ExpenseHelper.failedtestNgTest)
 		{
 			Assert.fail("Failure in HierarchyNumbersTest()");
-		}	
+		}
+		*/	
 	}
 	
 	

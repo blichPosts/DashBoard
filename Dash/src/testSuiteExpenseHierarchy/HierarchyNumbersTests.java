@@ -3,6 +3,7 @@ package testSuiteExpenseHierarchy;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyNumbersDependents;
 import expenseHierarchy.VisualPageLoad;
+import expenseHierarchy.HierarchyNumbersDependents.TileMapTestType;
 
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -39,6 +40,22 @@ public class HierarchyNumbersTests extends BaseClass
 		ExpenseHelper.failedtestNgTest = false;
 
 		// this sets the number of tiles to test and the number of tiles to show.
+		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(5, 50);
+		
+		// set which tile map test should be run in the loop below. 
+		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.phaseOne);
+		
+		// run selected test.
+		HierarchyNumbersDependents.LoopThroughHierarchiesTileMapTests();
+		
+		// set which tile map test should be run in the loop below. 
+		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.months);
+		
+		// run selected test.
+		HierarchyNumbersDependents.LoopThroughHierarchiesTileMapTests();
+		
+		/*
+		// this sets the number of tiles to test and the number of tiles to show.
 		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(45, 50);
 		
 		Thread.sleep(3000);
@@ -57,9 +74,9 @@ public class HierarchyNumbersTests extends BaseClass
 		Thread.sleep(2000);
 		
 		HierarchyNumbersDependents.TestPhaseOne(); // TEST --------------------------------------
-
+		*/
 		
-
+		/*
 		// ////////////////////////////////////////////////////////////////////////
 		// 							GO THROUGH MONTHS
 		// ////////////////////////////////////////////////////////////////////////
@@ -90,7 +107,7 @@ public class HierarchyNumbersTests extends BaseClass
 		{
 			Assert.fail("Failure in HierarchyNumbersTest()");
 		}
-
+		*/
 	}
 	
 	@AfterClass
