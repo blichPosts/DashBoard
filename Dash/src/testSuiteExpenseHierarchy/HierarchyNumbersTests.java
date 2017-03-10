@@ -40,7 +40,7 @@ public class HierarchyNumbersTests extends BaseClass
 		ExpenseHelper.failedtestNgTest = false;
 
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(5, 50);
+		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(30, 50);
 		
 		// set which tile map test should be run in the loop below. 
 		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.phaseOne);

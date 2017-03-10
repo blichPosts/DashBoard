@@ -757,43 +757,48 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 
-	
-	public static void DrillDownReturnDependentUnits() throws Exception  // bladd 
+	public static void DrillDownUpDependentUnits() throws Exception  // bladd
 	{
-		ClearWebElementList(tempWebElementList);
-		ClearStringList(tempStrList);
-
-		tempWebElementList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
-		CopyWebElementListToTextList(tempWebElementList, tempStrList);
+		int tempSize = 0;
+		int drillDownCntr = 0;
 		
-		ShowListOfStrings(tempStrList);
+		ClearDrillDownUpStringPair(); // clear web element list and text list that are used as temporary holders of information. 
+		listsOfPreviousDependentUnits.clear(); // clear list that will hold the list of dependent users' lists. 
 		
+		CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
 		
-		for(int x = 0; x < 7; x++)
+		AddDependentUnitList(tempStrList); // store away the list of dependent units currently showing.
+		
+		ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
+		
+		// start drilling down into the dependent units 'maxLevelsToDrillDownTo' times.
+		for(drillDownCntr = 0; drillDownCntr < maxLevelsToDrillDownTo; drillDownCntr++)
 		{
 			if(!DrillDownDependentUnits())
 			{
 				break;
 			}
-			ShowInt(x);
 			
-			ShowText(driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type(1)")).getText());
+			CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings. 
 			
+			AddDependentUnitList(tempStrList); // store away the list of dependent units currently showing.
 			
+			ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
 		}
 		
-		
+		// ShowListsOfDependentUnitsAboveCurrentList(); // this will show all lists on the list that were added in 'AddDependentUnitList' method.
 
-			
+		//  this clicks the bread crumbs until there are no bread crumbs left.
+		for(int y = drillDownCntr; y > 0; y--)
+		{
+			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type(" + y + ")")).click();
+			ShowText("Click One Done");
+			Thread.sleep(2000);
+		}
 		
-		
-		
-		
-		
+		Assert.assertTrue(driver.findElements(By.cssSelector(".breadcrumbs>span")).size() == 0);
 		
 	}
-	
-
 	
 	//  THIS IS DEMO FROM ANA.
 	public static void HoverThroughTiles() throws AWTException, InterruptedException 
@@ -829,7 +834,42 @@ public class HierarchyNumbersDependents extends BaseClass
 	// 													HELPERS
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public static boolean DrillDownDependentUnits() throws Exception  // bladd
+	
+	// this gets the current list of dependent units showing in UI into a list of strings.
+	public static void ShowListsOfDependentUnitsAboveCurrentList()
+	{
+		int tempSize = listsOfPreviousDependentUnits.size();
+		
+		ShowInt(tempSize);
+		
+		for(int x = tempSize - 1; x > 0; x--)
+		{
+			ShowText("**************** List Start ********************************");
+			ShowListOfStrings(listsOfPreviousDependentUnits.get(x - 1));
+			ShowText("**************** List End ********************************\n");
+		}		
+	}
+	
+	
+	// this gets the current list of dependent units showing in UI into a list of strings.
+	public static void CreateTempCurrentDependentsList()
+	{
+		tempWebElementList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
+		CopyWebElementListToTextList(tempWebElementList, tempStrList);	
+	}
+	
+	
+	
+	public static void AddDependentUnitList(List<String> strList)
+	{
+		List<String> myList;		
+		myList = new ArrayList<String>();
+		myList.addAll(tempStrList);
+		listsOfPreviousDependentUnits.add(myList);
+	}
+	
+	
+	public static boolean DrillDownDependentUnits() throws Exception  
 	{
 		int dependentUnitToSelect;
 		int numberOfDependentUnits =  100;
@@ -847,15 +887,26 @@ public class HierarchyNumbersDependents extends BaseClass
 		System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **");
 		
 		unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
+
+		// move to top of page to make the testing visible.
+		WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
+		new Actions(driver).moveToElement(topSection).perform();
 		
 		// wait to see if 'No Dependents' message is found.
-		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TinyTimeout))
 		{
 			System.out.println("Have found the 'No Dependents' message.\n");
 			return false;
 		}
 		
 		return true;
+	}
+	
+	// this clears the two lists used in the drill down up test. 
+	public static void ClearDrillDownUpStringPair() 
+	{
+		ClearWebElementList(tempWebElementList);
+		ClearStringList(tempStrList);
 	}
 	
 	public static void ClearWebElementList(List<WebElement> eleList)

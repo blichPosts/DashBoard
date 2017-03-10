@@ -37,7 +37,11 @@ public class HierarchyDrillDownDependentsList extends BaseClass
 
 		HierarchyNumbersDependents.SetChartId();
 		
-		HierarchyNumbersDependents.DrillDownReturnDependentUnits();
+		// set how many levels to drill down to.
+		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(5);
+
+		
+		HierarchyNumbersDependents.DrillDownUpDependentUnits();
 	}
 	
 	@AfterClass
@@ -49,7 +53,4 @@ public class HierarchyDrillDownDependentsList extends BaseClass
 		driver.close();
 		driver.quit();
 	}		
-	
-	
-	
 }
