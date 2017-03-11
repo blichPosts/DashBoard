@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
+import javax.xml.transform.Templates;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -765,11 +766,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		ClearDrillDownUpStringPair(); // clear web element list and text list that are used as temporary holders of information. 
 		listsOfPreviousDependentUnits.clear(); // clear list that will hold the list of dependent users' lists. 
 		
-		CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
-		
-		AddDependentUnitList(tempStrList); // store away the list of dependent units currently showing.
-		
-		ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
+		PushCurrentList(); // this puts the current dependents list in the UI onto 'listsOfPreviousDependentUnits' list.
 		
 		// start drilling down into the dependent units 'maxLevelsToDrillDownTo' times.
 		for(drillDownCntr = 0; drillDownCntr < maxLevelsToDrillDownTo; drillDownCntr++)
@@ -779,11 +776,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				break;
 			}
 			
-			CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings. 
-			
-			AddDependentUnitList(tempStrList); // store away the list of dependent units currently showing.
-			
-			ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
+			PushCurrentList(); // this puts the current dependents list in the UI onto 'listsOfPreviousDependentUnits' list.
 		}
 		
 		// ShowListsOfDependentUnitsAboveCurrentList(); // this will show all lists on the list that were added in 'AddDependentUnitList' method.
@@ -792,9 +785,22 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(int y = drillDownCntr; y > 0; y--)
 		{
 			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type(" + y + ")")).click();
-			ShowText("Click One Done");
+			ShowText("----------------------------------------------  POP " + listsOfPreviousDependentUnits.get(y).get(0));
+			
+			// verify current UI list equals list stored away. 
+			CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
+			VerifyDependentUsersListsAreEqual(tempStrList, listsOfPreviousDependentUnits.get(y)); // this ....
+			ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
+			
+			// ShowText("Click bread crumb done."); // DEBUG
 			Thread.sleep(2000);
 		}
+		
+		ShowText("----------------------------------------------  POP " + listsOfPreviousDependentUnits.get(0).get(0));
+		// verify current UI list equals list stored away. 
+		CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
+		VerifyDependentUsersListsAreEqual(tempStrList, listsOfPreviousDependentUnits.get(0));
+		ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
 		
 		Assert.assertTrue(driver.findElements(By.cssSelector(".breadcrumbs>span")).size() == 0);
 		
@@ -834,6 +840,21 @@ public class HierarchyNumbersDependents extends BaseClass
 	// 													HELPERS
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	// this gets the dependent units in the UI and adds them to a list of lists.  
+	public static void PushCurrentList()
+	{
+		CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
+		AddDependentUnitList(tempStrList); // store away the list of dependent units currently showing.
+		ShowText("-----------------------------------------------   PUSH " + tempStrList.get(0));
+		ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
+	}
+	
+	public static void VerifyDependentUsersListsAreEqual(List<String> actualList, List<String> expectedList)
+	{
+		ShowText("verify sizes");
+		ShowInt(actualList.size());
+		ShowInt(expectedList.size());
+	}
 	
 	// this gets the current list of dependent units showing in UI into a list of strings.
 	public static void ShowListsOfDependentUnitsAboveCurrentList()
@@ -884,7 +905,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		Thread.sleep(500);
 		
-		System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **");
+		// System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **"); // DEBUG
 		
 		unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
 
