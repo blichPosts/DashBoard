@@ -2,12 +2,14 @@ package testSuiteExpenseHierarchy;
 
 import javax.swing.JOptionPane;
 
+import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyNumbersDependents;
+import expenseHierarchy.HierarchyNumbersDependents.DrillDownPageType;
 import expenseHierarchy.VisualPageLoad;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
@@ -31,17 +33,25 @@ public class HierarchyDrillDownDependentsList extends BaseClass
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 
 		VisualPageLoad.SelectAndWaitForPageLoad();
-
+		
 		ExpenseHelper.SetHierarchyMaxDisplayed(100);
 		Thread.sleep(1000);
 
 		HierarchyNumbersDependents.SetChartId();
 		
 		// set how many levels to drill down to.
-		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(5);
+		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(8); // TODO !!!!!  -- loop through categories.
 
+		//HierarchyNumbersDependents.SetDrillDownPageType(DrillDownPageType.expense);
+		
+		//HierarchyNumbersDependents.DrillDownUpDependentUnits();
+
+		HierarchyNumbersDependents.GoToViewTop10();		
+		
+		HierarchyNumbersDependents.SetDrillDownPageType(DrillDownPageType.topTen);
 		
 		HierarchyNumbersDependents.DrillDownUpDependentUnits();
+		
 	}
 	
 	@AfterClass

@@ -77,7 +77,7 @@ public class VisualPageLoad extends BaseClass
 		WaitForElementVisible(By.xpath("//span[text()='Total Expense']"), MediumTimeout); // this is text in top left corner tiles. 
 		WaitForElementVisible(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select"), MediumTimeout); // this is drop down in top left corner POV.
 		chartId =  UsageHelper.getChartId(0);
-		WaitForElementClickable(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(10)"), MediumTimeout, "");
+		// WaitForElementClickable(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(10)"), MediumTimeout, ""); // TODO
 	}
 	
 	public static void VerifyInitialStatesAfterPageLoad() throws Exception 

@@ -66,12 +66,24 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static List<String> tempStrList = new ArrayList<String>();
 
 	public static TileMapTestType currentTileMapTestType;
+	public static DrillDownPageType drillDownPageType;
+	
+	public static enum DrillDownPageType
+	{
+		topTen,
+		expense,
+	}
 	
 	public static enum TileMapTestType
 	{
 		phaseOne,
 		months,
 		drillDown
+	}
+	
+	public static void SetDrillDownPageType(DrillDownPageType type)
+	{
+		drillDownPageType = type;
 	}
 	
 	public static void SetCurrrentTileMapTestType(TileMapTestType type)
@@ -472,6 +484,9 @@ public class HierarchyNumbersDependents extends BaseClass
 	//   values are all the same.
 	public static void VerifyActualExpectedDependentUnits() throws Exception 
 	{
+
+		ShowText ("Verifying Actual/Expected Dependents");  // bladdyy
+		
 		// get the actual dependent units from the list of dependent units in the UI.
 		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
 		
@@ -479,12 +494,26 @@ public class HierarchyNumbersDependents extends BaseClass
 		int expectedInt = 0;
 		int loopCntr = 0;
 		int latestCost = -9999;
+		int x;
 		String costSelectorString = "";
+		String tempString = "";
 		
 		for(WebElement ele : eleList)
 		{
 			// get the actual value (from UI) and the expected value (from sorted json list) into variables.  
-			actualInt = Integer.valueOf(ele.getText().split("\n")[1].replace(GetCostFilterString(),""));
+			
+			// with real data, there is a decimal cents (ex: $45.39 - .39 is the decimal cents). need to remove the decimal cents.
+			if(ele.getText().contains("."))
+			{
+				x = ele.getText().length() - ele.getText().indexOf(".");
+				tempString = ele.getText().substring(0, ele.getText().length() - x);
+			}
+			else
+			{
+				tempString = ele.getText();
+			}			
+			
+			actualInt = Integer.valueOf(tempString.split("\n")[1].replace(GetCostFilterString(),""));
 			expectedInt  = childList.get(loopCntr).cost; 
 			
 			// System.out.println("Actual Int: " + actualInt + " Expected Int: " + expectedInt); DEBUG			
@@ -538,12 +567,15 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static void VerifyAllDependentChildren(String expectedTotal) 
 	{
 		// ShowText("VerifyAllDependentChildren START"); // debug
+		// ShowText("Verify Try Catch Items -------------- "); // debug
+		
 		Assert.assertTrue(actualList.size() == expectedList.size(), "");
 		
 		// verify all actual values have total value equal to 'expectedTotal' passed in.
 		for(String str : actualList)
 		{
-			Assert.assertEquals(GetCostFromString(str), expectedTotal, "Actual total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
+			// Assert.assertEquals(GetCostFromString(str), expectedTotal, "Actual total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
+			Assert.assertEquals(GetCostFromStringTwo(str), expectedTotal, "Actual total failed actual: " + GetCostFromStringTwo(str) +   " expected "  + expectedTotal); // bladdyy
 		}
 		
 		// verify all expected values have total value equal to 'expectedTotal' passed in.
@@ -551,6 +583,8 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			Assert.assertEquals(GetCostFromString(str), expectedTotal, "Expected total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
 		}
+		
+		RemoveDecimalValueFromActualValueList(); // bladdyy
 		
 		// verify cross check.
 		for(String str : expectedList)
@@ -563,12 +597,53 @@ public class HierarchyNumbersDependents extends BaseClass
 		// ShowText("VerifyAllDependentChildren DONE"); // DEBUG
 	}
 	
+	public static void RemoveDecimalValueFromActualValueList() // bladdyy 
+	{
+		List<String> tempList = new ArrayList<String>();
+		
+		for(int x = 0 ; x < actualList.size(); x++)
+		{
+			tempList.add(RemoveDecimal(actualList.get(x)));
+		}
+		actualList.clear();
+		actualList.addAll(tempList);
+	}
+	
+	public static String RemoveDecimal(String stringWithExpectedCost) // bladdyy
+	{
+		String tempString = "";
+		int x = 0;
+		tempString = stringWithExpectedCost;
+		
+		if(tempString.contains("."))
+		{
+			x = tempString.length() - tempString.indexOf(".");
+			tempString = tempString.substring(0, tempString.length() - x);
+		}
+
+		return tempString;
+	}		
+	
 	public static String GetCostFromString(String stringWithExpectedCost)
 	{
 		String [] arr = stringWithExpectedCost.split(" "); 
 		return arr[arr.length - 1];
 	}
 	
+	public static String GetCostFromStringTwo(String stringWithExpectedCost) // bladdyy
+	{
+		String tempString = "";
+		int x = 0;
+		String [] arr = stringWithExpectedCost.split(" "); 
+		tempString = arr[arr.length - 1];
+
+		if(tempString.contains("."))
+		{
+			x = tempString.length() - tempString.indexOf(".");
+			tempString = tempString.substring(0, tempString.length() - x);
+		}
+		return tempString;
+	}	
 	
 	
 	// 					------------ this does the drill down test ------------ 
@@ -636,7 +711,10 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		int dependentUnitToSelect;
 		int cntr = 0;
-		int numberOfDependentUnits =  100;
+
+		DebugTimeout(3, "wait three for page load."); // bladdyy
+		
+		int numberOfDependentUnits = 0;; //
 		
 		Random rand = new Random();
 		
@@ -644,6 +722,10 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		while (cntr != maxNumberOfLevels)
 		{
+			numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size(); // bladdyy
+			
+			System.out.println("# of dependents before click. " + numberOfDependentUnits);
+			
 			// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
@@ -653,6 +735,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **");
 			
 			unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
+			
+			DebugTimeout(3, "wait three after click to drill down."); // bladdyy			
 
 			// wait to see if 'No Dependents' message is found.
 			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
@@ -758,6 +842,13 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 
+	public static void GoToViewTop10() throws Exception
+	{
+		WaitForElementClickable(By.xpath("//a[text()='View Top 10']"), MediumTimeout, "");
+		driver.findElement(By.xpath("//a[text()='View Top 10']")).click();
+		WaitForElementVisible(By.xpath("//div[text()='Expenses $']"), MediumTimeout);
+	}
+	
 	public static void DrillDownUpDependentUnits() throws Exception  // bladd
 	{
 		int tempSize = 0;
@@ -913,14 +1004,48 @@ public class HierarchyNumbersDependents extends BaseClass
 		WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
 		new Actions(driver).moveToElement(topSection).perform();
 		
-		// wait to see if 'No Dependents' message is found.
-		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TinyTimeout))
+		
+		if(drillDownPageType == DrillDownPageType.expense)
 		{
-			System.out.println("Have found the 'No Dependents' message.\n");
-			return false;
+			// wait to see if 'No Dependents' message is found.
+			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TinyTimeout))
+			{
+				System.out.println("Have found the 'No Dependents' message.\n");
+				return false;
+			}
+		}
+		else
+		{
+			if(!WaitForTopTenDrillDown())
+			{
+				System.out.println("Dependents list in Top Ten Is empty.\n");
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean WaitForTopTenDrillDown() throws Exception
+	{
+		ShowText("WAIT");
+		long currentTime= System.currentTimeMillis();
+		long endTime = currentTime+10000;
+		boolean listIsVisible = false;
+
+		while(System.currentTimeMillis() < endTime) 
+		{
+			  Thread.sleep(3000);
+			  if(driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList)).size() > 0)
+			  {
+				  ShowText("set visible true");
+				  ShowInt(driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList)).size());
+				  listIsVisible = true;
+				  break;
+			  }
 		}
 		
-		return true;
+		return listIsVisible;
+		
 	}
 	
 	// this clears the two lists used in the drill down up test. 
