@@ -485,7 +485,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static void VerifyActualExpectedDependentUnits() throws Exception 
 	{
 
-		ShowText ("Verifying Actual/Expected Dependents");  // bladdyy
+		ShowText ("Verifying Actual/Expected Dependents");  
 		
 		// get the actual dependent units from the list of dependent units in the UI.
 		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
@@ -513,7 +513,18 @@ public class HierarchyNumbersDependents extends BaseClass
 				tempString = ele.getText();
 			}			
 			
-			actualInt = Integer.valueOf(tempString.split("\n")[1].replace(GetCostFilterString(),""));
+			// random error - need to catch and see. 
+			try
+			{
+				actualInt = Integer.valueOf(tempString.split("\n")[1].replace(GetCostFilterString(),""));				
+			}
+			catch (Exception ex)
+			{
+				ShowText(ex.getMessage());
+				ShowText("tempString " + tempString);
+			    JOptionPane.showMessageDialog(frame, "FROZEN AT RANDOM ERROR ----------------------. ");
+			}
+			
 			expectedInt  = childList.get(loopCntr).cost; 
 			
 			// System.out.println("Actual Int: " + actualInt + " Expected Int: " + expectedInt); DEBUG			
@@ -575,7 +586,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(String str : actualList)
 		{
 			// Assert.assertEquals(GetCostFromString(str), expectedTotal, "Actual total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
-			Assert.assertEquals(GetCostFromStringTwo(str), expectedTotal, "Actual total failed actual: " + GetCostFromStringTwo(str) +   " expected "  + expectedTotal); // bladdyy
+			Assert.assertEquals(GetCostFromStringTwo(str), expectedTotal, "Actual total failed actual: " + GetCostFromStringTwo(str) +   " expected "  + expectedTotal); 
 		}
 		
 		// verify all expected values have total value equal to 'expectedTotal' passed in.
@@ -584,7 +595,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			Assert.assertEquals(GetCostFromString(str), expectedTotal, "Expected total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
 		}
 		
-		RemoveDecimalValueFromActualValueList(); // bladdyy
+		RemoveDecimalValueFromActualValueList(); 
 		
 		// verify cross check.
 		for(String str : expectedList)
@@ -597,7 +608,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		// ShowText("VerifyAllDependentChildren DONE"); // DEBUG
 	}
 	
-	public static void RemoveDecimalValueFromActualValueList() // bladdyy 
+	public static void RemoveDecimalValueFromActualValueList() 
 	{
 		List<String> tempList = new ArrayList<String>();
 		
@@ -609,7 +620,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		actualList.addAll(tempList);
 	}
 	
-	public static String RemoveDecimal(String stringWithExpectedCost) // bladdyy
+	public static String RemoveDecimal(String stringWithExpectedCost) 
 	{
 		String tempString = "";
 		int x = 0;
@@ -630,7 +641,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		return arr[arr.length - 1];
 	}
 	
-	public static String GetCostFromStringTwo(String stringWithExpectedCost) // bladdyy
+	public static String GetCostFromStringTwo(String stringWithExpectedCost) 
 	{
 		String tempString = "";
 		int x = 0;
@@ -677,32 +688,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
-	// this loops through the hierarchies and does a series of drill down tests for each hierarchy. 
-	public static void LoopThroughHierarchiesDependentUnitsDrillDown() throws Exception 
-	{
-		// get list of web elements, one for each hierarchy.
-		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));
-		
-		// this method get the Ids for the hierarchy pulldown values. The Ids are used as a key in the Json request (example: "hierarchy." + currentHierarchyId +  ".child.payload.rows").   
-		hierarchyIdsList = HierarchyHelper.getHierarchiesValues();
-		
-		ShowText(" ------------ Start Looping Through Hierarchies With Drilldowns. -----------------\n\n");
-		
-		int hierarchyCntr = 0; // this is used to index hierarchy Ids from 'hierarchyIdsList' created above.
-
-		// got through the available hierarchies one at a time. call 'DrillDownDependentUnitsTwo()' on each loop.
-		for(WebElement ele : hierarchyList)
-		{
-				ShowText(" -------------------------Hierarchy Name: " + ele.getText() + " ---------------------------------------- ");
-				
-				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr); // set the current hierarchy Id. this hierarchyId is global to this class.  
-				ele.click(); 
-				Thread.sleep(1000);
-				DrillDownDependentUnitsTwo(maxLevelsToDrillDownTo); // run the drill down tests for each category selector.
-				hierarchyCntr++;
-		}
-	}
-	
 	// 					------------ this does the drill down test for dependent units ------------ 
 	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
 	//   reaches the maxNumberOfLevels passed in.
@@ -712,7 +697,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		int dependentUnitToSelect;
 		int cntr = 0;
 
-		DebugTimeout(3, "wait three for page load."); // bladdyy
+		DebugTimeout(3, "wait three for page load."); 
 		
 		int numberOfDependentUnits = 0;; //
 		
@@ -722,7 +707,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		while (cntr != maxNumberOfLevels)
 		{
-			numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size(); // bladdyy
+			numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size(); 
 			
 			System.out.println("# of dependents before click. " + numberOfDependentUnits);
 			
@@ -736,7 +721,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
 			
-			DebugTimeout(3, "wait three after click to drill down."); // bladdyy			
+			DebugTimeout(3, "wait three after click to drill down."); 			
 
 			// wait to see if 'No Dependents' message is found.
 			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
@@ -760,7 +745,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		for(Child chl : HierarchyNumbersDependents.childList){chl.Show();} // DEBUG
 	}
-	
+
 	// go through each category selector in  the tile map section.
 	public static void LoopThroughCatergoriesDependentUnits() throws Exception 
 	{
@@ -789,6 +774,55 @@ public class HierarchyNumbersDependents extends BaseClass
 			childList.clear();
 			
 			ShowText("Pass complete for " + values[x].name() +".");
+		}
+	}
+	
+	// this loops through the hierarchies and does a series of drill down tests for each hierarchy. 
+	public static void LoopThroughHierarchiesDependentUnitsDrillDown() throws Exception 
+	{
+		// get list of web elements, one for each hierarchy.
+		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));
+		
+		// this method get the Ids for the hierarchy pulldown values. The Ids are used as a key in the Json request (example: "hierarchy." + currentHierarchyId +  ".child.payload.rows").   
+		hierarchyIdsList = HierarchyHelper.getHierarchiesValues();
+		
+		ShowText(" ------------ Start Looping Through Hierarchies With Drilldowns. -----------------\n\n");
+		
+		int hierarchyCntr = 0; // this is used to index hierarchy Ids from 'hierarchyIdsList' created above.
+
+		// got through the available hierarchies one at a time. call 'DrillDownDependentUnitsTwo()' on each loop.
+		for(WebElement ele : hierarchyList)
+		{
+				ShowText(" -------------------------Hierarchy Name: " + ele.getText() + " ---------------------------------------- ");
+				
+				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr); // set the current hierarchy Id. this hierarchyId is global to this class.  
+				ele.click(); 
+				Thread.sleep(1000);
+				DrillDownDependentUnitsTwo(maxLevelsToDrillDownTo); // run the drill down tests for each category selector.
+				hierarchyCntr++;
+		}
+	}
+	
+	// bladdyy 
+	public static void LoopThroughHierarchiesDependentUnitsDrill_Down_Up() throws Exception 
+	{
+		// get list of web elements, one for each hierarchy.
+		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));
+		
+		
+		ShowText(" ------------ Start Looping Through Hierarchies With Drilldowns. -----------------\n\n");
+		
+		int hierarchyCntr = 0; // this is used to index hierarchy Ids from 'hierarchyIdsList' created above.
+
+		// got through the available hierarchies one at a time. call 'DrillDownDependentUnitsTwo()' on each loop.
+		for(WebElement ele : hierarchyList)
+		{
+				ShowText(" -------------------------Hierarchy Name: " + ele.getText() + " ---------------------------------------- ");
+				
+				ele.click(); 
+				DebugTimeout(3, "Wait 3 in hierarchy switch");
+				DrillDown_Up_DependentUnits(); // 
+				hierarchyCntr++;
 		}
 	}
 	
@@ -842,6 +876,11 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 
+	
+	
+	
+	
+	
 	public static void GoToViewTop10() throws Exception
 	{
 		WaitForElementClickable(By.xpath("//a[text()='View Top 10']"), MediumTimeout, "");
@@ -849,7 +888,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		WaitForElementVisible(By.xpath("//div[text()='Expenses $']"), MediumTimeout);
 	}
 	
-	public static void DrillDownUpDependentUnits() throws Exception  // bladd
+	public static void DrillDown_Up_DependentUnits() throws Exception  // bladd
 	{
 		int tempSize = 0;
 		int drillDownCntr = 0;
@@ -857,12 +896,15 @@ public class HierarchyNumbersDependents extends BaseClass
 		ClearDrillDownUpStringPair(); // clear web element list and text list that are used as temporary holders of information. 
 		listsOfPreviousDependentUnits.clear(); // clear list that will hold the list of dependent users' lists. 
 		
+		DebugTimeout(3, "wait 3 before start test.");
+		
 		PushCurrentList(); // this puts the current dependents list in the UI onto 'listsOfPreviousDependentUnits' list.
 		
-		// start drilling down into the dependent units 'maxLevelsToDrillDownTo' times.
+		// this loops through the drilling down clicks.  
+		// drilling down into the dependent units 'maxLevelsToDrillDownTo' times.
 		for(drillDownCntr = 0; drillDownCntr < maxLevelsToDrillDownTo; drillDownCntr++)
 		{
-			if(!DrillDownDependentUnits())
+			if(!DrillDown_Up_DependentUnitsTwo()) // drill down.
 			{
 				break;
 			}
@@ -870,23 +912,33 @@ public class HierarchyNumbersDependents extends BaseClass
 			PushCurrentList(); // this puts the current dependents list in the UI onto 'listsOfPreviousDependentUnits' list.
 		}
 		
-		// ShowListsOfDependentUnitsAboveCurrentList(); // this will show all lists on the list that were added in 'AddDependentUnitList' method.
-
+		// ShowListsOfDependentUnitsStoredAway(); // this will show all lists on the list that were added in 'AddDependentUnitList' method.
+		
 		//  this clicks the bread crumbs until there are no bread crumbs left.
-		for(int y = drillDownCntr; y > 0; y--)
+		//  MORE !!!!!
+		for(int y = drillDownCntr; y >= 0; y--)
 		{
-			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type(" + y + ")")).click();
 			ShowText("----------------------------------------------  POP " + listsOfPreviousDependentUnits.get(y).get(0));
 			
-			// verify current UI list equals list stored away. 
-			CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
-			VerifyDependentUsersListsAreEqual(tempStrList, listsOfPreviousDependentUnits.get(y)); // this ....
+			// get the list of dependent units currently showing in the UI into a temporary list of strings. 
+			CreateTempCurrentDependentsList(); 
+			
+			// pops item 'y' in the list holding the history of dependent unit lists (expected) and compare to the current dependent unit list that is showing (actual).   
+			VerifyDependentUsersListsAreEqual(tempStrList, listsOfPreviousDependentUnits.get(y)); 
+
 			ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
 			
-			// ShowText("Click bread crumb done."); // DEBUG
-			Thread.sleep(2000);
+			if(y != 0) // ????? 
+			{
+				driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type(" + y + ")")).click();				
+			}
+			
+			DebugTimeout(5, "Wait five after breadcrumb click");
 		}
+
+		// NOTE: this pop has to be here because  
 		
+		/*
 		ShowText("----------------------------------------------  POP " + listsOfPreviousDependentUnits.get(0).get(0));
 		// verify current UI list equals list stored away. 
 		CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
@@ -894,6 +946,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
 		
 		Assert.assertTrue(driver.findElements(By.cssSelector(".breadcrumbs>span")).size() == 0);
+		 */
 		
 	}
 	
@@ -937,29 +990,31 @@ public class HierarchyNumbersDependents extends BaseClass
 		CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
 		AddDependentUnitList(tempStrList); // store away the list of dependent units currently showing.
 		ShowText("-----------------------------------------------   PUSH " + tempStrList.get(0));
+		ShowInt(tempStrList.size());
 		ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
 	}
 	
 	public static void VerifyDependentUsersListsAreEqual(List<String> actualList, List<String> expectedList)
 	{
-		ShowText("verify sizes");
-		ShowInt(actualList.size());
-		ShowInt(expectedList.size());
+		//ShowText("verify sizes");
+		//ShowInt(actualList.size());
+		//ShowInt(expectedList.size());
+		
+		Assert.assertEquals(actualList.size(), expectedList.size(), "Actual and Expected list sizes are not equal in HierarchyNumbersDependents.VerifyDependentUsersListsAreEqual.");
+		Assert.assertEquals(actualList, expectedList, "List are not equal in HierarchyNumbersDependents.VerifyDependentUsersListsAreEqual.");
 	}
 	
 	// this gets the current list of dependent units showing in UI into a list of strings.
-	public static void ShowListsOfDependentUnitsAboveCurrentList()
+	public static void ShowListsOfDependentUnitsStoredAway()
 	{
 		int tempSize = listsOfPreviousDependentUnits.size();
 		
-		ShowInt(tempSize);
-		
-		for(int x = tempSize - 1; x > 0; x--)
+		for(int x = 0 ; x < tempSize; x++)
 		{
 			ShowText("**************** List Start ********************************");
-			ShowListOfStrings(listsOfPreviousDependentUnits.get(x - 1));
+			ShowListOfStrings(listsOfPreviousDependentUnits.get(x));
 			ShowText("**************** List End ********************************\n");
-		}		
+		}
 	}
 	
 	
@@ -979,7 +1034,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		myList.addAll(tempStrList);
 		listsOfPreviousDependentUnits.add(myList);
 	}
-	
 	
 	public static boolean DrillDownDependentUnits() throws Exception  
 	{
@@ -1011,6 +1065,55 @@ public class HierarchyNumbersDependents extends BaseClass
 			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TinyTimeout))
 			{
 				System.out.println("Have found the 'No Dependents' message.\n");
+				return false;
+			}
+		}
+		else
+		{
+			if(!WaitForTopTenDrillDown())
+			{
+				System.out.println("Dependents list in Top Ten Is empty.\n");
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean DrillDown_Up_DependentUnitsTwo() throws Exception  
+	{
+		int dependentUnitToSelect = 0;
+		int numberOfDependentUnits =  0;
+
+ 		// get number of dependents.
+		numberOfDependentUnits = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList)).size();
+		Random rand = new Random();
+		
+		ShowText("Drill down one level in dependent units.");
+
+		// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
+		List<WebElement> unitsList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList)); 
+		dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
+		
+		Thread.sleep(1000);
+		
+		// click on dependent unit.
+		// System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **"); // DEBUG
+		System.out.println("** Hard Code click on two. **"); // DEBUG
+		// unitsList.get(dependentUnitToSelect).click(); // select dependent unit. // bladdyy
+		unitsList.get(3).click(); // select dependent unit. // bladdyy
+		
+		// move to top of page to make the testing visible.
+		WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
+		new Actions(driver).moveToElement(topSection).perform();
+
+		DebugTimeout(5, "wait five for page load after click.");
+		
+		if(drillDownPageType == DrillDownPageType.expense)
+		{
+			// wait to see if 'No Dependents' message is found.
+			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TinyTimeout))
+			{
+				System.out.println("Have found the 'No Dependents' message in expense page.\n");
 				return false;
 			}
 		}
@@ -1174,4 +1277,11 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 		}
 	}
+	
+	public static void Freeze() throws Exception
+	{
+		DebugTimeout(9999, "9999");
+	}
+	
+	
 }
