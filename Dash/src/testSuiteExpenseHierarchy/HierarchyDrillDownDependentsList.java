@@ -50,9 +50,9 @@ public class HierarchyDrillDownDependentsList extends BaseClass
 		
 		//HierarchyNumbersDependents.SetDrillDownPageType(DrillDownPageType.topTen);
 		
-		HierarchyNumbersDependents.DrillDown_Up_DependentUnits();
+		// HierarchyNumbersDependents.DrillDown_Up_DependentUnits();
 		
-		//HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrill_Down_Up();
+		HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrill_Down_Up();
 	}
 	
 	@AfterClass
