@@ -40,11 +40,11 @@ public class HierarchyNumbersTestsDependentsDrillDown extends BaseClass
 		// set how many levels to drill down to.
 		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(2);
 		
-		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(2, 100);
+		// this sets the number of tiles to test and the number of tiles to show. ???
+		// HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(2, 100);
 		
 		// set which tile map test should be run in the loop below. 
-		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.drillDown);
+		//HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.drillDown);
 
 		// this will do drill down tests by looping through each hierarchy and doing drill down tests in each hierarchy.  
 		HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown();

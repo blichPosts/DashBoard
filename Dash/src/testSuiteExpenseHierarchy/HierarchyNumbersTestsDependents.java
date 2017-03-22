@@ -42,6 +42,7 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 		Thread.sleep(1000);
 		
 		HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnits();
+		//HierarchyNumbersDependents.LoopThroughMonths();
 	}
 	
 	@AfterClass

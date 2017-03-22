@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 import javax.swing.JOptionPane;
 import javax.xml.transform.Templates;
 
+import org.apache.commons.el.VariableResolverImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.jetty.servlet.Debug;
@@ -37,6 +39,8 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static int maxNumberOfTileMapsThatCanBeShown = 100;
 	public static int tileNumberToStartLoop = 0; // remove?
 	public static int maxLevelsToDrillDownTo = 0; 
+	public static int x_iFrame;
+	public static int y_iFrame;
 
 	
 	public static String dependentUnits = "";
@@ -48,7 +52,9 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static String filterString = "";
 	public static String chartId = "";
 	public static String currentHierarchyId = "";
+	public static String totalCount = "";
 	
+	public static Stack<String> popStack = new Stack<String>();
 	public static List<Child> childList = new ArrayList<Child>();
 	public static List<String> hierarchyIdsList = new ArrayList<>();	
 	
@@ -78,7 +84,9 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		phaseOne,
 		months,
-		drillDown
+		drillDown,
+		commandSingleLevel,
+		commandDrillDown
 	}
 	
 	public static void SetDrillDownPageType(DrillDownPageType type)
@@ -256,6 +264,69 @@ public class HierarchyNumbersDependents extends BaseClass
 			ShowText("Test for Month " + ele.getText() + " Is Complete."); 
 		}
 	}
+
+	// this is called after a number of tiles to test has been setup, a month has been selected, and a tile level has been setup (unless the top level is being tested).
+	public static void RunAllTilesInDash() throws Exception // bladdzz
+	{
+		int x = 0;
+		
+		DebugTimeout(5, "Wait Full Load");
+		
+		JOptionPane.showMessageDialog(frame, "Wait");
+		
+		// get the size of the list of dependents showing.
+		int loopCntr = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
+		
+		loopCntr = loopCntr/2;
+		
+		// ////////////////////////////////////////////////////////////////////////////////////
+		// loop through tile maps.
+		// ////////////////////////////////////////////////////////////////////////////////////
+        for(x = 1; x <= loopCntr; x++) 
+		{ 
+    		hoverInfo = GetTooltipText(x);
+    		
+			// get the cost type string to be filtered out for creating 'tempTwo' string below. 
+			filterString = BuildStringForFilteringText();
+			
+			// these two calls get the name info and the cost info from the dependent user in the UI. both of these are put in currentDependentUnitInfo string. 
+			// the type of cost string ("total", "optimizable", or "roaming") is filtered out of dependentUnitInfo string. 
+			nameAndIds = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText(); // name and id(s).
+			numericValue = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace(filterString,""); // numeric value (cost type removed).
+
+			// put name, id, and cost together.
+			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
+			
+			ShowText(currentDependentUnitInfo);
+			ShowText(hoverInfo); 
+			
+			// JOptionPane.showMessageDialog(frame, "Wait");
+			
+			
+			// bladdzz - comment below.
+			//ShowText(currentDependentUnitInfo);
+			//Assert.assertEquals(hoverInfo, currentDependentUnitInfo, "Error in HierarchyNumbersDependents.RunAllTilesInDash. "
+			//		                                               + "The hover value doesn't match its corresponding dependent user."
+			//		                                               + "The loop counter is " + x); 
+			// bladdzz - comment above.
+			
+			// IMPORTANT NOTE -- this may not always work because the json sorting can be different then ED's sort when it comes to 
+			//                   dependent units with the same numeric value.
+			//                -- next sections below are commented.
+			
+			// now get the dependent unit user cost value in the json array that was stored before the click to get hover info. 
+			// send in nameAndId, the user name info, and this call will return the expected value as double.
+			//actualValueDouble = GetExpectedValueTwo(array, nameAndIds, ExpenseHelper.currentHierarchyCostFilter);
+			
+			// get the double value found in the dependent info 
+			//expectedValueDouble = Double.valueOf(currentDependentUnitInfo.split("\\$")[1]);
+			
+			//Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
+		}
+        // System.out.println("Number of Tile maps tested = " + (x  - 1));
+	}	
+	
+	
 	
 	// this is called after a number of tiles to test has been setup, a month has been selected, and a tile level has been setup (unless the top level is being tested).
 	public static void RunAllTilesThree() throws Exception
@@ -303,7 +374,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	// written by Ana:
 	// this will return the string value for the tile map number hovered hovered in the tile map. 
-	public static String GetTooltipText(int index) throws AWTException, InterruptedException
+	public static String GetTooltipTextOld(int index) throws AWTException, InterruptedException
 	{
         WebElement tileNumber = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + index + ")")); // select tile map number
         
@@ -328,6 +399,36 @@ public class HierarchyNumbersDependents extends BaseClass
         // System.out.println(tooltip.getText().split("\\.")[1].trim());
 		
 		return tooltip.getText().split("\\.")[1].trim();
+	}
+	
+	// written by Ana:
+	// this will return the string value for the tile map number hovered hovered in the tile map. 
+	public static String GetTooltipText(int index) throws AWTException, InterruptedException
+	{
+        WebElement tileNumber = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + index + ")")); // select tile map number
+        
+        Point p = getAbsoluteLocationTileMap(tileNumber); 
+        
+        //Point p = GeneralHelper.getAbsoluteLocation(tileNumber);
+        
+        int x_offset = tileNumber.getSize().getHeight() / 2;
+        int y_offset = tileNumber.getSize().getWidth() / 2;
+        
+        int a = p.getX() + x_offset;
+        int b = p.getY() + y_offset;
+        
+        Robot robot = new Robot();
+        robot.mouseMove(a, b);
+        
+        Thread.sleep(2000); // orig - back to orig.
+        //Thread.sleep(1500); 
+        
+        WebElement tooltip = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip")); 
+        System.out.println(tooltip.getText().split("\\.")[1].trim());
+		
+		// return tooltip.getText().split("\\.")[1].trim(); // bladdzz
+        
+        return "";
 	}
 	
 	// this builds the json request string for getting the json rows of dependent unit values. 
@@ -368,6 +469,13 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		return "hierarchy." + currentHierarchyId +  ".child.payload.rows";
 	}
+	
+	// this builds the json request string for getting the total count from json. 
+	public static String BuildTotalCount()
+	{
+		return "hierarchy." + currentHierarchyId +  ".child.payload.totalCount";
+	}
+	
 	
 	// this will find which cost filter is selected. depending on which cost filter is selected, this will return a text string related to the selected cost filter.
 	public static String BuildStringForFilteringText()
@@ -438,12 +546,16 @@ public class HierarchyNumbersDependents extends BaseClass
 		// get the json of the current tile map being shown
 		dependentUnits =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('" + tempString + "')");
 
+		// get the expected total count.
+		tempString = BuildTotalCount();
+		totalCount  =   (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('" + tempString + "')");
+		
 		// verify json fetch is OK.
 		Assert.assertTrue(dependentUnits != null); 
 
 		// do this here to also make sure json fetch worked
 		JSONArray array = new JSONArray(dependentUnits);			
-
+		
 		for(int x = 0; x < array.length(); x++)
 		{
 			obj  = array.getJSONObject(x);
@@ -497,6 +609,10 @@ public class HierarchyNumbersDependents extends BaseClass
 		int x;
 		String costSelectorString = "";
 		String tempString = "";
+		
+		// verify total count in tile map text.
+		VerifyTotalCount();
+		
 		
 		for(WebElement ele : eleList)
 		{
@@ -688,6 +804,37 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
+	// 					------------ this does the drill down test for COMMAND tile map------------ 
+	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
+	//   reaches the maxNumberOfLevels passed in.
+	// * each time a level is drilled down to some test are run that test the three cost filters.
+	public static void DrillDownCommandTileMap(int maxNumberOfLevels, int totalNumberOfTilesShown) throws Exception // bladdzz 
+	{
+		int tileToSelect;
+		int cntr = 0;
+		
+		Random rand = new Random();
+		
+		ShowText("Doing Drill down test command." );
+		
+		
+		while (cntr != maxNumberOfLevels)
+		{
+			tileToSelect = rand.nextInt(totalNumberOfTilesShown) + 1;
+			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
+			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
+			
+			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+			{
+				System.out.println("Finished drill down testing to level " + cntr);
+				System.out.println("The last click found the 'No Depenents' message\n");
+				break;
+			}
+			HierarchyNumbersDependents.RunAllTilesInDash();
+			cntr++;
+		}
+	}
+	
 	// 					------------ this does the drill down test for dependent units ------------ 
 	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
 	//   reaches the maxNumberOfLevels passed in.
@@ -722,11 +869,11 @@ public class HierarchyNumbersDependents extends BaseClass
 			unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
 			
 			
-			Pause("");
+			Pause("-- pause after click down");
 			// DebugTimeout(3, "wait three after click to drill down."); 			
 
 			// wait to see if 'No Dependents' message is found.
-			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 1))
 			{
 				System.out.println("Finished drill down testing to level " + cntr);
 				System.out.println("The last click found the 'No Dependents' message\n");
@@ -767,7 +914,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
 			Thread.sleep(1000);
-
+			
 			// ShowChildList(); // DEBUG
 			
 			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
@@ -775,6 +922,24 @@ public class HierarchyNumbersDependents extends BaseClass
 			HierarchyNumbersDependents.FinishFinalTest();
 			childList.clear();
 			
+			ShowText("Pass complete for " + values[x].name() +".");
+		}
+	}
+	
+	// go through each category selector in  the tile map section.
+	public static void LoopThroughCatergoriesFor_Lists_Up_Down() throws Exception 
+	{
+		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
+		
+		Thread.sleep(1000);
+		
+		// this loops through the category selectors one at a tile.  
+		for(int x = 0; x < values.length; x++)
+		{
+			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
+			Thread.sleep(1000);
+			Pause("have hit category selector");
+			DrillDown_Up_DependentUnits();
 			ShowText("Pass complete for " + values[x].name() +".");
 		}
 	}
@@ -813,23 +978,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		ShowText(" ------------ Start Looping Through Hierarchies With Drilldowns. -----------------\n\n");
 		
-		int hierarchyCntr = 0; // this is used to index hierarchy Ids from 'hierarchyIdsList' created above.
+		int hierarchyCntr = 0; // this is used for debug.
 
 		// got through the available hierarchies one at a time. call 'DrillDownDependentUnitsTwo()' on each loop.
 		for(WebElement ele : hierarchyList)
 		{
 				ShowText(" -------------------------Hierarchy Name: " + ele.getText() + " ---------------------------------------- ");
 				ele.click(); 
-				//DebugTimeout(3, "Wait 3 in hierarchy switch");
-				Pause("Hierarchy Switch Just Done");
-				/*
-				if(hierarchyCntr == 0 || hierarchyCntr == 1)
-				{
-					Pause("Skip first hierarchy ----------------");
-					hierarchyCntr++;
-					continue;
-				}
-				*/
+				DebugTimeout(3, "Wait 3 in hierarchy switch");
 				DrillDown_Up_DependentUnits();  
 				hierarchyCntr++;
 		}
@@ -861,6 +1017,28 @@ public class HierarchyNumbersDependents extends BaseClass
 		}	
 	}
 	
+	public static void LoopThroughMonths() throws Exception
+	{
+		CommonTestStepActions.initializeMonthSelector();
+		for(WebElement ele : CommonTestStepActions.webListPulldown)
+		{
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
+			
+			//ShowText("current " + ele.getText());
+			
+			Thread.sleep(3000); 
+			
+			if(!LookForNoDependentsFound())
+			{
+				ShowText("current minth:" + ele.getText());
+				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnits();
+			}
+			
+
+
+		}
+	}
+	
 	public static void LoopThroughHierarchiesDependentUnits() throws Exception 
 	{
 		// get list of web elements, one for each hierarchy.
@@ -878,6 +1056,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 				ShowText("Hierarchy Name: " + ele.getText());
 				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr);
+				ShowText(currentHierarchyId);
 				ele.click();
 				Thread.sleep(1000);
 				LoopThroughCatergoriesDependentUnits();
@@ -903,8 +1082,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		ClearDrillDownUpStringPair(); // clear web element list and text list that are used as temporary holders of information. 
 		listsOfPreviousDependentUnits.clear(); // clear list that will hold the list of dependent users' lists. 
 		
-		//DebugTimeout(3, "wait 3 before start test.");
-
 		PushCurrentList(); // this puts the current dependents list in the UI onto 'listsOfPreviousDependentUnits' list.
 		
 		// this loops through the drilling down clicks.  
@@ -926,10 +1103,10 @@ public class HierarchyNumbersDependents extends BaseClass
 		// ShowListsOfDependentUnitsStoredAway(); // this will show all lists on the list that were added in 'AddDependentUnitList' method.
 		
 		//  this clicks the bread crumbs until there are no bread crumbs left.
-		//  MORE comments !!!!!
 		for(int y = drillDownCntr; y >= 0; y--)
 		{
 			ShowText("---- POP " + listsOfPreviousDependentUnits.get(y).get(0).replace("\n",  " "));
+			//ShowText(popStack.pop());
 			
 			// get the list of dependent units currently showing in the UI into a temporary list of strings. 
 			CreateTempCurrentDependentsList(); 
@@ -947,19 +1124,6 @@ public class HierarchyNumbersDependents extends BaseClass
 
 			// DebugTimeout(5, "Wait five after breadcrumb click");
 		}
-
-		// NOTE: this pop has to be here because  
-		
-		/*
-		ShowText("----------------------------------------------  POP " + listsOfPreviousDependentUnits.get(0).get(0));
-		// verify current UI list equals list stored away. 
-		CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
-		VerifyDependentUsersListsAreEqual(tempStrList, listsOfPreviousDependentUnits.get(0));
-		ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
-		
-		Assert.assertTrue(driver.findElements(By.cssSelector(".breadcrumbs>span")).size() == 0);
-		 */
-		
 	}
 	
 	//  THIS IS DEMO FROM ANA.
@@ -993,8 +1157,112 @@ public class HierarchyNumbersDependents extends BaseClass
     }
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 													HELPERS
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// Get the location of the element on the UI 
+	public static Point getAbsoluteLocationTileMap(WebElement element) throws InterruptedException  // bladdxx
+	{
+        int x = x_iFrame;
+        int y = y_iFrame;
+        
+        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
+		int headerHeight = header.getSize().getHeight();
+        
+        Point elementLoc = element.getLocation();
+
+        if (loginType.equals(LoginType.ReferenceApp)) 
+        {
+        	
+            x += elementLoc.getX();
+            y += elementLoc.getY() + headerHeight;
+            
+        	
+        }
+        else if (loginType.equals(LoginType.Command)) 
+        {
+        	x += elementLoc.getX();
+            y += elementLoc.getY() + headerHeight * 3.2;
+        }
+        
+        Point p = new Point(x, y);
+        return p; 
+	}
+	
+	
+	
+	public static void VerifyTotalCount() throws Exception
+	{
+		String temp =  driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText();
+		
+		// if(temp.contains("(out of " + totalCount + ")")){ShowText("YES");}
+		//ShowText("(out of " + totalCount + ")");			
+		ShowText("Total Count " + totalCount);
+		System.out.println("number child nodes " +  HierarchyNumbersDependents.childList.size());
+		Assert.assertTrue(temp.contains("(out of " + totalCount + ")"), "Error in testing of Total Count shown in Tile Map.");
+		//Pause("Check numbers.");
+	}
+	
+	public static void WaitForPageTransition(String unitNameToWaitFor ) throws Exception
+	{
+		String tempString = "";
+		int waitForIndex = 0;
+		int size = 0;
+
+		// get current time.
+		long currentTime= System.currentTimeMillis();
+		long endTime = currentTime+10000;
+
+		
+		// wait for 'Top 0 dependent units of' to not be visible.		
+		while(System.currentTimeMillis() < endTime) 
+		{
+			tempString = driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText();
+			
+			if(!tempString.contains("Top 0 dependent units of"))
+			{
+				break;
+			}
+			Thread.sleep(1000);
+		}
+
+		// get current time.
+		currentTime= System.currentTimeMillis();
+		endTime = currentTime+10000;
+
+		// wait for expected name in tile map section. 
+		while(System.currentTimeMillis() < endTime) 
+		{
+			tempString = driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText();
+			
+			if(!tempString.contains("dependent units of " + unitNameToWaitFor))
+			{
+				//ShowText("Found: dependent units of " + unitNameToWaitFor);
+				break;
+			}
+		}
+		
+		// get the size of the dependent units list and verisy last element is visible.  
+		size = driver.findElements(By.cssSelector(".tdb-povGroup>div>ol>li")).size();
+		WaitForElementVisible(By.cssSelector(".tdb-povGroup>div>ol>li:nth-of-type(" + size + ")"  ), MediumTimeout);
+		
+		// popStack.push("dependent units of " + unitNameToWaitFor);
+	}
+
+	public static boolean LookForNoDependentsFound() throws Exception
+	{
+		// wait to see if 'No Dependents' message is found.
+		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+		{
+			System.out.println("Have found the 'No Dependents' message in expense page.\n");
+			return true;
+		}		
+		return false;
+	}
 	
 	// this gets the dependent units in the UI and adds them to a list of lists.  
 	public static void PushCurrentList()
@@ -1002,7 +1270,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		CreateTempCurrentDependentsList(); // this gets the list of dependent units currently showing in the UI into a temporary list of strings.
 		AddDependentUnitList(tempStrList); // store away the list of dependent units currently showing.
 		ShowText("PUSH -- this is the first item of list pushed: "  + tempStrList.get(0).replace("\n",  " "));
-		// ShowInt(tempStrList.size());
 		ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
 	}
 	
@@ -1039,8 +1306,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		tempWebElementList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
 		CopyWebElementListToTextList(tempWebElementList, tempStrList);	
 	}
-	
-	
 	
 	public static void AddDependentUnitList(List<String> strList)
 	{
@@ -1108,26 +1373,32 @@ public class HierarchyNumbersDependents extends BaseClass
 		dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
 		
 		Thread.sleep(1000);
+
+		// get name associated with the dependent unit to be clicked.
+		String dependentNameToDrillTo = unitsList.get(dependentUnitToSelect).getText().trim(); 
 		
 		// click on dependent unit.
-		System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **"); // DEBUG
-		unitsList.get(dependentUnitToSelect).click(); // select dependent unit. // bladdyy
+		System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **"); 
+		unitsList.get(dependentUnitToSelect).click(); // select dependent unit. 
 
-		//System.out.println("** Hard Code click on item four. **"); // DEBUG
-		//unitsList.get(3).click(); // select dependent unit. // bladdyy
+		//System.out.println("** Hard Code click on item four. **"); 
+		//unitsList.get(3).click(); // select dependent unit.
 		
 		// move to top of page to make the testing visible.
 		WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
 		new Actions(driver).moveToElement(topSection).perform();
 
-		Pause("Wait after drill down click.");
+		// Pause("Wait after drill down click."); // **********************************************************************************
 		
+		
+		// this waits to see if the bottom of the drill-downs has been found.
 		if(drillDownPageType == DrillDownPageType.expense)
 		{
 			// wait to see if 'No Dependents' message is found.
-			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TinyTimeout))
+			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 4))
 			{
 				System.out.println("Have found the 'No Dependents' message in expense page.\n");
+				DebugTimeout(1, "View no dependents");
 				return false;
 			}
 		}
@@ -1136,27 +1407,30 @@ public class HierarchyNumbersDependents extends BaseClass
 			if(!WaitForTopTenDrillDown())
 			{
 				System.out.println("Dependents list in Top Ten Is empty.\n");
+				Pause("See No dependents");
 				return false;
 			}
 		}
+
+		// send text name of unit being clicked 
+		WaitForPageTransition(dependentNameToDrillTo);
+		
 		return true;
 	}
 	
 	public static boolean WaitForTopTenDrillDown() throws Exception
 	{
-		ShowText("WAIT");
 		long currentTime= System.currentTimeMillis();
-		long endTime = currentTime+10000;
+		long endTime = currentTime+6000;
 		boolean listIsVisible = false;
 
 		while(System.currentTimeMillis() < endTime) 
 		{
-			  Thread.sleep(3000);
+			  Thread.sleep(1000);
 			  if(driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList)).size() > 0)
 			  {
-				  ShowText("set visible true");
-				  ShowInt(driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList)).size());
 				  listIsVisible = true;
+				  Pause("Can drill down again.");
 				  break;
 			  }
 		}
@@ -1229,16 +1503,38 @@ public class HierarchyNumbersDependents extends BaseClass
 			case phaseOne:
 			{
 				TestPhaseOne();
+				break;
 			}
 			
 			case months:
 			{
 				TestPhaseWithMonths();
+				break;
 			}
 			
 			case drillDown:
 			{
 				DrillDownAcrossCostFiltersTileMap(maxLevelsToDrillDownTo, 50);
+				break;
+			}
+			 
+			case commandSingleLevel:
+			{
+				HierarchyNumbersDependents.RunAllTilesInDash();
+				break;
+			}
+			
+			case commandDrillDown:
+			{
+				DrillDownCommandTileMap(maxLevelsToDrillDownTo, 100);
+				break;
+			}
+
+			
+			
+			default:
+			{
+				Assert.fail("Incorrect case sent to HierarchyNumbersDepedendent.RunTileMapTest");
 			}
 		}
 	}
