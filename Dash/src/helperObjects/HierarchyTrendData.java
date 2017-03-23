@@ -9,7 +9,7 @@ public class HierarchyTrendData {
 	private String numberOfInvoices;
 	private String numberOfLines;
 	private String numberOfAccounts;
-	private String numberOfInvoicesRollup;
+	private String totalNumberOfInvoices;
     private String numberOfLinesRollup;
     private String numberOfAccountsRollup;
 	private String currencyCode;
@@ -19,6 +19,7 @@ public class HierarchyTrendData {
 	private String totalExpenseRollup;
 	private String optimizableExpenseRollup;
 	private String roamingExpenseRollup;
+	private boolean hasData;
 	
 	
 	public String getId() {
@@ -63,11 +64,11 @@ public class HierarchyTrendData {
 	public void setNumberOfAccounts(String numberOfAccounts) {
 		this.numberOfAccounts = numberOfAccounts;
 	}
-	public String getNumberOfInvoicesRollup() {
-		return numberOfInvoicesRollup;
+	public String getTotalNumberOfInvoices() {
+		return totalNumberOfInvoices;
 	}
-	public void setNumberOfInvoicesRollup(String numberOfInvoicesRollup) {
-		this.numberOfInvoicesRollup = numberOfInvoicesRollup;
+	public void setTotalNumberOfInvoices(String totalNumberOfInvoices) {
+		this.totalNumberOfInvoices = totalNumberOfInvoices;
 	}
 	public String getNumberOfLinesRollup() {
 		return numberOfLinesRollup;
@@ -122,6 +123,12 @@ public class HierarchyTrendData {
 	}
 	public void setRoamingExpenseRollup(String roamingExpenseRollup) {
 		this.roamingExpenseRollup = roamingExpenseRollup;
+	}
+	public boolean getHasData() {
+		return hasData;
+	}
+	public void setHasData(boolean hasData) {
+		this.hasData = hasData;
 	} 
 	
 // Other data that comes in JSON but is not needed/used for now:	

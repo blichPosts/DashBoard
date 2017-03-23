@@ -67,7 +67,9 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 			int j = 1;
 			int levelsToDrillDown = 3;  // Drill down up to 3 levels
 			
-			while (j <= levelsToDrillDown && !HierarchyHelper.getDependentUnitsPoV().isEmpty()) {
+			int monthIndex = 1;
+						
+			while (j <= levelsToDrillDown) {
 			
 				System.out.println(" **** Drilling down Level #" + j);
 			
@@ -78,61 +80,84 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 				HierarchyHelper.selectHierarchyFromDropdown(i);
 				Thread.sleep(2000);
 			
-				HierarchyHelper.drillDownOnDependentUnitPoV(j);
-				Thread.sleep(2000);
+				List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
 				
-				// #4 Get the last month listed on month selector
-				List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown(); 
-		
-				String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);  // driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
-				String monthYearToSelect = "";
+				// While there are no dependent units to drill down then select the previous month
+				while (HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
+					
+					String monthYear = monthsInSelector.get(monthIndex).getText();
+					CommonTestStepActions.selectMonthYearPulldown(monthYear);
+					monthIndex++;
+					System.out.println(" **** Month Year: " + monthYear);
+					
+					GeneralHelper.waitForDataToBeLoaded();
+				}	
+					
+				if (!HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
 				
-				int indexMonth = 0;
+					HierarchyHelper.drillDownOnDependentUnitPoV(1);
+					
+					// Wait for 5 seconds to give time to the KPI tile to load data after the drilling down action
+					Thread.sleep(5000);
+					
 				
-				do {
+					// #4 Get the last month listed on month selector
+					List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown(); 
+			
+					String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);
+					String monthYearToSelect = "";
 					
-					if (!monthSelected) {
-						
-						monthYearToSelect = monthsInDropdown.get(indexMonth);
-						System.out.println("Month Year: " + monthYearToSelect);
-						
-						// #5 Select month on month/year selector
-						CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-						
-						// Wait for chart to be loaded
-						WaitForElementVisible(By.cssSelector("chart>div"), ExtremeTimeout);
-						
-					}
+					int indexMonth = monthIndex - 1;
 					
+//						do {
+						
+//							if (!monthSelected) {
+//								
+//								monthYearToSelect = monthsInDropdown.get(indexMonth);
+//								System.out.println("Month Year: " + monthYearToSelect);
+//								
+//								// #5 Select month on month/year selector
+//								CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
+//								
+//								// Wait for chart to be loaded
+//								WaitForElementVisible(By.cssSelector("chart>div"), ExtremeTimeout);
+//								
+//							}
+						
+						
+						// #6 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
+						
+						try {
+							
+							// Run test for "Expense" chart and category "Total"
+							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+							
+							// Run test for "Expense" chart and category "Optimizable"
+								HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+							
+							// Run test for "Expense" chart and category "Roaming"
+								HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+							
+							
+						} catch(NullPointerException e) {
+							
+							System.out.println("chart not found");
+							
+						}
+						
+						indexMonth++;
+						monthSelected = false;
+						
+//						} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
+			
+				}
 					
-					// #6 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
-					
-					try {
-						
-						// Run test for "Expense" chart and category "Total"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
-						
-						// Run test for "Expense" chart and category "Optimizable"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
-						
-						// Run test for "Expense" chart and category "Roaming"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
-						
-						
-					} catch(NullPointerException e) {
-						
-						System.out.println("chart not found");
-						
-					}
-					
-					indexMonth++;
-					monthSelected = false;
-					
-				} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
+//				}
 				
 				j++;
 		
 			}	
+			
 				
 		}
 			

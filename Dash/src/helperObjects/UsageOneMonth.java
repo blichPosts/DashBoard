@@ -68,10 +68,24 @@ public class UsageOneMonth {
 		
 	}
 	
-	
 	public UsageOneMonth() {}
 
-
+	public String formatInvoiceMonth(String originalInvoiceMonth) {
+		
+		String tempInvMonth = originalInvoiceMonth.split(" ")[0];
+		
+		String year = tempInvMonth.split("-")[0];
+		String month = tempInvMonth.split("-")[1];
+		String day = tempInvMonth.split("-")[2];
+		
+		if (month.startsWith("0"))
+			month = month.replace("0", "");
+		
+		return month + "/" + day + "/" + year; 
+				
+	}
+	
+	
 	public String getVendorName() {
 		return vendorName;
 	}

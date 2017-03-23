@@ -34,11 +34,23 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 	public static void UsageKPITilesMultipleValuesTest() throws Exception
 	{
 		
+		// Enable Start collecting data
+		ReadFilesHelper.startCollectingData();
+		Thread.sleep(2000);
+		
+		// Reload Fleet data
+		ReadFilesHelper.reloadFleetData();
+		Thread.sleep(2000);
+				
+		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
+		ShowText("vendors amount: " + vendors.size());
+		
 		for(WebElement vendor: vendors){
 			vendorNames.add(vendor.getText());
+			ShowText(vendor.getText());
 		}
 	
 		
@@ -47,7 +59,7 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 		String path = UsageHelper.path;
 		
 		// Amount of vendors to be selected on the PoV section
-		int amountOfVendors = 3;
+		int amountOfVendors = 5;
 		
 		// #1 Select Vendor View and Unselect all vendors 
 		UsageHelper.selectVendorView();
@@ -66,7 +78,7 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 			String completePath = path + file;
 			
 			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getDataFromSpreadsheet(completePath);
+			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
 			listVendorsSelectedData.add(valuesFromFileOneVendor);
 				
 			// #3 Select one vendor
@@ -98,7 +110,7 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 		
 			// Get the data for the month indicated by "indexMonth"
 			oneMonthData = valuesSummarizedVendors.get(indexMonth);
-			 
+			
 			String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
 			month = monthYear[0];
 			year = monthYear[1];

@@ -41,30 +41,30 @@ public class HierarchyKPITilesValues extends BaseClass{
 		String totalExpenseKPICalculated = UsageCalculationHelper.convertUnitsExpense(totalExpenseMainValue);
 		String totalExpenseKPIFromDash = kpiTileMainValues.get(0).getText();
 		
-//		System.out.println("KPI Tile Total Expense Actual: " + totalExpenseKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalExpenseKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(totalExpenseKPIFromDash, totalExpenseKPICalculated);
-		
 		
 		// Optimizable Expense
 		String optimizableKPICalculated = UsageCalculationHelper.convertUnitsExpense(optimizableExpenseMainValue);
 		String optimizableKPIFromDash = kpiTileMainValues.get(1).getText();
 		
-//		System.out.println("KPI Tile Optimizable Actual: " + optimizableKPIFromDash + ",  KPI Tile Optimizable Expected: " + optimizableKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(optimizableKPIFromDash, optimizableKPICalculated);
 		
 		// Roaming Expense
 		String roamingKPICalculated = UsageCalculationHelper.convertUnitsExpense(roamingExpenseMainValue);
 		String roamingKPIFromDash = kpiTileMainValues.get(2).getText();
 		
-//		System.out.println("KPI Tile Roaming Actual: " + roamingKPIFromDash + ",  KPI Tile Roaming Expected: " + roamingKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(roamingKPIFromDash, roamingKPICalculated);
 		
 		// Cost per Service Number
 		String costPerServNumKPICalculated = UsageCalculationHelper.convertUnitsExpense(costPerServiceNumberMainValue);
 		String costPerServNumKPIFromDash = kpiTileMainValues.get(3).getText();
 		
-//		System.out.println("KPI Tile Cost Per Service Number Actual: " + costPerServNumKPIFromDash + ",  KPI Tile Cost Per Service Number Expected: " + costPerServNumKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(costPerServNumKPIFromDash, costPerServNumKPICalculated);
+		
+//		System.out.println("KPI Tile Total Expense Actual: " + totalExpenseKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalExpenseKPICalculated);		
+//		System.out.println("KPI Tile Optimizable Actual: " + optimizableKPIFromDash + ",  KPI Tile Optimizable Expected: " + optimizableKPICalculated);		
+//		System.out.println("KPI Tile Roaming Actual: " + roamingKPIFromDash + ",  KPI Tile Roaming Expected: " + roamingKPICalculated);
+//		System.out.println("KPI Tile Cost Per Service Number Actual: " + costPerServNumKPIFromDash + ",  KPI Tile Cost Per Service Number Expected: " + costPerServNumKPICalculated); 
 		
 		
 		// Verify the secondary values on KPIs
@@ -76,30 +76,31 @@ public class HierarchyKPITilesValues extends BaseClass{
 		String totalExpenseDirectlyAllocatedKPICalculated = UsageCalculationHelper.convertUnitsExpense(totalExpenseDirectlyAllocatedValue) + directlyAllocated;
 		String totalExpenseDirectlyAllocatedKPIFromDash = kpiTileDirectlyAllocatedValues.get(0).getText();
 		
-//		System.out.println("KPI Tile Total Expenses Directly Allocated Actual: " + totalExpenseDirectlyAllocatedKPIFromDash + ",  KPI Tile Total Expenses Directly Allocated Expected: " + totalExpenseDirectlyAllocatedKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(totalExpenseDirectlyAllocatedKPIFromDash, totalExpenseDirectlyAllocatedKPICalculated);
 
 		// Optimizable Expense directly allocated
 		String optimizableDirectlyAllocatedKPICalculated = UsageCalculationHelper.convertUnitsExpense(optimizableExpenseDirectlyAllocatedValue) + directlyAllocated;
 		String optimizableDirectlyAllocatedKPIFromDash = kpiTileDirectlyAllocatedValues.get(1).getText();
 		
-//		System.out.println("KPI Tile Optimizable Expenses Directly Allocated Actual: " + optimizableDirectlyAllocatedKPIFromDash + ",  KPI Tile Optimizable Expenses Directly Allocated Expected: " + optimizableDirectlyAllocatedKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(optimizableDirectlyAllocatedKPIFromDash, optimizableDirectlyAllocatedKPICalculated);
 		
 		// Roaming Expense directly allocated
 		String roamingDirectlyAllocatedKPICalculated = UsageCalculationHelper.convertUnitsExpense(roamingExpenseDirectlyAllocatedValue) + directlyAllocated;
 		String roamingDirectlyAllocatedKPIFromDash = kpiTileDirectlyAllocatedValues.get(2).getText();
 		
-//		System.out.println("KPI Tile Roaming Expenses Directly Allocated Actual: " + roamingDirectlyAllocatedKPIFromDash + ",  KPI Tile Roaming Expenses Directly Allocated Expected: " + roamingDirectlyAllocatedKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(roamingDirectlyAllocatedKPIFromDash, roamingDirectlyAllocatedKPICalculated);
 		
 		// Amount of Service Numbers
 		String amountOfServNumKPICalculated = UsageCalculationHelper.convertUnits(numberOfLinesValue) + serviceNumbers;
 		String amountOfServNumKPIFromDash = kpiTileDirectlyAllocatedValues.get(3).getText();
 		
-//		System.out.println("KPI Tile Amount of Service Numbers Actual: " + amountOfServNumKPIFromDash + ",  KPI Tile Amount of Service Numbers Expected: " + amountOfServNumKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(amountOfServNumKPICalculated, amountOfServNumKPIFromDash);
-		
+
+//		System.out.println("KPI Tile Total Expenses Directly Allocated Actual: " + totalExpenseDirectlyAllocatedKPIFromDash + ",  KPI Tile Total Expenses Directly Allocated Expected: " + totalExpenseDirectlyAllocatedKPICalculated); 
+//		System.out.println("KPI Tile Optimizable Expenses Directly Allocated Actual: " + optimizableDirectlyAllocatedKPIFromDash + ",  KPI Tile Optimizable Expenses Directly Allocated Expected: " + optimizableDirectlyAllocatedKPICalculated); 
+//		System.out.println("KPI Tile Roaming Expenses Directly Allocated Actual: " + roamingDirectlyAllocatedKPIFromDash + ",  KPI Tile Roaming Expenses Directly Allocated Expected: " + roamingDirectlyAllocatedKPICalculated); 
+//		System.out.println("KPI Tile Amount of Service Numbers Actual: " + amountOfServNumKPIFromDash + ",  KPI Tile Amount of Service Numbers Expected: " + amountOfServNumKPICalculated); 
+
 	}
 
 	
@@ -135,13 +136,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 		double rollingAvgRoaming = calculateRollingAverage(roamingExpenseValues);
 		double rollingAvgCostPerServiceNumber = calculateRollingAverage(costPerServiceNumberValues);
 		
-		
-//		System.out.println("rollingAvgTotalExpense: " + rollingAvgTotalExpense);
-//		System.out.println("rollingAvgOptimizable: " + rollingAvgOptimizable);
-//		System.out.println("rollingAvgRoaming: " + rollingAvgRoaming);
-//		System.out.println("rollingAvgCostPerServiceNumber: " + rollingAvgCostPerServiceNumber);
-		
-		
+				
 		for(int i = 1; i <= 4; i++){
 			
 			List<WebElement> trendingElementKpi = driver.findElements(By.xpath("(//*[@class='tdb-kpi__trend'])[" + i + "]/span"));
@@ -266,12 +261,6 @@ public class HierarchyKPITilesValues extends BaseClass{
 		double rollingAvgCostPerServiceNumber = calculateRollingAverage(costPerServiceNumberValues);
 		
 		
-//		System.out.println("rollingAvgTotalExpense: " + rollingAvgTotalExpense);
-//		System.out.println("rollingAvgOptimizable: " + rollingAvgOptimizable);
-//		System.out.println("rollingAvgRoaming: " + rollingAvgRoaming);
-//		System.out.println("rollingAvgCostPerServiceNumber: " + rollingAvgCostPerServiceNumber);
-		
-		
 		for(int i = 1; i <= 4; i++){
 			
 			WebElement sixMonthValue = null;
@@ -359,6 +348,30 @@ public class HierarchyKPITilesValues extends BaseClass{
 		
 	}
 
+	
+	public static void verifyServiceNumbersAmount(String serviceNumbersAmount) {
+		
+//		String cssSelector = "span.tdb-kpi__footerItem--value:nth-of-type(1)"; 
+		String servNumFooterFound = driver.findElements(By.cssSelector("span.tdb-kpi__footerItem--value")).get(0).getText();
+		
+		String servNumFooterExpected = UsageCalculationHelper.convertUnits(Double.parseDouble(serviceNumbersAmount));
+		GeneralHelper.verifyExpectedAndActualValues(servNumFooterFound, servNumFooterExpected);
+		
+	}
+	
+	
+	// ****REVIEW IT **** IT'S FAILING
+	public static void verifyNumberInvoices(String numberInvoices) {
+		
+//		String cssSelector = "span.tdb-kpi__footerItem--value:nth-of-type(2)"; 
+		String numInvoicesFooterFound = driver.findElements(By.cssSelector("span.tdb-kpi__footerItem--value")).get(1).getText();
+		
+		String numInvoicesFooterExpected = UsageCalculationHelper.convertUnits(Double.parseDouble(numberInvoices));
+		GeneralHelper.verifyExpectedAndActualValues(numInvoicesFooterFound, numInvoicesFooterExpected);
+		
+	}
+	
+	
 	
 	
 }

@@ -416,7 +416,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				
 				if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart) {
 					
-					y_offset = -50;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
+					y_offset = 0;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
 					
 				}
 				

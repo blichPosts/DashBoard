@@ -54,7 +54,7 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		String chartId = UsageHelper.getChartId(barChartId);
 		
-		List<WebElement> chartElementNames = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels>text>tspan"));
+		List<WebElement> chartElementNames = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 		List<String> chartLabelsFound = new ArrayList<String>();
 		
 		List<String> expectedValuesList = new ArrayList<>();
@@ -75,25 +75,47 @@ public class HierarchyTopTenValues extends BaseClass{
 			String type = data.getType();
 			String label = "";
 			String serviceNumber = "";
+			String firstName = "";
+			String lastName = "";
+			String employeeName = "";
 			
 			// Set up the label according to whether the type is Employee, Department or Average 
 	    	switch (type) {
 	    	
 	    		case "EMPLOYEE":
+	    			
 	    			serviceNumber = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
-	    			label = serviceNumber + data.getEmployeeFirstname().substring(0, 1) + "." + data.getEmployeeLastname();
+	    			
+	    			if (!data.getEmployeeFirstname().isEmpty()) 
+	    				firstName = data.getEmployeeFirstname().substring(0, 1); 
+	    			
+	    			if (!data.getEmployeeLastname().isEmpty()) 
+	    				lastName = data.getEmployeeLastname().replace(" ", "");
+	    			
+	    			if (!firstName.isEmpty() && !lastName.isEmpty())
+	    				employeeName = firstName + "." + lastName;
+	    			
+	    			else if (firstName.isEmpty() && !lastName.isEmpty())
+	    				employeeName = lastName;
+	    			
+	    			label = serviceNumber + employeeName;
 	    			expectedLabels.add(label);
+	    			
 	    			break;
 	    			
 	    		case "DEPARTMENT":
+	    			
 	    			serviceNumber = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
 	    			label = serviceNumber + data.getDepartmentName();
 	    			expectedLabels.add(label);
+	    			
 	    			break;
 
 	    		case "AVERAGE":
+	    			
 	    			label = "Average";
 	    			expectedLabels.add(label);
+	    			
 	    			break;
 	    	
 	    	}
@@ -105,15 +127,13 @@ public class HierarchyTopTenValues extends BaseClass{
 	    	
 		}
 
-		System.out.println("Expected labels:");
-		for (String s: expectedLabels) {
-			
-			System.out.println(s);
-			
-		}
+//		System.out.println("Expected labels:");
+//		for (String s: expectedLabels) {
+//			
+//			System.out.println(s);
+//			
+//		}
 		
-		// Verify that there are 11 elements listed on the chart: the Top Ten Service Numbers + Average
-		Assert.assertTrue(chartElementNames.size() == 11);
 		
 		// Verify that the values are sorted in descendant order by "value"
 		GeneralTopTenHelper.verifyValuesSortedDescendantOrder(expectedValuesList); 
@@ -143,7 +163,7 @@ public class HierarchyTopTenValues extends BaseClass{
 				y_offset = (int) (bar.getSize().height * 1.5);
 			}
 			
-			int x = coordinates.getX() + x_offset;
+			int x = coordinates.getX() + x_offset + 2;
 			int y = coordinates.getY() + y_offset;
 
 			
@@ -176,7 +196,7 @@ public class HierarchyTopTenValues extends BaseClass{
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-			System.out.println("labelFound: " + labelFound);
+//			System.out.println("labelFound: " + labelFound);
 //			System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.

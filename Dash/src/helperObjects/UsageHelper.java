@@ -499,16 +499,13 @@ public class UsageHelper extends BaseClass{
 		
 	}
 	
-	
-	
-	
-	
+		
 	
 	public static String getMonthOfInvoiceMonth(String invoiceMonth){
 		
 		String[] invoiceMonthParts = invoiceMonth.split("/");
 		return invoiceMonthParts[0];
-		
+			
 	}
 	
 	

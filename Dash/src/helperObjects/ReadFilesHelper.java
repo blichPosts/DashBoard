@@ -29,28 +29,21 @@ public class ReadFilesHelper extends BaseClass {
 		
 	}
 
+	public static void reloadFleetData() {
+		
+		js.executeScript("__TANGOE__reloadFleetData()");
+		
+	}
+	
 
 	// Get the data for Expenses and Usage pages - Fleet Dashboard
 	public static List<UsageOneMonth> getJsonDataExpenseUsage(String vendor) throws Exception{
 		
 		UsageOneMonth usageOneMonth = new UsageOneMonth();
 		List<UsageOneMonth> listValues = new ArrayList<UsageOneMonth>();
-	    	
+	    
 		String usageExpenseData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('fleet.expenseUsage.payload.rows')");
-		
-//		boolean jsonEmpty = false;
-//		
-//		do {
-//			try {
-//				usageExpenseData.isEmpty();
-//				
-//			} catch (NullPointerException e) {
-//				GoToDashboard();
-//				jsonEmpty = true;
-//			}
-//			
-//		} while (!jsonEmpty);
-		
+				
 	    ShowText(usageExpenseData);
 	   
 	    // Get the rows with data
@@ -67,7 +60,7 @@ public class ReadFilesHelper extends BaseClass {
 	    	if (jsonObj.getString("vendor_name").equals(vendor)) {
 	    		
 	    		usageOneMonth.setVendorName(jsonObj.getString("vendor_name"));
-				usageOneMonth.setInvoiceMonth(jsonObj.getString("invoice_month"));
+	    		usageOneMonth.setInvoiceMonth(usageOneMonth.formatInvoiceMonth(jsonObj.getString("invoice_month")));
 				usageOneMonth.setOrdinalYear(Integer.toString(jsonObj.getInt("ordinal_year")));
 				usageOneMonth.setOrdinalMonth(Integer.toString(jsonObj.getInt("ordinal_month")));
 				
@@ -129,14 +122,10 @@ public class ReadFilesHelper extends BaseClass {
 	    	trendDataOneMonth.setName(jsonObj.getString("name"));
 	    	trendDataOneMonth.setOrdinalYear(Long.toString(jsonObj.getLong("ordinal_year")));
 	    	trendDataOneMonth.setOrdinalMonth(Long.toString(jsonObj.getLong("ordinal_month")));
-//	    	trendDataOneMonth.setNumberOfInvoices(Long.toString(jsonObj.getLong("no_of_invoices"))); <-- REMOVED
-//	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("total_no_of_invoices")));  // <-- NEW - not added to CMD env, so it's commented out, since it's not used by my tests, Ana
+	    	trendDataOneMonth.setTotalNumberOfInvoices(Long.toString(jsonObj.getLong("total_no_of_invoices")));  // <-- NEW - not added to CMD env, so it's commented out, since it's not used by my tests, Ana
 	    	trendDataOneMonth.setNumberOfLines(Long.toString(jsonObj.getLong("no_of_lines")));
-//	    	trendDataOneMonth.setNumberOfAccounts(Long.toString(jsonObj.getLong("no_of_accounts")));  <-- REMOVED
 //	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("total_no_of_accounts")));   // <-- NEW - not added to CMD env, so it's commented out, since it's not used by my tests, Ana
-//	    	trendDataOneMonth.setNumberOfInvoicesRollup(Long.toString(jsonObj.getLong("no_of_invoices_rollup")));  <-- REMOVED
 	    	trendDataOneMonth.setNumberOfLinesRollup(Long.toString(jsonObj.getLong("no_of_lines_rollup")));
-//	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("no_of_accounts_rollup")));  <-- REMOVED
 	    	trendDataOneMonth.setCurrencyCode(jsonObj.getString("currency_code"));
 	    	trendDataOneMonth.setTotalExpense(Double.toString(jsonObj.getDouble("total_expense_ex")));
 	    	trendDataOneMonth.setOptimizableExpense(Double.toString(jsonObj.getDouble("optimizable_expense_ex")));
@@ -144,6 +133,7 @@ public class ReadFilesHelper extends BaseClass {
 	    	trendDataOneMonth.setTotalExpenseRollup(Double.toString(jsonObj.getDouble("total_expense_rollup_ex")));
 	    	trendDataOneMonth.setOptimizableExpenseRollup(Double.toString(jsonObj.getDouble("optimizable_expense_rollup_ex")));
 	    	trendDataOneMonth.setRoamingExpenseRollup(Double.toString(jsonObj.getDouble("roaming_expense_rollup_ex")));
+	    	trendDataOneMonth.setHasData(jsonObj.getBoolean("has_data"));
 	    	
 	        listValues.add(trendDataOneMonth);
 			
@@ -182,7 +172,7 @@ public class ReadFilesHelper extends BaseClass {
 	    // E.g.: hierarchy.PRIMARY.topUsers.EXPENSE.TOTAL_EXPENSE'
 	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
 	   
-//	    ShowText(topTenData);
+	    ShowText(topTenData);
 	   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(topTenData); 
@@ -197,9 +187,12 @@ public class ReadFilesHelper extends BaseClass {
 	    	switch (type) {
 	    	
 	    		case "EMPLOYEE":
-	    			topTenDataOneMonth = new HierarchyTopTenData(jsonObj.getString("service_id"), jsonObj.getString("service_number"), jsonObj.getString("employee_id"),
-	    					jsonObj.getString("company_employee_id"), jsonObj.getString("employee_firstname"), jsonObj.getString("employee_lastname"), 
-	    					jsonObj.getString("type"), jsonObj.getDouble("value"));
+	    			
+	    			topTenDataOneMonth = getEmployeeData(jsonObj);
+	    			
+//	    			topTenDataOneMonth = new HierarchyTopTenData(jsonObj.getString("service_id"), jsonObj.getString("service_number"), jsonObj.getString("employee_id"),
+//	    					jsonObj.getString("company_employee_id"), jsonObj.getString("employee_firstname"), jsonObj.getString("employee_lastname"), 
+//	    					jsonObj.getString("type"), jsonObj.getDouble("value"));
 	    			break;
 	    			
 	    		case "DEPARTMENT":
@@ -219,6 +212,46 @@ public class ReadFilesHelper extends BaseClass {
 	    
 		return listValues;
 	
+	}
+	
+	
+	
+	public static HierarchyTopTenData getEmployeeData(JSONObject jsonObj) throws JSONException {
+		
+		HierarchyTopTenData data = new HierarchyTopTenData();
+		String companyEmployeeId = "";
+		String employeeFirstName = "";
+		String employeeLastName = "";
+		
+		try {
+			
+			companyEmployeeId = jsonObj.getString("company_employee_id");
+			
+		} catch (JSONException e) {
+			
+		}
+	
+		try {
+			
+			employeeFirstName = jsonObj.getString("employee_firstname");
+			
+		} catch (JSONException e) {
+			
+		}
+		
+		try {
+			
+			employeeLastName = jsonObj.getString("employee_lastname");
+			
+		} catch (JSONException e) {
+			
+		}
+		
+		data = new HierarchyTopTenData(jsonObj.getString("service_id"), jsonObj.getString("service_number"), jsonObj.getString("employee_id"),
+				companyEmployeeId, employeeFirstName, employeeLastName, jsonObj.getString("type"), jsonObj.getDouble("value"));
+		
+		return data;
+		
 	}
 	
 	
@@ -432,172 +465,172 @@ public class ReadFilesHelper extends BaseClass {
 	//  *** THE 3 METHODS LISTED BELOW ARE NOT USED ***
 	
 	//Reads the data needed for the "Hierarchy Dashboard" tests
-	public static List<HierarchyTrendData> getHierarchyTrendData(String filePath) throws IOException {
-
-		List<String> linesOfFile = getRowsfromFile(filePath);
-		boolean rowsLineRead = false;
-		
-		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
-		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
-		
-//		System.out.println("File to be read:" + filePath);
-		
-		for (String s: linesOfFile) {
-			
-//			System.out.println("Line :" + s);
-			
-			if (s.contains("rows")) {
-				rowsLineRead = true;
-			}	
-			
-			if (rowsLineRead && !s.trim().equals("{") && !s.trim().equals("},")) {
-				
-				switch (returnName(s)) {
-				
-					case "id":
-					
-						trendDataOneMonth.setId(returnValue(s));
-						break;
-					
-					case "name":
-					
-						trendDataOneMonth.setName(returnValue(s));
-						break;
-					
-					case "ordinal_year":
-					
-						trendDataOneMonth.setOrdinalYear(returnValue(s));
-						break;
-					
-					case "ordinal_month":
-										
-						trendDataOneMonth.setOrdinalMonth(returnValue(s));
-						break;
-					
-					case "no_of_invoices":
-					
-						trendDataOneMonth.setNumberOfInvoices(returnValue(s));
-						break;
-					
-					case "no_of_lines":
-					
-						trendDataOneMonth.setNumberOfLines(returnValue(s));
-						break;
-					
-					case "no_of_accounts":
-					
-						trendDataOneMonth.setNumberOfAccounts(returnValue(s));
-						break;
-					
-					case "no_of_invoices_rollup":
-						
-						trendDataOneMonth.setNumberOfInvoicesRollup(returnValue(s));
-						break;
-					
-					case "no_of_lines_rollup":
-					
-						trendDataOneMonth.setNumberOfLinesRollup(returnValue(s));
-						break;
-					
-					case "no_of_accounts_rollup":
-					
-						trendDataOneMonth.setNumberOfAccountsRollup(returnValue(s));
-						break;
-					
-					case "currency_code":
-					
-						trendDataOneMonth.setCurrencyCode(returnValue(s));
-						break;
-					
-					case "total_expense_ex":
-					
-						trendDataOneMonth.setTotalExpense(returnValue(s));
-						break;
-					
-					case "optimizable_expense_ex":
-					
-						trendDataOneMonth.setOptimizableExpense(returnValue(s));
-						break;
-					
-					case "roaming_expense_ex":
-					
-						trendDataOneMonth.setRoamingExpense(returnValue(s));
-						break;
-					
-					case "total_expense_rollup_ex":
-					
-						trendDataOneMonth.setTotalExpenseRollup(returnValue(s));
-						break;
-					
-					case "optimizable_expense_rollup_ex":
-					
-						trendDataOneMonth.setOptimizableExpenseRollup(returnValue(s));
-						break;
-					
-					case "roaming_expense_rollup_ex":
-					
-						trendDataOneMonth.setRoamingExpenseRollup(returnValue(s));
-						break;
-					
-					default:
-					
-//						System.out.println("not a value");
-						break;
-					
-				}
-				
-			}
-			
-			if (rowsLineRead && (s.trim().equals("},") || s.trim().equals("]"))) {
-				
-				listValues.add(trendDataOneMonth);
-				trendDataOneMonth = new HierarchyTrendData();
-			}
-			
-		}
-		
-		
-		for (HierarchyTrendData h: listValues) {
-			
-			System.out.println("id: " + h.getId()); 
-			System.out.println("name: " + h.getName());
-			System.out.println("ordinal_year: " + h.getOrdinalYear());
-			System.out.println("ordinal_month: " + h.getOrdinalMonth());
-//			System.out.println("no_of_invoices: " + h.getNumberOfInvoices());
-			System.out.println("no_of_lines: " + h.getNumberOfLines());
-//			System.out.println("no_of_accounts: " + h.getNumberOfAccounts());
-//			System.out.println("no_of_invoices_rollup: " + h.getNumberOfInvoicesRollup());
-			System.out.println("no_of_lines_rollup: " + h.getNumberOfLinesRollup());
-//			System.out.println("no_of_accounts_rollup: " + h.getNumberOfAccountsRollup());
-			System.out.println("currency_code: " + h.getCurrencyCode());
-			System.out.println("total_expense_ex: " + h.getTotalExpense());
-			System.out.println("optimizable_expense_ex: " + h.getOptimizableExpense());
-			System.out.println("roaming_expense_ex: " + h.getRoamingExpense());
-			System.out.println("total_expense_rollup_ex: " + h.getTotalExpenseRollup());
-			System.out.println("optimizable_expense_rollup_ex: " + h.getOptimizableExpenseRollup());
-			System.out.println("roaming_expense_rollup_ex: " + h.getRoamingExpenseRollup());
-			
-		}
-		
-		return listValues;
-		
-	}
-		
-	
-	
-	public static String returnName(String jsonItem) {
-		
-		return jsonItem.split(":")[0].trim().replace("\"", "");
-		
-	}
-		
-	
-	public static String returnValue(String jsonItem) {
-		
-		jsonItem = jsonItem.trim();
-		return (jsonItem.split("\":")[1].trim().replace("\"", "").replace(",", ""));
-		
-	}
-	 
+//	public static List<HierarchyTrendData> getHierarchyTrendData(String filePath) throws IOException {
+//
+//		List<String> linesOfFile = getRowsfromFile(filePath);
+//		boolean rowsLineRead = false;
+//		
+//		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
+//		List<HierarchyTrendData> listValues = new ArrayList<HierarchyTrendData>();
+//		
+////		System.out.println("File to be read:" + filePath);
+//		
+//		for (String s: linesOfFile) {
+//			
+////			System.out.println("Line :" + s);
+//			
+//			if (s.contains("rows")) {
+//				rowsLineRead = true;
+//			}	
+//			
+//			if (rowsLineRead && !s.trim().equals("{") && !s.trim().equals("},")) {
+//				
+//				switch (returnName(s)) {
+//				
+//					case "id":
+//					
+//						trendDataOneMonth.setId(returnValue(s));
+//						break;
+//					
+//					case "name":
+//					
+//						trendDataOneMonth.setName(returnValue(s));
+//						break;
+//					
+//					case "ordinal_year":
+//					
+//						trendDataOneMonth.setOrdinalYear(returnValue(s));
+//						break;
+//					
+//					case "ordinal_month":
+//										
+//						trendDataOneMonth.setOrdinalMonth(returnValue(s));
+//						break;
+//					
+//					case "no_of_invoices":
+//					
+//						trendDataOneMonth.setNumberOfInvoices(returnValue(s));
+//						break;
+//					
+//					case "no_of_lines":
+//					
+//						trendDataOneMonth.setNumberOfLines(returnValue(s));
+//						break;
+//					
+//					case "no_of_accounts":
+//					
+//						trendDataOneMonth.setNumberOfAccounts(returnValue(s));
+//						break;
+//					
+//					case "no_of_invoices_rollup":
+//						
+//						trendDataOneMonth.setTotalNumberOfInvoices(returnValue(s));
+//						break;
+//					
+//					case "no_of_lines_rollup":
+//					
+//						trendDataOneMonth.setNumberOfLinesRollup(returnValue(s));
+//						break;
+//					
+//					case "no_of_accounts_rollup":
+//					
+//						trendDataOneMonth.setNumberOfAccountsRollup(returnValue(s));
+//						break;
+//					
+//					case "currency_code":
+//					
+//						trendDataOneMonth.setCurrencyCode(returnValue(s));
+//						break;
+//					
+//					case "total_expense_ex":
+//					
+//						trendDataOneMonth.setTotalExpense(returnValue(s));
+//						break;
+//					
+//					case "optimizable_expense_ex":
+//					
+//						trendDataOneMonth.setOptimizableExpense(returnValue(s));
+//						break;
+//					
+//					case "roaming_expense_ex":
+//					
+//						trendDataOneMonth.setRoamingExpense(returnValue(s));
+//						break;
+//					
+//					case "total_expense_rollup_ex":
+//					
+//						trendDataOneMonth.setTotalExpenseRollup(returnValue(s));
+//						break;
+//					
+//					case "optimizable_expense_rollup_ex":
+//					
+//						trendDataOneMonth.setOptimizableExpenseRollup(returnValue(s));
+//						break;
+//					
+//					case "roaming_expense_rollup_ex":
+//					
+//						trendDataOneMonth.setRoamingExpenseRollup(returnValue(s));
+//						break;
+//					
+//					default:
+//					
+////						System.out.println("not a value");
+//						break;
+//					
+//				}
+//				
+//			}
+//			
+//			if (rowsLineRead && (s.trim().equals("},") || s.trim().equals("]"))) {
+//				
+//				listValues.add(trendDataOneMonth);
+//				trendDataOneMonth = new HierarchyTrendData();
+//			}
+//			
+//		}
+//		
+//		
+//		for (HierarchyTrendData h: listValues) {
+//			
+//			System.out.println("id: " + h.getId()); 
+//			System.out.println("name: " + h.getName());
+//			System.out.println("ordinal_year: " + h.getOrdinalYear());
+//			System.out.println("ordinal_month: " + h.getOrdinalMonth());
+////			System.out.println("no_of_invoices: " + h.getNumberOfInvoices());
+//			System.out.println("no_of_lines: " + h.getNumberOfLines());
+////			System.out.println("no_of_accounts: " + h.getNumberOfAccounts());
+////			System.out.println("no_of_invoices_rollup: " + h.getNumberOfInvoicesRollup());
+//			System.out.println("no_of_lines_rollup: " + h.getNumberOfLinesRollup());
+////			System.out.println("no_of_accounts_rollup: " + h.getNumberOfAccountsRollup());
+//			System.out.println("currency_code: " + h.getCurrencyCode());
+//			System.out.println("total_expense_ex: " + h.getTotalExpense());
+//			System.out.println("optimizable_expense_ex: " + h.getOptimizableExpense());
+//			System.out.println("roaming_expense_ex: " + h.getRoamingExpense());
+//			System.out.println("total_expense_rollup_ex: " + h.getTotalExpenseRollup());
+//			System.out.println("optimizable_expense_rollup_ex: " + h.getOptimizableExpenseRollup());
+//			System.out.println("roaming_expense_rollup_ex: " + h.getRoamingExpenseRollup());
+//			
+//		}
+//		
+//		return listValues;
+//		
+//	}
+//		
+//	
+//	
+//	public static String returnName(String jsonItem) {
+//		
+//		return jsonItem.split(":")[0].trim().replace("\"", "");
+//		
+//	}
+//		
+//	
+//	public static String returnValue(String jsonItem) {
+//		
+//		jsonItem = jsonItem.trim();
+//		return (jsonItem.split("\":")[1].trim().replace("\"", "").replace(",", ""));
+//		
+//	}
+//	 
 	
 }

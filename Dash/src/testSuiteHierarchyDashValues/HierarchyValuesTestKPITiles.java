@@ -159,6 +159,15 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 					
 				}
 				
+				// #9 Verify the amount of service numbers and the amount of invoices loaded
+				// ** The amount of service numbers and the amount of invoices loaded will be displayed only if there's data for the month
+				if (trendData.getHasData()) {
+					
+					HierarchyKPITilesValues.verifyServiceNumbersAmount(trendData.getNumberOfLinesRollup());
+					HierarchyKPITilesValues.verifyNumberInvoices(trendData.getTotalNumberOfInvoices());
+					
+				}
+				
 				indexMonth++;
 				monthSelected = false;
 				

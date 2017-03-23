@@ -170,6 +170,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 
 				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
 				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+				String valueFoundRounded = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(valueFound.replace("$", "")), true);
 				
 				// Get the expected label 
 				String labelExpected = expectedLabels.get(i-1);
@@ -180,11 +181,11 @@ public class HierarchyExpenseTrending extends BaseClass {
 						
 				// Verify the labels' text and amounts shown on the tooltip
 				
-				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+//				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+//				System.out.println("valueFound: " + valueFoundRounded + ", valueExpected: " + valueExpected);
 				
 				Assert.assertEquals(labelFound, labelExpected);
-				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
+				GeneralHelper.verifyExpectedAndActualValues(valueFoundRounded, valueExpected);
 				
 			}
 			
@@ -193,7 +194,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
 				
 			Assert.assertEquals(monthYearFound, monthYearExpected);
-			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+//			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;
 			indexMonth--;

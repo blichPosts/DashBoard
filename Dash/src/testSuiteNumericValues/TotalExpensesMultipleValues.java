@@ -35,6 +35,15 @@ public class TotalExpensesMultipleValues extends BaseClass{
 	public static void TotalExpensesMultipleValuesTest() throws Exception
 	{
 		
+		// Enable Start collecting data
+		ReadFilesHelper.startCollectingData();
+		Thread.sleep(2000);
+		
+		// Reload Fleet data
+		ReadFilesHelper.reloadFleetData();
+		Thread.sleep(2000);
+		
+				
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -84,7 +93,7 @@ public class TotalExpensesMultipleValues extends BaseClass{
 				String completePath = path + file;
 				
 				// #2 Read data from file
-				List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getDataFromSpreadsheet(completePath);
+				List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
 				listVendorsSelectedData.add(valuesFromFileOneVendor);
 					
 				// #3 Select one vendor

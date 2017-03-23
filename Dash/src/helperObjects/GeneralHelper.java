@@ -3,6 +3,7 @@ package helperObjects;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
@@ -155,13 +156,46 @@ public class GeneralHelper extends BaseClass {
 		String monthToSelect = months.get(0).getText();
 		CommonTestStepActions.selectMonthYearPulldown(monthToSelect);
 		
-		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
+//		waitForDataToBeLoaded();
 		
 	}
 
 	
+	public static void waitForDataToBeLoaded() throws Exception {
+		
+		try {
+			// Wait for children to be listed on the PoV section -- this is to give time to new data to be loaded
+			WaitForElementPresentNoThrow(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MediumTimeout);
+//			ShowText("No children on PoV section");
+		} catch (TimeoutException e) {
+			try {
+				// If children not listed on the PoV section
+				// Then wait for message to show up on the tile map stating there are no children 
+				WaitForElementPresentNoThrow(By.cssSelector("div.tdb-charts__contentMessage"), MediumTimeout);
+			} catch (Exception e2) {
+//				ShowText("No message saying there's no data for selected month.");
+			}
+		}
+		
+	}
+	
+	
 	// Verifies that the difference between the expected value and the value found is less than one.
-	// Due to rounding there may be some case where the value found and the value expected differ on 1, e.g.: Value found = 28, Value expected = 27 
+	// Due to rounding there may be some case where the value found and the value expected differ on 1, e.g.: Value found = 28, Value expected = 27
+	public static void verifyExpectedAndActualValues(double valueActual, double valueExpected) {
+		
+		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
+		
+	}
+	
+	
+	public static void verifyExpectedAndActualValues(long valueActual, long valueExpected) {
+		
+		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
+				
+	}
+	
+	
 	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
 		
 //		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
@@ -174,8 +208,7 @@ public class GeneralHelper extends BaseClass {
 		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
 		
 	}
-	
-	
+		
 
 	private static String getNumericValue(String value) {
 		
@@ -218,20 +251,5 @@ public class GeneralHelper extends BaseClass {
 		
 	}
 
-
-	public static void verifyExpectedAndActualValues(double valueActual, double valueExpected) {
-		
-		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
-		
-	}
-	
-	
-	public static void verifyExpectedAndActualValues(long valueActual, long valueExpected) {
-		
-		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
-				
-	}
-	
-	
 	
 }

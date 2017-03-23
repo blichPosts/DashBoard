@@ -41,10 +41,7 @@ public class ExpensesKPITilesValues extends BaseClass{
 		System.out.println("KPI Tile Count of Service Numbers Actual: " + costServNumKPIFromDash + ",  KPI Tile Count of Service Numbers Expected: " + costServNumKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(costServNumKPIFromDash, costServNumKPICalculated);
 		
-		
 	}
-
-	
 	
 	
 	public static void verifyThreeMonthRollingAverageAndTrendingValues(List<UsageOneMonth> valuesForRollingAvg) {
@@ -73,11 +70,7 @@ public class ExpensesKPITilesValues extends BaseClass{
 		double rollingAvgTotalExpense = calculateRollingAverage(totalExpenseValues);
 		double rollingAvgCountServNum = calculateRollingAverage(countServNumberValues);
 		double rollingAvgCostServNum = calculateRollingAverage(costServNumberValues);
-		
-//		System.out.println("rollingAvgTotalExpense: " + rollingAvgTotalExpense);
-//		System.out.println("rollingAvgCountServNum: " + rollingAvgCountServNum);
-//		System.out.println("rollingAvgCostServNum: " + rollingAvgCostServNum);
-		
+				
 		
 		// Round up rolling averages for Count of Service Numbers, since they cannot have decimal points (amount of lines must be integer) 
 		long avgTmpLines = Math.round(rollingAvgCountServNum); 
@@ -206,10 +199,6 @@ public class ExpensesKPITilesValues extends BaseClass{
 		double rollingAvgTotalExpense = calculateRollingAverage(totalExpenseValues);
 		double rollingAvgCountServNum = calculateRollingAverage(countServNumberValues);
 		double rollingAvgCostServNum = calculateRollingAverage(costServNumberValues);
-		
-//		System.out.println("rollingAvgTotalExpense: " + rollingAvgTotalExpense);
-//		System.out.println("rollingAvgCountServNum: " + rollingAvgCountServNum);
-//		System.out.println("rollingAvgCostServNum: " + rollingAvgCostServNum);
 		
 		
 		// Round up rolling averages for Count of Service Numbers, since they cannot have decimal points (amount of lines must be integer) 

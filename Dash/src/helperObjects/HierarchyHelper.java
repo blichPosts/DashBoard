@@ -5,11 +5,14 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import Dash.BaseClass;
 
@@ -56,7 +59,7 @@ public class HierarchyHelper extends BaseClass {
 		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"));
 		viewTopTenToggle.click();
 		WaitForElementVisible(By.xpath("//h3[text()='Top 10 Service Numbers by Expense Amount - ']"), MediumTimeout);	
-		waitForTopTenChartToLoad();
+		//waitForTopTenChartToLoad();
 		
 	}
 	
@@ -105,7 +108,7 @@ public class HierarchyHelper extends BaseClass {
 	public static void waitForTopTenChartToLoad() throws Exception {
 		
 		String cssSelector = "#" + UsageHelper.getChartId(HierarchyHelper.topTenChart) + ">svg>g>g>rect.highcharts-point:nth-child(1)";
-		WaitForElementPresent(By.cssSelector(cssSelector), MediumTimeout);
+		WaitForElementPresentNoThrow(By.cssSelector(cssSelector), MediumTimeout);
 		
 	}
 	
@@ -164,7 +167,9 @@ public class HierarchyHelper extends BaseClass {
 	public static void selectHierarchyFromDropdown(int numHierarchy) throws Exception {
 		
 		driver.findElement(By.cssSelector("app-hierarchy-selector>div>select>option:nth-child(" + numHierarchy + ")")).click();
-		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
+		//WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
+		
+//		GeneralHelper.waitForDataToBeLoaded();
 
 	}
 	
@@ -246,7 +251,7 @@ public class HierarchyHelper extends BaseClass {
 		return driver.findElement(By.cssSelector(".breadcrumbs>span:last-child")).getText().replace("/", "").trim();
 
 	}
-
-		
+	
+	
 }
 

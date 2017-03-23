@@ -33,6 +33,14 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 	public static void CostPerServiceNumberMultipleValuesTest() throws Exception
 	{
 		
+		// Enable Start collecting data
+		ReadFilesHelper.startCollectingData();
+		Thread.sleep(2000);
+		
+		// Reload Fleet data
+		ReadFilesHelper.reloadFleetData();
+		Thread.sleep(2000);
+								
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -68,7 +76,7 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 			String completePath = path + file;
 			
 			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getDataFromSpreadsheet(completePath);			
+			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);			
 			listSelectedDataForMonthListUnified.add(valuesFromFileTmp);
 				
 			// #3 Select one vendor

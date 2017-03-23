@@ -63,8 +63,8 @@ public class BaseClass
 	//public static String commandPassword = "hop*ititmb9";	
 	
 	
-	public static String commandUserName = "helpdeskvistl1";  // "bob.l.vis";  <-- line changed by Ana 2/23/17
-	public static String commandPassword = "tngo111";  // "tngo222";  <-- line changed by Ana 2/23/17	
+	public static String commandUserName = "archana.trojic@tangoe.com phi";  // <-- line changed by Ana 3/20/17  //"helpdeskvistl1";  // "bob.l.vis";  <-- line changed by Ana 2/23/17
+	public static String commandPassword = "traq06";   // <-- line changed by Ana 3/20/17  // "tngo111";  // "tngo222";  <-- line changed by Ana 2/23/17	
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
 	public static LoginType loginType; // bladdxx // new
@@ -113,7 +113,7 @@ public class BaseClass
 	{
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
-		loginType = LoginType.ReferenceApp; // bladdxx     <-- line changed by Ana 2/23/17
+		loginType = LoginType.Command; // bladdxx     <-- line changed by Ana 2/23/17 -- <-- line changed by Ana 3/20/17
 	}
 	
 	public static void ShowArray(String [] strArray)
