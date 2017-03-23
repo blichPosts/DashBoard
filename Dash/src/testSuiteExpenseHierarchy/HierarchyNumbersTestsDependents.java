@@ -35,7 +35,6 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
-
 		VisualPageLoad.SelectAndWaitForPageLoad();
 
 		ExpenseHelper.SetHierarchyMaxDisplayed(100);
