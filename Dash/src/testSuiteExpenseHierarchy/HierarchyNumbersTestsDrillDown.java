@@ -46,9 +46,9 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(1, 50);
 		
 		// set which tile map test should be run in the loop below. 
-		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.drillDown);
+		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.drillDownCommand);
 
-		HierarchyNumbersDependents.LoopThroughHierarchiesTileMapTests();
+		HierarchyNumbersDependents.LoopThroughTileMapTests();
 		
 		/*
 		ShowText("\nDefault Cost Center Hierarchy Is Set ***** \n");

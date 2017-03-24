@@ -52,7 +52,10 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static String filterString = "";
 	public static String chartId = "";
 	public static String currentHierarchyId = "";
+	public static String currentHierarchyName = "";
+	public static String currentCategorySelection = "";
 	public static String totalCount = "";
+	
 	
 	public static Stack<String> popStack = new Stack<String>();
 	public static List<Child> childList = new ArrayList<Child>();
@@ -84,9 +87,9 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		phaseOne,
 		months,
-		drillDown,
+		drillDownCommand,
 		commandSmoke,
-		commandAllHierchiesAndCatergories
+		commandAllCatergories
 	}
 	
 	public static void SetDrillDownPageType(DrillDownPageType type)
@@ -266,13 +269,11 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 
 	// this is called after a number of tiles to test has been setup, a month has been selected, and a tile level has been setup (unless the top level is being tested).
-	public static void RunAllTilesInCommand() throws Exception // bladdzz
+	public static void RunTilesInCommand() throws Exception // bladdzz
 	{
 		int x = 0;
 		
-		DebugTimeout(5, "Wait Full Load");
-		
-		JOptionPane.showMessageDialog(frame, "Wait");
+		DebugTimeout(3, "Wait 3 in RunTilesInCommand() before starting.");
 		
 		// get the size of the list of dependents showing.
 		int loopCntr = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
@@ -286,9 +287,9 @@ public class HierarchyNumbersDependents extends BaseClass
 		{ 
     		hoverInfo = GetTooltipText(x);
     		
-    		// hoverInfo = RemoveDecimalCost(hoverInfo);
+    		// hoverInfo = RemoveDecimalCost(hoverInfo);  // breaks
     		
-    		ShowText(hoverInfo);
+    		// ShowText(hoverInfo);
     		
 			// get the cost type string to be filtered out for creating 'tempTwo' string below. 
 			filterString = BuildStringForFilteringText();
@@ -301,8 +302,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
-			ShowText(currentDependentUnitInfo);
-			ShowText(hoverInfo); 
+			ShowText("dependent " + currentDependentUnitInfo);
+			ShowText("hover " + hoverInfo); 
 			
 			// JOptionPane.showMessageDialog(frame, "Wait");
 			
@@ -721,7 +722,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		RemoveDecimalValueFromActualValueList(); 
 		
-		/*
 		// verify cross check.
 		for(String str : expectedList)
 		{
@@ -730,7 +730,6 @@ public class HierarchyNumbersDependents extends BaseClass
 				Assert.fail("Actual list does not contain item in expected list. Item not found in actual list is " + str);
 			}
 		}
-		*/
 
 		// ShowText("VerifyAllDependentChildren DONE"); // DEBUG
 	}
@@ -796,6 +795,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		Random rand = new Random();
 		
 		ShowText("Doing Drill down test." );
+		Pause("Doing Drill down test.");
 		
 		
 		while (cntr != maxNumberOfLevels)
@@ -841,7 +841,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				System.out.println("The last click found the 'No Depenents' message\n");
 				break;
 			}
-			HierarchyNumbersDependents.RunAllTilesInCommand();
+			HierarchyNumbersDependents.RunTilesInCommand();
 			cntr++;
 		}
 	}
@@ -862,6 +862,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		Random rand = new Random();
 		
 		ShowText("Starting drill down in dependent units.");
+		Pause("Starting drill down in dependent units.");
 		
 		while (cntr != maxNumberOfLevels)
 		{
@@ -917,16 +918,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(int x = 0; x < values.length; x++)
 		{
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
-			Thread.sleep(1000);
+			Thread.sleep(2000);
+			
+			currentCategorySelection = values[x].name(); // store current category for later testing of text above tile map.
 			
 			BuildDependentChildObjects(); // create list of dependent units from Json call.
 			
-			// ShowChildList(); // DEBUG
-			
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
 			Thread.sleep(1000);
-			
-			// ShowChildList(); // DEBUG
 			
 			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
 			
@@ -953,14 +952,13 @@ public class HierarchyNumbersDependents extends BaseClass
 			Thread.sleep(1000);
 			Pause("have hit category selector");
 			DrillDown_Up_DependentUnits();				
-
 			ShowText("Pass complete for " + values[x].name() +".");
 		}
 	}
 	
 	
 	// go through the categories and run a single level tile map test.
-	public static void LoopThroughCatergoriesForTileMapDash() throws Exception   // bladdzz
+	public static void LoopThroughCatergoriesForTileMapCommand() throws Exception   // bladdzz
 	{
 		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
 		
@@ -970,10 +968,9 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(int x = 0; x < values.length; x++)
 		{
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
-			Thread.sleep(1000);
-			Pause("have hit category selector");
-			HierarchyNumbersDependents.RunAllTilesInCommand();
-
+			Thread.sleep(3000);
+			ShowText("Start category selector" + values[x].name() + ".");
+			HierarchyNumbersDependents.RunTilesInCommand();
 			ShowText("Pass complete for " + values[x].name() +".");
 		}
 	}
@@ -997,9 +994,15 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 				ShowText(" -------------------------Hierarchy Name: " + ele.getText() + " ---------------------------------------- ");
 				
+				Pause("hierarch selected");
+				
+				// store away the current hierarchy name. this is used later on as part of verifying the text above the tile map.
+				currentHierarchyName = ele.getText();   
+				
 				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr); // set the current hierarchy Id. this hierarchyId is global to this class.  
 				ele.click(); 
-				Thread.sleep(1000);
+				
+				Thread.sleep(3000);
 				DrillDownDependentUnitsTwo(maxLevelsToDrillDownTo); // run the drill down tests for each category selector.
 				hierarchyCntr++;
 		}
@@ -1027,7 +1030,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	// this loops through each hierarchy and runs a one of the tile map tests. the tile map test to run is set in the test case that calls this method.
-	public static void LoopThroughHierarchiesTileMapTests() throws Exception  
+	public static void LoopThroughTileMapTests() throws Exception  
 	{
 	
 		// get list of web elements, one for each hierarchy.
@@ -1044,7 +1047,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(WebElement ele : hierarchyList)
 		{
 				ShowText("Hierarchy Name: " + ele.getText() + "\n");
-				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr);
+				//currentHierarchyId = hierarchyIdsList.get(hierarchyCntr);
 				ele.click();
 				Thread.sleep(1000);
 				RunTileMapTest(currentTileMapTestType); // run test.
@@ -1090,6 +1093,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(WebElement ele : hierarchyList)
 		{
 				ShowText("Hierarchy Name: " + ele.getText());
+				currentHierarchyName = ele.getText();
 				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr);
 				ShowText(currentHierarchyId);
 				ele.click();
@@ -1134,7 +1138,6 @@ public class HierarchyNumbersDependents extends BaseClass
 			PushCurrentList(); // this puts the current dependents list in the UI onto 'listsOfPreviousDependentUnits' list.
 		}
 		
-		// this lets 
 		// ShowListsOfDependentUnitsStoredAway(); // this will show all lists on the list that were added in 'AddDependentUnitList' method.
 		
 		//  this clicks the bread crumbs until there are no bread crumbs left.
@@ -1148,7 +1151,10 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			// pops item 'y' in the list holding the history of dependent unit lists (expected) and compare to the current dependent unit list that is showing (actual).   
 			VerifyDependentUsersListsAreEqual(tempStrList, listsOfPreviousDependentUnits.get(y)); 
-
+			
+			// DEBUG: this will do list compares using looping and log all errors to console. This does not raise an error.
+			//VerifyDependentUsersListsViewResults(tempStrList, listsOfPreviousDependentUnits.get(y)); 
+			
 			ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
 			
 			if(y != 0) // if not back at the top, click the lowest bread crumb.
@@ -1238,17 +1244,17 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	
-	
+	// this verifies the text above the tile map.
 	public static void VerifyTotalCount() throws Exception
 	{
-		String temp =  driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText();
+		String actualTextAboveTileMap =  driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText();
 		
-		// if(temp.contains("(out of " + totalCount + ")")){ShowText("YES");}
-		//ShowText("(out of " + totalCount + ")");			
-		ShowText("Total Count " + totalCount);
-		System.out.println("number child nodes " +  HierarchyNumbersDependents.childList.size());
-		Assert.assertTrue(temp.contains("(out of " + totalCount + ")"), "Error in testing of Total Count shown in Tile Map.");
-		//Pause("Check numbers.");
+		String expectedTextAboveTileMap  = "Top " + HierarchyNumbersDependents.childList.size() + " (out of " + totalCount + ") " + "dependent units of " +  currentHierarchyName +  
+				            " - " + currentCategorySelection + " Expense";
+		
+		Assert.assertEquals(actualTextAboveTileMap,  expectedTextAboveTileMap, "Failed to verify text above the tile map in HierarchyNumbersDependents.VerifyTotalCount");
+		
+		Pause("Check numbers.");
 	}
 	
 	public static void WaitForPageTransition(String unitNameToWaitFor ) throws Exception
@@ -1290,7 +1296,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 		}
 		
-		// get the size of the dependent units list and verisy last element is visible.  
+		// get the size of the dependent units list and verify last element is visible.  
 		size = driver.findElements(By.cssSelector(".tdb-povGroup>div>ol>li")).size();
 		WaitForElementVisible(By.cssSelector(".tdb-povGroup>div>ol>li:nth-of-type(" + size + ")"  ), MediumTimeout);
 		
@@ -1315,6 +1321,25 @@ public class HierarchyNumbersDependents extends BaseClass
 		AddDependentUnitList(tempStrList); // store away the list of dependent units currently showing.
 		ShowText("PUSH -- this is the first item of list pushed: "  + tempStrList.get(0).replace("\n",  " "));
 		ClearDrillDownUpStringPair();  // clear web element list and text list that are used as temporary holders of information.
+	}
+	
+
+	// this is for debug.
+	public static void VerifyDependentUsersListsViewResults(List<String> actualList, List<String> expectedList)
+	{
+		ShowText("Start loop tests --------- ");
+
+		// verify list sizes match.
+		Assert.assertEquals(actualList.size(), expectedList.size(), "Actual and Expected list sizes are not equal in HierarchyNumbersDependents.VerifyDependentUsersListsAreEqual.");
+
+		for(int x = 0; x < actualList.size(); x++)
+		{
+			if(!actualList.get(x).equals(expectedList.get(x)))
+			{
+				ShowText("Fail:: \n" + "actual: " + actualList.get(x) + "\n" + "expected: " + expectedList.get(x));
+			}
+		}
+		ShowText("Done loop test --------- ");
 	}
 	
 	public static void VerifyDependentUsersListsAreEqual(List<String> actualList, List<String> expectedList)
@@ -1556,7 +1581,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				break;
 			}
 			
-			case drillDown:
+			case drillDownCommand:
 			{
 				DrillDownAcrossCostFiltersTileMap(maxLevelsToDrillDownTo, 50);
 				break;
@@ -1564,13 +1589,13 @@ public class HierarchyNumbersDependents extends BaseClass
 			 
 			case commandSmoke:
 			{
-				HierarchyNumbersDependents.RunAllTilesInCommand();
+				HierarchyNumbersDependents.RunTilesInCommand();
 				break;
 			}
 			
-			case commandAllHierchiesAndCatergories:
+			case commandAllCatergories:
 			{
-				LoopThroughCatergoriesForTileMapDash();
+				LoopThroughCatergoriesForTileMapCommand();
 				break;
 			}
 			

@@ -49,10 +49,12 @@ public class HierarchyNumbersTests extends BaseClass
 		
 		//HierarchyNumbersDependents.LoopThroughHierarchiesTileMapTests();
 		
-		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.commandAllHierchiesAndCatergories);
+		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.commandAllCatergories);
 		
-		HierarchyNumbersDependents.LoopThroughHierarchiesTileMapTests();
+		HierarchyNumbersDependents.LoopThroughTileMapTests();
 
+		
+		
 		// ////////////////////////////////////////////////////////////////
 		// BELOW FOR reference application.
 		// ////////////////////////////////////////////////////////////////
