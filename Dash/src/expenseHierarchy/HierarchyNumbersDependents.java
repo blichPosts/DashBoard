@@ -52,7 +52,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static String filterString = "";
 	public static String chartId = "";
 	public static String currentHierarchyId = "";
-	public static String currentHierarchyName = "";
+	public static String currentLevelName = "";
 	public static String currentCategorySelection = "";
 	public static String totalCount = "";
 	
@@ -614,8 +614,8 @@ public class HierarchyNumbersDependents extends BaseClass
 		String costSelectorString = "";
 		String tempString = "";
 		
-		// verify total count in tile map text.
-		VerifyTotalCount();
+		// verify text above tile map.
+		VerifyTextAboveTileMap();
 		
 		
 		for(WebElement ele : eleList)
@@ -625,8 +625,11 @@ public class HierarchyNumbersDependents extends BaseClass
 			// with real data, there is a decimal cents (ex: $45.39 - .39 is the decimal cents). need to remove the decimal cents.
 			if(ele.getText().contains("."))
 			{
-				x = ele.getText().length() - ele.getText().indexOf(".");
-				tempString = ele.getText().substring(0, ele.getText().length() - x);
+				// below original - this coudn't handle the case when dependent unit had 'BB.trew.aaa' (multiple decimals ".").
+				//x = ele.getText().length() - ele.getText().indexOf(".");
+				//tempString = ele.getText().substring(0, ele.getText().length() - x);
+				
+				tempString = TrimDecimal(ele.getText()); // this should handle 'BB.trew.aaa' (multiple decimals ".").
 			}
 			else
 			{
@@ -634,13 +637,17 @@ public class HierarchyNumbersDependents extends BaseClass
 			}			
 			
 			// random error - need to catch and see. 
+			/*
+			Tor.Dwtn./Assurance Team 1
+			Total:$6171.01
+			*/
 			try
 			{
 				actualInt = Integer.valueOf(tempString.split("\n")[1].replace(GetCostFilterString(),""));				
 			}
 			catch (Exception ex)
 			{
-				//ShowText("actualInt");
+				ShowText("tempString that failed parsing = " + tempString);
 				//ShowInt(actualInt);
 				ShowText(ex.getMessage());
 				ShowText("tempString " + tempString);
@@ -810,7 +817,43 @@ public class HierarchyNumbersDependents extends BaseClass
 				System.out.println("The last click found the 'No Depenents' message\n");
 				break;
 			}
-			HierarchyNumbersDependents.TestPhaseOne();  // run tests.
+			// HierarchyNumbersDependents.TestPhaseOne();  // run tests.
+			HierarchyNumbersDependents.RunTilesInCommand();  // run tests.
+			cntr++;
+		}
+	}
+	
+	
+	// 					------------ this does the drill down test ------------ 
+	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
+	//   reaches the maxNumberOfLevels passed in.
+	// * each time a level is drilled down to some test are run that test the three cost filters.
+	public static void DrillDownAcrossCostFiltersTileMapCommand(int maxNumberOfLevels, int totalNumberOfTilesShown) throws Exception 
+	{
+		int tileToSelect;
+		int cntr = 0;
+		int numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
+		
+		Random rand = new Random();
+		
+		ShowText("Doing Drill down test Command." );
+		Pause("Doing Drill down test.");
+		
+		
+		while (cntr != maxNumberOfLevels)
+		{
+			tileToSelect = rand.nextInt(numberOfDependentUnits) + 1;
+			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
+			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
+			
+			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+			{
+				System.out.println("Finished drill down testing to level " + cntr);
+				System.out.println("The last click found the 'No Depenents' message\n");
+				break;
+			}
+			// HierarchyNumbersDependents.TestPhaseOne();  // run tests.
+			HierarchyNumbersDependents.RunTilesInCommand();  // run tests.
 			cntr++;
 		}
 	}
@@ -868,18 +911,20 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size(); 
 			
-			System.out.println("# of dependents before click. " + numberOfDependentUnits);
+			// System.out.println("# of dependents before click. " + numberOfDependentUnits);
 			
 			// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
 			
-			Thread.sleep(500);
+			Thread.sleep(1000);
 			
 			System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **");
 			
-			unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
+			// store this to for checking string above tile map later.
+			currentLevelName = unitsList.get(dependentUnitToSelect).getText().split("\n")[0];  
 			
+			unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
 			
 			Pause("-- pause after click down");
 			// DebugTimeout(3, "wait three after click to drill down."); 			
@@ -927,12 +972,14 @@ public class HierarchyNumbersDependents extends BaseClass
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
 			Thread.sleep(1000);
 			
+			// this verifies the json dependents list sent in matches the list shown in the UI, after the Json list is sorted.
 			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
 			
+			// this is needed if the last of the dependent list has users with common cost values.
 			HierarchyNumbersDependents.FinishFinalTest();
 			childList.clear();
 
-			Pause("one pass");
+			Pause("one pass through test if dependents list.");
 			
 			ShowText("Pass complete for " + values[x].name() +".");
 		}
@@ -997,7 +1044,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				Pause("hierarch selected");
 				
 				// store away the current hierarchy name. this is used later on as part of verifying the text above the tile map.
-				currentHierarchyName = ele.getText();   
+				currentLevelName = ele.getText();   
 				
 				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr); // set the current hierarchy Id. this hierarchyId is global to this class.  
 				ele.click(); 
@@ -1032,7 +1079,6 @@ public class HierarchyNumbersDependents extends BaseClass
 	// this loops through each hierarchy and runs a one of the tile map tests. the tile map test to run is set in the test case that calls this method.
 	public static void LoopThroughTileMapTests() throws Exception  
 	{
-	
 		// get list of web elements, one for each hierarchy.
 		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));
 		
@@ -1093,7 +1139,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(WebElement ele : hierarchyList)
 		{
 				ShowText("Hierarchy Name: " + ele.getText());
-				currentHierarchyName = ele.getText();
+				currentLevelName = ele.getText();
 				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr);
 				ShowText(currentHierarchyId);
 				ele.click();
@@ -1205,6 +1251,18 @@ public class HierarchyNumbersDependents extends BaseClass
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public static String TrimDecimal(String strDependentUnit)
+	{
+		// get the cost that is to the right of ":".
+		String tempString = strDependentUnit.split(":")[1];
+		tempString = RemoveDecimal(tempString);
+		
+		String finalString = strDependentUnit.split(":")[0] + ":" + tempString;
+		
+		return finalString;
+	}
+
+	// no good??? -- not used.
 	// remove the decimal cost from a string dollar value - change 356.78 to 356
 	public static String RemoveDecimalCost(String decimalCost)
 	{
@@ -1212,7 +1270,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		tempString = decimalCost.substring(0, decimalCost.length() - x);
 		return tempString;
 	}
-	
 	
 	// Get the location of the element on the UI 
 	public static Point getAbsoluteLocationTileMap(WebElement element) throws InterruptedException  // bladdxx
@@ -1245,16 +1302,19 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	
 	// this verifies the text above the tile map.
-	public static void VerifyTotalCount() throws Exception
+	public static void VerifyTextAboveTileMap() throws Exception
 	{
 		String actualTextAboveTileMap =  driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText();
 		
-		String expectedTextAboveTileMap  = "Top " + HierarchyNumbersDependents.childList.size() + " (out of " + totalCount + ") " + "dependent units of " +  currentHierarchyName +  
+		String expectedTextAboveTileMap  = "Top " + HierarchyNumbersDependents.childList.size() + " (out of " + totalCount + ") " + "dependent units of " +  currentLevelName +  
 				            " - " + currentCategorySelection + " Expense";
+		
+		ShowText(expectedTextAboveTileMap);
+		ShowText(actualTextAboveTileMap);
 		
 		Assert.assertEquals(actualTextAboveTileMap,  expectedTextAboveTileMap, "Failed to verify text above the tile map in HierarchyNumbersDependents.VerifyTotalCount");
 		
-		Pause("Check numbers.");
+		Pause("Check numbers in VerifyTextAboveTileMap() passed.");
 	}
 	
 	public static void WaitForPageTransition(String unitNameToWaitFor ) throws Exception
@@ -1583,7 +1643,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			case drillDownCommand:
 			{
-				DrillDownAcrossCostFiltersTileMap(maxLevelsToDrillDownTo, 50);
+				DrillDownAcrossCostFiltersTileMapCommand(maxLevelsToDrillDownTo, 50);
 				break;
 			}
 			 
