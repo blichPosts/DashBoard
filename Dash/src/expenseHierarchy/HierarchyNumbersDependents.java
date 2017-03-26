@@ -272,38 +272,53 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static void RunTilesInCommand() throws Exception // bladdzz
 	{
 		int x = 0;
+		int loopCntr = 0;
 		
 		DebugTimeout(3, "Wait 3 in RunTilesInCommand() before starting.");
 		
 		// get the size of the list of dependents showing.
-		int loopCntr = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
+		int loopCntrOrig = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
 		
-		loopCntr = loopCntr/2;
+    	//if(loopCntr == 100)
+    	//{
+    	//	loopCntr = 40;
+    	//}
+    	//else
+    	//{
+        //	
+    	//}
+		
+		loopCntr = loopCntrOrig/2;
+		System.out.println("loopCntr max = " + loopCntr);
 		
 		// ////////////////////////////////////////////////////////////////////////////////////
 		// loop through tile maps.
 		// ////////////////////////////////////////////////////////////////////////////////////
-        for(x = 1; x <= loopCntr; x++) 
+        for(int y = 1; y <= loopCntr; y++) 
 		{ 
-    		hoverInfo = GetTooltipText(x);
-    		
-    		// hoverInfo = RemoveDecimalCost(hoverInfo);  // breaks
-    		
-    		// ShowText(hoverInfo);
-    		
-			// get the cost type string to be filtered out for creating 'tempTwo' string below. 
+        	hoverInfo = GetTooltipText(y);
+
+        	// get the cost type string to be filtered out for creating 'tempTwo' string below. 
 			filterString = BuildStringForFilteringText();
 			
 			// these two calls get the name info and the cost info from the dependent user in the UI. both of these are put in currentDependentUnitInfo string. 
 			// the type of cost string ("total", "optimizable", or "roaming") is filtered out of dependentUnitInfo string. 
-			nameAndIds = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText(); // name and id(s).
-			numericValue = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace(filterString,""); // numeric value (cost type removed).
+			nameAndIds = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + y + ")>a")).getText(); // name and id(s).
+			numericValue = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + y + ")>span")).getText().replace(filterString,""); // numeric value (cost type removed).
 
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
+			x = currentDependentUnitInfo.length() - currentDependentUnitInfo.lastIndexOf(".");
+			tempString = currentDependentUnitInfo.substring(0, currentDependentUnitInfo.length() - x);
+			currentDependentUnitInfo = tempString;
+			
 			ShowText("dependent " + currentDependentUnitInfo);
-			ShowText("hover " + hoverInfo); 
+			ShowText("hover info " + hoverInfo); 
+			
+			Assert.assertEquals(hoverInfo, currentDependentUnitInfo);
+
+        	System.out.println("Y =   " + y);
 			
 			// JOptionPane.showMessageDialog(frame, "Wait");
 			
@@ -327,6 +342,9 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			//Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
 		}
+
+		Pause("loop done");
+        
         // System.out.println("Number of Tile maps tested = " + (x  - 1));
 	}	
 	
@@ -428,11 +446,10 @@ public class HierarchyNumbersDependents extends BaseClass
         //Thread.sleep(1500); 
         
         WebElement tooltip = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip")); 
-        System.out.println(tooltip.getText().split("\\.")[1].trim());
+        // System.out.println(tooltip.getText().split("\\.")[1].trim());
 		
-		// return tooltip.getText().split("\\.")[1].trim(); // bladdzz
+		return tooltip.getText().split("\\.")[1].trim(); // bladdyy - trim out cosimal  value
         
-        return "";
 	}
 	
 	// this builds the json request string for getting the json rows of dependent unit values. 
@@ -625,22 +642,17 @@ public class HierarchyNumbersDependents extends BaseClass
 			// with real data, there is a decimal cents (ex: $45.39 - .39 is the decimal cents). need to remove the decimal cents.
 			if(ele.getText().contains("."))
 			{
-				// below original - this coudn't handle the case when dependent unit had 'BB.trew.aaa' (multiple decimals ".").
-				//x = ele.getText().length() - ele.getText().indexOf(".");
-				//tempString = ele.getText().substring(0, ele.getText().length() - x);
+				// below original -  later use helper method   'TrimDecimal'
+				x = ele.getText().length() - ele.getText().lastIndexOf(".");
+				tempString = ele.getText().substring(0, ele.getText().length() - x);
 				
-				tempString = TrimDecimal(ele.getText()); // this should handle 'BB.trew.aaa' (multiple decimals ".").
+				// tempString = TrimDecimal(ele.getText()); // this should handle 'BB.trew.aaa' (multiple decimals "."). -- not sure here
 			}
 			else
 			{
 				tempString = ele.getText();
 			}			
 			
-			// random error - need to catch and see. 
-			/*
-			Tor.Dwtn./Assurance Team 1
-			Total:$6171.01
-			*/
 			try
 			{
 				actualInt = Integer.valueOf(tempString.split("\n")[1].replace(GetCostFilterString(),""));				
@@ -664,11 +676,12 @@ public class HierarchyNumbersDependents extends BaseClass
 			// units have the same numeric value in each list but the units are in different orders.  
 			try
 			{
-				Assert.assertEquals(ele.getText().split("\n")[0], childList.get(loopCntr).childName, "");				
+				Assert.assertEquals(ele.getText().split("\n")[0], childList.get(loopCntr).childName, "");		
+				// ShowText(ele.getText().split("\n")[0] + "  " +   childList.get(loopCntr).childName); // DEBUG
 			}
 			catch (AssertionError sertErr)
 			{
-				// ShowText("Try catch"); // DEBUG
+				ShowText("Try catch"); // DEBUG
 				
 				if(childList.get(loopCntr).cost != latestCost)
 				{
@@ -676,8 +689,8 @@ public class HierarchyNumbersDependents extends BaseClass
 					{
 						// this verifies all the names have the same value, the actual and expected lists are the same size, and 
 						VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));  
-						//ShowExpectedList();
-						//ShowActualList();
+						ShowExpectedList();
+						ShowActualList();
 					}
 					expectedList.clear();
 					actualList.clear();
@@ -837,7 +850,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		Random rand = new Random();
 		
 		ShowText("Doing Drill down test Command." );
-		Pause("Doing Drill down test.");
+		Pause("Doing Drill down test with number of drilldowns = " + maxNumberOfLevels );
 		
 		
 		while (cntr != maxNumberOfLevels)
@@ -907,6 +920,8 @@ public class HierarchyNumbersDependents extends BaseClass
 		ShowText("Starting drill down in dependent units.");
 		Pause("Starting drill down in dependent units.");
 		
+		int fooBarCntr = 0; // bladdyy
+		
 		while (cntr != maxNumberOfLevels)
 		{
 			numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size(); 
@@ -916,6 +931,14 @@ public class HierarchyNumbersDependents extends BaseClass
 			// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
+			
+			if(fooBarCntr == 0)
+				dependentUnitToSelect = 0; // bladdyy
+			if(fooBarCntr == 1)
+				dependentUnitToSelect = 18; // bladdyy
+			if(fooBarCntr == 3)
+				dependentUnitToSelect = 2; // bladdyy
+			fooBarCntr++;
 			
 			Thread.sleep(1000);
 			
@@ -1251,17 +1274,17 @@ public class HierarchyNumbersDependents extends BaseClass
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/*
 	public static String TrimDecimal(String strDependentUnit)
 	{
 		// get the cost that is to the right of ":".
-		String tempString = strDependentUnit.split(":")[1];
-		tempString = RemoveDecimal(tempString);
+		x = ele.getText().length() - ele.getText().lastIndexOf(".");
+		tempString = ele.getText().substring(0, ele.getText().length() - x);
 		
-		String finalString = strDependentUnit.split(":")[0] + ":" + tempString;
-		
-		return finalString;
 	}
-
+*/
+	
+	/*
 	// no good??? -- not used.
 	// remove the decimal cost from a string dollar value - change 356.78 to 356
 	public static String RemoveDecimalCost(String decimalCost)
@@ -1270,6 +1293,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		tempString = decimalCost.substring(0, decimalCost.length() - x);
 		return tempString;
 	}
+	*/
 	
 	// Get the location of the element on the UI 
 	public static Point getAbsoluteLocationTileMap(WebElement element) throws InterruptedException  // bladdxx
