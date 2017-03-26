@@ -113,7 +113,7 @@ public class BaseClass
 	{
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
-		loginType = LoginType.Command; // bladdxx     <-- line changed by Ana 2/23/17
+		loginType = LoginType.ReferenceApp; // bladdxx     <-- line changed by Ana 2/23/17
 	}
 	
 	public static void ShowArray(String [] strArray)
