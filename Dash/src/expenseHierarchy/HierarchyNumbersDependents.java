@@ -278,18 +278,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		// get the size of the list of dependents showing.
 		int loopCntrOrig = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
-		
-		// repush
-    	//if(loopCntr == 100)
-    	//{
-    	//	loopCntr = 40;
-    	//}
-    	//else
-    	//{
-        //	
-    	//}
-		
+
 		loopCntr = loopCntrOrig/2;
+		
+    	if(loopCntr > 20) // make the test short.
+    	{
+    		loopCntr = 10;
+    	}
+
 		System.out.println("loopCntr max = " + loopCntr);
 		
 		// ////////////////////////////////////////////////////////////////////////////////////
@@ -298,7 +294,8 @@ public class HierarchyNumbersDependents extends BaseClass
         for(int y = 1; y <= loopCntr; y++) 
 		{ 
         	hoverInfo = GetTooltipText(y);
-
+			ShowText("hover info back: " + hoverInfo);
+			
         	// get the cost type string to be filtered out for creating 'tempTwo' string below. 
 			filterString = BuildStringForFilteringText();
 			
@@ -310,17 +307,17 @@ public class HierarchyNumbersDependents extends BaseClass
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
+			ShowText("current dependent info before remove decimal - " + currentDependentUnitInfo);
+			
 			x = currentDependentUnitInfo.length() - currentDependentUnitInfo.lastIndexOf(".");
 			tempString = currentDependentUnitInfo.substring(0, currentDependentUnitInfo.length() - x);
 			currentDependentUnitInfo = tempString;
 			
-			ShowText("dependent " + currentDependentUnitInfo);
-			ShowText("hover info " + hoverInfo); 
+			ShowText("current dependent info after remove decimal - " + currentDependentUnitInfo);
+ 
 			
 			Assert.assertEquals(hoverInfo, currentDependentUnitInfo);
 
-        	System.out.println("Y =   " + y);
-			
 			// JOptionPane.showMessageDialog(frame, "Wait");
 			
 			// bladdzz - comment below.
@@ -428,7 +425,8 @@ public class HierarchyNumbersDependents extends BaseClass
 	// this will return the string value for the tile map number hovered hovered in the tile map. 
 	public static String GetTooltipText(int index) throws AWTException, InterruptedException
 	{
-        WebElement tileNumber = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + index + ")")); // select tile map number
+		int x;
+		WebElement tileNumber = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + index + ")")); // select tile map number
         
         Point p = getAbsoluteLocationTileMap(tileNumber); 
         
@@ -449,7 +447,15 @@ public class HierarchyNumbersDependents extends BaseClass
         WebElement tooltip = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip")); 
         // System.out.println(tooltip.getText().split("\\.")[1].trim());
 		
-		return tooltip.getText().split("\\.")[1].trim(); // bladdyy - trim out cosimal  value
+        // bladdyy - add below. trim out decimal value
+        //String strTooltip = tooltip.getText();
+		//x = strTooltip.length() - strTooltip.lastIndexOf(".");
+		//tempString = strTooltip.substring(0, strTooltip.length() - x);
+
+        ShowText("hover before return " + tooltip.getText());
+        
+        // return tempString;
+		return tooltip.getText().split("\\.")[1].trim(); // bladdyy - trim out decimal  value // orig
         
 	}
 	
@@ -628,7 +634,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		int expectedInt = 0;
 		int loopCntr = 0;
 		int latestCost = -9999;
-		int x;
+		int x = 0;
 		String costSelectorString = "";
 		String tempString = "";
 		
@@ -858,6 +864,16 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			tileToSelect = rand.nextInt(numberOfDependentUnits) + 1;
 			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
+			Pause("Ready for click Button.");
+			
+			// bladdyy  - hack because of tile sizes extreme variance..
+			tileToSelect = tileToSelect/2;
+			if(tileToSelect == 0)
+			{
+				tileToSelect = 1;
+			}
+			
+			
 			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
 			
 			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
@@ -867,7 +883,11 @@ public class HierarchyNumbersDependents extends BaseClass
 				break;
 			}
 			// HierarchyNumbersDependents.TestPhaseOne();  // run tests.
-			HierarchyNumbersDependents.RunTilesInCommand();  // run tests.
+			//HierarchyNumbersDependents.RunTilesInCommand();  // run tests.
+			HierarchyNumbersDependents.LoopThroughCatergoriesForTileMapCommand();
+			
+			Pause("get dependent number size");
+			numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
 			cntr++;
 		}
 	}
@@ -933,13 +953,13 @@ public class HierarchyNumbersDependents extends BaseClass
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
 			
-			if(fooBarCntr == 0)
-				dependentUnitToSelect = 0; // bladdyy
-			if(fooBarCntr == 1)
-				dependentUnitToSelect = 18; // bladdyy
-			if(fooBarCntr == 3)
-				dependentUnitToSelect = 2; // bladdyy
-			fooBarCntr++;
+			//if(fooBarCntr == 0) // this finds user with two "\n" in the name.
+			//	dependentUnitToSelect = 0; // bladdyy
+			//if(fooBarCntr == 1)
+			//	dependentUnitToSelect = 18; // bladdyy
+			//if(fooBarCntr == 3)
+			//	dependentUnitToSelect = 2; // bladdyy
+			//fooBarCntr++;
 			
 			Thread.sleep(1000);
 			
@@ -1095,7 +1115,8 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText(" -------------------------Hierarchy Name: " + ele.getText() + " ---------------------------------------- ");
 				ele.click(); 
 				DebugTimeout(3, "Wait 3 in hierarchy switch");
-				DrillDown_Up_DependentUnits();  
+				// DrillDown_Up_DependentUnits();  
+				LoopThroughCatergoriesFor_Lists_Up_Down();
 				hierarchyCntr++;
 		}
 	}
@@ -1339,6 +1360,17 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		Assert.assertEquals(actualTextAboveTileMap,  expectedTextAboveTileMap, "Failed to verify text above the tile map in HierarchyNumbersDependents.VerifyTotalCount");
 		
+		String actualTitleAboveKpiTiles = driver.findElement(By.cssSelector(".tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)")).getText();
+
+		String expectedTitleAboveKpiTiles = "Expenses for " + currentLevelName + " and its dependent units";
+		
+		ShowText(expectedTitleAboveKpiTiles);
+		ShowText(actualTitleAboveKpiTiles);
+
+		Assert.assertEquals(actualTitleAboveKpiTiles,  expectedTitleAboveKpiTiles, "Failed to verify text above KPI in HierarchyNumbersDependents.VerifyTotalCount");
+		
+		// Expenses for PwC and its dependent units 
+		
 		Pause("Check numbers in VerifyTextAboveTileMap() passed.");
 	}
 	
@@ -1552,7 +1584,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 4))
 			{
 				System.out.println("Have found the 'No Dependents' message in expense page.\n");
-				DebugTimeout(1, "View no dependents");
+				Pause("See no dependents");
 				return false;
 			}
 		}

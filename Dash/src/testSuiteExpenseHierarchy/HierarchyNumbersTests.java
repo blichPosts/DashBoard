@@ -49,9 +49,9 @@ public class HierarchyNumbersTests extends BaseClass
 		
 		//HierarchyNumbersDependents.LoopThroughHierarchiesTileMapTests();
 		
-		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(3);
+		// HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(3);
 		
-		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.drillDownCommand);
+		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.commandSmoke);
 		
 		HierarchyNumbersDependents.LoopThroughTileMapTests();
 

@@ -39,9 +39,11 @@ public class HierarchyDrillDownDependentsList extends BaseClass
 		HierarchyNumbersDependents.SetChartId();
 		
 		// set how many levels to drill down to.
-		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(3); 
+		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(5); 
 
 		HierarchyNumbersDependents.SetDrillDownPageType(DrillDownPageType.expense);
+		
+		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(3);
 		
 		//HierarchyNumbersDependents.DrillDownUpDependentUnits();
 
@@ -51,9 +53,9 @@ public class HierarchyDrillDownDependentsList extends BaseClass
 		
 		// HierarchyNumbersDependents.DrillDown_Up_DependentUnits();
 		
-		// HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrill_Down_Up(); // --------------  WORKS
+		HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrill_Down_Up(); // --------------  WORKS
 		
-		HierarchyNumbersDependents.LoopThroughCatergoriesFor_Lists_Up_Down(); // currently fails because of SFD# 111028
+		// HierarchyNumbersDependents.LoopThroughCatergoriesFor_Lists_Up_Down(); // currently fails because of SFD# 111028
 		
 		
 		

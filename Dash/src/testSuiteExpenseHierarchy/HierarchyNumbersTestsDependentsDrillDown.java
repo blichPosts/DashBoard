@@ -38,7 +38,7 @@ public class HierarchyNumbersTestsDependentsDrillDown extends BaseClass
 		Thread.sleep(1000);
 		
 		// set how many levels to drill down to.
-		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(3);
+		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(5);
 		
 		// this sets the number of tiles to test and the number of tiles to show. ???
 		// HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(2, 100);
