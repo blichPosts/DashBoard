@@ -123,13 +123,13 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
 		{
 			//DebugTimeout(1, "starting click");
-			Thread.sleep(500);
+			Thread.sleep(2000);
 			
 			// these two clicks make the hover visible.
 			expenseControlSlicesElemntsList.get(x).click();
 			expenseControlSlicesElemntsList.get(x).click();
 
-			Thread.sleep(500);
+			Thread.sleep(2000);
 
 			// store the info found in the hover.  
 			tempList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));

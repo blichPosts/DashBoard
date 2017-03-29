@@ -39,7 +39,7 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 		ExpenseHelper.failedtestNgTest = false;
 
 		// set how many levels to drill down to.
-		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(5);
+		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(3);
 
 		
 		// this sets the number of tiles to test and the number of tiles to show.

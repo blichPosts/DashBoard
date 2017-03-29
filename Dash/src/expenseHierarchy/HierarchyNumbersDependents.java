@@ -274,18 +274,31 @@ public class HierarchyNumbersDependents extends BaseClass
 		int x = 0;
 		int loopCntr = 0;
 		
-		DebugTimeout(3, "Wait 3 in RunTilesInCommand() before starting.");
+		DebugTimeout(1, "Wait 1 in RunTilesInCommand() before starting.");
 		
 		// get the size of the list of dependents showing.
-		int loopCntrOrig = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
+		//int loopCntrOrig = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
 
-		loopCntr = loopCntrOrig/2;
+		//loopCntr = loopCntrOrig/2;
 		
-    	if(loopCntr > 20) // make the test short.
-    	{
-    		loopCntr = 10;
-    	}
+    	//if(loopCntr > 10) // make the test short.
+    	//{
+    	//	loopCntr = 10;
+    	//}
 
+    	
+    	//WebElement tileNumber = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + index + ")")); // select tile map number
+    	//int loopCntrOrig = driver.findElements(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label")).size(); // get the number of tiles.
+		//loopCntr = loopCntrOrig/2;
+    	//if(loopCntr > 10) // make the test short.
+    	//{
+    	//	loopCntr = 10;
+    	//}
+    	
+		// anaadd
+    	loopCntr = NumberOfTiles();
+		
+    	
 		System.out.println("loopCntr max = " + loopCntr);
 		
 		// ////////////////////////////////////////////////////////////////////////////////////
@@ -308,10 +321,24 @@ public class HierarchyNumbersDependents extends BaseClass
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
 			ShowText("current dependent info before remove decimal - " + currentDependentUnitInfo);
+
+			// anaadd
+			// if the number to the right of the dollar sign has a decimal value, remove it.
+			if(currentDependentUnitInfo.split("\\$")[1].contains("."))
+			{
+				ShowText("Remove decimal from 'currentDependentUnitInfo'");
+				x = currentDependentUnitInfo.length() - currentDependentUnitInfo.lastIndexOf(".");
+				tempString = currentDependentUnitInfo.substring(0, currentDependentUnitInfo.length() - x);
+				currentDependentUnitInfo = tempString;
+			}
 			
-			x = currentDependentUnitInfo.length() - currentDependentUnitInfo.lastIndexOf(".");
-			tempString = currentDependentUnitInfo.substring(0, currentDependentUnitInfo.length() - x);
-			currentDependentUnitInfo = tempString;
+			// current dependent info before remove decimal - 164728-RESPIRONICS INC. USA $69929.98
+			// [164728-RESPIRONICS INC. USA $69929] but found [164728-RESPIRONICS INC]
+			
+			// below old
+			//x = currentDependentUnitInfo.length() - currentDependentUnitInfo.lastIndexOf(".");
+			//tempString = currentDependentUnitInfo.substring(0, currentDependentUnitInfo.length() - x);
+			//currentDependentUnitInfo = tempString;
 			
 			ShowText("current dependent info after remove decimal - " + currentDependentUnitInfo);
  
@@ -341,7 +368,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			//Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
 		}
 
-		Pause("loop done");
+		Pause("loop through tile maps done.");
         
         // System.out.println("Number of Tile maps tested = " + (x  - 1));
 	}	
@@ -447,16 +474,23 @@ public class HierarchyNumbersDependents extends BaseClass
         WebElement tooltip = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip")); 
         // System.out.println(tooltip.getText().split("\\.")[1].trim());
 		
-        // bladdyy - add below. trim out decimal value
-        //String strTooltip = tooltip.getText();
-		//x = strTooltip.length() - strTooltip.lastIndexOf(".");
-		//tempString = strTooltip.substring(0, strTooltip.length() - x);
-
-        ShowText("hover before return " + tooltip.getText());
+        String retString = tooltip.getText();
         
-        // return tempString;
-		return tooltip.getText().split("\\.")[1].trim(); // bladdyy - trim out decimal  value // orig
+		String tempString = "";
+		
+		// get rid of decimal on right.
+		if(retString.split("\\$")[1].contains("."))
+		{
+			x = retString.length() - retString.lastIndexOf(".");
+			tempString = retString.substring(0, retString.length() - x);
+			retString = tempString;
+		}
         
+        ShowText("hover return " + retString.substring(retString.indexOf(".") + 1, retString.length()).trim());
+        
+        // this removes the leading numbering (i.e. "1. " before the name and cost);
+        return retString.substring(retString.indexOf(".") + 1, retString.length()).trim();
+		// return tooltip.getText().split("\\.")[1].trim(); // bladdyy - trim out decimal  value // orig -- doesn't always work.
 	}
 	
 	// this builds the json request string for getting the json rows of dependent unit values. 
@@ -688,7 +722,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 			catch (AssertionError sertErr)
 			{
-				ShowText("Try catch"); // DEBUG
+				// ShowText("Try catch"); // DEBUG
 				
 				if(childList.get(loopCntr).cost != latestCost)
 				{
@@ -696,8 +730,8 @@ public class HierarchyNumbersDependents extends BaseClass
 					{
 						// this verifies all the names have the same value, the actual and expected lists are the same size, and 
 						VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));  
-						ShowExpectedList();
-						ShowActualList();
+						//ShowExpectedList();
+						//ShowActualList();
 					}
 					expectedList.clear();
 					actualList.clear();
@@ -852,7 +886,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		int tileToSelect;
 		int cntr = 0;
-		int numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
+		int numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size(); 
 		
 		Random rand = new Random();
 		
@@ -862,9 +896,10 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		while (cntr != maxNumberOfLevels)
 		{
+			// anaadd - nothing done here
 			tileToSelect = rand.nextInt(numberOfDependentUnits) + 1;
-			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
-			Pause("Ready for click Button.");
+			// System.out.println("\n** Selecting tile number " + tileToSelect + " **\n"); // NOTE hack for command
+
 			
 			// bladdyy  - hack because of tile sizes extreme variance..
 			tileToSelect = tileToSelect/2;
@@ -873,8 +908,13 @@ public class HierarchyNumbersDependents extends BaseClass
 				tileToSelect = 1;
 			}
 			
+			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
+			
+			Pause("Ready for click Button.");
 			
 			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
+			
+			Pause("Freeze After Clicking Tile");
 			
 			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
 			{
@@ -932,7 +972,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		int dependentUnitToSelect;
 		int cntr = 0;
 
-		DebugTimeout(3, "wait three for page load."); 
+		// DebugTimeout(3, "wait three for page load."); 
 		
 		int numberOfDependentUnits = 0;
 		
@@ -1059,7 +1099,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(int x = 0; x < values.length; x++)
 		{
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
-			Thread.sleep(3000);
+			Thread.sleep(1000);
 			ShowText("Start category selector" + values[x].name() + ".");
 			HierarchyNumbersDependents.RunTilesInCommand();
 			ShowText("Pass complete for " + values[x].name() +".");
@@ -1221,7 +1261,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			if(!DrillDown_Up_DependentUnitsTwo()) // this does the drill down.
 			{
 				numBreadCrumbs = driver.findElements(By.cssSelector(".breadcrumbs>span")).size();
-				driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + numBreadCrumbs + ")")).click();
+				driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + numBreadCrumbs + ")")).click(); 
 				Pause("have clicked breadcrumb after finding no dependent units after a drill down.");
 				break;
 			}
@@ -1296,6 +1336,25 @@ public class HierarchyNumbersDependents extends BaseClass
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// anaadd
+	public static int NumberOfTiles()
+	{
+    	ShowText("Calculate number of tiles");
+		
+		int loopCntrOrig = driver.findElements(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label")).size(); // get the number of tiles.
+    	int loopCntr = loopCntrOrig/2;
+		
+    	if(loopCntr > 10) // make the test short.
+    	{
+    		loopCntr = 10;
+    	}
+    	
+		return loopCntr;
+	}
+
+	
+	
+	
 	/*
 	public static String TrimDecimal(String strDependentUnit)
 	{
@@ -1347,7 +1406,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	
-	// this verifies the text above the tile map.
+	// this verifies the text above the tile map and text above the KPIs.
 	public static void VerifyTextAboveTileMap() throws Exception
 	{
 		String actualTextAboveTileMap =  driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText();
@@ -1358,6 +1417,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		ShowText(expectedTextAboveTileMap);
 		ShowText(actualTextAboveTileMap);
 		
+		// verify the text above tile map.
 		Assert.assertEquals(actualTextAboveTileMap,  expectedTextAboveTileMap, "Failed to verify text above the tile map in HierarchyNumbersDependents.VerifyTotalCount");
 		
 		String actualTitleAboveKpiTiles = driver.findElement(By.cssSelector(".tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)")).getText();
@@ -1367,6 +1427,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		ShowText(expectedTitleAboveKpiTiles);
 		ShowText(actualTitleAboveKpiTiles);
 
+		// cerify text above KPI tiles.
 		Assert.assertEquals(actualTitleAboveKpiTiles,  expectedTitleAboveKpiTiles, "Failed to verify text above KPI in HierarchyNumbersDependents.VerifyTotalCount");
 		
 		// Expenses for PwC and its dependent units 
