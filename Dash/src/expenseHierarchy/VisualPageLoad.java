@@ -25,6 +25,7 @@ import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.hierarchyTileMapTabSelection;
+import helperObjects.HierarchyHelper;
 import helperObjects.UsageHelper;
 
 public class VisualPageLoad extends BaseClass 
@@ -244,7 +245,7 @@ public class VisualPageLoad extends BaseClass
 			
 			
 			// select Hierarchy
-			new Select(driver.findElement(By.cssSelector(" .tdb-space--top>select"))).selectByVisibleText("Approval");
+			new Select(driver.findElement(By.cssSelector(" .tdb-space--top>select"))).selectByVisibleText("Philips");
 			
 			// DebugTimeout(9999, "9999");
 		
@@ -258,7 +259,21 @@ public class VisualPageLoad extends BaseClass
 	
 				// String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child')");
 				// String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.SECONDARY.child')");
-				String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.TERTIARY.child')");
+				
+				HierarchyNumbersDependents.hierarchyIdsList = HierarchyHelper.getHierarchiesValues();
+				HierarchyNumbersDependents.currentHierarchyId = HierarchyNumbersDependents.hierarchyIdsList.get(0);
+
+				
+				// this gets the json request text to be used below. this depends on what selection is in the hierarchy pulldown.
+				tempString = HierarchyNumbersDependents.BuildJsonRequestPathManualTest(); 
+
+				ShowText("String to use " + tempString);
+				HierarchyNumbersDependents.Pause("Freeze");
+				
+				// get json into one string.
+				// String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.TERTIARY.child')");
+				
+				String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('tempString')");
 				
 				// String fleetJsonData =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child')"); // EXPERIMENTING.
 				
@@ -268,6 +283,8 @@ public class VisualPageLoad extends BaseClass
 				//else{ShowText("null");}
 				
 				ShowText(fleetJsonData);
+				
+				HierarchyNumbersDependents.Pause("Freeze");
 				
 				JOptionPane.showMessageDialog(frame, "THIS IS START --  get json response and run utility with it.");
 

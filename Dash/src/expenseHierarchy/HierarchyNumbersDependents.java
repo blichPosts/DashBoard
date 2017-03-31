@@ -324,6 +324,7 @@ public class HierarchyNumbersDependents extends BaseClass
 
 			// anaadd
 			// if the number to the right of the dollar sign has a decimal value, remove it.
+			/*
 			if(currentDependentUnitInfo.split("\\$")[1].contains("."))
 			{
 				ShowText("Remove decimal from 'currentDependentUnitInfo'");
@@ -331,6 +332,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				tempString = currentDependentUnitInfo.substring(0, currentDependentUnitInfo.length() - x);
 				currentDependentUnitInfo = tempString;
 			}
+			*/
 			
 			// current dependent info before remove decimal - 164728-RESPIRONICS INC. USA $69929.98
 			// [164728-RESPIRONICS INC. USA $69929] but found [164728-RESPIRONICS INC]
@@ -476,7 +478,11 @@ public class HierarchyNumbersDependents extends BaseClass
 		
         String retString = tooltip.getText();
         
-		String tempString = "";
+        
+        ShowText("Full Value tooltip " + retString.substring(retString.indexOf(".") + 1, retString.length()).trim());
+        
+		/*
+        String tempString = "";
 		
 		// get rid of decimal on right.
 		if(retString.split("\\$")[1].contains("."))
@@ -487,7 +493,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
         
         ShowText("hover return " + retString.substring(retString.indexOf(".") + 1, retString.length()).trim());
-        
+        */
         // this removes the leading numbering (i.e. "1. " before the name and cost);
         return retString.substring(retString.indexOf(".") + 1, retString.length()).trim();
 		// return tooltip.getText().split("\\.")[1].trim(); // bladdyy - trim out decimal  value // orig -- doesn't always work.
@@ -531,6 +537,13 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		return "hierarchy." + currentHierarchyId +  ".child.payload.rows";
 	}
+	
+	// this builds the json request string manual test 
+	public static String BuildJsonRequestPathManualTest()
+	{
+		return "hierarchy." + currentHierarchyId +  ".child.payload.rows";
+	}
+	
 	
 	// this builds the json request string for getting the total count from json. 
 	public static String BuildTotalCount()
@@ -673,7 +686,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		String tempString = "";
 		
 		// verify text above tile map.
-		VerifyTextAboveTileMap();
+		// VerifyTextAboveTileMap();
 		
 		
 		for(WebElement ele : eleList)
@@ -1033,7 +1046,9 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	public static void ShowChildList()
 	{
+		ShowText("------------- Start -----------------");
 		for(Child chl : HierarchyNumbersDependents.childList){chl.Show();} // DEBUG
+		ShowText("------------- Done -----------------");
 	}
 
 	// go through each category selector in  the tile map section.
@@ -1053,8 +1068,14 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			BuildDependentChildObjects(); // create list of dependent units from Json call.
 			
+			ShowChildList();
+			
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
 			Thread.sleep(1000);
+			
+			ShowChildList();
+			
+			Pause("Freeze..");
 			
 			// this verifies the json dependents list sent in matches the list shown in the UI, after the Json list is sorted.
 			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();

@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import expenseHierarchy.HierarchyNumbersDependents;
 import expenses.CountOfServiceNumbersTrend;
 import junit.framework.AssertionFailedError;
 import testSuiteExpenseActions.CountOfServiceNumbersCountry;
@@ -23,7 +24,7 @@ public class ExpenseHelper extends BaseClass
 	public static String tmpStr = "";
 	public static String errMessage = "";	
 	// public static String desiredMonth = "May 2016";
-	public static String desiredMonth = "August 2016";
+	public static String desiredMonth = "May 2016";
 	public static String impericalDesiredMonth = ""; // this is found by going through the months and finding the month(s) with the most amount of vendors showing in the expense control. 
 	public static String chartId = "";
 	public static String otherText = "Other";
@@ -205,7 +206,6 @@ public class ExpenseHelper extends BaseClass
 	public static void WaitForCountryPageLoad() throws Exception 
 	{
 		DebugTimeout(7, "seven"); // started failing in  1.2.20
-		
 		/*
 		boolean foundCountryLegend = false;
 		chartId = UsageHelper.getChartId(4);
@@ -223,7 +223,15 @@ public class ExpenseHelper extends BaseClass
 			Thread.sleep(1000);
 			
 			// get list of web elements that are in chartId 4.
-			webElementListLegends = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + partialXpathToLegendsListInControls));  
+			webElementListLegends = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + partialXpathToLegendsListInControls));
+			
+			//ShowText("temp String");
+			//ShowListOfStrings(tempStringList);
+			//ShowText("Actual string");
+			//for(WebElement ele : webElementListLegends){ShowText(ele.getText());}
+			
+			HierarchyNumbersDependents.Pause("Freeze");
+			
 			if(webElementListLegends != null)
 			{
 				if(tempStringList.contains(webElementListLegends.get(0).getText()))
