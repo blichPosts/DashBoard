@@ -73,17 +73,18 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 			
 				System.out.println(" **** Drilling down Level #" + j);
 			
-				GeneralHelper.selectFirstMonth();
 				boolean monthSelected = true;
 				Thread.sleep(2000);
 				
 				HierarchyHelper.selectHierarchyFromDropdown(i);
 				Thread.sleep(2000);
 			
+				CommonTestStepActions.initializeMonthSelector();
 				List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
 				
 				// While there are no dependent units to drill down then select the previous month
-				while (HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
+				while (HierarchyHelper.getDependentUnitsPoV().isEmpty() 
+						&& monthIndex < monthsInSelector.size()) {
 					
 					String monthYear = monthsInSelector.get(monthIndex).getText();
 					CommonTestStepActions.selectMonthYearPulldown(monthYear);
@@ -91,14 +92,15 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 					System.out.println(" **** Month Year: " + monthYear);
 					
 					GeneralHelper.waitForDataToBeLoaded();
+				
 				}	
 					
 				if (!HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
 				
 					HierarchyHelper.drillDownOnDependentUnitPoV(1);
 					
-					// Wait for 5 seconds to give time to the KPI tile to load data after the drilling down action
-					Thread.sleep(5000);
+					// Wait for chart to be reloaded after the drilling down action
+					WaitForElementPresent(By.cssSelector("chart>div"), MediumTimeout);
 					
 				
 					// #4 Get the last month listed on month selector
@@ -133,10 +135,10 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
 							
 							// Run test for "Expense" chart and category "Optimizable"
-								HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
 							
 							// Run test for "Expense" chart and category "Roaming"
-								HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
 							
 							
 						} catch(NullPointerException e) {

@@ -2,7 +2,6 @@ package testSuiteHierarchyDashValues;
 
 import java.util.List;
 
-import javax.servlet.annotation.WebListener;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.WebElement;
@@ -57,6 +56,7 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 			// click on the first item on the breadcrumb to return to the top level of the hierarchy.
 			if (dependentUnits.isEmpty() && !breadcrumbs.isEmpty()) {
 				
+				ShowText("No dependent units, click on breadcrumb.");
 				HierarchyHelper.clickOnBreadcrumb(1);
 				Thread.sleep(2000);
 				
@@ -65,75 +65,85 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 			GeneralHelper.selectFirstMonth();
 			
 			int j = 1;
-			int levelsToDrillDown = 3;  // Drill down up to 3 levels
+			int levelsToDrillDown = 5;  // Drill down up to 3 levels
+			boolean allMonthsVerified = false; 
 			
-//			while (j <= levelsToDrillDown) { // && !HierarchyHelper.getDependentUnitsPoV().isEmpty()) {  -- TEST
+			while (j <= levelsToDrillDown && !allMonthsVerified) { 
 			
 				int monthIndex = 1;
-				boolean drilledDown = false;
+//				boolean drilledDown = false;
+				
 				
 				HierarchyHelper.selectHierarchyFromDropdown(i);
-				Thread.sleep(2000);
+				HierarchyHelper.waitForTileMapToBeDisplayed();
+//				Thread.sleep(2000);
 				
 				List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
 				
 				// While there are no dependent units to drill down then select the previous month
 				while (HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
 					
+					ShowText("... no dependent units.. select a different month..");
 					String monthYear = monthsInSelector.get(monthIndex).getText();
 					CommonTestStepActions.selectMonthYearPulldown(monthYear);
 					monthIndex++;
 					System.out.println(" **** Month Year: " + monthYear);
 					GeneralHelper.waitForDataToBeLoaded();
 					
-//				} -- TEST
+				} //-- TEST
 					
-					if (!HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size() && !drilledDown) {
+				if (!HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {  // && !drilledDown) {
+					
+					System.out.println(" **** Drilling down Level #" + j);
+					
+					HierarchyHelper.drillDownOnDependentUnitPoV(1);
+					Thread.sleep(3000);
+					
+					// #3 Get data from JSON
+					List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));	
+				
+					// #4 Verify that the values displayed on the tooltips of "Expenses Trending" chart are the same as the ones read from ajax calls 
+					// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
+					// will be displayed on the chart 
+					
+					try {
 						
-						System.out.println(" **** Drilling down Level #" + j);
+						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
 						
-						HierarchyHelper.drillDownOnDependentUnitPoV(j);
+						HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryTotal);
 						Thread.sleep(2000);
 						
-						// #3 Get data from JSON
-						List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));	
-					
-						// #4 Verify that the values displayed on the tooltips of "Expenses Trending" chart are the same as the ones read from ajax calls 
-						// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
-						// will be displayed on the chart 
+						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
 						
-						try {
-							
-							HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
-							
-							HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryTotal);
-							Thread.sleep(2000);
-							
-							HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
-							
-							HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryOptimizable);
-							Thread.sleep(2000);
-							
-							HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
-							
-							HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryRoaming);
-							Thread.sleep(2000);
-												
-						} catch (NullPointerException e) {
-							
-							System.out.println("chart not found");
-							
-						}
+						HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryOptimizable);
+						Thread.sleep(2000);
 						
-						drilledDown = true;
+						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
+						
+						HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryRoaming);
+						Thread.sleep(2000);
+											
+					} catch (NullPointerException e) {
+						
+						System.out.println("chart not found");
 						
 					}
 					
-				} // TEST
+					
+//					drilledDown = true;
+					j++;
+				}
+				
+				if (monthIndex == monthsInSelector.size()) {
+					allMonthsVerified = true;
+				}
+					
+					
+//				} // TEST
 				
 //				j++;
 				
-//			}
+			}
 		
 		}
 		

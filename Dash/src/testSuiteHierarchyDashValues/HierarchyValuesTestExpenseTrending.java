@@ -45,12 +45,16 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		for (int i = 1; i <= hierarchies.size(); i++) {
 			
-			GeneralHelper.selectFirstMonth();
+//			GeneralHelper.selectFirstMonth();
+			
 			HierarchyHelper.selectHierarchyFromDropdown(i);
-			Thread.sleep(2000);
+			
+			HierarchyHelper.waitForChartToLoad(HierarchyHelper.expenseTrendingChart);
+			
+//			Thread.sleep(3000);
 			
 			// #3 Get data from JSON
-			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));
+			List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));
 					
 			
 			// #4 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
@@ -62,17 +66,17 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
 				Thread.sleep(2000);
 				
-				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryTotal);
+				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromAjaxCall, HierarchyHelper.categoryTotal);
 				
 				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
 				Thread.sleep(2000);
 				
-				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryOptimizable);
+				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromAjaxCall, HierarchyHelper.categoryOptimizable);
 				
 				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
 				Thread.sleep(2000);
 				
-				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryRoaming);
+				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromAjaxCall, HierarchyHelper.categoryRoaming);
 				
 				
 			} catch(NullPointerException e) {

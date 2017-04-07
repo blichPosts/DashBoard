@@ -5,14 +5,12 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import Dash.BaseClass;
 
@@ -45,7 +43,7 @@ public class HierarchyHelper extends BaseClass {
 	public static void waitForKPIsToLoad() throws Exception{
 		
 		WaitForElementVisible(By.xpath("//h3[text()='Total Expense']"), MainTimeout);		
-		WaitForElementVisible(By.xpath("//h3[text()='Optimizable Expense']"), MainTimeout);
+		WaitForElementVisible(By.xpath("//h3[contains(text(), 'Optimizable Expense')]"), MainTimeout);
 		WaitForElementVisible(By.xpath("//h3[text()='Roaming Expense']"), MainTimeout);
 		WaitForElementVisible(By.xpath("//h3[text()='Cost per Service Number']"), MainTimeout);
 		
@@ -105,9 +103,35 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 	
-	public static void waitForTopTenChartToLoad() throws Exception {
+	
+	// Wait until the tile map is displayed, or until the "..no dependents units.." message is displayed 
+	public static void waitForTileMapToBeDisplayed() throws Exception {
 		
-		String cssSelector = "#" + UsageHelper.getChartId(HierarchyHelper.topTenChart) + ">svg>g>g>rect.highcharts-point:nth-child(1)";
+		try {
+			
+			String chartCss = "#" + UsageHelper.getChartId(0) + ">svg>g.highcharts-series-group";
+			WaitForElementPresent(By.cssSelector(chartCss), MediumTimeout);
+			
+		} catch (NoSuchElementException e) {
+			
+			try {
+				
+				String messageCss = ".tdb-charts__contentMessage";
+				WaitForElementPresent(By.cssSelector(messageCss), MediumTimeout);
+				
+			} catch (NoSuchElementException e2) {
+				
+				ShowText("Tile Map chart not displayed. 'No dependent units' message not displayed either.");
+				
+			}
+		}
+		
+	}
+	
+	
+	public static void waitForChartToLoad(int chartId) throws Exception {
+		
+		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g>rect.highcharts-point:nth-child(1)";
 		WaitForElementPresentNoThrow(By.cssSelector(cssSelector), MediumTimeout);
 		
 	}
@@ -167,11 +191,10 @@ public class HierarchyHelper extends BaseClass {
 	public static void selectHierarchyFromDropdown(int numHierarchy) throws Exception {
 		
 		driver.findElement(By.cssSelector("app-hierarchy-selector>div>select>option:nth-child(" + numHierarchy + ")")).click();
-		//WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
 		
-//		GeneralHelper.waitForDataToBeLoaded();
-
 	}
+	
+
 	
 	
 	// It returns a list with the months listed in dropdown month selector in the format MMM yyyy. E.g.: May 2016
@@ -251,7 +274,7 @@ public class HierarchyHelper extends BaseClass {
 		return driver.findElement(By.cssSelector(".breadcrumbs>span:last-child")).getText().replace("/", "").trim();
 
 	}
-	
+
 	
 }
 

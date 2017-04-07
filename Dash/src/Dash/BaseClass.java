@@ -63,7 +63,7 @@ public class BaseClass
 	//public static String commandPassword = "hop*ititmb9";	
 	
 	
-	public static String commandUserName = "archana.trojic@tangoe.com phi";  // <-- line changed by Ana 3/20/17  //"helpdeskvistl1";  // "bob.l.vis";  <-- line changed by Ana 2/23/17
+	public static String commandUserName = "archana.trojic@tangoe.com pwc";  // <-- line changed by Ana 3/20/17  //"helpdeskvistl1";  // "bob.l.vis";  <-- line changed by Ana 2/23/17
 	public static String commandPassword = "traq06";   // <-- line changed by Ana 3/20/17  // "tngo111";  // "tngo222";  <-- line changed by Ana 2/23/17	
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
@@ -210,6 +210,7 @@ public class BaseClass
 		System.setProperty("webdriver.chrome.driver", projectPath + "\\chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-extensions");
+		options.addArguments("disable-infobars");  // <-- Line added by Ana. Needed because with the chromedriver 2.28, there's an info bar that we don't want to have we browser is launched 
 		driver = new ChromeDriver(options);		
 		
 		switch(loginType)

@@ -27,25 +27,25 @@ public class UsageKPITilesActions extends BaseClass{
 		String voiceAmountKPICalculated = UsageCalculationHelper.convertUnits(domesticVoice);
 		String voiceAmountKPIFromDash = kpiTileValues.get(0).getText();
 		
-		//System.out.println("KPI Tile Voice Actual: " + voiceAmountKPIFromDash + ",  KPI Tile Voice Expected: " + voiceAmountKPICalculated); 
+		System.out.println("KPI Tile Voice Actual: " + voiceAmountKPIFromDash + ",  KPI Tile Voice Expected: " + voiceAmountKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(voiceAmountKPIFromDash, voiceAmountKPICalculated);
 		
 		String dataAmountKPICalculated = UsageCalculationHelper.convertDataUnits(domesticData);
 		String dataAmountKPIFromDash = kpiTileValues.get(1).getText();
 		
-		//System.out.println("KPI Tile Data Actual: " + dataAmountKPIFromDash + ",  KPI Tile Data Expected: " + dataAmountKPICalculated); 
+		System.out.println("KPI Tile Data Actual: " + dataAmountKPIFromDash + ",  KPI Tile Data Expected: " + dataAmountKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(dataAmountKPIFromDash, dataAmountKPICalculated);
 		
 		String msgAmountKPICalculated = UsageCalculationHelper.convertUnits(domesticMessages);
 		String msgAmountKPIFromDash = kpiTileValues.get(2).getText();
 		
-		//System.out.println("KPI Tile Mesages Actual: " + msgAmountKPIFromDash + ",  KPI Tile Messages Expected: " + msgAmountKPICalculated); 
+		System.out.println("KPI Tile Mesages Actual: " + msgAmountKPIFromDash + ",  KPI Tile Messages Expected: " + msgAmountKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(msgAmountKPIFromDash, msgAmountKPICalculated);
 		
 		String roamingDataAmountKPICalculated = UsageCalculationHelper.convertDataUnits(roamingData);
 		String roamingDataAmountKPIFromDash = kpiTileValues.get(3).getText();
 		
-		//System.out.println("KPI Tile Roaming Data Actual: " + roamingDataAmountKPIFromDash + ",  KPI Tile Roaming Data Expected: " + roamingDataAmountKPICalculated); 
+		System.out.println("KPI Tile Roaming Data Actual: " + roamingDataAmountKPIFromDash + ",  KPI Tile Roaming Data Expected: " + roamingDataAmountKPICalculated); 
 		GeneralHelper.verifyExpectedAndActualValues(roamingDataAmountKPIFromDash, roamingDataAmountKPICalculated);
 		
 		
@@ -75,13 +75,7 @@ public class UsageKPITilesActions extends BaseClass{
 		double rollingAvgMsg = calculateRollingAverage(messagesValues);
 		double rollingAvgRoamingData = calculateRollingAverage(roamingDataValues);
 		
-		/*
-		System.out.println("rollingAvgVoice: " + rollingAvgVoice);
-		System.out.println("rollingAvgMsg: " + rollingAvgMsg);
-		System.out.println("rollingAvgData: " + rollingAvgData);
-		System.out.println("rollingAvgRoamingData: " + rollingAvgRoamingData);
-		*/
-		
+				
 		// Round up rolling averages for Voice and Messages, since they cannot have decimal points (minutes and messages units must be integers) 
 		long avgTmpVoice = Math.round(rollingAvgVoice); 
 		long avgTmpMsg = Math.round(rollingAvgMsg); 
@@ -202,12 +196,7 @@ public class UsageKPITilesActions extends BaseClass{
 		double rollingAvgMsg = calculateRollingAverage(messagesValues);
 		double rollingAvgRoamingData = calculateRollingAverage(roamingDataValues);
 		
-		/*System.out.println("rollingAvgVoice: " + rollingAvgVoice);
-		System.out.println("rollingAvgMsg: " + rollingAvgMsg);
-		System.out.println("rollingAvgData: " + rollingAvgData);
-		System.out.println("rollingAvgRoamingData: " + rollingAvgRoamingData);
-		*/
-		
+				
 		// Round up rolling averages for Voice and Messages, since they cannot have decimal points (minutes and messages units must be integers) 
 		long avgTmpVoice = Math.round(rollingAvgVoice); 
 		long avgTmpMsg = Math.round(rollingAvgMsg); 
@@ -257,7 +246,7 @@ public class UsageKPITilesActions extends BaseClass{
 				System.out.println("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
 				
 				// Verifies that the '6 months rolling average' displayed equals to the '6 months rolling average' calculated
-//				GeneralHelper.verifyExpectedAndActualValues(sixMonthAvgActual, sixMonthAvgExpected);
+				GeneralHelper.verifyExpectedAndActualValues(sixMonthAvgActual, sixMonthAvgExpected);
 				
 			}
 			
@@ -287,7 +276,6 @@ public class UsageKPITilesActions extends BaseClass{
 	public static int calculateTrendingPercentage(double kpiValue, double rollingAverage){
 		
 		return (int) Math.round((Math.abs((kpiValue - rollingAverage)/rollingAverage) * 100));
-		//return (int) Math.round(((kpiValue - rollingAverage)/rollingAverage) * 100);
 		
 	}
 	
@@ -299,9 +287,5 @@ public class UsageKPITilesActions extends BaseClass{
 		
 	}
 
-
-	
-
-	
 	
 }

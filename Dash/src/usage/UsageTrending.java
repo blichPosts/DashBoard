@@ -782,11 +782,11 @@ public class UsageTrending extends BaseClass {
 				if (barChartId == UsageHelper.usageTrendingDomesticChart) {
 					
 					y = y - 100;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
-					System.out.println("domestic chart, y = " + y);
+					
 				}  else if (barChartId == UsageHelper.usageTrendingRoamingChart) {
 					
 					y = y - 400;  // not yet --> these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
-					System.out.println("roaming chart, y = " + y);
+					
 				}
 				
 			} else if (loginType.equals(LoginType.ReferenceApp)) {

@@ -25,14 +25,13 @@ import helperObjects.UsageHelper;
 public class HierarchyTopTenValues extends BaseClass{
 
 	
-	
 	public static void verifyTopTenChartValues(String hierarchyId, int barChartId, int category) throws Exception {
 		
 		// Select category
 		HierarchyHelper.selectCategoryTopTen(barChartId, category);
 		
 		// Wait for the data to be updated on chart
-		HierarchyHelper.waitForTopTenChartToLoad();
+		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
 		Thread.sleep(2000);
 	
 		// Get data from JSON
@@ -127,12 +126,12 @@ public class HierarchyTopTenValues extends BaseClass{
 	    	
 		}
 
-//		System.out.println("Expected labels:");
-//		for (String s: expectedLabels) {
-//			
-//			System.out.println(s);
-//			
-//		}
+		System.out.println("Expected labels:");
+		for (String s: expectedLabels) {
+			
+			System.out.println(s);
+			
+		}
 		
 		
 		// Verify that the values are sorted in descendant order by "value"
@@ -160,7 +159,11 @@ public class HierarchyTopTenValues extends BaseClass{
 			int y_offset = (int) (bar.getSize().height * 0.7);
 
 			if (loginType.equals(LoginType.Command)) {
-				y_offset = (int) (bar.getSize().height * 1.5);
+				if (chartElementNames.size() > 5) {
+					y_offset = (int) (bar.getSize().height * 1.5);
+				} else {
+					y_offset = (int) (bar.getSize().height); // <-- added on 4/6/17. This worked for a graph with 2 bars. Will need to see if it works with more bars  
+				}
 			}
 			
 			int x = coordinates.getX() + x_offset + 2;
@@ -188,7 +191,7 @@ public class HierarchyTopTenValues extends BaseClass{
 			
 			// Get the label and remove colon at the end of its text
 			String labelFoundTmp = tooltip.getText().split(":")[0].trim();
-			String labelFound = GeneralTopTenHelper.formatPhoneNumber(labelFoundTmp); 
+			String labelFound = GeneralTopTenHelper.formatPhoneNumberUI(labelFoundTmp); 
 			
 			// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
 			String valueFound = tooltip.getText().split(":")[1].trim().replace(" ", "");
@@ -196,8 +199,8 @@ public class HierarchyTopTenValues extends BaseClass{
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-//			System.out.println("labelFound: " + labelFound);
-//			System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+			System.out.println("labelFound: " + labelFound);
+			System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
 			// They cannot be verified by order, since if there are 2 elements that have the same value (expenses value) the order in which they'll be listed cannot be known
@@ -206,6 +209,131 @@ public class HierarchyTopTenValues extends BaseClass{
 			
 			indexHighchart++;
 				
+		}
+		
+	}
+
+
+
+	public static void verifyTopTenChartReport(String hierarchyId, int barChartId, int category) throws Exception {
+		
+		
+		// Select category
+		HierarchyHelper.selectCategoryTopTen(barChartId, category);
+		
+		// Wait for the data to be updated on chart
+		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
+//		Thread.sleep(2000);
+	
+		// Get data from JSON
+		List<HierarchyTopTenData> valuesExpected = ReadFilesHelper.getJsonDataTopTen(category, hierarchyId); 
+		
+		// Verify values on the selected Top Ten chart and for the selected category
+		verifyValuesOnReportMatchChart(valuesExpected, barChartId, category);
+		
+		
+	}
+	
+	
+	public static void verifyValuesOnReportMatchChart(List<HierarchyTopTenData> topTenValues, int barChartId, int category) throws ParseException, AWTException, InterruptedException {
+		
+		
+		String chartId = UsageHelper.getChartId(barChartId);
+		
+		List<WebElement> elementLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text"));
+		List<String> servNumbersLabels = new ArrayList<>(); 
+		
+		for (WebElement element: elementLabels) {
+			servNumbersLabels.add(GeneralTopTenHelper.getOnlyPhoneNumberFormatted(element.getText()));
+		}
+		
+		
+		HashMap<String, HierarchyTopTenData> topTenDataMap = new HashMap<>();
+		
+		for (HierarchyTopTenData data: topTenValues) {
+		
+			if (!data.getType().equals("AVERAGE")) {
+		
+				String key = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
+				topTenDataMap.put(key, data);
+		
+			}
+		}
+		
+		String label = "";
+		int indexHighchart = 1;
+		
+		do {
+			
+			indexHighchart = (int) (Math.random() * 11);
+			label = topTenValues.get(indexHighchart-1).getType();
+				
+		} while (label.equals("AVERAGE") || indexHighchart == 0);
+		
+		ShowText("Service Number to be clicked: " + topTenValues.get(indexHighchart-1).getServiceNumber());
+		
+		HierarchyTopTenData expectedValues = topTenDataMap.get(servNumbersLabels.get(indexHighchart-1));
+		
+		// Set up Expected values
+		String fullNameExpected = "";
+		
+		if(label.equals("EMPLOYEE")) {
+			fullNameExpected = expectedValues.getEmployeeLastname() + ", " + expectedValues.getEmployeeFirstname();
+		}
+		
+		else if(label.equals("DEPARTMENT")) {
+			if (expectedValues.getDepartmentName().equals("Unknown")) {
+				fullNameExpected = "N/A";
+			} else {
+				fullNameExpected = expectedValues.getDepartmentName();
+			}
+		}
+		
+		String hierarchyExpected = driver.findElement(By.cssSelector("div.tdb-kpi__header>span>span")).getText();
+		String serviceNumberExpected = expectedValues.getServiceNumber();
+		String totalChargesValueExpected = "$" + expectedValues.getValue(); 
+		
+		if (totalChargesValueExpected.contains(".")) {
+			if (totalChargesValueExpected.split("\\.")[1].length() == 1) {
+				totalChargesValueExpected = totalChargesValueExpected + "0";
+			}
+		} else {
+			totalChargesValueExpected = totalChargesValueExpected + ".00";
+		}
+		
+		
+		driver.findElement(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")")).click();
+		waitForReportToLoad();
+			
+		// Values found on Report
+		String fullNameFound = driver.findElement(By.cssSelector(".pad-l5r5>a")).getText();
+		String hierarchyFound = driver.findElement(By.cssSelector("tr.top>.pad-r5:nth-of-type(3)")).getText().split("\n")[1];
+		String serviceNumberFound = GeneralTopTenHelper.formatPhoneNumber(driver.findElement(By.cssSelector("tr.data-row>td:nth-of-type(2)>a")).getText());
+		String totalChargesValueFound = driver.findElements(By.cssSelector(".data-cell.datar>strong")).get(6).getText().replace(",", "");
+	
+		
+		ShowText("  * fullNameFound: " + fullNameFound + " - * fullNameExpected: " + fullNameExpected);
+		ShowText("  * hierarchyFound: " + hierarchyFound + " - * hierarchyExpected: " + hierarchyExpected);
+		ShowText("  * serviceNumberFound: " + serviceNumberFound + " - * serviceNumberExpected: " + serviceNumberExpected);
+		ShowText("  * totalChargesValueFound: " + totalChargesValueFound + " - * totalChargesValueExpected: " + totalChargesValueExpected);
+		
+		Assert.assertEquals(fullNameFound, fullNameExpected);
+		Assert.assertEquals(hierarchyFound, hierarchyExpected);
+		Assert.assertEquals(serviceNumberFound, serviceNumberExpected);
+		Assert.assertEquals(totalChargesValueFound, totalChargesValueExpected);
+		
+	}
+
+
+
+	private static void waitForReportToLoad() throws InterruptedException {
+		
+		driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
+	    		
+		try {
+			WaitForElementPresent(By.cssSelector(".template-pageTitle"), MainTimeout);
+		} catch (Exception e) {
+			ShowText("Report was not displayed on time...");
 		}
 		
 	}

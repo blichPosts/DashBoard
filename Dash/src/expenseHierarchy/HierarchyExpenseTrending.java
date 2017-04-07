@@ -110,22 +110,41 @@ public class HierarchyExpenseTrending extends BaseClass {
 
 			if (loginType.equals(LoginType.Command)) {
 				
-				// If there are negative values on the y axis use line 1. Otherwise use line 2 
-				List<WebElement> yAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-yaxis-labels>text>tspan"));
-				String lineNumber = "2";
+				// NEW - this is working -- We need to obtain the "y" coordinate of the center of the chart. 
+				// This is to make sure that the mouse is not outside the chart, and therefore, tooltip gets displayed.
+				// In order to do this, we get the "y" coordinate of all the horizontal lines displayed across the chart, and calculate the average of their "y" coordinate 
+				String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path";
+				List<WebElement> lines = driver.findElements(By.cssSelector(cssLine));
+
+				int coordinatesYTemp = 0;
 				
-				for (WebElement yLabel: yAxisLabels) {
+				for (int i = 0; i < lines.size(); i++)  {
 					
-					if (yLabel.getText().startsWith("-")) {
-						lineNumber = "1";
-					}	
+					Point coordinatesLine = GeneralHelper.getAbsoluteLocation(lines.get(i));
+					coordinatesYTemp += coordinatesLine.getY();
+					
 				}
 				
-				String cssLine = "#" + chartId + ">svg>g>path:nth-of-type(" + lineNumber + ")";
-				WebElement line = driver.findElement(By.cssSelector(cssLine));
+				y = coordinatesYTemp / lines.size();
+//				ShowText("y: " + y);
 				
-				Point coordinatesLine = GeneralHelper.getAbsoluteLocation(line);
-				y = coordinatesLine.getY();
+				// *** OLD **** to be removed --- 
+				// If there are negative values on the y axis use line 1. Otherwise use line 2 
+//				List<WebElement> yAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-yaxis-labels>text>tspan"));
+//				String lineNumber = "1";  //"2";
+//				
+//				for (WebElement yLabel: yAxisLabels) {
+//					
+//					if (yLabel.getText().startsWith("-")) {
+//						lineNumber = "1";
+//					}	
+//				}
+//				
+//				String cssLine = "#" + chartId + ">svg>g>path:nth-of-type(" + lineNumber + ")";
+//				WebElement line = driver.findElement(By.cssSelector(cssLine));
+//
+//				Point coordinatesLine = GeneralHelper.getAbsoluteLocation(line);
+//				y = coordinatesLine.getY();
 				
 			}
 			

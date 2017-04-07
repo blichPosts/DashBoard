@@ -158,7 +158,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 			if(threeMonthDisplayed){
 				
 				// Get the 3 month value displayed on the KPI tile
-				String threeMonthAvgActual = UsageCalculationHelper.getNumericValueWithPrefixes(threeMonthValue.getText());
+				String threeMonthAvgActual = threeMonthValue.getText();   // UsageCalculationHelper.getNumericValueWithPrefixes(threeMonthValue.getText());
 				String threeMonthAvgExpected = "";
 				
 				double rollingAverage = 0;
@@ -350,28 +350,23 @@ public class HierarchyKPITilesValues extends BaseClass{
 
 	
 	public static void verifyServiceNumbersAmount(String serviceNumbersAmount) {
-		
-//		String cssSelector = "span.tdb-kpi__footerItem--value:nth-of-type(1)"; 
+		 
 		String servNumFooterFound = driver.findElements(By.cssSelector("span.tdb-kpi__footerItem--value")).get(0).getText();
-		
 		String servNumFooterExpected = UsageCalculationHelper.convertUnits(Double.parseDouble(serviceNumbersAmount));
+	
 		GeneralHelper.verifyExpectedAndActualValues(servNumFooterFound, servNumFooterExpected);
 		
 	}
 	
 	
-	// ****REVIEW IT **** IT'S FAILING
 	public static void verifyNumberInvoices(String numberInvoices) {
-		
-//		String cssSelector = "span.tdb-kpi__footerItem--value:nth-of-type(2)"; 
+		 
 		String numInvoicesFooterFound = driver.findElements(By.cssSelector("span.tdb-kpi__footerItem--value")).get(1).getText();
-		
 		String numInvoicesFooterExpected = UsageCalculationHelper.convertUnits(Double.parseDouble(numberInvoices));
+		
 		GeneralHelper.verifyExpectedAndActualValues(numInvoicesFooterFound, numInvoicesFooterExpected);
 		
 	}
-	
-	
 	
 	
 }

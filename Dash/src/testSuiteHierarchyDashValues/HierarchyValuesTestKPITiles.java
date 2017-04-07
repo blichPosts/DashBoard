@@ -57,7 +57,7 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 			Thread.sleep(3000);
 			
 			// #3 Get data from JSON
-			List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));	
+			List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));	
 					
 					
 			// #4 Get the last month listed on month selector 
@@ -82,7 +82,7 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 			do {
 						
 				// Get the data for the month indicated by "indexMonth"
-				trendData = valuesFromFile.get(indexMonth);
+				trendData = valuesFromAjaxCall.get(indexMonth);
 				
 				if (!monthSelected) {
 					
@@ -94,9 +94,11 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 					
 					// #5 Select month on month/year selector
 					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
+					Thread.sleep(1000);
 					
 					// Wait for KPI tiles to be loaded
-					Thread.sleep(2000);
+					GeneralHelper.waitForKPIsToLoad(MediumTimeout);
+
 					
 				}
 				
@@ -118,16 +120,16 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 				// Get the values needed to calculate the 3 month Rolling Averages, and the Trending values
 				// ONLY if there's data for two months before the current month. 
 				// E.g.: Last month with data: January 2016, then March 2016 is the last month that will have the 3 month rolling average and trending values calculated
-				if(indexMonth < valuesFromFile.size() - 2){
+				if(indexMonth < valuesFromAjaxCall.size() - 2){
 					
 					List<HierarchyTrendData> valuesForThreeMonthAverage = new ArrayList<HierarchyTrendData>();
 					
 					// Adds the current month values to the list
-					valuesForThreeMonthAverage.add(valuesFromFile.get(indexMonth));
+					valuesForThreeMonthAverage.add(valuesFromAjaxCall.get(indexMonth));
 					// Adds the previous month values to the list
-					valuesForThreeMonthAverage.add(valuesFromFile.get(indexMonth+1));
+					valuesForThreeMonthAverage.add(valuesFromAjaxCall.get(indexMonth+1));
 					// Adds values from 2 months ago to the list
-					valuesForThreeMonthAverage.add(valuesFromFile.get(indexMonth+2));
+					valuesForThreeMonthAverage.add(valuesFromAjaxCall.get(indexMonth+2));
 				 
 					HierarchyKPITilesValues.verifyThreeMonthRollingAverageAndTrendingValues(valuesForThreeMonthAverage);
 					
@@ -138,22 +140,22 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 				// Get the values needed to calculate the 6 month Rolling Averages
 				// ONLY if there's data for five months before the current month. 
 				// E.g.: Last month with data: January 2016, then June 2016 is the last month that will have the 6 month rolling average calculated
-				if(indexMonth < valuesFromFile.size() - 5){
+				if(indexMonth < valuesFromAjaxCall.size() - 5){
 					
 					List<HierarchyTrendData> valuesForSixMonthAverage = new ArrayList<HierarchyTrendData>();
 					
 					// Adds the current month values to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth));
+					valuesForSixMonthAverage.add(valuesFromAjaxCall.get(indexMonth));
 					// Adds the previous month values to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+1));
+					valuesForSixMonthAverage.add(valuesFromAjaxCall.get(indexMonth+1));
 					// Adds values from 2 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+2));
+					valuesForSixMonthAverage.add(valuesFromAjaxCall.get(indexMonth+2));
 					// Adds values from 3 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+3));
+					valuesForSixMonthAverage.add(valuesFromAjaxCall.get(indexMonth+3));
 					// Adds values from 4 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+4));
+					valuesForSixMonthAverage.add(valuesFromAjaxCall.get(indexMonth+4));
 					// Adds values from 5 months ago to the list
-					valuesForSixMonthAverage.add(valuesFromFile.get(indexMonth+5));
+					valuesForSixMonthAverage.add(valuesFromAjaxCall.get(indexMonth+5));
 					
 					HierarchyKPITilesValues.verifySixMonthRollingAverage(valuesForSixMonthAverage);
 					

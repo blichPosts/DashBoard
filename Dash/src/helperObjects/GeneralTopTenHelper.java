@@ -49,12 +49,100 @@ public class GeneralTopTenHelper {
 	}
 
 
-	// Format number NEW 
+	// Format service number from the AJAX call 
 	public static String formatPhoneNumber(String serviceNumber) {
 		
 //		System.out.println("serviceNumber: " + serviceNumber);
 		
 		String numberFormatted = serviceNumber;
+		
+		// Remove blank spaces
+//		numberFormatted = numberFormatted.replace(" ", "");
+//		
+//		// Remove dashes
+//		numberFormatted = numberFormatted.replace("-", "");
+//		
+//		// Remove brackets ( )
+//		numberFormatted = numberFormatted.replace("(", "");
+//		numberFormatted = numberFormatted.replace(")", "");
+//		
+//		// Remove + sign
+//		numberFormatted = numberFormatted.replace("+", "");
+//		
+//		// Remove letters, keep only numbers
+		numberFormatted = numberFormatted.replaceAll("[^0-9]", "");
+
+		// Remove leading and trailing spaces
+		numberFormatted = numberFormatted.trim();
+		
+//		System.out.println("Service Number Formatted: " + numberFormatted);
+		
+		return numberFormatted;
+		
+	}
+	
+	
+	// Format phone number from UI (label on the vertical axis) 
+	public static String formatPhoneNumberUI(String label) {
+		
+//		System.out.println("**UI ** serviceNumber: " + label);
+		
+		String servNumberPart = "";
+		String employeeNamePart = "";
+		
+		try {
+			servNumberPart = label.split(" " + "[A-Z]")[0];
+		} catch (ArrayIndexOutOfBoundsException e1) {
+			
+		}
+		
+		try {
+			employeeNamePart = label.split("[0-9]" + " ")[1];
+		} catch (ArrayIndexOutOfBoundsException e2) {
+			
+		}
+				
+		String numberFormatted = servNumberPart;
+		
+		// Remove blank spaces
+		numberFormatted = numberFormatted.replace(" ", "");
+		employeeNamePart = employeeNamePart.replace(" ", "");
+		
+		// Remove dashes
+		numberFormatted = numberFormatted.replace("-", "");
+		
+		// Remove brackets ( )
+		numberFormatted = numberFormatted.replace("(", "");
+		numberFormatted = numberFormatted.replace(")", "");
+		
+		// Remove + sign
+		numberFormatted = numberFormatted.replace("+", "");
+		
+		// Remove leading and trailing spaces
+		numberFormatted = numberFormatted.trim();
+		
+		String labelFormatted = numberFormatted + employeeNamePart; 
+		
+//		System.out.println("**UI ** Service Number Formatted: " + labelFormatted);
+		
+		return labelFormatted.trim();
+		
+	}
+	
+	
+	public static String getOnlyPhoneNumberFormatted(String label) {
+		
+//		System.out.println("**UI ** serviceNumber: " + label);
+		
+		String servNumberPart = "";
+		
+		try {
+			servNumberPart = label.split(" " + "[A-Z]")[0];
+		} catch (ArrayIndexOutOfBoundsException e1) {
+			
+		}
+				
+		String numberFormatted = servNumberPart;
 		
 		// Remove blank spaces
 		numberFormatted = numberFormatted.replace(" ", "");
@@ -71,10 +159,10 @@ public class GeneralTopTenHelper {
 		
 		// Remove leading and trailing spaces
 		numberFormatted = numberFormatted.trim();
+				
+//		System.out.println("**UI ** Service Number Formatted: " + labelFormatted);
 		
-//		System.out.println("Service Number Formatted: " + numberFormatted);
-		
-		return numberFormatted;
+		return numberFormatted.trim();
 		
 	}
 	

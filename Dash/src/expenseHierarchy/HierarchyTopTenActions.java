@@ -15,7 +15,7 @@ public class HierarchyTopTenActions extends BaseClass {
 		HierarchyHelper.selectCategoryTopTen(chartId, category);
 		
 		// Wait for the data to be updated on chart
-		HierarchyHelper.waitForTopTenChartToLoad();
+		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
 		Thread.sleep(2000);
 		
 		String labelFound = driver.findElement(By.cssSelector("h3.tdb-h3>span")).getText().trim();

@@ -23,12 +23,14 @@ public class ReadFilesHelper extends BaseClass {
 	static JavascriptExecutor js = (JavascriptExecutor)driver;
 	
 	
+	// After this call is made, data used to be displayed on the UI can be obtained by an AJAX call
 	public static void startCollectingData() {
 		
 		js.executeScript("__TANGOE__setShouldCaptureTestData(true)");
 		
 	}
 
+	// Reloads the fleet data 
 	public static void reloadFleetData() {
 		
 		js.executeScript("__TANGOE__reloadFleetData()");
@@ -45,9 +47,6 @@ public class ReadFilesHelper extends BaseClass {
 		String usageExpenseData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('fleet.expenseUsage.payload.rows')");
 				
 	    ShowText(usageExpenseData);
-	   
-	    // Get the rows with data
-//		    String trendData = trendDataTmp.split("\"rows\":")[1];
 	   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(usageExpenseData); 
@@ -100,7 +99,7 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	
-	// Get the data for the KPI tiles and Trending chart
+	// Get the data for the KPI tiles and Trending chart - Cost Center Dashboard
 	public static List<HierarchyTrendData> getJsonDataTrend(String hierarchyId) throws JSONException, AWTException, InterruptedException{
 		
 		HierarchyTrendData trendDataOneMonth = new HierarchyTrendData();
@@ -108,7 +107,7 @@ public class ReadFilesHelper extends BaseClass {
 	    	    	
 	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.rows')");
 	   
-	    ShowText(trendData);
+//	    ShowText(trendData);
 		   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(trendData); 
@@ -122,9 +121,8 @@ public class ReadFilesHelper extends BaseClass {
 	    	trendDataOneMonth.setName(jsonObj.getString("name"));
 	    	trendDataOneMonth.setOrdinalYear(Long.toString(jsonObj.getLong("ordinal_year")));
 	    	trendDataOneMonth.setOrdinalMonth(Long.toString(jsonObj.getLong("ordinal_month")));
-	    	trendDataOneMonth.setTotalNumberOfInvoices(Long.toString(jsonObj.getLong("total_no_of_invoices")));  // <-- NEW - not added to CMD env, so it's commented out, since it's not used by my tests, Ana
+	    	trendDataOneMonth.setTotalNumberOfInvoices(Long.toString(jsonObj.getLong("total_no_of_invoices")));
 	    	trendDataOneMonth.setNumberOfLines(Long.toString(jsonObj.getLong("no_of_lines")));
-//	    	trendDataOneMonth.setNumberOfAccountsRollup(Long.toString(jsonObj.getLong("total_no_of_accounts")));   // <-- NEW - not added to CMD env, so it's commented out, since it's not used by my tests, Ana
 	    	trendDataOneMonth.setNumberOfLinesRollup(Long.toString(jsonObj.getLong("no_of_lines_rollup")));
 	    	trendDataOneMonth.setCurrencyCode(jsonObj.getString("currency_code"));
 	    	trendDataOneMonth.setTotalExpense(Double.toString(jsonObj.getDouble("total_expense_ex")));
@@ -145,7 +143,50 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	
-	// Get the data for Top Ten chart
+	// Get the data for the ancestors - Cost Center Dashboard
+	public static List<AncestorsInfo> getJsonDataAncestors(String hierarchyId) throws JSONException, AWTException, InterruptedException{
+		
+		AncestorsInfo ancestorsDataOneMonth = new AncestorsInfo();
+		List<AncestorsInfo> listValues = new ArrayList<AncestorsInfo>();
+	    	    	
+	    String ancestorsData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.ancestorsInfo')");
+	    	   
+	    //ShowText(ancestorsData);
+		   
+	    // Convert the String with data into a JSONArray
+	    JSONArray array = new JSONArray(ancestorsData); 
+
+	    for (int i = 0; i < array.length(); i++){
+	    	
+	    	JSONObject jsonObj  = array.getJSONObject(i);
+	    	ancestorsDataOneMonth = new AncestorsInfo();
+	        
+	    	JSONArray tempJSONarray = jsonObj.getJSONArray("ancestors");
+	    	List<String> ancestorsNames = new ArrayList<>();
+	    	
+	    	for (int j = 0; j < tempJSONarray.length(); j++) {
+	    	
+	    		JSONObject jsonObjTmp  = tempJSONarray.getJSONObject(j);
+	    		ancestorsNames.add(jsonObjTmp.getString("name"));
+
+	    	}
+	    	
+	    	ancestorsDataOneMonth.setOrdinalYear(Long.toString(jsonObj.getLong("ordinal_year")));
+	    	ancestorsDataOneMonth.setOrdinalMonth(Long.toString(jsonObj.getLong("ordinal_month")));
+	    	ancestorsDataOneMonth.setAncestorsNames(ancestorsNames);	
+	    		    	
+	        listValues.add(ancestorsDataOneMonth);
+			
+	    }
+	    
+		return listValues;
+	
+	}
+	
+	
+	
+	
+	// Get the data for Top Ten chart - Cost Center Dashboard
 	public static List<HierarchyTopTenData> getJsonDataTopTen(int category, String hierarchyId) throws JSONException, AWTException, InterruptedException{
 		
 		
@@ -189,10 +230,6 @@ public class ReadFilesHelper extends BaseClass {
 	    		case "EMPLOYEE":
 	    			
 	    			topTenDataOneMonth = getEmployeeData(jsonObj);
-	    			
-//	    			topTenDataOneMonth = new HierarchyTopTenData(jsonObj.getString("service_id"), jsonObj.getString("service_number"), jsonObj.getString("employee_id"),
-//	    					jsonObj.getString("company_employee_id"), jsonObj.getString("employee_firstname"), jsonObj.getString("employee_lastname"), 
-//	    					jsonObj.getString("type"), jsonObj.getDouble("value"));
 	    			break;
 	    			
 	    		case "DEPARTMENT":
@@ -257,7 +294,7 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	
-	// Get the data for Top Ten chart
+	// Get the data for Top Ten chart - Fleet Dashboard
 	public static List<FleetTopTenData> getJsonDataTopTenFleet(int chartId, int category) throws JSONException, AWTException, InterruptedException{
 		
 		
@@ -357,6 +394,7 @@ public class ReadFilesHelper extends BaseClass {
 	
 	
 	
+	// *** OLD - NOT USED ANYMORE ***
 	
 	// Reads the data needed for the "Fleet Manager Dashboard" tests
 	public static List<UsageOneMonth> getDataFromSpreadsheet(String filePath) throws IOException{
@@ -430,6 +468,7 @@ public class ReadFilesHelper extends BaseClass {
 	}
 
 
+	// *** OLD - NOT USED ANYMORE ***
 	public static List<String> getRowsfromFile(String filePath) throws IOException{
 		
 		Path path = Paths.get(filePath);
@@ -443,7 +482,7 @@ public class ReadFilesHelper extends BaseClass {
 		
 	}
 	
-	
+	// *** OLD - NOT USED ANYMORE ***
 	public static String[] splitLine(String lineToBeSplited){
 		
 		String itemsOfLine[];
