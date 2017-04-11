@@ -55,7 +55,7 @@ public class HierarchyNumbersTestsDependentsDrillDown extends BaseClass
 	{
 		System.out.println("Close Browser.");	
 		ExpenseHelper.SetWaitDefault();
-	    JOptionPane.showMessageDialog(frame, "Select OK. Test Done and Passed.");
+	    JOptionPane.showMessageDialog(frame, "Test Done.");
 		driver.close();
 		driver.quit();
 	}		

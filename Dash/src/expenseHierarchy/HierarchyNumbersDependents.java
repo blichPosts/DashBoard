@@ -269,7 +269,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 
 	// this is called after a number of tiles to test has been setup, a month has been selected, and a tile level has been setup (unless the top level is being tested).
-	public static void RunTilesInCommand() throws Exception // bladdzz
+	public static void RunTilesInCommand() throws Exception 
 	{
 		int x = 0;
 		int loopCntr = 0;
@@ -349,12 +349,12 @@ public class HierarchyNumbersDependents extends BaseClass
 
 			// JOptionPane.showMessageDialog(frame, "Wait");
 			
-			// bladdzz - comment below.
+			// bladd - comment below.
 			//ShowText(currentDependentUnitInfo);
 			//Assert.assertEquals(hoverInfo, currentDependentUnitInfo, "Error in HierarchyNumbersDependents.RunAllTilesInDash. "
 			//		                                               + "The hover value doesn't match its corresponding dependent user."
 			//		                                               + "The loop counter is " + x); 
-			// bladdzz - comment above.
+			// bladd - comment above.
 			
 			// IMPORTANT NOTE -- this may not always work because the json sorting can be different then ED's sort when it comes to 
 			//                   dependent units with the same numeric value.
@@ -496,7 +496,7 @@ public class HierarchyNumbersDependents extends BaseClass
         */
         // this removes the leading numbering (i.e. "1. " before the name and cost);
         return retString.substring(retString.indexOf(".") + 1, retString.length()).trim();
-		// return tooltip.getText().split("\\.")[1].trim(); // bladdyy - trim out decimal  value // orig -- doesn't always work.
+		// return tooltip.getText().split("\\.")[1].trim(); // trim out decimal  value // orig -- doesn't always work.
 	}
 	
 	// this builds the json request string for getting the json rows of dependent unit values. 
@@ -671,12 +671,8 @@ public class HierarchyNumbersDependents extends BaseClass
 	//   values are all the same.
 	public static void VerifyActualExpectedDependentUnits() throws Exception 
 	{
-
 		ShowText ("Verifying Actual/Expected Dependents");  
-		
-		// get the actual dependent units from the list of dependent units in the UI.
-		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
-		
+
 		int actualInt = 0;
 		int expectedInt = 0;
 		int loopCntr = 0;
@@ -685,11 +681,15 @@ public class HierarchyNumbersDependents extends BaseClass
 		String costSelectorString = "";
 		String tempString = "";
 		
+		// get the actual dependent units from the list of dependent units in the UI.
+		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
+		
 		// verify text above tile map.
 		VerifyTextAboveTileMap();
 		
-		
-		for(WebElement ele : eleList)
+		// go through the web element list of dependent units from the list of dependent units in the UI. 
+		// verify the actual list of data from the UI is the same as the sorted (expected) list created from the json response.  
+		for(WebElement ele : eleList)  
 		{
 			// get the actual value (from UI) and the expected value (from sorted json list) into variables.  
 			
@@ -699,7 +699,6 @@ public class HierarchyNumbersDependents extends BaseClass
 				// below original -  later use helper method   'TrimDecimal'
 				x = ele.getText().length() - ele.getText().lastIndexOf(".");
 				tempString = ele.getText().substring(0, ele.getText().length() - x);
-				
 				// tempString = TrimDecimal(ele.getText()); // this should handle 'BB.trew.aaa' (multiple decimals "."). -- not sure here
 			}
 			else
@@ -707,6 +706,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				tempString = ele.getText();
 			}			
 			
+			// convert string int (decimal has been removed) to real int.
 			try
 			{
 				actualInt = Integer.valueOf(tempString.split("\n")[1].replace(GetCostFilterString(),""));				
@@ -720,31 +720,43 @@ public class HierarchyNumbersDependents extends BaseClass
 			    JOptionPane.showMessageDialog(frame, "FROZEN AT RANDOM ERROR ----------------------. ");
 			}
 			
-			expectedInt  = childList.get(loopCntr).cost; 
+			expectedInt  = childList.get(loopCntr).cost; // store expected 
+			// System.out.println("Actual Int: " + actualInt + " Expected Int: " + expectedInt); // DEBUG			
 			
-			// System.out.println("Actual Int: " + actualInt + " Expected Int: " + expectedInt); DEBUG			
-			
+			// verify actual and expected values are equal.
 			Assert.assertEquals(actualInt, expectedInt, "Fail in sorting compare for numeric cost in HierarchyNumbersDependents.VerifyActualExpectedDependentUnits"); // verify cost in json list equals cost in actual list. 
 
 			// compare names. sometimes the numeric values will match and the names won't match. this happens when two or more
 			// units have the same numeric value in each list but the units are in different orders.  
 			try
 			{
-				Assert.assertEquals(ele.getText().split("\n")[0], childList.get(loopCntr).childName, "");		
+				// in some cases (one tenant/month so far) there will be two spaces between the first and last name in the json response and the UI 
+				// will have only one space between the first and last name. This couldn't find two spaces ===> if(childList.get(loopCntr).childName.contains("     "));
+				// the if statement below was found on this stack trace link directly below. it is some type of regular expression.
+				// http://stackoverflow.com/questions/19711689/how-to-detect-if-a-string-input-has-more-than-one-consecutive-space
+				if ((childList.get(loopCntr).childName.matches(".*  .*")))
+				{
+					ShowText("found name with two space separator");
+					childList.get(loopCntr).childName = childList.get(loopCntr).childName.replace("  ",  " "); 
+				}
+
+				Assert.assertEquals(ele.getText().split("\n")[0], childList.get(loopCntr).childName, ""); // orig		
 				// ShowText(ele.getText().split("\n")[0] + "  " +   childList.get(loopCntr).childName); // DEBUG
 			}
 			catch (AssertionError sertErr)
 			{
-				// ShowText("Try catch"); // DEBUG
+				//ShowText("Try catch"); 
+				//ShowText("Actual:    " + ele.getText().split("\n")[0]); 
+				//ShowText("Expected:  " + childList.get(loopCntr).childName);
 				
 				if(childList.get(loopCntr).cost != latestCost)
 				{
 					if(expectedList.size() != 0)
 					{
-						// this verifies all the names have the same value, the actual and expected lists are the same size, and 
-						VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));  
+						// this verifies all the names have the same value, the actual and expected lists are the same size, and the all have the expacted cost value.
 						//ShowExpectedList();
 						//ShowActualList();
+						VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));  
 					}
 					expectedList.clear();
 					actualList.clear();
@@ -757,7 +769,9 @@ public class HierarchyNumbersDependents extends BaseClass
 				actualList.add(ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " "));
 				expectedList.add(childList.get(loopCntr).childName + " " +  String.valueOf(expectedInt));
 			}
+			
 			loopCntr++;
+			
 		}
 	}
 
@@ -914,7 +928,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// System.out.println("\n** Selecting tile number " + tileToSelect + " **\n"); // NOTE hack for command
 
 			
-			// bladdyy  - hack because of tile sizes extreme variance..
+			// hack because of tile sizes extreme variance..
 			tileToSelect = tileToSelect/2;
 			if(tileToSelect == 0)
 			{
@@ -949,7 +963,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	// * this drills down until it reaches the point where no more drilling down can be done, or, until it 
 	//   reaches the maxNumberOfLevels passed in.
 	// * each time a level is drilled down to some test are run that test the three cost filters.
-	public static void DrillDownCommandTileMap(int maxNumberOfLevels, int totalNumberOfTilesShown) throws Exception // bladdzz 
+	public static void DrillDownCommandTileMap(int maxNumberOfLevels, int totalNumberOfTilesShown) throws Exception  
 	{
 		int tileToSelect;
 		int cntr = 0;
@@ -985,17 +999,16 @@ public class HierarchyNumbersDependents extends BaseClass
 		int dependentUnitToSelect;
 		int cntr = 0;
 
-		// DebugTimeout(3, "wait three for page load."); 
-		
 		int numberOfDependentUnits = 0;
 		
 		Random rand = new Random();
 		
 		ShowText("Starting drill down in dependent units.");
-		Pause("Starting drill down in dependent units.");
+		// Pause("Starting drill down in dependent units.");
 		
-		int fooBarCntr = 0; // bladdyy
+		// int fooBarCntr = 0; 
 		
+		// drill down to maxNumberOfLevels or to a page where there are no dependent units listed. 
 		while (cntr != maxNumberOfLevels)
 		{
 			numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size(); 
@@ -1007,11 +1020,11 @@ public class HierarchyNumbersDependents extends BaseClass
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
 			
 			//if(fooBarCntr == 0) // this finds user with two "\n" in the name.
-			//	dependentUnitToSelect = 0; // bladdyy
+			//	dependentUnitToSelect = 0; 
 			//if(fooBarCntr == 1)
-			//	dependentUnitToSelect = 18; // bladdyy
+			//	dependentUnitToSelect = 18; 
 			//if(fooBarCntr == 3)
-			//	dependentUnitToSelect = 2; // bladdyy
+			//	dependentUnitToSelect = 2; 
 			//fooBarCntr++;
 			
 			Thread.sleep(1000);
@@ -1023,21 +1036,27 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
 			
-			Pause("-- pause after click down");
-			// DebugTimeout(3, "wait three after click to drill down."); 			
-
+			// move to top of page to make the testing visible.
+			WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
+			new Actions(driver).moveToElement(topSection).perform();
+			
+			ShowText("dead spot wait after click to see if have hit end of drill down."); 
+			
 			// wait to see if 'No Dependents' message is found.
-			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 1))
+			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 4))
 			{
 				System.out.println("Finished drill down testing to level " + cntr);
 				System.out.println("The last click found the 'No Dependents' message\n");
 				break;
 			}
 
-			// move to top of page to make the testing visible.
-			WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
-			new Actions(driver).moveToElement(topSection).perform();
-
+			
+			
+			
+			ShowText("size of crumbs");
+			ShowInt(driver.findElements(By.xpath("//div[@class='breadcrumbs']/span")).size());
+			ShowInt(driver.findElements(By.cssSelector(".breadcrumbs>span")).size());
+			
 			HierarchyNumbersDependents.LoopThroughCatergoriesDependentUnits(); // this test loops through all of the category selectors.
 		
 			cntr++;
@@ -1066,16 +1085,17 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			currentCategorySelection = values[x].name(); // store current category for later testing of text above tile map.
 			
-			BuildDependentChildObjects(); // create list of dependent units from Json call.
+			// create list of dependent units from Json call.
+			BuildDependentChildObjects(); 
 			
-			// ShowChildList();
+			// ShowChildList(); // DEBUG
 			
-			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
+			// sort list of dependent units from Json call.
+			Collections.sort(HierarchyNumbersDependents.childList, new Child()); 
 			Thread.sleep(1000);
 			
-			// ShowChildList();
-			
-			Pause("Freeze..");
+			// ShowChildList(); // DEBUG
+			// Pause("Freeze.."); // DEBUG
 			
 			// this verifies the json dependents list sent in matches the list shown in the UI, after the Json list is sorted.
 			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
@@ -1084,7 +1104,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			HierarchyNumbersDependents.FinishFinalTest();
 			childList.clear();
 
-			Pause("one pass through test if dependents list.");
+			// Pause("one pass through test if dependents list."); // DEBUG
 			
 			ShowText("Pass complete for " + values[x].name() +".");
 		}
@@ -1110,7 +1130,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	
 	// go through the categories and run a single level tile map test.
-	public static void LoopThroughCatergoriesForTileMapCommand() throws Exception   // bladdzz
+	public static void LoopThroughCatergoriesForTileMapCommand() throws Exception  
 	{
 		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
 		
@@ -1146,15 +1166,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 				ShowText(" -------------------------Hierarchy Name: " + ele.getText() + " ---------------------------------------- ");
 				
-				Pause("hierarch selected");
-				
 				// store away the current hierarchy name. this is used later on as part of verifying the text above the tile map.
 				currentLevelName = ele.getText();   
 				
 				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr); // set the current hierarchy Id. this hierarchyId is global to this class.  
 				ele.click(); 
+				// Pause("hierarchy selected");
 				
-				Thread.sleep(3000);
+				Thread.sleep(2500); // wait for tile map numbers to fill in.
 				DrillDownDependentUnitsTwo(maxLevelsToDrillDownTo); // run the drill down tests for each category selector.
 				hierarchyCntr++;
 		}
@@ -1398,7 +1417,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	*/
 	
 	// Get the location of the element on the UI 
-	public static Point getAbsoluteLocationTileMap(WebElement element) throws InterruptedException  // bladdxx
+	public static Point getAbsoluteLocationTileMap(WebElement element) throws InterruptedException  
 	{
         int x = x_iFrame;
         int y = y_iFrame;
@@ -1430,33 +1449,35 @@ public class HierarchyNumbersDependents extends BaseClass
 	// this verifies the text above the tile map and text above the KPIs.
 	public static void VerifyTextAboveTileMap() throws Exception
 	{
-		String actualTextAboveTileMap =  driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText();
+		// get actual from UI and create expected for text above tile map.
+		String actualTextAboveTileMap =  driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText(); 
 		
 		String expectedTextAboveTileMap  = "Top " + HierarchyNumbersDependents.childList.size() + " (out of " + totalCount + ") " + "dependent units of " +  currentLevelName +  
-				            " - " + currentCategorySelection + " Expense";
+				            " - " + currentCategorySelection + " Expense  "; 
 		
-		ShowText(expectedTextAboveTileMap);
-		ShowText(actualTextAboveTileMap);
+		// DEBUG - show actual and expected text above tile map.
+		//ShowText("expected text above tile maps: " + expectedTextAboveTileMap);
+		//ShowText("actual text above tile maps: " + actualTextAboveTileMap);
 		
 		// verify the text above tile map.
 		Assert.assertEquals(actualTextAboveTileMap,  expectedTextAboveTileMap, "Failed to verify text above the tile map in HierarchyNumbersDependents.VerifyTotalCount");
-		
+
+		// get actual from UI and create expected for text above KPI tiles.
 		String actualTitleAboveKpiTiles = driver.findElement(By.cssSelector(".tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)")).getText();
 
 		String expectedTitleAboveKpiTiles = "Expenses for " + currentLevelName + " and its dependent units";
-		
-		ShowText(expectedTitleAboveKpiTiles);
-		ShowText(actualTitleAboveKpiTiles);
 
-		// cerify text above KPI tiles.
+		// DEBUG - show actual and expected text above KPIs.
+		//ShowText("expected text above KPIs: " + expectedTitleAboveKpiTiles);
+		//ShowText("actual text above KPIs: " + actualTitleAboveKpiTiles);
+		
+		// verify text above KPI tiles.
 		Assert.assertEquals(actualTitleAboveKpiTiles,  expectedTitleAboveKpiTiles, "Failed to verify text above KPI in HierarchyNumbersDependents.VerifyTotalCount");
 		
-		// Expenses for PwC and its dependent units 
-		
-		Pause("Check numbers in VerifyTextAboveTileMap() passed.");
+		// Pause("Check numbers in VerifyTextAboveTileMap() passed."); // DEBUG
 	}
 	
-	public static void WaitForPageTransition(String unitNameToWaitFor ) throws Exception
+	public static void WaitForPageTransition(String unitNameToWaitFor) throws Exception
 	{
 		String tempString = "";
 		int waitForIndex = 0;
