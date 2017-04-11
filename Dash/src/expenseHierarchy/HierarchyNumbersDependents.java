@@ -686,7 +686,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		String tempString = "";
 		
 		// verify text above tile map.
-		// VerifyTextAboveTileMap();
+		VerifyTextAboveTileMap();
 		
 		
 		for(WebElement ele : eleList)
@@ -1068,12 +1068,12 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			BuildDependentChildObjects(); // create list of dependent units from Json call.
 			
-			ShowChildList();
+			// ShowChildList();
 			
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); // sort list of dependent units from Json call.
 			Thread.sleep(1000);
 			
-			ShowChildList();
+			// ShowChildList();
 			
 			Pause("Freeze..");
 			
