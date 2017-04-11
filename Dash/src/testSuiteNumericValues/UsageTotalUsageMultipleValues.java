@@ -34,6 +34,15 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 	public static void UsageTotalUsageMultipleValuesTest() throws Exception
 	{
 		
+		// Enable Start collecting data
+		ReadFilesHelper.startCollectingData();
+		Thread.sleep(2000);
+		
+		// Reload Fleet data
+		ReadFilesHelper.reloadFleetData();
+		Thread.sleep(2000);
+		
+		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -56,6 +65,8 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 		UsageHelper.selectVendorView();
 		CommonTestStepActions.UnSelectAllVendors();
 		
+		Thread.sleep(2000);
+		
 		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
 		
 		// Run the test for each vendor 
@@ -69,7 +80,7 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 			String completePath = path + file;
 						
 			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getDataFromSpreadsheet(completePath);
+			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // getDataFromSpreadsheet(completePath);
 			listVendorsSelectedData.add(valuesFromFileOneVendor);
 				
 			// #3 Select one vendor

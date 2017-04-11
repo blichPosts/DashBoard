@@ -51,11 +51,113 @@ public class HierarchyExpenseTrending extends BaseClass {
 		
 		
 		// Set up list with expected values
+		List<HashMap<String, String>> expectedValues = getListExpectedValues(allValuesFromFile, categorySelector);  // new ArrayList<>();
+		
+		// Set up list with expected labels
+		List<String> expectedLabels = new ArrayList<>();
+		
+		// Expected labels are: 
+		expectedLabels.add(HierarchyHelper.directlyAllocated);
+		expectedLabels.add(HierarchyHelper.allocatedChildren);
+					
+		
+
+		// Verify the info contained on each of the tooltips for the 13 months 		
+		
+		while (indexHighchart <= monthYearList.size()) {
+			
+			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+						
+			// WebElement 'bar' will be used to set the position of the mouse on the chart
+			WebElement bar = driver.findElement(By.cssSelector(cssBar));
+
+			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+			
+			Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
+			int x = coordinates.getX();
+			int y = GeneralHelper.getYCoordinate(chartId);
+			
+			Robot robot = new Robot();
+			robot.mouseMove(x, y);
+			
+			Thread.sleep(500);
+			
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+				
+			
+			try {
+				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+				//System.out.println("Tooltip present");
+			} catch (Exception e) {
+				System.out.println("Tooltip NOT present");
+				e.printStackTrace();
+			}
+					
+			
+			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
+			
+			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
+			// 0 MM-YYYY -- month and year appears once
+			// 1 ? -- this is for the bullet
+			// 2 <vendor's name>
+			// 3 <amount shown for the vendor>
+						
+			int expectedAmountItemsTooltip = (amount * 3) + 1;
+			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			
+
+			// For each vendor listed in the tooltip verify the label and the amount shown
+			for (int i = 1; i <= legends.size(); i++) {
+			
+				int index =  i * 3 - 1;
+				
+				// Get the label and remove colon at the end of its text
+				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+
+				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
+				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+				String valueFoundRounded = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(valueFound.replace("$", "")), true);
+				
+				// Get the expected label 
+				String labelExpected = expectedLabels.get(i-1);
+				
+				// Get the expected value 
+				String valueExpected = expectedValues.get(indexMonth).get(labelExpected);
+				 		
+				// Verify the labels' text and amounts shown on the tooltip
+				
+				// System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+    			// System.out.println("valueFound: " + valueFoundRounded + ", valueExpected: " + valueExpected);
+				
+				Assert.assertEquals(labelFound, labelExpected);
+				GeneralHelper.verifyExpectedAndActualValues(valueFoundRounded, valueExpected);
+				
+			}
+			
+			// Verify month and year shown on the tooltip (first line)
+			String monthYearFound = tooltip.get(0).getText();
+			String monthYearExpected = monthYearList.get(indexMonth);
+				
+			Assert.assertEquals(monthYearFound, monthYearExpected);
+			// System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+			
+			indexHighchart++;
+			indexMonth--;
+			
+		}
+		
+	}
+	
+
+	
+	public static List<HashMap<String, String>> getListExpectedValues(List<HierarchyTrendData> allValuesFromFile, int categorySelector) {
 		
 		List<HashMap<String, String>> expectedValues = new ArrayList<>();
-				
+		
 		for (int indexMonthValues = 0; indexMonthValues < allValuesFromFile.size(); indexMonthValues++) {
-			
+				
 			HashMap<String, String> map = new HashMap<>();
 			HierarchyTrendData dataOneMonth = allValuesFromFile.get(indexMonthValues);
 				
@@ -83,127 +185,10 @@ public class HierarchyExpenseTrending extends BaseClass {
 			
 		}
 		
-		List<String> expectedLabels = new ArrayList<>();
-		
-		// Expected labels are: 
-		expectedLabels.add(HierarchyHelper.directlyAllocated);
-		expectedLabels.add(HierarchyHelper.allocatedChildren);
-					
-		
-
-		// Verify the info contained on each of the tooltips for the 13 months 		
-		
-		while (indexHighchart <= monthYearList.size()) {
-			
-			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-						
-			// WebElement 'bar' will be used to set the position of the mouse on the chart
-			WebElement bar = driver.findElement(By.cssSelector(cssBar));
-
-			
-			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-			
-			Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
-			int x = coordinates.getX();
-			int y = coordinates.getY();
-
-			if (loginType.equals(LoginType.Command)) {
-				
-				// If there are negative values on the y axis use line 1. Otherwise use line 2 
-				List<WebElement> yAxisLabels = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-yaxis-labels>text>tspan"));
-				String lineNumber = "2";
-				
-				for (WebElement yLabel: yAxisLabels) {
-					
-					if (yLabel.getText().startsWith("-")) {
-						lineNumber = "1";
-					}	
-				}
-				
-				String cssLine = "#" + chartId + ">svg>g>path:nth-of-type(" + lineNumber + ")";
-				WebElement line = driver.findElement(By.cssSelector(cssLine));
-				
-				Point coordinatesLine = GeneralHelper.getAbsoluteLocation(line);
-				y = coordinatesLine.getY();
-				
-			}
-			
-			Robot robot = new Robot();
-			robot.mouseMove(x, y);
-			
-			Thread.sleep(500);
-			
-			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-				
-			
-			try {
-				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
-				//System.out.println("Tooltip present");
-			} catch (Exception e) {
-				System.out.println("Tooltip NOT present");
-				e.printStackTrace();
-			}
-					
-			
-			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
-			
-			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
-			// 0 MM-YYYY -- month and year appears once
-			// 1 ? -- this is for the bullet
-			// 2 <vendor's name>
-			// 3 <amount shown for the vendor>
-			
-			
-			int expectedAmountItemsTooltip = (amount * 3) + 1;
-			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
-			
-
-			// For each vendor listed in the tooltip verify the label and the amount shown
-			for (int i = 1; i <= legends.size(); i++) {
-			
-				int index =  i * 3 - 1;
-				
-				// Get the label and remove colon at the end of its text
-				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
-
-				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
-				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
-				
-				// Get the expected label 
-				String labelExpected = expectedLabels.get(i-1);
-				
-				// Get the expected value 
-				String valueExpected = expectedValues.get(indexMonth).get(labelExpected);
-				 
-						
-				// Verify the labels' text and amounts shown on the tooltip
-				
-				System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
-				
-				Assert.assertEquals(labelFound, labelExpected);
-				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
-				
-			}
-			
-			// Verify month and year shown on the tooltip (first line)
-			String monthYearFound = tooltip.get(0).getText();
-			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
-				
-			Assert.assertEquals(monthYearFound, monthYearExpected);
-			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
-			
-			indexHighchart++;
-			indexMonth--;
-			
-		}
+		return expectedValues;
 		
 	}
-
-
-
-
+	
+	
 	
 }

@@ -35,6 +35,15 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 	public static void UsageKPITilesTestValuesOneVendorTest() throws Exception
 	{
 		
+		// Enable Start collecting data
+		ReadFilesHelper.startCollectingData();
+		Thread.sleep(2000);
+			
+		// Reload Fleet data
+		ReadFilesHelper.reloadFleetData();
+		Thread.sleep(2000);
+						
+				
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -60,9 +69,9 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 			
 			
 			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFile = ReadFilesHelper.getDataFromSpreadsheet(completePath);
+			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
 			
-			List<UsageOneMonth> valuesOneVendorAllMonths = UsageHelper.addMissingMonthsForVendor(valuesFromFile);
+			List<UsageOneMonth> valuesOneVendorAllMonths = UsageHelper.addMissingMonthsForVendor(valuesFromAjaxCall);
 			
 				
 			// #3 Select only one vendor

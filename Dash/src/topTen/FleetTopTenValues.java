@@ -32,7 +32,7 @@ public class FleetTopTenValues extends BaseClass {
 		HierarchyHelper.selectCategory(barChartId, category);
 		
 		// Wait for the data to be updated on chart
-		HierarchyHelper.waitForTopTenChartToLoad();
+		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
 		Thread.sleep(2000);
 	
 		// Get data from JSON

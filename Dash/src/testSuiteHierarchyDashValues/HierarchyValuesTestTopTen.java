@@ -5,6 +5,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -16,6 +17,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
+import helperObjects.UsageHelper;
 
 
 public class HierarchyValuesTestTopTen extends BaseClass {
@@ -52,6 +54,9 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 			
 			GeneralHelper.selectFirstMonth();
 			HierarchyHelper.selectHierarchyFromDropdown(i);
+			
+//			GeneralHelper.waitForDataToBeLoaded();
+			
 			boolean monthSelected = true;
 			Thread.sleep(2000);
 		
@@ -75,29 +80,46 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 					
 					// Wait for chart to be loaded
-					WaitForElementVisible(By.cssSelector("chart>div"), ExtremeTimeout);
+					WaitForElementVisible(By.cssSelector("chart>div"), MediumTimeout);
 					
 				}
 				
 								
 				// #5 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
 				
+				boolean dataForMonthSelected = true;
+				
 				try {
 					
+					String cssSelector = "#" + UsageHelper.getChartId(HierarchyHelper.topTenChart) + ">svg>g>g>rect.highcharts-point:nth-child(1)";
+					driver.findElement(By.cssSelector(cssSelector));
 					
-					// Run test for "Expense" chart and category "Total"
-					HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+				} catch (NoSuchElementException e) {
 					
-					// Run test for "Expense" chart and category "Optimizable"
-					HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+					System.out.println("No data for the selected month");
+					dataForMonthSelected = false;
 					
-					// Run test for "Expense" chart and category "Roaming"
-					HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+				}
+				
+				if (dataForMonthSelected) {
 					
-					
-				} catch(NullPointerException e) {
-					
-					System.out.println("chart not found");
+					try {
+						
+						// Run test for "Expense" chart and category "Total"
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+						
+						// Run test for "Expense" chart and category "Optimizable"
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+						
+						// Run test for "Expense" chart and category "Roaming"
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+						
+						
+					} catch(NullPointerException e) {
+						
+						System.out.println("chart not found");
+						
+					}
 					
 				}
 				

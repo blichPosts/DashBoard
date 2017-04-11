@@ -356,8 +356,6 @@ public class TotalExpensesValues extends BaseClass {
 		}	
 		
 	}
-
-	
 	
 	
 	

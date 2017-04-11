@@ -146,20 +146,6 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	
-	// Used to scroll down simulating the mouse wheel moves
-	public static void scrollMouseToChart(int num){
-		
-		try{
-			Robot robot = new Robot(); 
-			robot.mouseWheel(num);
-		}catch (AWTException e){
-			e.printStackTrace();
-		}
-		
-		
-	}
-	
-	
 	public static String removePunctuationCharacters(String string){
 		
 		return string.replace(".", "").replace("\"", "").replace(",",""); 
@@ -230,10 +216,10 @@ public class UsageHelper extends BaseClass{
 			
 		}
 		
-		
-		for(UsageOneMonth m: valuesFromFileNew){
+		/*
+		for (UsageOneMonth m: valuesFromFileNew){
 			
-			/*System.out.println("vendor name: " + m.getVendorName());
+			System.out.println("vendor name: " + m.getVendorName());
 			System.out.println("year: " + m.getOrdinalYear());
 			System.out.println("month: " + m.getOrdinalMonth());
 			System.out.println("invoice month: " + m.getInvoiceMonth());
@@ -246,8 +232,8 @@ public class UsageHelper extends BaseClass{
 			System.out.println("roaming messages: " + m.getRoamingMessages()); 
 		    
 			System.out.println("month: " + m.getOrdinalMonth() + " " + m.getOrdinalYear());
-			*/
-		}
+			
+		} */
 		
 //		System.out.println("amount of months for " + valuesFromFileNew.get(0).getVendorName() + " is " + valuesFromFileNew.size());
 		
@@ -385,9 +371,6 @@ public class UsageHelper extends BaseClass{
 			
 			for(int j = 0; j < data.size(); j++){
 			
-				//System.out.println("j: " + j);
-				//System.out.println("data " + j + " size: " + data.get(j).size()); 
-				
 				boolean invoiceMonthAssigned = false;
 				
 				for(UsageOneMonth usage: data.get(j)){
@@ -499,16 +482,13 @@ public class UsageHelper extends BaseClass{
 		
 	}
 	
-	
-	
-	
-	
+		
 	
 	public static String getMonthOfInvoiceMonth(String invoiceMonth){
 		
 		String[] invoiceMonthParts = invoiceMonth.split("/");
 		return invoiceMonthParts[0];
-		
+			
 	}
 	
 	
@@ -670,16 +650,12 @@ public class UsageHelper extends BaseClass{
 		List<String> vendorNames = new ArrayList<>();
 		List<UsageOneMonth> usageVendorsSorted = new ArrayList<>();
 		
-//		System.out.println("  Unsorted"); 
-		
 		for (int i = 0; i < listVendorsSelectedData.size(); i++){
 			vendorNames.add(listVendorsSelectedData.get(i).getVendorName());
 //			System.out.println("   " + vendorNames.get(i));
 		}
 		
 		Collections.sort(vendorNames);
-		
-//		System.out.println("  Sorted");
 		
 		for (int i = 0; i < listVendorsSelectedData.size(); i++){
 			

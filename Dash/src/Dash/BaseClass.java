@@ -64,7 +64,7 @@ public class BaseClass
 	
 	
 	public static String commandUserName = "archana.trojic@tangoe.com phi";
-	public static String commandPassword = "traq06";	
+	public static String commandPassword = "traq06";
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
 	public static LoginType loginType; // bladdxx // new
@@ -113,7 +113,8 @@ public class BaseClass
 	{
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
-		loginType = LoginType.Command; // bladdxx     <-- line changed by Ana 2/23/17
+		loginType = LoginType.Command; // bladdxx  
+
 	}
 	
 	public static void ShowArray(String [] strArray)
@@ -210,6 +211,7 @@ public class BaseClass
 		System.setProperty("webdriver.chrome.driver", projectPath + "\\chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-extensions");
+		options.addArguments("disable-infobars");  // <-- Line added by Ana. Needed because with the chromedriver 2.28, there's an info bar that we don't want to have when browser is launched 
 		driver = new ChromeDriver(options);		
 		
 		switch(loginType)
@@ -633,23 +635,6 @@ public class BaseClass
 		    
 		    // this will get to dash board frame. at this pint the dash board test code will wait for the dash page to load. 
 		    driver.switchTo().frame(driver.findElement(By.id("dashboard_iframe")));
-
-			// --> following lines added by Ana 2/24/17
-			// Enable Start collecting data
-
-//			boolean stop = true;
-//			
-//			do {
-//				System.out.println("Start collecting data");
-//				ReadFilesHelper.startCollectingData();  
-//				Thread.sleep(500);
-//				try{
-//					driver.findElement(By.cssSelector("div.tdb-currentContextMonth"));
-//				} catch (Exception e) {
-//					stop = false;
-//				}
-//				
-//			} while (!stop);
 			
 		}
 

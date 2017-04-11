@@ -67,72 +67,99 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 			int j = 1;
 			int levelsToDrillDown = 3;  // Drill down up to 3 levels
 			
-			while (j <= levelsToDrillDown && !HierarchyHelper.getDependentUnitsPoV().isEmpty()) {
+			int monthIndex = 1;
+						
+			while (j <= levelsToDrillDown) {
 			
 				System.out.println(" **** Drilling down Level #" + j);
 			
-				GeneralHelper.selectFirstMonth();
 				boolean monthSelected = true;
 				Thread.sleep(2000);
 				
 				HierarchyHelper.selectHierarchyFromDropdown(i);
 				Thread.sleep(2000);
 			
-				HierarchyHelper.drillDownOnDependentUnitPoV(j);
-				Thread.sleep(2000);
+				CommonTestStepActions.initializeMonthSelector();
+				List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
 				
-				// #4 Get the last month listed on month selector
-				List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown(); 
-		
-				String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);  // driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
-				String monthYearToSelect = "";
+				// While there are no dependent units to drill down then select the previous month
+				while (HierarchyHelper.getDependentUnitsPoV().isEmpty() 
+						&& monthIndex < monthsInSelector.size()) {
+					
+					String monthYear = monthsInSelector.get(monthIndex).getText();
+					CommonTestStepActions.selectMonthYearPulldown(monthYear);
+					monthIndex++;
+					System.out.println(" **** Month Year: " + monthYear);
+					
+					GeneralHelper.waitForDataToBeLoaded();
 				
-				int indexMonth = 0;
+				}	
+					
+				if (!HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
 				
-				do {
+					HierarchyHelper.drillDownOnDependentUnitPoV(1);
 					
-					if (!monthSelected) {
-						
-						monthYearToSelect = monthsInDropdown.get(indexMonth);
-						System.out.println("Month Year: " + monthYearToSelect);
-						
-						// #5 Select month on month/year selector
-						CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-						
-						// Wait for chart to be loaded
-						WaitForElementVisible(By.cssSelector("chart>div"), ExtremeTimeout);
-						
-					}
+					// Wait for chart to be reloaded after the drilling down action
+					WaitForElementPresent(By.cssSelector("chart>div"), MediumTimeout);
 					
+				
+					// #4 Get the last month listed on month selector
+					List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown(); 
+			
+					String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);
+					String monthYearToSelect = "";
 					
-					// #6 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
+					int indexMonth = monthIndex - 1;
 					
-					try {
+//						do {
 						
-						// Run test for "Expense" chart and category "Total"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+//							if (!monthSelected) {
+//								
+//								monthYearToSelect = monthsInDropdown.get(indexMonth);
+//								System.out.println("Month Year: " + monthYearToSelect);
+//								
+//								// #5 Select month on month/year selector
+//								CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
+//								
+//								// Wait for chart to be loaded
+//								WaitForElementVisible(By.cssSelector("chart>div"), ExtremeTimeout);
+//								
+//							}
 						
-						// Run test for "Expense" chart and category "Optimizable"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
 						
-						// Run test for "Expense" chart and category "Roaming"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+						// #6 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
 						
+						try {
+							
+							// Run test for "Expense" chart and category "Total"
+							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+							
+							// Run test for "Expense" chart and category "Optimizable"
+							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+							
+							// Run test for "Expense" chart and category "Roaming"
+							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+							
+							
+						} catch(NullPointerException e) {
+							
+							System.out.println("chart not found");
+							
+						}
 						
-					} catch(NullPointerException e) {
+						indexMonth++;
+						monthSelected = false;
 						
-						System.out.println("chart not found");
-						
-					}
+//						} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
+			
+				}
 					
-					indexMonth++;
-					monthSelected = false;
-					
-				} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
+//				}
 				
 				j++;
 		
 			}	
+			
 				
 		}
 			

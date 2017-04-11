@@ -79,7 +79,9 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		double tmpAmount = amount / Math.pow(1024, 2);
 		String amountConverted = roundNoDecimalDigits(tmpAmount, false);
-//		System.out.println("Original amount: " + amount + ", Converted from KB to GB: " + tmpAmount + ", Value rounded: " + amountConverted);
+
+		// System.out.println("Original amount: " + amount + ", Converted from KB to GB: " + tmpAmount + ", Value rounded: " + amountConverted);
+		
 		return amountConverted;
 		
 	}
@@ -90,20 +92,11 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		long roundedValue = Math.round(notRoundedValue);
 		String amountConverted = Long.toString(roundedValue);
-		
-//		double fractionalPart = notRoundedValue - roundedValue;
-		
-		// If the fractional part of the value is equal to .49, then the value will be rounded to the preceding integer.
-		// If the fractional part of the value starts with .49..., and has more than 2 fractional digits then the value will be rounded to the next integer. 
-//		if (fractionalPart >= 0.495) {		
-//			amountConverted = Integer.toString(Integer.parseInt(amountConverted) + 1);
-//			System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
-//		}
-				
+						
 		if (isExpenseValue)
 			amountConverted = "$" + amountConverted;
 		
-//		System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
+		// System.out.println("Not Rounded Value: " + notRoundedValue + ", Value rounded: " + amountConverted);
 		
 		return amountConverted;
 		

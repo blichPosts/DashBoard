@@ -3,10 +3,13 @@ package helperObjects;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import Dash.BaseClass;
@@ -52,10 +55,9 @@ public class GeneralHelper extends BaseClass {
 		}
 		
 //		System.out.println("Initial values: ");
-		
-		for (UsageOneMonth u: allValuesFromFile.get(0)) {
+//		for (UsageOneMonth u: allValuesFromFile.get(0)) {
 //			System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
-		}
+//		}
 		
 		
 		for (int i = 0; i < allValuesFromFile.size(); i++) {
@@ -79,9 +81,9 @@ public class GeneralHelper extends BaseClass {
 		}
 		
 //		System.out.println("Updated values: ");
-		for (UsageOneMonth u: allValuesFromFile.get(0)) {
+//		for (UsageOneMonth u: allValuesFromFile.get(0)) {
 //			System.out.println("Vendor: " + u.getVendorName() + ", value: " + vendorsToBeDisplayedMap.get(u.getVendorName()));
-		}
+//		}
 		
 		
 		return vendorsToBeDisplayedMap;
@@ -147,6 +149,7 @@ public class GeneralHelper extends BaseClass {
         
 	}
 
+	
 	public static void selectFirstMonth() throws Exception {
 
 		CommonTestStepActions.initializeMonthSelector();
@@ -155,13 +158,44 @@ public class GeneralHelper extends BaseClass {
 		String monthToSelect = months.get(0).getText();
 		CommonTestStepActions.selectMonthYearPulldown(monthToSelect);
 		
-		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
-		
 	}
 
 	
+	public static void waitForDataToBeLoaded() throws Exception {
+		
+		try {
+			// Wait for children to be listed on the PoV section -- this is to give time to new data to be loaded
+			WaitForElementPresentNoThrow(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MediumTimeout);
+//			ShowText("No children on PoV section");
+		} catch (TimeoutException e) {
+			try {
+				// If there are no children listed on the PoV section,
+				// then wait for message to show up on the tile map stating there are no children 
+				WaitForElementPresentNoThrow(By.cssSelector("div.tdb-charts__contentMessage"), MediumTimeout);
+			} catch (Exception e2) {
+//				ShowText("No message saying there's no data for selected month.");
+			}
+		}
+		
+	}
+	
+	
 	// Verifies that the difference between the expected value and the value found is less than one.
-	// Due to rounding there may be some case where the value found and the value expected differ on 1, e.g.: Value found = 28, Value expected = 27 
+	// Due to rounding there may be some case where the value found and the value expected differ on 1, e.g.: Value found = 28, Value expected = 27
+	public static void verifyExpectedAndActualValues(double valueActual, double valueExpected) {
+		
+		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
+		
+	}
+	
+	
+	public static void verifyExpectedAndActualValues(long valueActual, long valueExpected) {
+		
+		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
+				
+	}
+	
+	
 	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
 		
 //		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
@@ -174,8 +208,7 @@ public class GeneralHelper extends BaseClass {
 		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
 		
 	}
-	
-	
+		
 
 	private static String getNumericValue(String value) {
 		
@@ -189,6 +222,9 @@ public class GeneralHelper extends BaseClass {
 		
 		if (numericValue.endsWith(" service numbers"))
 			numericValue = numericValue.replace(" service numbers", "");
+
+		if (numericValue.endsWith("B"))
+			numericValue = numericValue.replace("B", "");
 		
 		if (numericValue.endsWith("K"))
 			numericValue = numericValue.replace("K", "");
@@ -201,24 +237,63 @@ public class GeneralHelper extends BaseClass {
 		
 		if (numericValue.endsWith("T"))
 			numericValue = numericValue.replace("T", "");
-					
+				
 		return numericValue.trim();
 		
 	}
 
+	
+	public static boolean waitForKPIsToLoad(int timeOut) throws Exception 
+	{
+	    
+		By byMainKPIvalue = By.cssSelector(".tdb-kpi__statistic");
+		By bySecondaryValue = By.cssSelector(".tdb-kpi__statistic--secondary");
+		
+		try
+	    {
+			WebDriverWait wait = new WebDriverWait(driver, timeOut);
+			
+		    wait.until(ExpectedConditions.not(ExpectedConditions.attributeToBe(byMainKPIvalue, "text", "$")));
+		    wait.until(ExpectedConditions.not(ExpectedConditions.attributeToBe(bySecondaryValue, "text", "$ directly allocated")));
+		    
+	    }
+        catch (Exception e)
+        {
+	        //System.out.println(e.toString());
+	        throw new Exception(e.toString());
+        }	    
+	    return true;
+	}		
+	
+	
 
-	public static void verifyExpectedAndActualValues(double valueActual, double valueExpected) {
+	// NEW - this is working -- We need to obtain the "y" coordinate of the center of the chart. 
+	// This is to make sure that the mouse is not outside the chart, and therefore, tooltip gets displayed.
+	// In order to do this, we get the "y" coordinate of all the horizontal lines displayed across the chart, and calculate the average of their "y" coordinate 
+	public static int getYCoordinate(String chartId) {
 		
-		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
+		int y = 0;
+			
+		String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path";
+		List<WebElement> lines = driver.findElements(By.cssSelector(cssLine));
+		
+		int coordinatesYTemp = 0;
+		
+		for (int i = 0; i < lines.size(); i++)  {
+			
+			Point coordinatesLine = GeneralHelper.getAbsoluteLocation(lines.get(i));
+			coordinatesYTemp += coordinatesLine.getY();
+			
+		}
+		
+		y = coordinatesYTemp / lines.size();
+		
+		return y;
 		
 	}
-	
-	
-	public static void verifyExpectedAndActualValues(long valueActual, long valueExpected) {
-		
-		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
-		
-	}
+
+
+
 	
 	
 	

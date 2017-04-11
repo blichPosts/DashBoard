@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 import Dash.BaseClass;
 
@@ -41,7 +43,7 @@ public class HierarchyHelper extends BaseClass {
 	public static void waitForKPIsToLoad() throws Exception{
 		
 		WaitForElementVisible(By.xpath("//h3[text()='Total Expense']"), MainTimeout);		
-		WaitForElementVisible(By.xpath("//h3[text()='Optimizable Expense']"), MainTimeout);
+		WaitForElementVisible(By.xpath("//h3[contains(text(), 'Optimizable Expense')]"), MainTimeout);
 		WaitForElementVisible(By.xpath("//h3[text()='Roaming Expense']"), MainTimeout);
 		WaitForElementVisible(By.xpath("//h3[text()='Cost per Service Number']"), MainTimeout);
 		
@@ -55,7 +57,7 @@ public class HierarchyHelper extends BaseClass {
 		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"));
 		viewTopTenToggle.click();
 		WaitForElementVisible(By.xpath("//h3[text()='Top 10 Service Numbers by Expense Amount - ']"), MediumTimeout);	
-		waitForTopTenChartToLoad();
+		//waitForTopTenChartToLoad();
 		
 	}
 	
@@ -92,7 +94,6 @@ public class HierarchyHelper extends BaseClass {
 		
 	}
 	
-	
 
 	public static void selectCategoryTopTen(int section, int category){
 		
@@ -101,14 +102,37 @@ public class HierarchyHelper extends BaseClass {
 		
 	}
 	
-
 	
 	
-	
-	public static void waitForTopTenChartToLoad() throws Exception {
+	// Wait until the tile map is displayed, or until the "..no dependents units.." message is displayed 
+	public static void waitForTileMapToBeDisplayed() throws Exception {
 		
-		String cssSelector = "#" + UsageHelper.getChartId(HierarchyHelper.topTenChart) + ">svg>g>g>rect.highcharts-point:nth-child(1)";
-		WaitForElementPresent(By.cssSelector(cssSelector), MediumTimeout);
+		try {
+			
+			String chartCss = "#" + UsageHelper.getChartId(0) + ">svg>g.highcharts-series-group";
+			WaitForElementPresent(By.cssSelector(chartCss), MediumTimeout);
+			
+		} catch (NoSuchElementException e) {
+			
+			try {
+				
+				String messageCss = ".tdb-charts__contentMessage";
+				WaitForElementPresent(By.cssSelector(messageCss), ShortTimeout);
+				
+			} catch (NoSuchElementException e2) {
+				
+				ShowText("Tile Map chart not displayed. 'No dependent units' message not displayed either.");
+				
+			}
+		}
+		
+	}
+	
+	
+	public static void waitForChartToLoad(int chartId) throws Exception {
+		
+		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g.highcharts-series";    // >svg>g>g>rect.highcharts-point:nth-child(1)";
+		WaitForElementPresentNoThrow(By.cssSelector(cssSelector), MainTimeout);
 		
 	}
 	
@@ -131,6 +155,15 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 	
+	// Get the Dependent Unit's name from PoV
+	public static String getDependentUnitNamePoV(int numDepUnit) throws Exception {
+			
+		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(" + numDepUnit + ")>a"), MainTimeout);
+		return driver.findElement(By.cssSelector("li.tdb-pov__item:nth-child(" + numDepUnit + ")>a")).getText().trim();
+
+	}
+	
+	
 	// Get the list of hierarchies listed on dropdown
 	public static List<WebElement> getHierarchiesFromDropdown() {
 		
@@ -147,7 +180,6 @@ public class HierarchyHelper extends BaseClass {
 		for (WebElement h: hierarchyValues) {
 			
 			hierarchyIds.add(h.getAttribute("value"));
-//			System.out.println("Hierarchy ID: " + h.getAttribute("value"));
 		}
 		
 		return hierarchyIds;
@@ -159,9 +191,10 @@ public class HierarchyHelper extends BaseClass {
 	public static void selectHierarchyFromDropdown(int numHierarchy) throws Exception {
 		
 		driver.findElement(By.cssSelector("app-hierarchy-selector>div>select>option:nth-child(" + numHierarchy + ")")).click();
-		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
-
+		
 	}
+	
+
 	
 	
 	// It returns a list with the months listed in dropdown month selector in the format MMM yyyy. E.g.: May 2016
@@ -216,6 +249,30 @@ public class HierarchyHelper extends BaseClass {
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 		
 		Thread.sleep(2000);
+		
+	}
+
+
+	public static String getHierarchySelected() {
+		
+		return new Select(driver.findElement(By.cssSelector("app-hierarchy-selector>div>select"))).getFirstSelectedOption().getText();
+		
+	}
+
+
+	public static String getDependentUnitOnTitle() {
+		
+		return driver.findElement(By.cssSelector(".tdb-kpi__header>span>span")).getText().trim();
+		
+	}
+
+	
+	// Get the latest added breadcrumb
+	public static String getLastAddedBreadcrumb() throws Exception {
+
+		WaitForElementPresent(By.cssSelector(".breadcrumbs"), MainTimeout);
+		return driver.findElement(By.cssSelector(".breadcrumbs>span:last-child")).getText().replace("/", "").trim();
+
 	}
 
 	

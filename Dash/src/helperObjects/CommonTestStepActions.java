@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -461,6 +462,12 @@ public class CommonTestStepActions extends BaseClass
 	// It returns a list with all the vendor names listed on the Point of View section
 	public static List<WebElement> getAllVendorNames(){
 		
+		try {
+			WaitForElementPresentNoThrow(By.xpath(".//span[@class='md-checkbox-label']"), MediumTimeout);
+		} catch (Exception e) {
+			ShowText("No checkboxes listed.");
+		}
+		
 		return driver.findElements(By.xpath(".//span[@class='md-checkbox-label']"));
 		
 	}
@@ -470,27 +477,32 @@ public class CommonTestStepActions extends BaseClass
 	public static void selectOneVendor(String vendorName) {
 	
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = getAllVendorNames();   //driver.findElements(By.xpath(".//span[@class='md-checkbox-label']"));
+		List<WebElement> listVendorsLabels = getAllVendorNames();
 		
 		
 		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
-		for(int i = 0; i < listVendorsLabels.size(); i++){
+		for (int i = 1; i <= listVendorsLabels.size(); i++) {
 			
-			int num = i + 1;
-			String checkBoxXpath = ".//input[@id='input-md-checkbox-" + num + "']/../..";
+			//int num = i + 1;
+			String checkBoxXpath = ".//input[@id='input-md-checkbox-" + i + "']/../..";    
+			
+//			String cssSelector = "md-checkbox>label:nth-of-type(" + i + ")";   //"span.md-checkbox-label:nth-of-type(" + i + ")";
+//			WebElement vendorCheckBox = driver.findElement(By.cssSelector(cssSelector));
 			
 			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
-			if(listVendorsLabels.get(i).getText().equals(vendorName)){
-				
-				driver.findElement(By.xpath(checkBoxXpath)).click();
+			if(listVendorsLabels.get(i-1).getText().equals(vendorName)){
+//			if(vendorCheckBox.getText().equals(vendorName)){
+//				driver.findElement(By.cssSelector(cssSelector)).click();
+				listVendorsLabels.get(i-1).click();
+				// driver.findElement(By.xpath(checkBoxXpath)).click();
 				
 			}
-			
-			
 			
 		}
 
 	}
+	
+
 		
 	// 1/2/17 - added the version of the numbers that start with "0", like "01", in case the month number received is in that format (Ana) 
 	public static String convertMonthNumberToName(String month, String year){
