@@ -107,7 +107,7 @@ public class ReadFilesHelper extends BaseClass {
 	    	    	
 	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.rows')");
 	   
-//	    ShowText(trendData);
+	    // ShowText(trendData);
 		   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(trendData); 
@@ -151,7 +151,7 @@ public class ReadFilesHelper extends BaseClass {
 	    	    	
 	    String ancestorsData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.ancestorsInfo')");
 	    	   
-	    //ShowText(ancestorsData);
+	    // ShowText(ancestorsData);
 		   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(ancestorsData); 
@@ -213,7 +213,7 @@ public class ReadFilesHelper extends BaseClass {
 	    // E.g.: hierarchy.PRIMARY.topUsers.EXPENSE.TOTAL_EXPENSE'
 	    String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".topUsers.EXPENSE." + categoryForJS + ".payload.rows')");
 	   
-	    ShowText(topTenData);
+	    // ShowText(topTenData);
 	   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(topTenData); 

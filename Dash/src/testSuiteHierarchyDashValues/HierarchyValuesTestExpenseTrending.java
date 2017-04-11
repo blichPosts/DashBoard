@@ -11,7 +11,6 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyExpenseTrending;
-import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.HierarchyTrendData;
 import helperObjects.ReadFilesHelper;
@@ -45,19 +44,17 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		for (int i = 1; i <= hierarchies.size(); i++) {
 			
-//			GeneralHelper.selectFirstMonth();
-			
 			HierarchyHelper.selectHierarchyFromDropdown(i);
 			
-			HierarchyHelper.waitForChartToLoad(HierarchyHelper.expenseTrendingChart);
+			HierarchyHelper.waitForChartToLoad(HierarchyHelper.expenseTrendingChart);  // <-- seems that is not useful :| 
 			
-//			Thread.sleep(3000);
+			Thread.sleep(2000);
 			
 			// #3 Get data from JSON
 			List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));
 					
 			
-			// #4 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
+			// #4 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
 			// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
 			// will be displayed on the Usage Trending charts 
 			
@@ -96,7 +93,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Test for Usage Trending values finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "Test for Expenses Trending values finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}

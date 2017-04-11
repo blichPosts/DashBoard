@@ -117,7 +117,7 @@ public class HierarchyHelper extends BaseClass {
 			try {
 				
 				String messageCss = ".tdb-charts__contentMessage";
-				WaitForElementPresent(By.cssSelector(messageCss), MediumTimeout);
+				WaitForElementPresent(By.cssSelector(messageCss), ShortTimeout);
 				
 			} catch (NoSuchElementException e2) {
 				
@@ -131,8 +131,8 @@ public class HierarchyHelper extends BaseClass {
 	
 	public static void waitForChartToLoad(int chartId) throws Exception {
 		
-		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g>rect.highcharts-point:nth-child(1)";
-		WaitForElementPresentNoThrow(By.cssSelector(cssSelector), MediumTimeout);
+		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g.highcharts-series";    // >svg>g>g>rect.highcharts-point:nth-child(1)";
+		WaitForElementPresentNoThrow(By.cssSelector(cssSelector), MainTimeout);
 		
 	}
 	

@@ -44,10 +44,15 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
 		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
+		CommonTestStepActions.initializeMonthSelector();
+		List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
 		
 		for (int i = 1; i <= hierarchies.size(); i++) {
 		
 			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
+			
+			HierarchyHelper.selectHierarchyFromDropdown(i);
+			HierarchyHelper.waitForTileMapToBeDisplayed();
 			
 			List<WebElement> dependentUnits = HierarchyHelper.getDependentUnitsPoV();
 			List<WebElement> breadcrumbs = HierarchyHelper.getBreadcrumbs();
@@ -58,50 +63,43 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 				
 				ShowText("No dependent units, click on breadcrumb.");
 				HierarchyHelper.clickOnBreadcrumb(1);
-				Thread.sleep(2000);
+				HierarchyHelper.waitForTileMapToBeDisplayed();
 				
 			} 
 			
-			GeneralHelper.selectFirstMonth();
-			
 			int j = 1;
-			int levelsToDrillDown = 5;  // Drill down up to 3 levels
-			boolean allMonthsVerified = false; 
-			
-			while (j <= levelsToDrillDown && !allMonthsVerified) { 
+			int levelsToDrillDown = 3;  // Drill down up to 3 levels
+
+			while (j <= levelsToDrillDown) { 
 			
 				int monthIndex = 1;
-//				boolean drilledDown = false;
 				
-				
-				HierarchyHelper.selectHierarchyFromDropdown(i);
-				HierarchyHelper.waitForTileMapToBeDisplayed();
-//				Thread.sleep(2000);
-				
-				List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
-				
-				// While there are no dependent units to drill down then select the previous month
-				while (HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
+				// While hierarchy is in the Top level, and there are no dependent units to drill down, 
+				// then select the previous month to see if it has dependent units to drill down.
+				while (j == 1 && HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
 					
-					ShowText("... no dependent units.. select a different month..");
 					String monthYear = monthsInSelector.get(monthIndex).getText();
 					CommonTestStepActions.selectMonthYearPulldown(monthYear);
 					monthIndex++;
-					System.out.println(" **** Month Year: " + monthYear);
+					
+					ShowText("... no dependent units.. select a different month.. --> Month Year selected: " + monthYear);
+					
 					GeneralHelper.waitForDataToBeLoaded();
 					
-				} //-- TEST
+				} 
 					
-				if (!HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {  // && !drilledDown) {
+				// If there are dependent units, drill down
+				if (!HierarchyHelper.getDependentUnitsPoV().isEmpty()) {
 					
 					System.out.println(" **** Drilling down Level #" + j);
 					
 					HierarchyHelper.drillDownOnDependentUnitPoV(1);
+//					GeneralHelper.waitForDataToBeLoaded();  // <-- not useful 
 					Thread.sleep(3000);
 					
 					// #3 Get data from JSON
 					List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));	
-				
+					
 					// #4 Verify that the values displayed on the tooltips of "Expenses Trending" chart are the same as the ones read from ajax calls 
 					// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
 					// will be displayed on the chart 
@@ -129,19 +127,9 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 						
 					}
 					
-					
-//					drilledDown = true;
-					j++;
 				}
 				
-				if (monthIndex == monthsInSelector.size()) {
-					allMonthsVerified = true;
-				}
-					
-					
-//				} // TEST
-				
-//				j++;
+				j++;
 				
 			}
 		

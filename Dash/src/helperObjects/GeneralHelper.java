@@ -203,9 +203,9 @@ public class GeneralHelper extends BaseClass {
 		double numActual = Double.parseDouble(getNumericValue(valueActual));
 		double numExpected = Double.parseDouble(getNumericValue(valueExpected));
 		
-		System.out.println("numActual: " + numActual + "; numExpected: " + numExpected);
+//		System.out.println("numActual: " + numActual + "; numExpected: " + numExpected);
 		
-//		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
+		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
 		
 	}
 		
@@ -264,6 +264,37 @@ public class GeneralHelper extends BaseClass {
         }	    
 	    return true;
 	}		
+	
+	
+
+	// NEW - this is working -- We need to obtain the "y" coordinate of the center of the chart. 
+	// This is to make sure that the mouse is not outside the chart, and therefore, tooltip gets displayed.
+	// In order to do this, we get the "y" coordinate of all the horizontal lines displayed across the chart, and calculate the average of their "y" coordinate 
+	public static int getYCoordinate(String chartId) {
+		
+		int y = 0;
+			
+		String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path";
+		List<WebElement> lines = driver.findElements(By.cssSelector(cssLine));
+		
+		int coordinatesYTemp = 0;
+		
+		for (int i = 0; i < lines.size(); i++)  {
+			
+			Point coordinatesLine = GeneralHelper.getAbsoluteLocation(lines.get(i));
+			coordinatesYTemp += coordinatesLine.getY();
+			
+		}
+		
+		y = coordinatesYTemp / lines.size();
+		
+		return y;
+		
+	}
+
+
+
+	
 	
 	
 }

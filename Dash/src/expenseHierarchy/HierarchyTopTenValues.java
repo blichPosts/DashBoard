@@ -56,73 +56,25 @@ public class HierarchyTopTenValues extends BaseClass{
 		List<WebElement> chartElementNames = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 		List<String> chartLabelsFound = new ArrayList<String>();
 		
-		List<String> expectedValuesList = new ArrayList<>();
-		HashMap<String, String> expectedValues = new HashMap<>();
-		List<String> expectedLabels = new ArrayList<>();
-		
-		
 		for (int i = 0; i < chartElementNames.size(); i++) {
-
 			chartLabelsFound.add(chartElementNames.get(i).getText());
-			
 		}
 		
 		
+		List<String> expectedLabels = new ArrayList<>();
+		List<String> expectedValuesList = new ArrayList<>();
+		HashMap<String, String> expectedValues = new HashMap<>();
+		
+				
 		// Set up lists with expected values and labels		
 		for (HierarchyTopTenData data: topTenValues) {
 			
-			String type = data.getType();
-			String label = "";
-			String serviceNumber = "";
-			String firstName = "";
-			String lastName = "";
-			String employeeName = "";
+			String expectedLabel = getExpectedLabel(data);
+			expectedLabels.add(expectedLabel);
 			
-			// Set up the label according to whether the type is Employee, Department or Average 
-	    	switch (type) {
-	    	
-	    		case "EMPLOYEE":
-	    			
-	    			serviceNumber = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
-	    			
-	    			if (!data.getEmployeeFirstname().isEmpty()) 
-	    				firstName = data.getEmployeeFirstname().substring(0, 1); 
-	    			
-	    			if (!data.getEmployeeLastname().isEmpty()) 
-	    				lastName = data.getEmployeeLastname().replace(" ", "");
-	    			
-	    			if (!firstName.isEmpty() && !lastName.isEmpty())
-	    				employeeName = firstName + "." + lastName;
-	    			
-	    			else if (firstName.isEmpty() && !lastName.isEmpty())
-	    				employeeName = lastName;
-	    			
-	    			label = serviceNumber + employeeName;
-	    			expectedLabels.add(label);
-	    			
-	    			break;
-	    			
-	    		case "DEPARTMENT":
-	    			
-	    			serviceNumber = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
-	    			label = serviceNumber + data.getDepartmentName();
-	    			expectedLabels.add(label);
-	    			
-	    			break;
-
-	    		case "AVERAGE":
-	    			
-	    			label = "Average";
-	    			expectedLabels.add(label);
-	    			
-	    			break;
-	    	
-	    	}
-			
-
-	    	String value = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
-	    	expectedValuesList.add(value);
-	    	expectedValues.put(label, value);
+	    	String expectedValue = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
+	    	expectedValuesList.add(expectedValue);
+	    	expectedValues.put(expectedLabel, expectedValue);
 	    	
 		}
 
@@ -143,32 +95,15 @@ public class HierarchyTopTenValues extends BaseClass{
 		// Verify the info contained on each of the tooltips for the values listed on the chart 	
 		
 		int indexHighchart = 1;
+		int barsAmount = chartElementNames.size();
 		
-		while (indexHighchart <= chartElementNames.size()) {
+		while (indexHighchart <= barsAmount) {
 			
-			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-						
-			// WebElement 'bar' will be used to set the position of the mouse on the chart
-			WebElement bar = driver.findElement(By.cssSelector(cssBar));
-
-			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-			Point coordinates = GeneralHelper.getAbsoluteLocationTopTenBar(bar);
+			int[] coordinates = getCoordinates(chartId, indexHighchart, barsAmount);
 			
-			int x_offset = (int) (bar.getSize().width * 0.5);
-			int y_offset = (int) (bar.getSize().height * 0.7);
-
-			if (loginType.equals(LoginType.Command)) {
-				if (chartElementNames.size() > 5) {
-					y_offset = (int) (bar.getSize().height * 1.5);
-				} else {
-					y_offset = (int) (bar.getSize().height); // <-- added on 4/6/17. This worked for a graph with 2 bars. Will need to see if it works with more bars  
-				}
-			}
+			int x = coordinates[0];
+			int y = coordinates[1];
 			
-			int x = coordinates.getX() + x_offset + 2;
-			int y = coordinates.getY() + y_offset;
-
 			
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);
@@ -210,6 +145,95 @@ public class HierarchyTopTenValues extends BaseClass{
 			indexHighchart++;
 				
 		}
+		
+	}
+
+
+	// Get the x and y coordinates of the bar 
+	private static int[] getCoordinates(String chartId, int index, int barsAmount) {
+
+		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + index + ")";
+				
+		// WebElement 'bar' will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+		
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		Point point = GeneralHelper.getAbsoluteLocationTopTenBar(bar);
+		
+		int x_offset = (int) (bar.getSize().width * 0.5);
+		int y_offset = (int) (bar.getSize().height * 0.7);
+		
+		if (loginType.equals(LoginType.Command)) {
+			
+			if (barsAmount > 5) {
+			
+				y_offset = (int) (bar.getSize().height * 1.5);
+				
+			} else {
+				
+				y_offset = (int) (bar.getSize().height); // <-- added on 4/6/17. This worked for a graph with 2 bars. Will need to see if it works with more bars
+				
+			}
+			
+		}
+		
+		int x = point.getX() + x_offset + 2;
+		int y = point.getY() + y_offset;
+		
+		int[] coordinates = {x, y};
+				
+		return coordinates;
+		
+	}
+
+
+
+	// Set up the label according to whether the type is Employee, Department or Average 
+	private static String getExpectedLabel(HierarchyTopTenData data) {
+		
+		String type = data.getType();
+		String label = "";
+		String serviceNumber = "";
+		String firstName = "";
+		String lastName = "";
+		String employeeName = "";
+		
+    	switch (type) {
+    	
+    		case "EMPLOYEE":
+    			
+    			serviceNumber = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
+    			
+    			if (!data.getEmployeeFirstname().isEmpty()) 
+    				firstName = data.getEmployeeFirstname().substring(0, 1); 
+    			
+    			if (!data.getEmployeeLastname().isEmpty()) 
+    				lastName = data.getEmployeeLastname().replace(" ", "");
+    			
+    			if (!firstName.isEmpty() && !lastName.isEmpty())
+    				employeeName = firstName + "." + lastName;
+    			
+    			else if (firstName.isEmpty() && !lastName.isEmpty())
+    				employeeName = lastName;
+    			
+    			label = serviceNumber + employeeName;
+    			break;
+    			
+    		case "DEPARTMENT":
+    			
+    			serviceNumber = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
+    			label = serviceNumber + data.getDepartmentName();
+    			break;
+
+    		case "AVERAGE":
+    			
+    			label = "Average";
+    			break;
+    	
+    	}
+    	
+		return label;
 		
 	}
 
