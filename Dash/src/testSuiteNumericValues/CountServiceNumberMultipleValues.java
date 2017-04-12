@@ -21,6 +21,7 @@ import helperObjects.UsageOneMonth;
 
 public class CountServiceNumberMultipleValues extends BaseClass{
 
+	
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
@@ -176,49 +177,7 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 			
 			try {
 				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryAll);
-				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAll);
-				Thread.sleep(2000);
-				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryVoice);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryVoice);
-				Thread.sleep(2000);
-				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryData);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryData);
-				Thread.sleep(2000);
-				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryMessages);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryMessages);
-				Thread.sleep(2000);
-				 
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryRoaming);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryRoaming);
-				Thread.sleep(2000);
-				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryEquipment);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryEquipment);
-				Thread.sleep(2000);
-				 
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryTaxes);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryTaxes);
-				Thread.sleep(2000);
-				 
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryOther);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryOther);
-				Thread.sleep(2000);
-				 
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryAccount);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAccount);
 				Thread.sleep(2000);
 				 
 				

@@ -275,6 +275,23 @@ public class HierarchyHelper extends BaseClass {
 
 	}
 
+
+	// Get a random dependent unit
+	public static int getDependentUnitToDrillDown() {
+		
+		int amountDependentUnits = getDependentUnitsPoV().size();
+		int dependentUnitRandom = 0;
+		
+		while (dependentUnitRandom == 0) {
+			dependentUnitRandom = (int) Math.round(Math.random() * amountDependentUnits);
+		} 
+		
+		// ShowText("amountDependentUnits: " + amountDependentUnits + ", dependentUnitRandom: " + dependentUnitRandom);
+		
+		return dependentUnitRandom;
+		
+	}
+
 	
 }
 

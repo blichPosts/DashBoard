@@ -126,7 +126,13 @@ public class HierarchyTopTenValues extends BaseClass{
 			
 			// Get the label and remove colon at the end of its text
 			String labelFoundTmp = tooltip.getText().split(":")[0].trim();
-			String labelFound = GeneralTopTenHelper.formatPhoneNumberUI(labelFoundTmp); 
+			String labelFound = labelFoundTmp;
+			
+			if (!labelFoundTmp.equals("Average")) {
+			
+				labelFound = GeneralTopTenHelper.formatPhoneNumberUI(labelFoundTmp);
+				
+			}
 			
 			// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
 			String valueFound = tooltip.getText().split(":")[1].trim().replace(" ", "");
@@ -247,15 +253,13 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		// Wait for the data to be updated on chart
 		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
-//		Thread.sleep(2000);
 	
 		// Get data from JSON
 		List<HierarchyTopTenData> valuesExpected = ReadFilesHelper.getJsonDataTopTen(category, hierarchyId); 
 		
 		// Verify values on the selected Top Ten chart and for the selected category
 		verifyValuesOnReportMatchChart(valuesExpected, barChartId, category);
-		
-		
+			
 	}
 	
 	

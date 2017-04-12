@@ -48,9 +48,15 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
 		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
+		CommonTestStepActions.initializeMonthSelector();
+		List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
+		
 		for (int i = 1; i <= hierarchies.size(); i++) {
 			
 			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
+			
+			HierarchyHelper.selectHierarchyFromDropdown(i);
+			Thread.sleep(2000);
 			
 			List<WebElement> dependentUnits = HierarchyHelper.getDependentUnitsPoV();
 			List<WebElement> breadcrumbs = HierarchyHelper.getBreadcrumbs();
@@ -59,102 +65,65 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 			// click on the first item on the breadcrumb to return to the top level of the hierarchy.
 			if (dependentUnits.isEmpty() && !breadcrumbs.isEmpty()) {
 				
+				ShowText("No dependent units, click on breadcrumb.");
 				HierarchyHelper.clickOnBreadcrumb(1);
 				Thread.sleep(2000);
 				
 			}
 			
 			int j = 1;
-			int levelsToDrillDown = 3;  // Drill down up to 3 levels
+			int levelsToDrillDown = 5;  // Drill down up to 5 levels
 			
-			int monthIndex = 1;
-						
 			while (j <= levelsToDrillDown) {
 			
-				System.out.println(" **** Drilling down Level #" + j);
-			
-				boolean monthSelected = true;
-				Thread.sleep(2000);
+				int monthIndex = 1;
 				
-				HierarchyHelper.selectHierarchyFromDropdown(i);
-				Thread.sleep(2000);
-			
-				CommonTestStepActions.initializeMonthSelector();
-				List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
-				
-				// While there are no dependent units to drill down then select the previous month
-				while (HierarchyHelper.getDependentUnitsPoV().isEmpty() 
-						&& monthIndex < monthsInSelector.size()) {
+				// While hierarchy is in the Top level, and there are no dependent units to drill down, 
+				// then select the previous month to see if it has dependent units to drill down.
+				while (j == 1 && HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
 					
 					String monthYear = monthsInSelector.get(monthIndex).getText();
 					CommonTestStepActions.selectMonthYearPulldown(monthYear);
 					monthIndex++;
-					System.out.println(" **** Month Year: " + monthYear);
+					
+					ShowText("... no dependent units.. select a different month.. --> Month Year selected: " + monthYear);
 					
 					GeneralHelper.waitForDataToBeLoaded();
 				
 				}	
 					
-				if (!HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
-				
-					HierarchyHelper.drillDownOnDependentUnitPoV(1);
+				// #4 If there are dependent units, drill down
+				if (!HierarchyHelper.getDependentUnitsPoV().isEmpty()) {
+					
+					System.out.println(" **** Drilling down Level #" + j);
+					
+					int dependentUnitToDrillDown = HierarchyHelper.getDependentUnitToDrillDown(); 
+					HierarchyHelper.drillDownOnDependentUnitPoV(dependentUnitToDrillDown);
 					
 					// Wait for chart to be reloaded after the drilling down action
 					WaitForElementPresent(By.cssSelector("chart>div"), MediumTimeout);
+							
+					// #5 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
 					
+					try {
+						
+						// Run test for "Expense" chart and category "Total"
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+						
+						// Run test for "Expense" chart and category "Optimizable"
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+						
+						// Run test for "Expense" chart and category "Roaming"
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+						
+						
+					} catch(NullPointerException e) {
+						
+						System.out.println("chart not found");
+						
+					}
 				
-					// #4 Get the last month listed on month selector
-					List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown(); 
-			
-					String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);
-					String monthYearToSelect = "";
-					
-					int indexMonth = monthIndex - 1;
-					
-//						do {
-						
-//							if (!monthSelected) {
-//								
-//								monthYearToSelect = monthsInDropdown.get(indexMonth);
-//								System.out.println("Month Year: " + monthYearToSelect);
-//								
-//								// #5 Select month on month/year selector
-//								CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-//								
-//								// Wait for chart to be loaded
-//								WaitForElementVisible(By.cssSelector("chart>div"), ExtremeTimeout);
-//								
-//							}
-						
-						
-						// #6 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
-						
-						try {
-							
-							// Run test for "Expense" chart and category "Total"
-							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
-							
-							// Run test for "Expense" chart and category "Optimizable"
-							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
-							
-							// Run test for "Expense" chart and category "Roaming"
-							HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
-							
-							
-						} catch(NullPointerException e) {
-							
-							System.out.println("chart not found");
-							
-						}
-						
-						indexMonth++;
-						monthSelected = false;
-						
-//						} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
-			
 				}
-					
-//				}
 				
 				j++;
 		

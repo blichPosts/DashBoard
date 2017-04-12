@@ -26,13 +26,18 @@ import helperObjects.UsageOneMonth;
 public class ExpenseTrendingMultipleValues extends BaseClass {
 
 	
+	private static List<HashMap<String, String>> expectedValues;
+	private static HashMap<String, Boolean> vendorHasData;
+	private static String chartId;
+	
+	
 	// Verifies the content of the tooltips displayed on charts under Expense Trending charts
 	// **** FOR ONE OR MORE VENDORS SELECTED ****
 	public static void verifyExpenseTrendingChartTooltip(int barChartId, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector) throws ParseException, InterruptedException, AWTException {
 		
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
-		String chartId = UsageHelper.getChartId(barChartId);
+		chartId = UsageHelper.getChartId(barChartId);
 		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
 				
 		Thread.sleep(2000);
@@ -42,27 +47,152 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		
 		for (WebElement e: legendsElements) {
 			legends.add(e.getText());
-//			System.out.println("Legend: " + e.getText());
+			// System.out.println("Legend: " + e.getText());
 		}
 		
+		vendorHasData = GeneralHelper.vendorHasDataForSelectedMonth(allValuesFromFile);		
 		
-		List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
+		expectedValues = new ArrayList<HashMap<String, String>>();
+		
+		// Get the expected values of the vendors listed on the chart
+		getExpectedValues(barChartId, allValuesFromFile, categorySelector);
 
-		int amount = highchartSeries.size();
-		//System.out.println("amount: " + amount);
+		// Calculate the value for the 'Other' element on the chart
+		calculateOtherExpectedValues(barChartId, allValuesFromFile, categorySelector);
 		
-		int indexHighchart = 1;
+
+		// Verify the info contained on each of the tooltips for the 13 months 		
 		
 		List<String> monthYearList = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
+		
 		int indexMonth = monthYearList.size()-1;
+		int indexHighchart = 1;
 		
+		while (indexHighchart <= monthYearList.size()) {
+			
+			String cssBar = "";
+			
+			if (barChartId == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
 				
-		List<HashMap<String, String>> expectedValues = new ArrayList<>();
-		List<String> expectedLabels = new ArrayList<>(); // it may be removed -- see if legends work as expected label
-		
-		HashMap<String, Boolean> vendorHasData = GeneralHelper.vendorHasDataForSelectedMonth(allValuesFromFile);
-		
+				cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
+	
 				
+			} else if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart || barChartId == ExpenseHelperMultipleVendors.countServiceNumbersChart) {
+				
+				cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+				
+			}
+			
+			
+			// 'bar' WebElement will be used to set the position of the mouse on the chart
+			WebElement bar = driver.findElement(By.cssSelector(cssBar));
+						
+			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+			// Get the location of the second line of the chart -> to get the "y" coordinate
+			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+			
+			Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
+			
+			int y_offset = 0;
+			
+			if (loginType.equals(LoginType.Command)) {
+				
+				if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart) {
+					
+					y_offset = 100;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
+					
+				}
+				
+				if (barChartId == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
+						
+					y_offset = -200;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
+					
+				}
+				
+				if (barChartId == ExpenseHelperMultipleVendors.countServiceNumbersChart) {
+				
+					y_offset = -500;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
+					
+				}
+				
+			} 
+			
+			int x = barCoordinates.getX();
+			int y = GeneralHelper.getYCoordinate(chartId) + y_offset;
+			
+			Robot robot = new Robot();
+			robot.mouseMove(x, y);
+			// System.out.println("coordinates:  x: " + x + "  y: " + y);
+			
+			Thread.sleep(500);
+			
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+			
+			
+			try {
+				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+				//System.out.println("Tooltip present");
+			} catch (Exception e) {
+				System.out.println("Tooltip NOT present");
+				e.printStackTrace();
+			}
+					
+			
+			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
+			
+			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
+			// 0 MM-YYYY -- month and year appears once
+			// 1 ? -- this is for the bullet
+			// 2 <vendor's name>
+			// 3 <amount shown for the vendor>
+			
+			List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
+			int amount = highchartSeries.size();
+			int expectedAmountItemsTooltip = (amount * 3) + 1;
+			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			
+			
+			// For each vendor listed in the tooltip verify the label and the amount shown
+			for (int i = 1; i <= legends.size(); i++) {
+			
+				int index =  i * 3 - 1;
+				
+				// Get the label and remove colon at the end of its text
+				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+
+				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
+				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+					
+				// Get the value expected
+				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
+				
+				System.out.println("Vendor: " + labelFound);
+				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+
+				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
+				
+			}
+			
+			// Verify month and year shown on the tooltip (first line)
+			String monthYearFound = tooltip.get(0).getText();
+			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
+				
+			Assert.assertEquals(monthYearFound, monthYearExpected);
+			// System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+			
+			indexHighchart++;
+			indexMonth--;
+			
+		}
+		
+	}
+
+
+
+	private static void getExpectedValues(int barChartId, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector) throws ParseException {
+		
+		
 		for(int indexMonthValues = 0; indexMonthValues < allValuesFromFile.size(); indexMonthValues++){
 			
 			HashMap<String, String> map = new HashMap<>();
@@ -177,8 +307,8 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 					}
 					
 					// If the label to be added is not included on the expectedLabels list yet; and the label is included in the legends list 
-					if(!expectedLabels.contains(keyVendor) && legends.contains(keyVendor))
-						expectedLabels.add(keyVendor);
+//					if(!expectedLabels.contains(keyVendor) && legends.contains(keyVendor))
+//						expectedLabels.add(keyVendor);
 					
 				}
 									
@@ -188,6 +318,12 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			
 		}	
 		
+//		return expectedValues;
+		
+	}
+	
+	
+	private static void calculateOtherExpectedValues(int barChartId, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector) {
 		
 		
 		List<WebElement> vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
@@ -230,8 +366,8 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		// If more than 5 vendors are selected, and there are 6 vendors in chart
 		if (moreThanFiveVendorsSelected && sixVendorsInChart) {
 			
-//			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
-//			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
+			// System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
+			// System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
 						
 			for (int indexMonthValues = 0; indexMonthValues < listUsageAllMonths.size(); indexMonthValues++) {
 
@@ -368,139 +504,12 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				
 			}
 			
-			expectedLabels.add(otherVendors);
-			
-		}
-		
-	
-		for (int i = 0; i < expectedLabels.size(); i++) {		
-//			System.out.println(" Label " + i + ": " + expectedLabels.get(i));
-		}
-		
-
-		// Verify the info contained on each of the tooltips for the 13 months 		
-		
-		while (indexHighchart <= monthYearList.size()) {
-			
-			String cssBar = "";
-			
-			if (barChartId == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
-				
-				cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
-	
-				
-			} else if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart || barChartId == ExpenseHelperMultipleVendors.countServiceNumbersChart) {
-				
-				cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-				
-			}
-			
-			
-			String cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(1)";
-			
-			// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
-			WebElement bar = driver.findElement(By.cssSelector(cssBar));
-			WebElement line = driver.findElement(By.cssSelector(cssLine));
-			
-			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-			// Get the location of the second line of the chart -> to get the "y" coordinate
-			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-			
-			Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
-			Point lineCoordinates = GeneralHelper.getAbsoluteLocation(line);   
-			Robot robot = new Robot();
-			
-			int y_offset = 0;
-			
-			if (loginType.equals(LoginType.Command)) {
-				
-				if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart) {
-					
-					y_offset = 0;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
-					
-				}
-				
-				if (barChartId == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
-					
-					y_offset = -300;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
-					
-				}
-				
-				if (barChartId == ExpenseHelperMultipleVendors.countServiceNumbersChart) {
-				
-					y_offset = -600;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
-					
-				}
-				
-			} 
-			
-			int x = barCoordinates.getX();
-			int y = lineCoordinates.getY() + y_offset;
-			
-			robot.mouseMove(x, y);
-//			System.out.println("coordinates:  x: " + x + "  y: " + y);
-			
-			Thread.sleep(500);
-			
-			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-			
-			
-			try {
-				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
-				//System.out.println("Tooltip present");
-			} catch (Exception e) {
-				System.out.println("Tooltip NOT present");
-				e.printStackTrace();
-			}
-					
-			
-			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
-			
-			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
-			// 0 MM-YYYY -- month and year appears once
-			// 1 ? -- this is for the bullet
-			// 2 <vendor's name>
-			// 3 <amount shown for the vendor>
-			
-			
-			int expectedAmountItemsTooltip = (amount * 3) + 1;
-			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
-			
-			
-			// For each vendor listed in the tooltip verify the label and the amount shown
-			for (int i = 1; i <= legends.size(); i++) {
-			
-				int index =  i * 3 - 1;
-				
-				// Get the label and remove colon at the end of its text
-				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
-
-				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
-				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
-					
-				// Get the value expected
-				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
-				
-				System.out.println("Vendor: " + labelFound);
-				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
-
-				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
-				
-			}
-			
-			// Verify month and year shown on the tooltip (first line)
-			String monthYearFound = tooltip.get(0).getText();
-			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
-				
-			Assert.assertEquals(monthYearFound, monthYearExpected);
-			System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
-			
-			indexHighchart++;
-			indexMonth--;
+//			expectedLabels.add(otherVendors);
 			
 		}
 		
 	}
+	
+	
 
 }
