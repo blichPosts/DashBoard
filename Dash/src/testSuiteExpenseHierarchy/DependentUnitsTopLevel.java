@@ -19,7 +19,7 @@ import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.hierarchyTileMapTabSelection;
 
-public class HierarchyNumbersTestsDependents extends BaseClass
+public class DependentUnitsTopLevel extends BaseClass
 {
 
 	@BeforeClass
@@ -30,7 +30,7 @@ public class HierarchyNumbersTestsDependents extends BaseClass
 	}
 	
 	@Test
-	public static void HierarchyNumbersTestDependents() throws Exception
+	public static void DependentsTopLevelTest() throws Exception
 	{	
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 

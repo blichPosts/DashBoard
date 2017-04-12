@@ -28,6 +28,11 @@ public class HierarchyHelper extends BaseClass {
 	public final static String directlyAllocated = "Direct Allocation";
 	public final static String allocatedChildren = "Allocation to Dependent Units";
 	
+	//////////////////////////////////////////
+	// dependents and tile map items below.
+	//////////////////////////////////////////
+	public final static String dependentsListCssLocator = ".tdb-pov__itemList>li"; // this selects whole dependents list. 
+	
 		
 	// Select the "VIEW BY HIERARCHY" button
 	public static void selectHierarchyView() throws Exception {

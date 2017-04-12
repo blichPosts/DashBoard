@@ -5,6 +5,8 @@ import expenseHierarchy.HierarchyNumbersDependents;
 import expenseHierarchy.VisualPageLoad;
 import expenseHierarchy.HierarchyNumbersDependents.TileMapTestType;
 
+import javax.swing.JOptionPane;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -15,7 +17,7 @@ import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.hierarchyPulldownSelection;
 
-public class TileMapsOneLevel extends BaseClass
+public class TileMapsTopLevel extends BaseClass
 {
 
 	@BeforeClass
@@ -26,7 +28,7 @@ public class TileMapsOneLevel extends BaseClass
 	}
 	
 	@Test
-	public static void HierarchyNumbersTest() throws Exception
+	public static void TileMapsTopLevelTest() throws Exception
 	{	
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
@@ -135,7 +137,7 @@ public class TileMapsOneLevel extends BaseClass
 	{
 		System.out.println("Close Browser.");	
 		ExpenseHelper.SetWaitDefault();
-	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
+	    JOptionPane.showMessageDialog(frame, "Test Complete.");
 		driver.close();
 		driver.quit();
 	}	

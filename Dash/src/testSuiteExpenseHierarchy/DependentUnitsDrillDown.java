@@ -14,7 +14,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 
-public class HierarchyNumbersTestsDependentsDrillDown extends BaseClass 
+public class DependentUnitsDrillDown extends BaseClass 
 {
 
 	@BeforeClass
@@ -25,7 +25,7 @@ public class HierarchyNumbersTestsDependentsDrillDown extends BaseClass
 	}
 	
 	@Test
-	public static void HierarchyNumbersTestDependentsDrillDown() throws Exception
+	public static void DependentUnitsDrillDownTest() throws Exception
 	{		
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 

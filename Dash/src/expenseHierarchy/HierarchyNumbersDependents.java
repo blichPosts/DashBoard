@@ -274,10 +274,9 @@ public class HierarchyNumbersDependents extends BaseClass
 		int x = 0;
 		int loopCntr = 0;
 		
-		// get the number of tiles in the tile map.
-    	loopCntr = NumberOfTiles();
+		// get the number of tiles in the tile map and setup loop counter.
+    	loopCntr = NumberOfTilesToTest();
 		
-    	
 		System.out.println("loopCntr max = " + loopCntr);
 		
 		// ////////////////////////////////////////////////////////////////////////////////////
@@ -286,28 +285,26 @@ public class HierarchyNumbersDependents extends BaseClass
         for(int y = 1; y <= loopCntr; y++) 
 		{ 
         	hoverInfo = GetTooltipText(y);
-			ShowText("hover info back: " + hoverInfo);
+			// ShowText("hover info back: " + hoverInfo);
 			
         	// get the cost type string to be filtered out for creating 'numericValue' string below. 
 			filterString = BuildStringForFilteringText();
 			
 			// these two calls get the name info and the cost info from the dependent user in the UI. both of these are put in currentDependentUnitInfo string. 
 			// the type of cost string ("total", "optimizable", or "roaming") is filtered out of dependentUnitInfo string. 
-			nameAndIds = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + y + ")>a")).getText(); // name and id(s).
-			numericValue = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + y + ")>span")).getText().replace(filterString,""); // numeric value (cost type removed).
+			nameAndIds = driver.findElement(By.cssSelector(HierarchyHelper.dependentsListCssLocator +  ":nth-of-type(" + y + ")>a")).getText(); // name and id(s).
+			numericValue = driver.findElement(By.cssSelector(HierarchyHelper.dependentsListCssLocator +  ":nth-of-type(" + y + ")>span")).getText().replace(filterString,""); // numeric value (cost type removed).
 
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
-			//ShowText("hover text - " + hoverInfo);
-			// ShowText("text created from UI - " + currentDependentUnitInfo);
- 
+			ShowText("hover text           - " + hoverInfo);
+			ShowText("text created from UI - " + currentDependentUnitInfo);
 			
 			Assert.assertEquals(hoverInfo, currentDependentUnitInfo);
 		}
 
-		Pause("loop through tile maps done.");
-        
+		// Pause("loop through tile maps done.");
         // System.out.println("Number of Tile maps tested = " + (x  - 1));
 	}	
 	
@@ -330,8 +327,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			// these two calls get the name info and the cost info from the dependent user in the UI. both of these are put in currentDependentUnitInfo string. 
 			// the type of cost string ("total", "optimizable", or "roaming") is filtered out of dependentUnitInfo string. 
-			nameAndIds = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText(); // name and id(s).
-			numericValue = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace(filterString,""); // numeric value (cost type removed).
+			nameAndIds = driver.findElement(By.cssSelector(HierarchyHelper.dependentsListCssLocator +  ":nth-of-type(" + x + ")>a")).getText(); // name and id(s).
+			numericValue = driver.findElement(By.cssSelector(HierarchyHelper.dependentsListCssLocator + ":nth-of-type(" + x + ")>span")).getText().replace(filterString,""); // numeric value (cost type removed).
 
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
@@ -410,29 +407,13 @@ public class HierarchyNumbersDependents extends BaseClass
         //Thread.sleep(1500); 
         
         WebElement tooltip = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip")); 
-        // System.out.println(tooltip.getText().split("\\.")[1].trim());
 		
         String retString = tooltip.getText();
         
+        // ShowText("Full Value tooltip " + retString.substring(retString.indexOf(".") + 1, retString.length()).trim());
         
-        ShowText("Full Value tooltip " + retString.substring(retString.indexOf(".") + 1, retString.length()).trim());
-        
-		/*
-        String tempString = "";
-		
-		// get rid of decimal on right.
-		if(retString.split("\\$")[1].contains("."))
-		{
-			x = retString.length() - retString.lastIndexOf(".");
-			tempString = retString.substring(0, retString.length() - x);
-			retString = tempString;
-		}
-        
-        ShowText("hover return " + retString.substring(retString.indexOf(".") + 1, retString.length()).trim());
-        */
         // this removes the leading numbering (i.e. "1. " before the name and cost);
         return retString.substring(retString.indexOf(".") + 1, retString.length()).trim();
-		// return tooltip.getText().split("\\.")[1].trim(); // trim out decimal  value // orig -- doesn't always work.
 	}
 	
 	// this builds the json request string for getting the json rows of dependent unit values. 
@@ -672,7 +653,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				// http://stackoverflow.com/questions/19711689/how-to-detect-if-a-string-input-has-more-than-one-consecutive-space
 				if ((childList.get(loopCntr).childName.matches(".*  .*")))
 				{
-					ShowText("found name with two space separator");
+					ShowText("found name with two space separator. Name is: " + childList.get(loopCntr).childName);
 					childList.get(loopCntr).childName = childList.get(loopCntr).childName.replace("  ",  " "); 
 				}
 
@@ -828,13 +809,12 @@ public class HierarchyNumbersDependents extends BaseClass
 			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
 			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
 			
-			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+			// if have hit a page with no dependents then break.
+			if(WaitForNoDependentsInPage(cntr))
 			{
-				System.out.println("Finished drill down testing to level " + cntr);
-				System.out.println("The last click found the 'No Depenents' message\n");
 				break;
 			}
-			// HierarchyNumbersDependents.TestPhaseOne();  // run tests.
+			
 			HierarchyNumbersDependents.RunTilesInCommand();  // run tests.
 			cntr++;
 		}
@@ -849,48 +829,43 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		int tileToSelect;
 		int cntr = 0;
-		int numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size(); 
+		int numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); 
 		
 		Random rand = new Random();
 		
 		ShowText("Doing Drill down test Command." );
-		Pause("Doing Drill down test with number of drilldowns = " + maxNumberOfLevels );
+		// Pause("Doing Drill down test with number of drilldowns = " + maxNumberOfLevels );
 		
 		
 		while (cntr != maxNumberOfLevels)
 		{
-			// anaadd - nothing done here
-			tileToSelect = rand.nextInt(numberOfDependentUnits) + 1;
-			// System.out.println("\n** Selecting tile number " + tileToSelect + " **\n"); // NOTE hack for command
 
+			tileToSelect = rand.nextInt(numberOfDependentUnits) + 1;
 			
-			// hack because of tile sizes extreme variance..
-			tileToSelect = tileToSelect/2;
-			if(tileToSelect == 0)
-			{
-				tileToSelect = 1;
-			}
+			// hack because of tile sizes extreme variance, this should find a tile number that can be selected.
+			tileToSelect = AdjustTileMapSelection(tileToSelect);
 			
 			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
 			
-			Pause("Ready for click Button.");
+			// Pause("Ready for click Button.");
 			
 			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
 			
-			Pause("Freeze After Clicking Tile");
+			// Pause("Freeze After Clicking Tile");
 			
-			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+			// wait for the new bread crumb to be added.
+			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrumb count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
+
+			// if have hit a page with no dependents then break. 
+			if(WaitForNoDependentsInPage(cntr))
 			{
-				System.out.println("Finished drill down testing to level " + cntr);
-				System.out.println("The last click found the 'No Depenents' message\n");
 				break;
 			}
-			// HierarchyNumbersDependents.TestPhaseOne();  // run tests.
-			//HierarchyNumbersDependents.RunTilesInCommand();  // run tests.
+			
 			HierarchyNumbersDependents.LoopThroughCatergoriesForTileMapCommand();
 			
-			Pause("get dependent number size");
-			numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
+			// get dependent numbers size after drilling down. this will be used to  
+			numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size();
 			cntr++;
 		}
 	}
@@ -908,19 +883,18 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		ShowText("Doing Drill down test command." );
 		
-		
 		while (cntr != maxNumberOfLevels)
 		{
 			tileToSelect = rand.nextInt(totalNumberOfTilesShown) + 1;
 			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
 			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
-			
-			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+
+			// if have hit a page with no dependents then break.			
+			if(WaitForNoDependentsInPage(cntr))
 			{
-				System.out.println("Finished drill down testing to level " + cntr);
-				System.out.println("The last click found the 'No Depenents' message\n");
 				break;
 			}
+
 			HierarchyNumbersDependents.RunTilesInCommand();
 			cntr++;
 		}
@@ -946,13 +920,16 @@ public class HierarchyNumbersDependents extends BaseClass
 		// drill down to maxNumberOfLevels or to a page where there are no dependent units listed. 
 		while (cntr != maxNumberOfLevels)
 		{
-			numberOfDependentUnits =  driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size(); 
+			numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); 
 			
 			// System.out.println("# of dependents before click. " + numberOfDependentUnits);
 			
 			// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
-			List<WebElement> unitsList = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")); 
+			List<WebElement> unitsList = driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
+			
+			
+			
 			
 			//if(fooBarCntr == 0) // this finds user with two "\n" in the name.
 			//	dependentUnitToSelect = 0; 
@@ -980,11 +957,9 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			ShowText("dead spot wait after click to see if have hit end of drill down."); 
 			
-			// wait to see if 'No Dependents' message is found.
-			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 2))
+			// if have hit a page with no dependents then break.
+			if(WaitForNoDependentsInPage(cntr))
 			{
-				System.out.println("Finished drill down testing to level " + cntr);
-				System.out.println("The last click found the 'No Dependents' message\n");
 				break;
 			}
 			
@@ -1013,6 +988,8 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			// if(x != 0){continue;}	// DEBUG - use this if you only want one category selected. 
 			
+			ShowText("Start test for category --- " + values[x].name() +".");
+			
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
 			Thread.sleep(2000);
 			
@@ -1039,7 +1016,7 @@ public class HierarchyNumbersDependents extends BaseClass
 
 			// Pause("one pass through test if dependents list."); // DEBUG
 			
-			ShowText("Pass complete for " + values[x].name() +".");
+			ShowText("Pass complete for category --- " + values[x].name() +".");
 		}
 	}
 	
@@ -1072,9 +1049,9 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
 			Thread.sleep(2500);
-			ShowText("Start category selector" + values[x].name() + ".");
+			ShowText("Start category selector --- " + values[x].name() + ".");
 			HierarchyNumbersDependents.RunTilesInCommand();
-			ShowText("Pass complete for " + values[x].name() +".");
+			ShowText("Pass complete for --- " + values[x].name() +".");
 		}
 	}
 	
@@ -1148,8 +1125,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		// got through the available hierarchies one at a time. call 'LoopThroughCatergoriesDependentUnits()' on each loop.
 		for(WebElement ele : hierarchyList)
 		{
-				ShowText("Hierarchy Name: " + ele.getText() + "\n");
-				//currentHierarchyId = hierarchyIdsList.get(hierarchyCntr);
+				ShowText("Hierarchy Name: " + ele.getText());
 				ele.click();
 				Thread.sleep(1000);
 				RunTileMapTest(currentTileMapTestType); // run test.
@@ -1194,10 +1170,10 @@ public class HierarchyNumbersDependents extends BaseClass
 		// got through the available hierarchies one at a time. call 'LoopThroughCatergoriesDependentUnits()' on each loop.
 		for(WebElement ele : hierarchyList)
 		{
-				ShowText("Hierarchy Name: " + ele.getText());
+				ShowText("\nHierarchy Name: " + ele.getText());
 				currentLevelName = ele.getText();
 				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr);
-				ShowText(currentHierarchyId);
+				ShowText(currentHierarchyId  + "\n");
 				ele.click();
 				Thread.sleep(1000);
 				LoopThroughCatergoriesDependentUnits();
@@ -1307,6 +1283,41 @@ public class HierarchyNumbersDependents extends BaseClass
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// bladdxx -- this goes to the base class.
+	public static void ShowWebElementListText(List<WebElement> eleList)
+	{
+		for(WebElement ele: eleList)
+		{
+			ShowText(ele.getText());
+		}
+	}
+	
+	public static boolean WaitForNoDependentsInPage(int level) throws Exception
+	{
+		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 2))
+		{
+			System.out.println("Finished drill down testing to level " + level);
+			System.out.println("The last click found the 'No Dependents' message\n");
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	
+	public static int AdjustTileMapSelection(int tileToSelect) 
+	{
+		tileToSelect = tileToSelect/2;
+		if(tileToSelect == 0)
+		{
+			tileToSelect = 1;
+		}
+		return tileToSelect;
+	}
+	
+	
 	// this is used to wait  
 	public static boolean WaitForCorrectBreadCrumbCount(int numCrumbs, int waitTimeInSeconds) throws InterruptedException
 	{
@@ -1341,10 +1352,9 @@ public class HierarchyNumbersDependents extends BaseClass
 
 	}
 
-	
-	public static int NumberOfTiles()
+	// this gets the number of tiles shown in the tile map and determins how many to hover test.
+	public static int NumberOfTilesToTest()
 	{
-    	ShowText("Calculate number of tiles");
 		
 		int loopCntrOrig = driver.findElements(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label")).size(); // get the number of tiles.
     	int loopCntr = loopCntrOrig/2;
