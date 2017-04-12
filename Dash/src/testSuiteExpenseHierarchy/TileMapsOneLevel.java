@@ -15,7 +15,7 @@ import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.hierarchyPulldownSelection;
 
-public class HierarchyNumbersTests extends BaseClass
+public class TileMapsOneLevel extends BaseClass
 {
 
 	@BeforeClass
@@ -51,7 +51,7 @@ public class HierarchyNumbersTests extends BaseClass
 		
 		// HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(3);
 		
-		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.commandSmoke);
+		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.commandAllCatergories);
 		
 		HierarchyNumbersDependents.LoopThroughTileMapTests();
 

@@ -274,28 +274,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		int x = 0;
 		int loopCntr = 0;
 		
-		DebugTimeout(1, "Wait 1 in RunTilesInCommand() before starting.");
-		
-		// get the size of the list of dependents showing.
-		//int loopCntrOrig = driver.findElements(By.cssSelector(".tdb-pov__itemList>li")).size();
-
-		//loopCntr = loopCntrOrig/2;
-		
-    	//if(loopCntr > 10) // make the test short.
-    	//{
-    	//	loopCntr = 10;
-    	//}
-
-    	
-    	//WebElement tileNumber = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + index + ")")); // select tile map number
-    	//int loopCntrOrig = driver.findElements(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label")).size(); // get the number of tiles.
-		//loopCntr = loopCntrOrig/2;
-    	//if(loopCntr > 10) // make the test short.
-    	//{
-    	//	loopCntr = 10;
-    	//}
-    	
-		// anaadd
+		// get the number of tiles in the tile map.
     	loopCntr = NumberOfTiles();
 		
     	
@@ -309,7 +288,7 @@ public class HierarchyNumbersDependents extends BaseClass
         	hoverInfo = GetTooltipText(y);
 			ShowText("hover info back: " + hoverInfo);
 			
-        	// get the cost type string to be filtered out for creating 'tempTwo' string below. 
+        	// get the cost type string to be filtered out for creating 'numericValue' string below. 
 			filterString = BuildStringForFilteringText();
 			
 			// these two calls get the name info and the cost info from the dependent user in the UI. both of these are put in currentDependentUnitInfo string. 
@@ -320,54 +299,11 @@ public class HierarchyNumbersDependents extends BaseClass
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
-			ShowText("current dependent info before remove decimal - " + currentDependentUnitInfo);
-
-			// anaadd
-			// if the number to the right of the dollar sign has a decimal value, remove it.
-			/*
-			if(currentDependentUnitInfo.split("\\$")[1].contains("."))
-			{
-				ShowText("Remove decimal from 'currentDependentUnitInfo'");
-				x = currentDependentUnitInfo.length() - currentDependentUnitInfo.lastIndexOf(".");
-				tempString = currentDependentUnitInfo.substring(0, currentDependentUnitInfo.length() - x);
-				currentDependentUnitInfo = tempString;
-			}
-			*/
-			
-			// current dependent info before remove decimal - 164728-RESPIRONICS INC. USA $69929.98
-			// [164728-RESPIRONICS INC. USA $69929] but found [164728-RESPIRONICS INC]
-			
-			// below old
-			//x = currentDependentUnitInfo.length() - currentDependentUnitInfo.lastIndexOf(".");
-			//tempString = currentDependentUnitInfo.substring(0, currentDependentUnitInfo.length() - x);
-			//currentDependentUnitInfo = tempString;
-			
-			ShowText("current dependent info after remove decimal - " + currentDependentUnitInfo);
+			//ShowText("hover text - " + hoverInfo);
+			// ShowText("text created from UI - " + currentDependentUnitInfo);
  
 			
 			Assert.assertEquals(hoverInfo, currentDependentUnitInfo);
-
-			// JOptionPane.showMessageDialog(frame, "Wait");
-			
-			// bladd - comment below.
-			//ShowText(currentDependentUnitInfo);
-			//Assert.assertEquals(hoverInfo, currentDependentUnitInfo, "Error in HierarchyNumbersDependents.RunAllTilesInDash. "
-			//		                                               + "The hover value doesn't match its corresponding dependent user."
-			//		                                               + "The loop counter is " + x); 
-			// bladd - comment above.
-			
-			// IMPORTANT NOTE -- this may not always work because the json sorting can be different then ED's sort when it comes to 
-			//                   dependent units with the same numeric value.
-			//                -- next sections below are commented.
-			
-			// now get the dependent unit user cost value in the json array that was stored before the click to get hover info. 
-			// send in nameAndId, the user name info, and this call will return the expected value as double.
-			//actualValueDouble = GetExpectedValueTwo(array, nameAndIds, ExpenseHelper.currentHierarchyCostFilter);
-			
-			// get the double value found in the dependent info 
-			//expectedValueDouble = Double.valueOf(currentDependentUnitInfo.split("\\$")[1]);
-			
-			//Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
 		}
 
 		Pause("loop through tile maps done.");
@@ -998,7 +934,6 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		int dependentUnitToSelect;
 		int cntr = 0;
-
 		int numberOfDependentUnits = 0;
 		
 		Random rand = new Random();
@@ -1039,23 +974,19 @@ public class HierarchyNumbersDependents extends BaseClass
 			// move to top of page to make the testing visible.
 			WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
 			new Actions(driver).moveToElement(topSection).perform();
+
+			// wait for the new bread crumb to be added.
+			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, 5), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
 			
 			ShowText("dead spot wait after click to see if have hit end of drill down."); 
 			
 			// wait to see if 'No Dependents' message is found.
-			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 4))
+			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 2))
 			{
 				System.out.println("Finished drill down testing to level " + cntr);
 				System.out.println("The last click found the 'No Dependents' message\n");
 				break;
 			}
-
-			
-			
-			
-			ShowText("size of crumbs");
-			ShowInt(driver.findElements(By.xpath("//div[@class='breadcrumbs']/span")).size());
-			ShowInt(driver.findElements(By.cssSelector(".breadcrumbs>span")).size());
 			
 			HierarchyNumbersDependents.LoopThroughCatergoriesDependentUnits(); // this test loops through all of the category selectors.
 		
@@ -1075,11 +1006,13 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
 		
-		Thread.sleep(1000);
+		Thread.sleep(500);
 		
 		// this loops through the category selectors one at a tile.  
 		for(int x = 0; x < values.length; x++)
 		{
+			// if(x != 0){continue;}	// DEBUG - use this if you only want one category selected. 
+			
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
 			Thread.sleep(2000);
 			
@@ -1129,18 +1062,16 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	
-	// go through the categories and run a single level tile map test.
+	// go through the hierarchies and run a single level tile map test.
 	public static void LoopThroughCatergoriesForTileMapCommand() throws Exception  
 	{
 		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
-		
-		Thread.sleep(1000);
 		
 		// this loops through the category selectors one at a tile.  
 		for(int x = 0; x < values.length; x++)
 		{
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
-			Thread.sleep(1000);
+			Thread.sleep(2500);
 			ShowText("Start category selector" + values[x].name() + ".");
 			HierarchyNumbersDependents.RunTilesInCommand();
 			ShowText("Pass complete for " + values[x].name() +".");
@@ -1376,7 +1307,41 @@ public class HierarchyNumbersDependents extends BaseClass
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// anaadd
+	// this is used to wait  
+	public static boolean WaitForCorrectBreadCrumbCount(int numCrumbs, int waitTimeInSeconds) throws InterruptedException
+	{
+		ShowText("start wait -----");
+		System.out.println("start wait with "  + numCrumbs + " number of crmbs" ); 
+		
+		// get current time.
+		long currentTime= System.currentTimeMillis();
+		long endTime = currentTime + waitTimeInSeconds * 1000;
+		boolean haveFoundCorrectBreadCrumbCount = false;
+		
+		// wait for number of bread crumbs to equal numCrumbs.		
+		while(System.currentTimeMillis() < endTime) 
+		{
+			if(driver.findElements(By.xpath("//div[@class='breadcrumbs']/span")).size() == numCrumbs)
+			{
+				haveFoundCorrectBreadCrumbCount = true;
+				break;
+			}
+			Thread.sleep(1000);
+		}
+		ShowText("end wait -----");
+		
+		if(haveFoundCorrectBreadCrumbCount)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+
+	
 	public static int NumberOfTiles()
 	{
     	ShowText("Calculate number of tiles");
@@ -1391,9 +1356,6 @@ public class HierarchyNumbersDependents extends BaseClass
     	
 		return loopCntr;
 	}
-
-	
-	
 	
 	/*
 	public static String TrimDecimal(String strDependentUnit)
@@ -1879,11 +1841,4 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		DebugTimeout(9999, "9999");
 	}
-
-	public static void Pause(String moreInfo) throws Exception
-	{
-	    JOptionPane.showMessageDialog(frame, "PAUSE.... " + moreInfo);
-	}
-	// 	    JOptionPane.showMessageDialog(frame, "Select OK. Test Done and Passed.");
-	
 }
