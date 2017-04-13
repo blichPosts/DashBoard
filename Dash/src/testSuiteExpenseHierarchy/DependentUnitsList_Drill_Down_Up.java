@@ -15,7 +15,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 
-public class HierarchyDrillDownDependentsList extends BaseClass 
+public class DependentUnitsList_Drill_Down_Up extends BaseClass 
 {
 
 	@BeforeClass
@@ -26,7 +26,7 @@ public class HierarchyDrillDownDependentsList extends BaseClass
 	}
 	
 	@Test
-	public static void HierarchyDrillDownDependentsListTest() throws Exception
+	public static void DependentUnitsList_Drill_Down_Up_Test() throws Exception
 	{		
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
@@ -43,7 +43,7 @@ public class HierarchyDrillDownDependentsList extends BaseClass
 
 		HierarchyNumbersDependents.SetDrillDownPageType(DrillDownPageType.expense);
 		
-		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(1);
+		// HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(1);
 		
 		//HierarchyNumbersDependents.DrillDownUpDependentUnits();
 

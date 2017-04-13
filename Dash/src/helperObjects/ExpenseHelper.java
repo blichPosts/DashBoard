@@ -202,13 +202,16 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	
+	// bob - fixed up on 4/13/17.
+	// this verifies that one of the countries attached to the vendor legends shown in the vendor view is shown in the country view. 
+	// tempStringList has the countries that go with the vendor legends shown in the vendor view. 
 	public static void WaitForCountryPageLoad() throws Exception 
 	{
-		DebugTimeout(7, "seven"); // started failing in  1.2.20
-		/*
+		// started failing in  1.2.20 ??
 		boolean foundCountryLegend = false;
 		chartId = UsageHelper.getChartId(4);
+		
+		//ShowListOfStrings(tempStringList); 
 		
 		if(webElementListLegends != null)
 		{
@@ -217,27 +220,26 @@ public class ExpenseHelper extends BaseClass
 		
 		long currentTime= System.currentTimeMillis();
 		long endTime = currentTime+10000;
-		int x = 0;
 		while(System.currentTimeMillis() < endTime) 
 		{
 			Thread.sleep(1000);
-			
-			// get list of web elements that are in chartId 4.
+
+			// get list of web elements (countries) that are in chartId 4 (bottom trend graph).  
 			webElementListLegends = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + partialXpathToLegendsListInControls));
-			
-			//ShowText("temp String");
-			//ShowListOfStrings(tempStringList);
-			//ShowText("Actual string");
-			//for(WebElement ele : webElementListLegends){ShowText(ele.getText());}
-			
-			HierarchyNumbersDependents.Pause("Freeze");
+
+			//ShowWebElementListText(webElementListLegends);
 			
 			if(webElementListLegends != null)
 			{
-				if(tempStringList.contains(webElementListLegends.get(0).getText()))
+				// 'tempStringList' has the country names stored away from the vendor view. 
+				for(int y = 0; y < tempStringList.size(); y++)
 				{
-					foundCountryLegend = true;
-					break;
+					 // see if country shown in country view is 
+					if(tempStringList.contains(webElementListLegends.get(y).getText()))   
+					{
+						foundCountryLegend = true;
+						break;
+					}					
 				}
 			}
 		}
@@ -246,7 +248,6 @@ public class ExpenseHelper extends BaseClass
 		{
 			Assert.fail("Failed to find a country legend in method ExpenseHelper.WaitForCountryPageLoad.");			
 		}
-		*/
 	}
 	
 	// this uses the 'expenseControlSlicesElemntsList' list  (global in this object) that contains the slices in the 'total expense' control.

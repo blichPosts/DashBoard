@@ -32,6 +32,7 @@ public class HierarchyHelper extends BaseClass {
 	// dependents and tile map items below.
 	//////////////////////////////////////////
 	public final static String dependentsListCssLocator = ".tdb-pov__itemList>li"; // this selects whole dependents list. 
+	public final static String breadcrumbListCssLocator = ".breadcrumbs>span"; // this selects the top of the bread crumbs.
 	
 		
 	// Select the "VIEW BY HIERARCHY" button

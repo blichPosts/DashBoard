@@ -57,7 +57,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static String totalCount = "";
 	
 	
-	public static Stack<String> popStack = new Stack<String>();
+	public static Stack<String> aboveTileStack = new Stack<String>();
 	public static List<Child> childList = new ArrayList<Child>();
 	public static List<String> hierarchyIdsList = new ArrayList<>();	
 	
@@ -915,8 +915,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		ShowText("Starting drill down in dependent units.");
 		// Pause("Starting drill down in dependent units.");
 		
-		// int fooBarCntr = 0; 
-		
 		// drill down to maxNumberOfLevels or to a page where there are no dependent units listed. 
 		while (cntr != maxNumberOfLevels)
 		{
@@ -927,17 +925,6 @@ public class HierarchyNumbersDependents extends BaseClass
 			// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
-			
-			
-			
-			
-			//if(fooBarCntr == 0) // this finds user with two "\n" in the name.
-			//	dependentUnitToSelect = 0; 
-			//if(fooBarCntr == 1)
-			//	dependentUnitToSelect = 18; 
-			//if(fooBarCntr == 3)
-			//	dependentUnitToSelect = 2; 
-			//fooBarCntr++;
 			
 			Thread.sleep(1000);
 			
@@ -953,7 +940,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			new Actions(driver).moveToElement(topSection).perform();
 
 			// wait for the new bread crumb to be added.
-			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, 5), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
+			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
 			
 			ShowText("dead spot wait after click to see if have hit end of drill down."); 
 			
@@ -1031,10 +1018,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(int x = 0; x < values.length; x++)
 		{
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
-			Thread.sleep(1000);
-			Pause("have hit category selector");
-			DrillDown_Up_DependentUnits();				
-			ShowText("Pass complete for " + values[x].name() +".");
+			ShowText("Starting test for ---- " + values[x].name());
+			Thread.sleep(2500);
+			// Pause("have hit category selector");
+			if(x == 0)
+			{
+				DrillDown_Up_DependentUnits();				
+			}
+			ShowText("Pass complete for ---- " + values[x].name() +".");
 		}
 	}
 	
@@ -1102,9 +1093,12 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 				ShowText(" -------------------------Hierarchy Name: " + ele.getText() + " ---------------------------------------- ");
 				ele.click(); 
-				DebugTimeout(3, "Wait 3 in hierarchy switch");
+				Thread.sleep(2500);
 				// DrillDown_Up_DependentUnits();  
-				LoopThroughCatergoriesFor_Lists_Up_Down();
+				if(hierarchyCntr == 2)
+				{
+					LoopThroughCatergoriesFor_Lists_Up_Down();
+				}
 				hierarchyCntr++;
 		}
 	}
@@ -1201,28 +1195,35 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		PushCurrentList(); // this puts the current dependents list in the UI onto 'listsOfPreviousDependentUnits' list.
 		
-		// this loops through the drilling down clicks.  
-		// drilling down into the dependent units 'maxLevelsToDrillDownTo' times.
+		// ShowText("Pust Text @@@ " + driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText());
+		aboveTileStack.push(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText());
+		
+		// this loops through the drilling down clicks, drilling down into the dependent units 'maxLevelsToDrillDownTo' times.
 		for(drillDownCntr = 0; drillDownCntr < maxLevelsToDrillDownTo; drillDownCntr++)
 		{
-			if(!DrillDown_Up_DependentUnitsTwo()) // this does the drill down.
+			if(!DrillDown_Up_DependentUnitsTwo(drillDownCntr)) // this does the drill down. it returns false when a page with no dependent units is found.
 			{
 				numBreadCrumbs = driver.findElements(By.cssSelector(".breadcrumbs>span")).size();
-				driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + numBreadCrumbs + ")")).click(); 
+				// System.out.println("read back number of breadcrumbs from UI = " + numBreadCrumbs);
+				//bladdxx -- stale element reference: element is not attached to the page document -- may be fixed
+				driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + numBreadCrumbs + ")")).click(); // click the bottom bread crumb. 
 				Pause("have clicked breadcrumb after finding no dependent units after a drill down.");
 				break;
 			}
-			
 			PushCurrentList(); // this puts the current dependents list in the UI onto 'listsOfPreviousDependentUnits' list.
 		}
 		
 		// ShowListsOfDependentUnitsStoredAway(); // this will show all lists on the list that were added in 'AddDependentUnitList' method.
 		
-		//  this clicks the bread crumbs until there are no bread crumbs left.
+		//  this works its way back up by clicking the bread crumbs until there are no bread crumbs left.
 		for(int y = drillDownCntr; y >= 0; y--)
 		{
 			ShowText("---- POP " + listsOfPreviousDependentUnits.get(y).get(0).replace("\n",  " "));
-			//ShowText(popStack.pop());
+			// ShowText("Pop Text @@@ " + aboveTileStack.pop());
+			//ShowText("Pop Text @@@ " + driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText());
+			
+			// verify the text above the tile map is the same as 
+			Assert.assertEquals(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText(), aboveTileStack.pop(), "");
 			
 			// get the list of dependent units currently showing in the UI into a temporary list of strings. 
 			CreateTempCurrentDependentsList(); 
@@ -1292,9 +1293,10 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
+	// this sees if there is a page with no dependent units on the current page. it has a hard coded two second wait to see if this is true.  
 	public static boolean WaitForNoDependentsInPage(int level) throws Exception
 	{
-		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 2))
+		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TinyTimeout))
 		{
 			System.out.println("Finished drill down testing to level " + level);
 			System.out.println("The last click found the 'No Dependents' message\n");
@@ -1319,10 +1321,9 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	
 	// this is used to wait  
-	public static boolean WaitForCorrectBreadCrumbCount(int numCrumbs, int waitTimeInSeconds) throws InterruptedException
+	public static boolean WaitForCorrectBreadCrumbCount(int numCrumbs, int waitTimeInSeconds) throws Exception
 	{
-		ShowText("start wait -----");
-		System.out.println("start wait with "  + numCrumbs + " number of crmbs" ); 
+		System.out.println("Current number of crumbs in  'WaitForCorrectBreadCrumbCount' = "  + numCrumbs); 
 		
 		// get current time.
 		long currentTime= System.currentTimeMillis();
@@ -1339,7 +1340,9 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 			Thread.sleep(1000);
 		}
-		ShowText("end wait -----");
+		
+		// wait for the bottom bread crumb to be clickable.
+		WaitForElementClickable(By.cssSelector(".tdb-breadcrumbs>app-hierarchy-breadcrumbs>div>span:nth-of-type(" + numCrumbs + ")"), ShortTimeout, "");
 		
 		if(haveFoundCorrectBreadCrumbCount)
 		{
@@ -1352,7 +1355,7 @@ public class HierarchyNumbersDependents extends BaseClass
 
 	}
 
-	// this gets the number of tiles shown in the tile map and determins how many to hover test.
+	// this gets the number of tiles shown in the tile map and determine how many to hover test.
 	public static int NumberOfTilesToTest()
 	{
 		
@@ -1362,6 +1365,11 @@ public class HierarchyNumbersDependents extends BaseClass
     	if(loopCntr > 10) // make the test short.
     	{
     		loopCntr = 10;
+    	}
+    	
+    	if(loopCntr < 10) // maybe helps with small amounts.
+    	{
+    		loopCntr = 3;
     	}
     	
 		return loopCntr;
@@ -1620,7 +1628,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		return true;
 	}
 	
-	public static boolean DrillDown_Up_DependentUnitsTwo() throws Exception  
+	public static boolean DrillDown_Up_DependentUnitsTwo(int cntr) throws Exception  
 	{
 		int dependentUnitToSelect = 0;
 		int numberOfDependentUnits =  0;
@@ -1632,7 +1640,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
 		List<WebElement> unitsList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList)); 
 		dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
-		
 		Thread.sleep(1000);
 
 		// get name associated with the dependent unit to be clicked.
@@ -1642,25 +1649,27 @@ public class HierarchyNumbersDependents extends BaseClass
 		System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **"); 
 		unitsList.get(dependentUnitToSelect).click(); // select dependent unit. 
 
-		//System.out.println("** Hard Code click on item four. **"); 
-		//unitsList.get(3).click(); // select dependent unit.
-		
 		// move to top of page to make the testing visible.
 		WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
 		new Actions(driver).moveToElement(topSection).perform();
 
-		// Pause("Wait after drill down click."); // **********************************************************************************
+		// wait for correct number of bread crumbs and also wait for the bottom bread crumb to be clickable.
+		Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");		
 		
+		// Pause("Wait after drill down click."); // **********************************************************************************
 		
 		// this waits to see if the bottom of the drill-downs has been found.
 		if(drillDownPageType == DrillDownPageType.expense)
 		{
-			// wait to see if 'No Dependents' message is found.
-			if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 4))
+			// if have hit a page with no dependents then break.
+			if(WaitForNoDependentsInPage(cntr))
 			{
-				System.out.println("Have found the 'No Dependents' message in expense page.\n");
-				Pause("See no dependents");
 				return false;
+			}
+			else
+			{
+				// ShowText("Pust Text @@@ " + driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText());
+				aboveTileStack.push(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText());
 			}
 		}
 		else

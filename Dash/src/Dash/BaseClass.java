@@ -673,4 +673,13 @@ public class BaseClass
 		{
 		    JOptionPane.showMessageDialog(frame, "PAUSE: " + moreInfo);
 		}
+		
+		// this shows the text for each element in the web element list passed in. 
+		public static void ShowWebElementListText(List<WebElement> eleList)
+		{
+			for(WebElement ele: eleList)
+			{
+				ShowText(ele.getText());
+			}
+		}
 }
