@@ -276,7 +276,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		int loopCntr = 0;
 		
 		// get the number of tiles in the tile map and setup loop counter.
-    	loopCntr = NumberOfTilesToTest();
+		loopCntr = NumberOfTilesToTestTwo();
 		
 		System.out.println("loopCntr max = " + loopCntr);
 		
@@ -299,10 +299,13 @@ public class HierarchyNumbersDependents extends BaseClass
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
-			ShowText("hover text           - " + hoverInfo);
-			ShowText("text created from UI - " + currentDependentUnitInfo);
+			ShowText("hover text - " + hoverInfo + " text created from UI - " + currentDependentUnitInfo);
 			
-			Assert.assertEquals(hoverInfo, currentDependentUnitInfo);
+			// make sure dependent unit from UI is not cost = $0.
+			if(!DependentUnitValueIsZero(currentDependentUnitInfo))
+			{
+				Assert.assertEquals(hoverInfo, currentDependentUnitInfo);				
+			}
 		}
 
 		// Pause("loop through tile maps done.");
@@ -404,8 +407,8 @@ public class HierarchyNumbersDependents extends BaseClass
         Robot robot = new Robot();
         robot.mouseMove(a, b);
         
-        Thread.sleep(2000); // orig - back to orig.
-        //Thread.sleep(1500); 
+        Thread.sleep(2000); // orig
+        //Thread.sleep(1000); 
         
         WebElement tooltip = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip")); 
 		
@@ -614,10 +617,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// with real data, there is a decimal cents (ex: $45.39 - .39 is the decimal cents). need to remove the decimal cents.
 			if(ele.getText().contains("."))
 			{
-				// below original -  later use helper method   'TrimDecimal'
-				x = ele.getText().length() - ele.getText().lastIndexOf(".");
-				tempString = ele.getText().substring(0, ele.getText().length() - x);
-				// tempString = TrimDecimal(ele.getText()); // this should handle 'BB.trew.aaa' (multiple decimals "."). -- not sure here
+				tempString =  TrimDecimal(ele);
 			}
 			else
 			{
@@ -830,27 +830,52 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		int tileToSelect;
 		int cntr = 0;
+
 		int numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); 
-		
 		Random rand = new Random();
-		
-		ShowText("Doing Drill down test Command." );
-		// Pause("Doing Drill down test with number of drilldowns = " + maxNumberOfLevels );
-		
 		
 		while (cntr != maxNumberOfLevels)
 		{
 
-			tileToSelect = rand.nextInt(numberOfDependentUnits) + 1;
+			System.out.println("Current number of dependents (tile maps) to select from = " + numberOfDependentUnits  );
+			
+			tileToSelect = rand.nextInt(numberOfDependentUnits);
 			
 			// hack because of tile sizes extreme variance, this should find a tile number that can be selected.
-			tileToSelect = AdjustTileMapSelection(tileToSelect);
+			tileToSelect = AdjustTileMapSelection(tileToSelect + 1);
 			
 			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
 			
-			// Pause("Ready for click Button.");
+
+			// tile maps with zero cost value are not shown in the tile map. it's possible an attempt to click a tile map that's not there 
+			// because of zero value could happen, or, the tile map is too small to click. to get around this a try/catch catches this condition and 
+			// tile map #1 is clicked, if it also doesn't have a zero value.
+			try
+			{
+				driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();				
+			}
+			catch (Exception ex)
+			{
+				ShowText("Tile to select is too small or has a zero value - try to select tile 1");
+
+				// get string value for dependent unit 1. 
+				String firstTileMap =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).get(0).getText(); 
+				
+				// see if dependent unit 1 doesn't have a zero cost.
+				if(DependentUnitValueIsZero(firstTileMap)) 
+				{
+					break;
+				}
+				else
+				{
+					driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + 1 + ")")).click();
+				}
+				
+				driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + 1 + ")")).click();
+			}
 			
-			driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();
+			WaitForProgressBarInactive();
+			Thread.sleep(2000); // give time for tile map to load.
 			
 			// Pause("Freeze After Clicking Tile");
 			
@@ -939,6 +964,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			// move to top of page to make the testing visible.
 			WebElement topSection = driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1"));
 			new Actions(driver).moveToElement(topSection).perform();
+			
+			WaitForProgressBarInactive(); 
 
 			// wait for the new bread crumb to be added.
 			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
@@ -1042,7 +1069,9 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(int x = 0; x < values.length; x++)
 		{
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
-			Thread.sleep(2500);
+			WaitForProgressBarInactive();
+			Thread.sleep(2000); // wait for tile map to fill in.
+			
 			ShowText("Start category selector --- " + values[x].name() + ".");
 			HierarchyNumbersDependents.RunTilesInCommand();
 			ShowText("Pass complete for --- " + values[x].name() +".");
@@ -1073,9 +1102,14 @@ public class HierarchyNumbersDependents extends BaseClass
 				
 				currentHierarchyId = hierarchyIdsList.get(hierarchyCntr); // set the current hierarchy Id. this hierarchyId is global to this class.  
 				ele.click(); 
+
+				WaitForProgressBarInactive();
 				// Pause("hierarchy selected");
 				
 				Thread.sleep(2500); // wait for tile map numbers to fill in.
+				
+				VerifyMainTitle(ele.getText());
+				
 				DrillDownDependentUnitsTwo(maxLevelsToDrillDownTo); // run the drill down tests for each category selector.
 				hierarchyCntr++;
 		}
@@ -1125,6 +1159,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 				ShowText("Hierarchy Name: " + ele.getText());
 				ele.click();
+				WaitForProgressBarInactive();
 				Thread.sleep(1000);
 				RunTileMapTest(currentTileMapTestType); // run test.
 				hierarchyCntr++;
@@ -1145,11 +1180,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			if(!LookForNoDependentsFound())
 			{
 				ShowText("current minth:" + ele.getText());
-				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnits();
+				// HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnits(); // for ref app.
 			}
-			
-
-
 		}
 	}
 	
@@ -1189,9 +1221,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	// this does the drilling down and going back up.
 	public static void DrillDown_Up_DependentUnits() throws Exception
 	{
-		int tempSize = 0;
 		int drillDownCntr = 0;
-		boolean drillDownStoppedEarly = false;
 		int numBreadCrumbs;
 		
 		ClearDrillDownUpStringPair(); // clear web element list and text list that are used as temporary holders of information. 
@@ -1286,14 +1316,27 @@ public class HierarchyNumbersDependents extends BaseClass
     
     }
 
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 													HELPERS
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 																HELPERS
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// this checks to see if the current dependent unit to be selected in the tile map is zero.
+	public static boolean DependentUnitValueIsZero(String dependentUnit)
+	{
+		if(dependentUnit.split("\\$")[1].equals("0"))
+		{
+			ShowText("found zero value.");
+			return true;
+		}
+		
+		return false;
+	}
+	
+	// when the progress bar is active, tag name 'md-progress-bar' is visible and when the progress bar is inactive 'md-progress-bar' is not visible.   
 	public static void WaitForProgressBarInactive() throws Exception 
 	{
 		// boolean bBack = WaitForElementNotVisibleNoThrow(By.tagName("md-progress-bar"), 10);
@@ -1314,6 +1357,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			return false;
 		}
+	}
+	
+	// this verifies the main title is correct. the expected hierarchy name is passed in.
+	public static void VerifyMainTitle(String hierarchyName)
+	{
+		// build expected string
+		String expectedMainTitle =  ExpenseHelper.desiredMonth + " " + "~ Hierarchy: " + hierarchyName;
+		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-currentContextMonth>h1")).getText(), expectedMainTitle, "");
 	}
 	
 	// this sees if there is a page with no dependent units on the current page. it has a hard coded two second wait to see if this is true.
@@ -1344,10 +1395,12 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static int AdjustTileMapSelection(int tileToSelect) 
 	{
 		tileToSelect = tileToSelect/2;
-		if(tileToSelect == 0)
+		
+		if(tileToSelect == 0) 
 		{
 			tileToSelect = 1;
 		}
+		
 		return tileToSelect;
 	}
 	
@@ -1386,13 +1439,39 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 
 	}
-
-	// this gets the number of tiles shown in the tile map and determine how many to hover test.
-	public static int NumberOfTilesToTest()
+	
+	// this gets the number of tiles shown in the tile map and determines how many to hover test.
+	public static int NumberOfTilesToTestTwo() throws Exception
 	{
+		List<Double> dblList = new ArrayList<Double>();
+		double totalOfDpendents = 0;
 		
 		int loopCntrOrig = driver.findElements(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label")).size(); // get the number of tiles.
     	int loopCntr = loopCntrOrig/2;
+
+    	if(loopCntr == 1)
+    	{
+    		return loopCntr;
+    	}
+    	
+		ClearDrillDownUpStringPair();
+		CreateTempCurrentDependentsList();
+
+		// go through dependents list and put cost values onto double list.
+		for(String str : tempStrList)
+		{
+			dblList.add(Double.parseDouble(str.split("\\$")[1]));
+		}
+		
+		// total up all the costs.
+		for(Double dbl :  dblList)
+		{
+			totalOfDpendents += dbl;
+		}
+
+		// ////////////////////////////////////////////////////////////////////////////////
+		// Below -- try to compensate for large tiles taking all of the tile map space.
+		// ////////////////////////////////////////////////////////////////////////////////
 		
     	if(loopCntr > 10) // make the test short.
     	{
@@ -1401,32 +1480,44 @@ public class HierarchyNumbersDependents extends BaseClass
     	
     	if(loopCntr < 10) // maybe helps with small amounts.
     	{
-    		loopCntr = 3;
+    		loopCntr = 4;
     	}
-    	
+		
+		if(dblList.get(0) >= .5 * totalOfDpendents) 
+		{
+			loopCntr = 3;
+		}		
+		
+		if(dblList.size() > 1)
+		{
+			if(dblList.get(1) >= .4 * totalOfDpendents)
+			{
+				loopCntr = 2;
+			}
+		}
+
+		if(dblList.size() < 2)
+		{
+			loopCntr = 1;
+			return loopCntr;
+		}
+		
+		if(dblList.get(0) >= .4 * totalOfDpendents && dblList.get(1) >= .3 * totalOfDpendents)
+		{
+			loopCntr = 2;
+		}
+		
 		return loopCntr;
 	}
 	
-	/*
-	public static String TrimDecimal(String strDependentUnit)
+	// this trims the decimal value off a cost that's related to a dependent unit.
+	public static String TrimDecimal(WebElement ele) 
 	{
-		// get the cost that is to the right of ":".
-		x = ele.getText().length() - ele.getText().lastIndexOf(".");
-		tempString = ele.getText().substring(0, ele.getText().length() - x);
-		
+		String localTmp = "";
+		int x = ele.getText().length() - ele.getText().lastIndexOf(".");
+		localTmp = ele.getText().substring(0, ele.getText().length() - x);
+		return localTmp;
 	}
-*/
-	
-	/*
-	// no good??? -- not used.
-	// remove the decimal cost from a string dollar value - change 356.78 to 356
-	public static String RemoveDecimalCost(String decimalCost)
-	{
-		int x = decimalCost.length() - decimalCost.indexOf(".");
-		tempString = decimalCost.substring(0, decimalCost.length() - x);
-		return tempString;
-	}
-	*/
 	
 	// Get the location of the element on the UI 
 	public static Point getAbsoluteLocationTileMap(WebElement element) throws InterruptedException  
@@ -1489,6 +1580,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		// Pause("Check numbers in VerifyTextAboveTileMap() passed."); // DEBUG
 	}
 	
+	// this is used after a page is drilled into when doing dependent units drill down. it is done after waiting for the progress bar to be inactive.
 	public static void WaitForPageTransition(String unitNameToWaitFor) throws Exception
 	{
 		String tempString = "";
@@ -1531,8 +1623,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		// get the size of the dependent units list and verify last element is visible.  
 		size = driver.findElements(By.cssSelector(".tdb-povGroup>div>ol>li")).size();
 		WaitForElementVisible(By.cssSelector(".tdb-povGroup>div>ol>li:nth-of-type(" + size + ")"  ), MediumTimeout);
-		
-		// popStack.push("dependent units of " + unitNameToWaitFor);
 	}
 
 	public static boolean LookForNoDependentsFound() throws Exception
@@ -1615,7 +1705,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		myList.addAll(tempStrList);
 		listsOfPreviousDependentUnits.add(myList);
 	}
-	
+	/*
 	public static boolean DrillDownDependentUnits() throws Exception  
 	{
 		int dependentUnitToSelect;
@@ -1659,7 +1749,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 		return true;
 	}
-	
+	*/
 	public static boolean DrillDownIntoDependentUnit(int cntr) throws Exception  
 	{
 		int dependentUnitToSelect = 0;
@@ -1702,8 +1792,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 			else
 			{
-				// wait for the page that was clicked into to load.
-				WaitForPageTransition(dependentNameToDrillTo);
+				WaitForPageTransition(dependentNameToDrillTo); // extra check after progress bar inactive.
 				aboveTileStack.push(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText()); // save off the text above the tile map in the page that was clicked into. 
 				aboveKpiStack.push(driver.findElement(By.cssSelector(".tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)")).getText()); // store current text shown above KPIs.
 				// send text name of unit being clicked 
@@ -1718,9 +1807,6 @@ public class HierarchyNumbersDependents extends BaseClass
 				return false;
 			}
 		}
-
-		//WaitForPageTransition(dependentNameToDrillTo);
-		//aboveTileStack.push(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText()); // save off the text above the tile map 
 		
 		return true;
 	}
@@ -1891,10 +1977,5 @@ public class HierarchyNumbersDependents extends BaseClass
 				return "";
 			}
 		}
-	}
-	
-	public static void Freeze() throws Exception
-	{
-		DebugTimeout(9999, "9999");
 	}
 }
