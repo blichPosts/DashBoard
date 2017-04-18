@@ -22,6 +22,7 @@ import org.testng.Assert;
 import org.w3c.dom.Element;
 
 import Dash.BaseClass;
+import expenseHierarchy.HierarchyNumbersDependents;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.expenseFilters;
@@ -111,7 +112,15 @@ public class TotalExpensesTrend extends BaseClass
 		{
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
-				clickBarIndex(y);
+				if(loginType.equals(LoginType.ReferenceApp)) // for reference app;
+				{
+					clickBarIndex(y);
+				}
+				else
+				{
+					// HierarchyNumbersDependents.ClickTrendBarCommand(y);
+				}
+				
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}

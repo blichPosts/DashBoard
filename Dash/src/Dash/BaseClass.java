@@ -57,6 +57,7 @@ public class BaseClass
 	public static int ShortTimeout = 5;
 	public static int MiniTimeout = 3;	
 	public static int TinyTimeout = 2;
+	public static int TenTimeout = 10;	
 	
 	// command variables
 	//public static String commandUserName = "bob.lichtenfels@tangoe.com XX1";

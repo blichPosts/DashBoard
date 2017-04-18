@@ -43,10 +43,6 @@ public class DependentUnitsList_Drill_Down_Up extends BaseClass
 
 		HierarchyNumbersDependents.SetDrillDownPageType(DrillDownPageType.expense);
 		
-		// HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(1);
-		
-		//HierarchyNumbersDependents.DrillDownUpDependentUnits();
-
 		//HierarchyNumbersDependents.GoToViewTop10();		
 		
 		//HierarchyNumbersDependents.SetDrillDownPageType(DrillDownPageType.topTen);

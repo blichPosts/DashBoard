@@ -1,7 +1,8 @@
 package helperObjects;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.text.ParseException;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,12 +13,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
+import org.openqa.selenium.Point;
 
 import Dash.BaseClass;
-import expenseHierarchy.HierarchyNumbersDependents;
-import expenses.CountOfServiceNumbersTrend;
-import junit.framework.AssertionFailedError;
-import testSuiteExpenseActions.CountOfServiceNumbersCountry;
+import Dash.BaseClass.LoginType;
 
 public class ExpenseHelper extends BaseClass
 {
@@ -60,6 +59,9 @@ public class ExpenseHelper extends BaseClass
 
 	public static expenseFilters currentExpenseFilter; // this is used to indicate which expense filter is being tested. 
 
+	// hack
+	public static int x_iFrame;
+	public static int y_iFrame;
 	
 	
 	// this is for  distinguishing a control type in the expenses page. 
@@ -156,8 +158,7 @@ public class ExpenseHelper extends BaseClass
 	public static String  expenseTrendFilters = "((//div[@class='tdb-card'])[2]/div)[1]/div";  
 	public static String  costPerServiceNumberFilters = "((//div[@class='tdb-card'])[2]/div)[3]/div"; 
 	public static String  countofServiceNumberFilters = "((//div[@class='tdb-card'])[2]/div)[5]/div"; 
-	
-	
+
 	// setup - read comments below.
 	public static void SetupExpenseControSliceTesting()
 	{
@@ -1080,6 +1081,78 @@ public class ExpenseHelper extends BaseClass
 		return new Select(driver.findElement(By.cssSelector(".tdb-space--top>select"))).getFirstSelectedOption().getText();
 	}
 	
+	// hack
+	// Get the location of the element on the UI 
+	public static Point getAbsoluteLocationFleetTrend(WebElement element) 
+	{
+		
+        int x = x_iFrame;
+        int y = y_iFrame;
+        
+        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
+		int headerHeight = header.getSize().getHeight();
+        
+        Point elementLoc = element.getLocation();
+
+        if (loginType.equals(LoginType.ReferenceApp)) {
+        	
+            x += elementLoc.getX();
+            y += elementLoc.getY() + headerHeight;
+            
+        	
+        } else if (loginType.equals(LoginType.Command)) {
+        	
+        	x += elementLoc.getX();
+            y += elementLoc.getY() - (headerHeight * 1.3);
+            
+        }
+        
+        Point p = new Point(x, y);
+        return p; 
+        
+	}
+
+	
+	// hack
+	// set chartId before this is called.
+	public static String ClickTrendBarCommand(int barIndex) throws AWTException, InterruptedException // bladdxx 
+	{
+		
+		String cssBar = "#" + chartId + ">svg>g:nth-of-type(8)>text:nth-of-type(" + barIndex + ")";
+
+		// this is the oldest month/year 
+		// #highcharts-wi8y3vx-36>svg>g:nth-of-type(8)>text:nth-of-type(1)
+		
+		
+		// String cssLine = "#" + chartId + ">svg>g:nth-of-type(8)>text:nth-of-type(1)";
+
+		
+		
+		
+		int x;
+		
+		WebElement barGraph = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + barIndex + ")")); // select tile map number
+        
+        Point p = getAbsoluteLocationFleetTrend(barGraph); 
+        
+        int x_offset = barGraph.getSize().getHeight() / 2;
+        int y_offset = barGraph.getSize().getWidth() / 2;
+        
+        //int a = p.getX() + x_offset;
+        //int b = p.getY() + y_offset;
+        
+        Robot robot = new Robot();
+        // robot.mouseMove(a, b);
+        
+        DebugTimeout(9999, "9999");
+        
+        
+        Thread.sleep(2000); // orig
+        //Thread.sleep(1000); 
+        return "";
+	}
+	
+
 	// //////////////////////////////////////////////////////////////////////////
 	//					Hierarchy Helpers   DONE ???
 	// //////////////////////////////////////////////////////////////////////////
@@ -1106,7 +1179,7 @@ public class ExpenseHelper extends BaseClass
 	
 	// this uses the 'currentExpenseFilter' value to decide which set of cost filters will be used to make the clicks across all the filters. 
 	// the 'ClickThroughFiltersAndVerify' method does the clicks and then calls the method that handles all the testing. 
-	public static void VerifySpendCateoryFilter() throws Exception // bladdxx
+	public static void VerifySpendCateoryFilter() throws Exception 
 	{
 		switch(currentExpenseFilter)
 		{
@@ -1182,7 +1255,7 @@ public class ExpenseHelper extends BaseClass
 	}
 	
 	// this verifies the remaining category selectors. These two selectors were not clicked on. 
-	public static void VerifyRemainingCategorySelectors(int x) // bladdxx
+	public static void VerifyRemainingCategorySelectors(int x) 
 	{
 
 		List<WebElement> tempListOne;
