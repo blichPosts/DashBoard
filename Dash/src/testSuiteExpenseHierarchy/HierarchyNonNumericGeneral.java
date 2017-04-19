@@ -10,8 +10,9 @@ import org.testng.annotations.Test;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
+import helperObjects.ExpenseHelper.expenseFilters;
 
-public class HierarchyVisualPageLoad extends BaseClass
+public class HierarchyNonNumericGeneral extends BaseClass
 {
 
 	@BeforeClass
@@ -22,26 +23,33 @@ public class HierarchyVisualPageLoad extends BaseClass
 	}
 	
 	@Test
-	public static void HierarchyVisualPageLoadTest() throws Exception
+	public static void HierarchyNonNumericGeneralTest() throws Exception
 	{
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
-
+		
 		VisualPageLoad.SelectAndWaitForPageLoad();
+
+		VisualPageLoad.SetupExpectedCostFilters();
+		
+		VisualPageLoad.SetExpenseFilter(expenseHierarchy.VisualPageLoad.expenseFiltersLocation.TileMap); // click through selectors that are above the tile map. 
+		
+		VisualPageLoad.VerifySpendCateoryFilter(); // verify both selector tabs.
+		
+		VisualPageLoad.SetExpenseFilter(expenseHierarchy.VisualPageLoad.expenseFiltersLocation.ExpenseTrend); // click through selectors that are above the trend graph.
+		
+		VisualPageLoad.VerifySpendCateoryFilter(); // verify both selector tabs.
 		
 		// VisualPageLoad.VerifyInitialStatesAfterPageLoad();
 	
 		// ///////////////////////////////////////////////////////////////////////////////
 		// 							MANUAL TEST
 		// ///////////////////////////////////////////////////////////////////////////////
-		VisualPageLoad.ManualDependencyUnits();
+		// VisualPageLoad.ManualDependencyUnits();
 		
-		// VisualPageLoad.Hover();
-		
-		// DebugTimeout(9999, "9999");
 		
 		// this is used if need to output the values found in the UI to console.
 		// VisualPageLoad.ConsoleOutForFileDiffActualValues(); 

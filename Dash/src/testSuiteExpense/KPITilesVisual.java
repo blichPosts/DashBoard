@@ -42,12 +42,12 @@ public class KPITilesVisual extends BaseClass
 		//The middle section shows the total expense amount with K indicator for selected vendor or country.
 		ExpenseHelper.VerifyTotalExpenseCostAndTitle();
 		
-		//Next there is a trend icon (up/down) arrow.
-		ExpenseHelper.TotalExpensedVerifyTrend();
+		//Next there is a trend icon (up/down) arrow. -- not consistent, checked in KPI numbers test.  bob - 4/19/17.
+		// ExpenseHelper.TotalExpensedVerifyTrend();
 		
 		// 1/20/16 - removed this because it doesn't always exist. ana's test for KPI tiles will verify this.
 		// Next there is a Rolling average with rolling averages for three and six months.
-		ExpenseHelper.VerifyRollingAverageTotalExpense();
+		// ExpenseHelper.VerifyRollingAverageTotalExpense();
 		
 		// # 3
 		// Observe the second component from the left.
@@ -57,23 +57,23 @@ public class KPITilesVisual extends BaseClass
 		ExpenseHelper.VerifyCountOfServiceNumbersCostAndTitle();		
 		
 	    // Next there is a trend icon (up/down) arrow.
-		ExpenseHelper.CountServiceNumbersVerifyTrend();
+		// ExpenseHelper.CountServiceNumbersVerifyTrend(); // not always
 		
-		// 1/20/16 - removed this because it doesn't always exist. ana's test for KPI tiles will verify this.
+		// 1/20/16 - removed most of this because it doesn't always exist. ana's test for KPI tiles will verify this.
 		// Next there is a Rolling average with rolling averages for three and six months. 
-		ExpenseHelper.VerifyRollingAverageCountServiceNumbers(); 
+		// ExpenseHelper.VerifyRollingAverageCountServiceNumbers(); 
 		
 		// #4 - Observe the third component from the left. 
 	    // The top says 'Cost per Service Number'
 	    // The middle section shows the average Cost per Service Number for the selected vendors/countries and for the selected month.		
 		ExpenseHelper.VerifyCostPerServiceNumberCostAndTitle();		
 		
-		// There will be a trend icon represented by an arrow indicating direction. 
+		// There will be a trend icon represented by an arrow indicating direction. // not always - checked in KPI numbers test. 
 		// The icon will have a percentage number indicating the percentage of change between the current amount and the benchmark
-		ExpenseHelper.CostPerServiceNumberVerifyTrend();
+		// ExpenseHelper.CostPerServiceNumberVerifyTrend();
 		
 		// There is a section that says 'Rolling Averages'. It lists the 3 and 6 month rolling averages for the expenses per service number.
-		ExpenseHelper.VerifyRollingAverageCostPerServiceNumber();		
+		// ExpenseHelper.VerifyRollingAverageCostPerServiceNumber(); // not always - tested in KPI numbers.		
 	}
 	
 	@AfterClass

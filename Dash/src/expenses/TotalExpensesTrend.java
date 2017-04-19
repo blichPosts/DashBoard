@@ -118,12 +118,13 @@ public class TotalExpensesTrend extends BaseClass
 				}
 				else
 				{
-					// HierarchyNumbersDependents.ClickTrendBarCommand(y);
+					ExpenseHelper.ClickTrendBarCommand(y);
 				}
 				
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
+			
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(500);
 			webEleListLegends.get(x).click();
