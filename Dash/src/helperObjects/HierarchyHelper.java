@@ -309,6 +309,16 @@ public class HierarchyHelper extends BaseClass {
 				          "Failed to process wait for progress bar in WaitForProgressBarInactive() method.");
 	}	
 
-	
+	// this selects and waits for the hierarchy dash page to load.
+	public static void SelectAndWaitForPageLoad() throws Exception
+	{
+		WaitForElementClickable(By.xpath("//a[text()='View by Hierarchy']"), MediumTimeout, "");
+		driver.findElement(By.xpath("//a[text()='View by Hierarchy']")).click();
+		WaitForElementVisible(By.xpath("//span[text()='Total Expense']"), MediumTimeout); // this is text in top left corner tiles. 
+		WaitForElementVisible(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select"), MediumTimeout); // this is drop down in top left corner POV.
+		HierarchyHelper.WaitForProgressBarInactive(TenTimeout); // wait for progress bar done.
+		Thread.sleep(2000); // time for tile map to load.
+	}
+
 }
 

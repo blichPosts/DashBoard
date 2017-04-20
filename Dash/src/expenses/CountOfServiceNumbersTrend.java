@@ -119,14 +119,20 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		Collections.reverse(expectedMonthYear);
 
-		//for(WebElement ele	: webEleListLegends){ShowText(ele.getText());}
-
 		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
-				clickBarIndex(y);
+				// clickBarIndex(y); // orig
+				if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
+				{
+					clickBarIndex(y);
+				}
+				else
+				{
+					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y);
+				}				
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}

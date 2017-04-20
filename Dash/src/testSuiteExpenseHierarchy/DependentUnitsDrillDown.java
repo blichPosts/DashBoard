@@ -8,11 +8,11 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyNumbersDependents;
-import expenseHierarchy.VisualPageLoad;
-import expenseHierarchy.HierarchyNumbersDependents.TileMapTestType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ReadFilesHelper;
 import helperObjects.ExpenseHelper.controlType;
+import helperObjects.HierarchyHelper;
 
 public class DependentUnitsDrillDown extends BaseClass 
 {
@@ -32,7 +32,9 @@ public class DependentUnitsDrillDown extends BaseClass
 		
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 
-		VisualPageLoad.SelectAndWaitForPageLoad();
+		ReadFilesHelper.startCollectingData(); // start the JavascriptExecutor.
+		
+		HierarchyHelper.SelectAndWaitForPageLoad();
 
 		ExpenseHelper.SetHierarchyMaxDisplayed(100);
 		Thread.sleep(1000);

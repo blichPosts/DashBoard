@@ -20,9 +20,10 @@ import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.expenseFilters;
 import helperObjects.ExpenseHelper.hierarchyTileMapTabSelection;
 import helperObjects.HierarchyHelper;
+import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 
-public class VisualPageLoad extends BaseClass 
+public class HierarchyGeneral extends BaseClass 
 {
 	public static String tempString;
 	public static String chartId = "";
@@ -164,18 +165,18 @@ public class VisualPageLoad extends BaseClass
 		}
 	}
 	
+	public static void InitialIze() throws Exception
+	{
+		ReadFilesHelper.startCollectingData(); // start the JavascriptExecutor.
+	}
 	
-	
-	// this waits for the page to load.
+	// this selects and waits for the hierarchy dash page to load.
 	public static void SelectAndWaitForPageLoad() throws Exception
 	{
-		js.executeScript("__TANGOE__setShouldCaptureTestData(true)"); // bladdxx
 		WaitForElementClickable(By.xpath("//a[text()='View by Hierarchy']"), MediumTimeout, "");
 		driver.findElement(By.xpath("//a[text()='View by Hierarchy']")).click();
-		WaitForElementVisible(By.xpath("//h2[text()='" + ExpenseHelper.desiredMonth + "']"), MediumTimeout); // this is month in top left corner tiles.
 		WaitForElementVisible(By.xpath("//span[text()='Total Expense']"), MediumTimeout); // this is text in top left corner tiles. 
 		WaitForElementVisible(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select"), MediumTimeout); // this is drop down in top left corner POV.
-		chartId =  UsageHelper.getChartId(0);
 		HierarchyHelper.WaitForProgressBarInactive(TenTimeout);
 		Thread.sleep(2000); // time for tile map to load.
 	}

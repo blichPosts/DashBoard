@@ -1070,6 +1070,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			Thread.sleep(2000); // wait for tile map to fill in.
 			
 			ShowText("Start category selector --- " + values[x].name() + ".");
+			HierarchyHelper.WaitForProgressBarInactive(TenTimeout); 
+			Thread.sleep(3000); // let tile map load.
 			HierarchyNumbersDependents.RunTilesInCommand();
 			ShowText("Pass complete for --- " + values[x].name() +".");
 		}

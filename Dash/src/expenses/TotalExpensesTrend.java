@@ -97,7 +97,6 @@ public class TotalExpensesTrend extends BaseClass
 		// get the 'expense trending' control visible by moving to it. 
 		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(1)"));
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));
-		// .tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)
 		
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
@@ -107,18 +106,20 @@ public class TotalExpensesTrend extends BaseClass
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		Collections.reverse(expectedMonthYear);
 		
+		ShowText(expectedMonthYear.get(0));
+		
 		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
-				if(loginType.equals(LoginType.ReferenceApp)) // for reference app;
+				if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
 				{
 					clickBarIndex(y);
 				}
 				else
 				{
-					ExpenseHelper.ClickTrendBarCommand(y);
+					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y);
 				}
 				
 				Thread.sleep(500);

@@ -2,20 +2,18 @@ package testSuiteExpenseHierarchy;
 
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyNumbersDependents;
-import expenseHierarchy.VisualPageLoad;
 import expenseHierarchy.HierarchyNumbersDependents.TileMapTestType;
 
 import javax.swing.JOptionPane;
 
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.HierarchyHelper;
 import helperObjects.ExpenseHelper.controlType;
-import helperObjects.ExpenseHelper.hierarchyPulldownSelection;
 
 public class TileMapsTopLevel extends BaseClass
 {
@@ -35,7 +33,7 @@ public class TileMapsTopLevel extends BaseClass
 		
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 
-		VisualPageLoad.SelectAndWaitForPageLoad();
+		HierarchyHelper.SelectAndWaitForPageLoad();
 		
 		HierarchyNumbersDependents.SetChartId();
 

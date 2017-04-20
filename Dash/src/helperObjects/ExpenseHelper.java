@@ -61,8 +61,8 @@ public class ExpenseHelper extends BaseClass
 	public static expenseFilters currentExpenseFilter; // this is used to indicate which expense filter is being tested. 
 
 	// hack
-	public static int x_iFrame;
-	public static int y_iFrame;
+	//public static int x_iFrame;
+	//public static int y_iFrame;
 	
 	
 	// this is for  distinguishing a control type in the expenses page. 
@@ -1039,6 +1039,53 @@ public class ExpenseHelper extends BaseClass
 		return new Select(driver.findElement(By.cssSelector(".tdb-space--top>select"))).getFirstSelectedOption().getText();
 	}
 	
+	public static void MoveMouseToBarExpenseActions(String chartId, int indexHighchart) throws InterruptedException, AWTException
+	{
+		
+		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+		
+		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>g:nth-of-type(4)>path:nth-of-type(" + indexHighchart + ")";
+		
+		// #highcharts-fxny34j-6>svg>.highcharts-series-group>g:nth-of-type(4)>path:nth-of-type(2) // this is first column from the left
+		
+		// 'bar' WebElement will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+				
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
+		
+		int x = barCoordinates.getX();
+		int y = GeneralHelper.getYCoordinate(chartId);
+		
+		int y_offset = (int) GeneralHelper.getScrollPosition();
+		y += y_offset; 
+		
+		
+		Robot robot = new Robot(); 
+		robot.mouseMove(x, y);
+		// System.out.println("coordinates - x: " + x + "  y: " + y);
+		
+		Thread.sleep(500);
+		
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+
+		// DebugTimeout(9999, "9999");
+		
+		try 
+		{
+			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+		} 
+		catch (Exception e) 
+		{
+			System.out.println("Tooltip NOT present in DOM.");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/*
 	// hack
 	// Get the location of the element on the UI 
 	public static Point getAbsoluteLocationFleetTrend(WebElement element) 
@@ -1059,8 +1106,8 @@ public class ExpenseHelper extends BaseClass
         return p; 
         
 	}
-
-	
+	*/
+	/*
 	// hack
 	// set chartId before this is called.
 	public static String ClickTrendBarCommand(int barIndex) throws Exception
@@ -1088,6 +1135,7 @@ public class ExpenseHelper extends BaseClass
         Thread.sleep(1000); 
         return "";
 	}
+	*/
 	
 	public static void SetupExpectedCostFilters()
 	{

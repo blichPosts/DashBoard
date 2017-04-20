@@ -1,7 +1,7 @@
 package testSuiteExpenseHierarchy;
 
 import Dash.BaseClass;
-import expenseHierarchy.VisualPageLoad;
+import expenseHierarchy.HierarchyGeneral;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -11,6 +11,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.expenseFilters;
+import helperObjects.HierarchyHelper;
 
 public class HierarchyNonNumericGeneral extends BaseClass
 {
@@ -31,17 +32,19 @@ public class HierarchyNonNumericGeneral extends BaseClass
 		
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 		
-		VisualPageLoad.SelectAndWaitForPageLoad();
+		HierarchyHelper.SelectAndWaitForPageLoad();
 
+		// ///////////////////////////////////////////////////////////////////////////////
 		// below is test for expense category selectors.
+		// ///////////////////////////////////////////////////////////////////////////////
 		
-		VisualPageLoad.SetupExpectedCostFilters();
+		HierarchyGeneral.SetupExpectedCostFilters();
 
-		VisualPageLoad.SetExpenseFilter(expenseHierarchy.VisualPageLoad.expenseFiltersLocation.TileMap); // click through selectors that are above the tile map. 
-		VisualPageLoad.VerifySpendCateoryFilter(); // verify both selector tabs.
+		HierarchyGeneral.SetExpenseFilter(expenseHierarchy.HierarchyGeneral.expenseFiltersLocation.TileMap); // click through selectors that are above the tile map. 
+		HierarchyGeneral.VerifySpendCateoryFilter(); // verify both selector tabs.
 		
-		VisualPageLoad.SetExpenseFilter(expenseHierarchy.VisualPageLoad.expenseFiltersLocation.ExpenseTrend); // click through selectors that are above the trend graph.
-		VisualPageLoad.VerifySpendCateoryFilter(); // verify both selector tabs.
+		HierarchyGeneral.SetExpenseFilter(expenseHierarchy.HierarchyGeneral.expenseFiltersLocation.ExpenseTrend); // click through selectors that are above the trend graph.
+		HierarchyGeneral.VerifySpendCateoryFilter(); // verify both selector tabs.
 		
 		// VisualPageLoad.VerifyInitialStatesAfterPageLoad();
 	

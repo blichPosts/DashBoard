@@ -2,7 +2,6 @@ package testSuiteExpenseHierarchy;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -10,9 +9,9 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyNumbersDependents;
 import expenseHierarchy.HierarchyNumbersDependents.DrillDownPageType;
-import expenseHierarchy.VisualPageLoad;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.HierarchyHelper;
 import helperObjects.ExpenseHelper.controlType;
 
 public class DependentUnitsList_Drill_Down_Up extends BaseClass 
@@ -31,7 +30,7 @@ public class DependentUnitsList_Drill_Down_Up extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
-		VisualPageLoad.SelectAndWaitForPageLoad();
+		HierarchyHelper.SelectAndWaitForPageLoad();
 
 		ExpenseHelper.SetHierarchyMaxDisplayed(100);
 		Thread.sleep(1000);
