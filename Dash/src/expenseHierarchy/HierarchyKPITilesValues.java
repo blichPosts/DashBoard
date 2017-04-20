@@ -61,10 +61,10 @@ public class HierarchyKPITilesValues extends BaseClass{
 		
 		GeneralHelper.verifyExpectedAndActualValues(costPerServNumKPIFromDash, costPerServNumKPICalculated);
 		
-//		System.out.println("KPI Tile Total Expense Actual: " + totalExpenseKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalExpenseKPICalculated);		
-//		System.out.println("KPI Tile Optimizable Actual: " + optimizableKPIFromDash + ",  KPI Tile Optimizable Expected: " + optimizableKPICalculated);		
-//		System.out.println("KPI Tile Roaming Actual: " + roamingKPIFromDash + ",  KPI Tile Roaming Expected: " + roamingKPICalculated);
-//		System.out.println("KPI Tile Cost Per Service Number Actual: " + costPerServNumKPIFromDash + ",  KPI Tile Cost Per Service Number Expected: " + costPerServNumKPICalculated); 
+// ShowText("KPI Tile Total Expense Actual: " + totalExpenseKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalExpenseKPICalculated);		
+		// ShowText("KPI Tile Optimizable Actual: " + optimizableKPIFromDash + ",  KPI Tile Optimizable Expected: " + optimizableKPICalculated);		
+		// ShowText("KPI Tile Roaming Actual: " + roamingKPIFromDash + ",  KPI Tile Roaming Expected: " + roamingKPICalculated);
+		// ShowText("KPI Tile Cost Per Service Number Actual: " + costPerServNumKPIFromDash + ",  KPI Tile Cost Per Service Number Expected: " + costPerServNumKPICalculated); 
 		
 		
 		// Verify the secondary values on KPIs
@@ -96,10 +96,10 @@ public class HierarchyKPITilesValues extends BaseClass{
 		
 		GeneralHelper.verifyExpectedAndActualValues(amountOfServNumKPICalculated, amountOfServNumKPIFromDash);
 
-//		System.out.println("KPI Tile Total Expenses Directly Allocated Actual: " + totalExpenseDirectlyAllocatedKPIFromDash + ",  KPI Tile Total Expenses Directly Allocated Expected: " + totalExpenseDirectlyAllocatedKPICalculated); 
-//		System.out.println("KPI Tile Optimizable Expenses Directly Allocated Actual: " + optimizableDirectlyAllocatedKPIFromDash + ",  KPI Tile Optimizable Expenses Directly Allocated Expected: " + optimizableDirectlyAllocatedKPICalculated); 
-//		System.out.println("KPI Tile Roaming Expenses Directly Allocated Actual: " + roamingDirectlyAllocatedKPIFromDash + ",  KPI Tile Roaming Expenses Directly Allocated Expected: " + roamingDirectlyAllocatedKPICalculated); 
-//		System.out.println("KPI Tile Amount of Service Numbers Actual: " + amountOfServNumKPIFromDash + ",  KPI Tile Amount of Service Numbers Expected: " + amountOfServNumKPICalculated); 
+		// ShowText("KPI Tile Total Expenses Directly Allocated Actual: " + totalExpenseDirectlyAllocatedKPIFromDash + ",  KPI Tile Total Expenses Directly Allocated Expected: " + totalExpenseDirectlyAllocatedKPICalculated); 
+		// ShowText("KPI Tile Optimizable Expenses Directly Allocated Actual: " + optimizableDirectlyAllocatedKPIFromDash + ",  KPI Tile Optimizable Expenses Directly Allocated Expected: " + optimizableDirectlyAllocatedKPICalculated); 
+		// ShowText("KPI Tile Roaming Expenses Directly Allocated Actual: " + roamingDirectlyAllocatedKPIFromDash + ",  KPI Tile Roaming Expenses Directly Allocated Expected: " + roamingDirectlyAllocatedKPICalculated); 
+		// ShowText("KPI Tile Amount of Service Numbers Actual: " + amountOfServNumKPIFromDash + ",  KPI Tile Amount of Service Numbers Expected: " + amountOfServNumKPICalculated); 
 
 	}
 
@@ -146,10 +146,10 @@ public class HierarchyKPITilesValues extends BaseClass{
 			
 			try{
 				threeMonthValue = driver.findElement(By.xpath("(//div[text()='3 months'])[" + i +"]/following-sibling::div"));
-				//System.out.println("threeMonthDisplayed true");
+				// ShowText("threeMonthDisplayed true");
 			}catch(Exception e){
 				// If 3 month rolling average is not displayed, set the variable to false
-				//System.out.println("threeMonthDisplayed false");
+				// ShowText("threeMonthDisplayed false");
 				threeMonthDisplayed = false;
 			}
 			
@@ -272,7 +272,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 				
 			}catch(Exception e){
 				// If 6 month rolling average is not displayed, set the variable to false
-				//System.out.println("Six Month Displayed false");
+				// ShowText("Six Month Displayed false");
 				sixMonthDisplayed = false;
 			}
 			
@@ -304,7 +304,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 						
 				}
 				
-//				System.out.println("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
+				// ShowText("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
 				
 				// Verifies that the '6 months rolling average' displayed equals to the '6 months rolling average' calculated
 				GeneralHelper.verifyExpectedAndActualValues(sixMonthAvgActual, sixMonthAvgExpected);

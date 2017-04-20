@@ -51,7 +51,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 		
 		
 		// Set up list with expected values
-		List<HashMap<String, String>> expectedValues = getListExpectedValues(allValuesFromFile, categorySelector);  // new ArrayList<>();
+		List<HashMap<String, String>> expectedValues = getListExpectedValues(allValuesFromFile, categorySelector);
 		
 		// Set up list with expected labels
 		List<String> expectedLabels = new ArrayList<>();
@@ -77,6 +77,9 @@ public class HierarchyExpenseTrending extends BaseClass {
 			Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
 			int x = coordinates.getX();
 			int y = GeneralHelper.getYCoordinate(chartId);
+			
+			int y_offset = (int) GeneralHelper.getScrollPosition();
+			y += y_offset;
 			
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);

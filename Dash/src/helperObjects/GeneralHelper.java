@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import javax.swing.JOptionPane;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -19,11 +22,11 @@ public class GeneralHelper extends BaseClass {
 
 	
 	public static WebElement iframe;  
-	public static int x_iFrame;
-	public static int y_iFrame;
+	public static int x_iFrame = 0;
+	public static int y_iFrame = 0;
 	
 	
-	
+	// Sets up the x and y coordinates of the CONTENT frame
 	public static void setUpiFrame() {
 		
 		iframe = driver.findElement(By.cssSelector("iframe#CONTENT"));
@@ -34,7 +37,99 @@ public class GeneralHelper extends BaseClass {
 	}
 	
 	
+	// Switches to top frame
+	public static void switchToTop() {
+		
+		driver.switchTo().defaultContent(); 
+		
+	}
 	
+	
+	// Switches to content frame
+	public static void switchToContentFrame() throws InterruptedException {
+		
+		driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
+	    
+	    // this timeout is here because when at frame id "CONTENT" there is no DOM element to wait for.    
+	    DebugTimeout(1, ""); 
+	    
+	    // this will get to dash board frame. at this pint the dash board test code will wait for the dash page to load. 
+	    if (loginType.equals(LoginType.Command)) {
+	    	driver.switchTo().frame(driver.findElement(By.id("dashboard_iframe")));
+	    }
+	    
+		
+	}
+	
+	
+	// Get the location of the element on the UI 
+	public static Point getAbsoluteLocation(WebElement element) {
+		
+		int x = x_iFrame;
+        int y = y_iFrame;
+        
+        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
+		int headerHeight = header.getSize().getHeight();
+        		
+        Point elementLoc = element.getLocation();
+
+        x += elementLoc.getX();
+        y += elementLoc.getY() + headerHeight;
+        
+        Point p = new Point(x, y);
+        return p; 
+        
+	}
+
+	
+	// Gets the "y" coordinate of scroll's position on the screen 
+	// -->  ** The secret of getting the exact coordinates was getting the "y" coordinate of the scroll bar **
+	public static long getScrollPosition() throws InterruptedException {
+		
+		switchToTop();
+		
+		JavascriptExecutor je = (JavascriptExecutor)driver;
+		long scrollHeight = (long) je.executeScript("return window.pageYOffset;");
+				
+		switchToContentFrame();
+		
+		return -scrollHeight;
+		
+	}
+
+	
+	// *** NOT USED ANYMORE ***  TO BE REMOVED <----
+	public static Point getAbsoluteLocationTopTenBar(WebElement element) {
+		
+        int x = x_iFrame;
+        int y = y_iFrame;
+        
+        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
+		int headerHeight = header.getSize().getHeight();
+        
+        Point elementLoc = element.getLocation();
+
+        if (loginType.equals(LoginType.ReferenceApp)) {
+        	
+            x += elementLoc.getX();
+            y += elementLoc.getY() + headerHeight;
+            
+        	
+        } else if (loginType.equals(LoginType.Command)) {
+        	
+        	x += elementLoc.getX();
+            y += elementLoc.getY() + (headerHeight * 3);
+            
+        }
+        
+        Point p = new Point(x, y);
+        return p; 
+        
+	}
+
+	
+	
+
 	// It returns true if there's data for the vendor in the selected month. That means that the vendor will be displayed on the Usage Trending chart
 	// Else it returns false	
 	public static HashMap<String, Boolean> vendorHasDataForSelectedMonth(List<List<UsageOneMonth>> allValuesFromFile) throws ParseException {
@@ -91,64 +186,7 @@ public class GeneralHelper extends BaseClass {
 	} 	
 	
 	
-	// Get the location of the element on the UI 
-	public static Point getAbsoluteLocation(WebElement element) {
-		
-        int x = x_iFrame;
-        int y = y_iFrame;
-        
-        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
-		int headerHeight = header.getSize().getHeight();
-        
-        Point elementLoc = element.getLocation();
-
-        if (loginType.equals(LoginType.ReferenceApp)) {
-        	
-            x += elementLoc.getX();
-            y += elementLoc.getY() + headerHeight;
-            
-        	
-        } else if (loginType.equals(LoginType.Command)) {
-        	
-        	x += elementLoc.getX();
-            y += elementLoc.getY() - (headerHeight * 1.3);
-            
-        }
-        
-        Point p = new Point(x, y);
-        return p; 
-        
-	}
-
-
-	public static Point getAbsoluteLocationTopTenBar(WebElement element) {
-		
-        int x = x_iFrame;
-        int y = y_iFrame;
-        
-        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
-		int headerHeight = header.getSize().getHeight();
-        
-        Point elementLoc = element.getLocation();
-
-        if (loginType.equals(LoginType.ReferenceApp)) {
-        	
-            x += elementLoc.getX();
-            y += elementLoc.getY() + headerHeight;
-            
-        	
-        } else if (loginType.equals(LoginType.Command)) {
-        	
-        	x += elementLoc.getX();
-            y += elementLoc.getY() + (headerHeight * 3);
-            
-        }
-        
-        Point p = new Point(x, y);
-        return p; 
-        
-	}
-
+	
 	
 	public static void selectFirstMonth() throws Exception {
 
@@ -164,16 +202,20 @@ public class GeneralHelper extends BaseClass {
 	public static void waitForDataToBeLoaded() throws Exception {
 		
 		try {
+			
 			// Wait for children to be listed on the PoV section -- this is to give time to new data to be loaded
 			WaitForElementPresentNoThrow(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MediumTimeout);
-//			ShowText("No children on PoV section");
+			// ShowText("No children on PoV section");
+			
 		} catch (TimeoutException e) {
+			
 			try {
 				// If there are no children listed on the PoV section,
 				// then wait for message to show up on the tile map stating there are no children 
 				WaitForElementPresentNoThrow(By.cssSelector("div.tdb-charts__contentMessage"), MediumTimeout);
+				
 			} catch (Exception e2) {
-//				ShowText("No message saying there's no data for selected month.");
+				// ShowText("No message saying there's no data for selected month.");
 			}
 		}
 		
@@ -198,12 +240,12 @@ public class GeneralHelper extends BaseClass {
 	
 	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
 		
-//		System.out.println("Value actual: " + valueActual + "; Value expected: " + valueExpected);
+		// ShowText("Value actual: " + valueActual + "; Value expected: " + valueExpected);
 		
 		double numActual = Double.parseDouble(getNumericValue(valueActual));
 		double numExpected = Double.parseDouble(getNumericValue(valueExpected));
 		
-//		System.out.println("numActual: " + numActual + "; numExpected: " + numExpected);
+		// ShowText("numActual: " + numActual + "; numExpected: " + numExpected);
 		
 		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
 		
@@ -259,7 +301,6 @@ public class GeneralHelper extends BaseClass {
 	    }
         catch (Exception e)
         {
-	        //System.out.println(e.toString());
 	        throw new Exception(e.toString());
         }	    
 	    return true;
@@ -294,7 +335,26 @@ public class GeneralHelper extends BaseClass {
 
 
 
-	
-	
+	public static int getAmountOfVendorsToSelect(int totalVendorsAmount) {
+		
+		String amountTmp = JOptionPane.showInputDialog("Specify amount of vendors to select.");
+		int amountOfVendors;
+		
+		try {
+			
+			amountOfVendors = Integer.parseInt(amountTmp);
+			
+		} catch (NumberFormatException e) {
+			
+			amountOfVendors = totalVendorsAmount;
+		} 
+		
+		if (amountOfVendors < 1 || amountOfVendors > totalVendorsAmount)
+			amountOfVendors = totalVendorsAmount;
+		
+		return amountOfVendors;
+		
+	}
+
 	
 }

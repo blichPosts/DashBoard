@@ -46,7 +46,7 @@ public class ReadFilesHelper extends BaseClass {
 	    
 		String usageExpenseData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('fleet.expenseUsage.payload.rows')");
 				
-	    ShowText(usageExpenseData);
+	    // ShowText(usageExpenseData);
 	   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(usageExpenseData); 

@@ -87,7 +87,6 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		}
 		
 		
-		CommonTestStepActions.initializeMonthSelector();
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
 		
 		
@@ -141,25 +140,6 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		} while (indexMonth < monthsToSelect.size());
 			
 		
-		// Vendors are listed in alphabetical order in the Usage Trending tooltips
-			
-		List<List<UsageOneMonth>> listAllMonthsSortedByVendor = new ArrayList<>();
-		
-		for (List<UsageOneMonth> list: dataForExpenseTrending) {
-			
-			listAllMonthsSortedByVendor.add(UsageHelper.sortVendorsAlphabetically(list));
-		
-		}
-		
-		
-//		for (List<UsageOneMonth> list: listAllMonthsSortedByVendor) {
-//			for (UsageOneMonth u: list) {
-//				System.out.println(" Vendor: ** " + u.getVendorName() + " **, Month: " + u.getOrdinalMonth() + ", Year: " + u.getOrdinalYear() + ", Invoice Month: " + u.getInvoiceMonth());
-//			}
-//			System.out.println("");
-//		}
-		
-		
 		int indexMonthToSelect = 0;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
@@ -178,47 +158,47 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryAll);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAll);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryAll);
 				Thread.sleep(2000);
 				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryVoice);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryVoice);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryVoice);
 				Thread.sleep(2000);
 				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryData);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryData);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryData);
 				Thread.sleep(2000);
 				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryMessages);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryMessages);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryMessages);
 				Thread.sleep(2000);
 				 
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryRoaming);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryRoaming);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryRoaming);
 				Thread.sleep(2000);
 				
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryEquipment);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryEquipment);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryEquipment);
 				Thread.sleep(2000);
 				 
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryTaxes);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryTaxes);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryTaxes);
 				Thread.sleep(2000);
 				 
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryOther);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryOther);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryOther);
 				Thread.sleep(2000);
 				 
 				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryAccount);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAccount);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.expenseByVendorChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryAccount);
 				Thread.sleep(2000);
 				 
 				

@@ -17,7 +17,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
-import usage.UsageTrending;
+import usage.UsageTrendingValues;
 
 public class UsageTrendingMultipleValues extends BaseClass{
 
@@ -53,7 +53,7 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		String path = UsageHelper.path;
-		int amountOfVendors = 12;
+		int amountOfVendors = 10;
 
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();
@@ -65,7 +65,6 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		UsageHelper.selectVendorView();
 		CommonTestStepActions.UnSelectAllVendors();
 		
-		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
 		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = new ArrayList<>();
 		
 		// Run the test for each vendor 
@@ -79,7 +78,7 @@ public class UsageTrendingMultipleValues extends BaseClass{
 			String completePath = path + file;
 						
 			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);			
+			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getJsonDataExpenseUsage(vendor);		
 			listSelectedDataForMonthListUnified.add(valuesFromFileTmp);
 				
 			// #3 Select one vendor
@@ -88,60 +87,9 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		}
 		
 		
-		CommonTestStepActions.initializeMonthSelector();
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
-		
-		
-		// Some vendors might not have information for all last 13 months; in that case the value displayed on the Usage Trending chart is zero
-		// So to have a valid value to compare with, the info for those missing months (on source file) is created and values are set to zero.  
-		for (List<UsageOneMonth> list: listSelectedDataForMonthListUnified) {
 			
-			List<UsageOneMonth> valuesFromFileOneVendor = UsageHelper.addMissingMonthsForVendor(list);
-			listVendorsSelectedData.add(valuesFromFileOneVendor);
-		
-		}
-		
-		
-		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
-					
-		int indexMonth = 0;
-	
-		List<List<UsageOneMonth>> dataForUsageTrending = new ArrayList<>();
-		
-		do {
-		
-			// listOneMonthData will have the data for a specific month, for all the vendors previously selected
-			List<UsageOneMonth> listOneMonthData = new ArrayList<>();
-			
-			// values has the 13 months for one vendor
-			for (List<UsageOneMonth> values: listVendorsSelectedData){
-				
-				int indexMonthForVendorSelected = 0;
-				boolean dataFoundForMonth = false;
-				
-				while (indexMonthForVendorSelected < values.size() && !dataFoundForMonth){
-					
-					String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
-					
-					if (monthsToSelect.get(indexMonth).equals(monthYear)) {
- 
-						listOneMonthData.add(values.get(indexMonthForVendorSelected));
-						dataFoundForMonth = true;
-						
-					}
-						
-					indexMonthForVendorSelected++;
-				}
-					
-			}
-
-			dataForUsageTrending.add(listOneMonthData);
-			
-			indexMonth++;
-			
-		} while (indexMonth < monthsToSelect.size());
-			
-		
+		List<List<UsageOneMonth>> dataForUsageTrending = UsageTrendingValues.getListWithData(listSelectedDataForMonthListUnified);
 		
 		int indexMonthToSelect = 0;
 		String monthYearToSelect = "";
@@ -149,6 +97,7 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		// Add to a list the months that have data for at least one vendor. 
 		// Months that have no data won't be selected on the month selector, since no data is displayed on the Dashboard.
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
+		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 		
 		do {
 					
@@ -166,33 +115,33 @@ public class UsageTrendingMultipleValues extends BaseClass{
 				// Domestic chart
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
+				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
+				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
 				Thread.sleep(2000);
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 				
 				// Roaming chart
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
+				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);	
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
+				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
 				Thread.sleep(2000);	
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				UsageTrending.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 				
 				new Actions(driver).moveToElement(driver.findElement(By.cssSelector(".tdb-pov__month"))).perform();

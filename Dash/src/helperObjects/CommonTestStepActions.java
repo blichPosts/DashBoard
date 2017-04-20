@@ -463,7 +463,7 @@ public class CommonTestStepActions extends BaseClass
 	public static List<WebElement> getAllVendorNames(){
 		
 		try {
-			WaitForElementPresentNoThrow(By.xpath(".//span[@class='md-checkbox-label']"), MediumTimeout);
+			WaitForElementPresentNoThrow(By.xpath(".//span[@class='md-checkbox-label']"), MainTimeout);
 		} catch (Exception e) {
 			ShowText("No checkboxes listed.");
 		}

@@ -33,6 +33,14 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 	public static void ExpensesKPITilesTestValuesOneVendorTest() throws Exception
 	{
 		
+		// Enable Start collecting data
+		ReadFilesHelper.startCollectingData();
+		Thread.sleep(2000);
+		
+		// Reload Fleet data
+		ReadFilesHelper.reloadFleetData();
+		Thread.sleep(2000);
+				
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -55,7 +63,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 			CommonTestStepActions.GoToExpensePageDetailedWait();
 				
 			// #1 Read data from file
-			List<UsageOneMonth> valuesFromFile = ReadFilesHelper.getDataFromSpreadsheet(completePath);
+			List<UsageOneMonth> valuesFromFile = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
 							
 			// #2 Select only one vendor
 			CommonTestStepActions.UnSelectAllVendors();
@@ -85,13 +93,15 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 				try {
 					
 					if (!(month.equals(null) && year.equals(null))) {
+
 						monthYearNull = false;
-//						System.out.println("Month and year NOT null");
+
 					}
 							
 				} catch (NullPointerException e) {
+					
 					monthYearNull = true;
-//					System.out.println("Month and year ARE null");
+
 				}
 					
 				if (!monthYearNull) {

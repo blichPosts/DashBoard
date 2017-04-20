@@ -289,7 +289,7 @@ public class TotalExpensesValues extends BaseClass {
 
 
 	
-	private static void moveMouseToBar(String chartId, int indexHighchart) throws AWTException {
+	private static void moveMouseToBar(String chartId, int indexHighchart) throws AWTException, InterruptedException {
 		
 		String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
 		
@@ -306,18 +306,19 @@ public class TotalExpensesValues extends BaseClass {
 		int height = d.getHeight();
 		int width = d.getWidth();
 	
-		int x_offset = (int) (width * 0.5);
-		int y_offset = (int) (height * 0.5);
+		int x_BarOffset = (int) (width * 0.5);
+		int y_BarOffset = (int) (height * 0.5);
 		
+		int y_offset = (int) GeneralHelper.getScrollPosition();
 		
-		if (loginType.equals(LoginType.Command)) {
-			
-			y_offset = y_offset + 260;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
-			
-		}						
+//		if (loginType.equals(LoginType.Command)) {
+//			
+//		//	y_offset = y_offset + 260;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+//			
+//		}						
 
-		x = x + x_offset;
-		y = y + y_offset;
+		x = x + x_BarOffset;
+		y = y + y_BarOffset + y_offset;
 		
 		Robot robot = new Robot();
 		robot.mouseMove(x, y); 
@@ -545,18 +546,19 @@ public class TotalExpensesValues extends BaseClass {
 				
 				Thread.sleep(1000);
 				
-				int x_offset = (int) (width * 0.5);
-				int y_offset = (int) (height * 0.5);
+				int x_sliceOffset = (int) (width * 0.5);
+				int y_sliceOffset = (int) (height * 0.5);
 				
+				int y_offset = (int) GeneralHelper.getScrollPosition();
 							
-				if (loginType.equals(LoginType.Command)) {
-					
-					y_offset = y_offset + 260;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
-					
-				}						
+//				if (loginType.equals(LoginType.Command)) {
+//					
+//					//y_offset = y_offset + 260;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
+//					
+//				}						
 
-				x = x + x_offset;
-				y = y + y_offset;
+				x = x + x_sliceOffset;
+				y = y + y_sliceOffset + y_offset;
 				
 				robot.mouseMove(x, y); 
 				
