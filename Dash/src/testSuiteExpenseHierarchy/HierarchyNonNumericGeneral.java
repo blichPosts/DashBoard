@@ -33,14 +33,14 @@ public class HierarchyNonNumericGeneral extends BaseClass
 		
 		VisualPageLoad.SelectAndWaitForPageLoad();
 
+		// below is test for expense category selectors.
+		
 		VisualPageLoad.SetupExpectedCostFilters();
-		
+
 		VisualPageLoad.SetExpenseFilter(expenseHierarchy.VisualPageLoad.expenseFiltersLocation.TileMap); // click through selectors that are above the tile map. 
-		
 		VisualPageLoad.VerifySpendCateoryFilter(); // verify both selector tabs.
 		
 		VisualPageLoad.SetExpenseFilter(expenseHierarchy.VisualPageLoad.expenseFiltersLocation.ExpenseTrend); // click through selectors that are above the trend graph.
-		
 		VisualPageLoad.VerifySpendCateoryFilter(); // verify both selector tabs.
 		
 		// VisualPageLoad.VerifyInitialStatesAfterPageLoad();

@@ -861,7 +861,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				// get string value for dependent unit 1. 
 				String firstTileMap =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).get(0).getText(); 
 				
-				// see if dependent unit 1 doesn't have a zero cost.
+				// see if dependent unit 1 doesn't have a zero cost. if it does, drilling down is stopped.
 				if(DependentUnitValueIsZero(firstTileMap)) 
 				{
 					break;
@@ -889,6 +889,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 			
 			HierarchyNumbersDependents.LoopThroughCatergoriesForTileMapCommand();
+			//RunTilesInCommand(); // bladdxx tile map
 			
 			// get dependent numbers size after drilling down. this will be used to  
 			numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size();
@@ -1074,6 +1075,25 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
+	// go through the hierarchies and run a single level tile map test.
+	public static void LoopThroughCatergoriyDrillDownsForTileMapCommand() throws Exception // bladdxx - new tile map  
+	{
+		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
+		
+		// this loops through the category selectors one at a tile.  
+		for(int x = 0; x < values.length; x++)
+		{
+			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
+			HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
+			Thread.sleep(2000); // wait for tile map to fill in.
+			
+			ShowText("Start category selector --- " + values[x].name() + ".");
+			DrillDownAcrossCostFiltersTileMapCommand(maxLevelsToDrillDownTo, 50);
+			
+			
+			ShowText("Pass complete for --- " + values[x].name() +".");
+		}
+	}
 	
 	// this loops through the hierarchies and does a series of drill down tests for each hierarchy. 
 	public static void LoopThroughHierarchiesDependentUnitsDrillDown() throws Exception 
@@ -1156,6 +1176,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 				Thread.sleep(1000);
 				RunTileMapTest(currentTileMapTestType); // run test.
+				//LoopThroughCatergoriyDrillDownsForTileMapCommand(); // bladdxx 
 				hierarchyCntr++;
 		}	
 	}
