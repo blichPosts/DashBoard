@@ -58,6 +58,7 @@ public class BaseClass
 	public static int ShortTimeout = 5;
 	public static int MiniTimeout = 3;	
 	public static int TinyTimeout = 2;
+	public static int TenTimeout = 10;	
 	
 	// command variables
 	//public static String commandUserName = "bob.lichtenfels@tangoe.com XX1";
@@ -682,4 +683,18 @@ public class BaseClass
 			}
 		}		
 		
+		// This shows a pop-up  message with added text passed in.  
+		public static void Pause(String moreInfo) throws Exception
+		{
+		    JOptionPane.showMessageDialog(frame, "PAUSE: " + moreInfo);
+		}
+		
+		// this shows the text for each element in the web element list passed in. 
+		public static void ShowWebElementListText(List<WebElement> eleList)
+		{
+			for(WebElement ele: eleList)
+			{
+				ShowText(ele.getText());
+			}
+		}
 }

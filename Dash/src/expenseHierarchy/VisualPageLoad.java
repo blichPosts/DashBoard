@@ -1,17 +1,13 @@
 package expenseHierarchy;
 
-import java.awt.Robot;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.crypto.ShortBufferException;
 import javax.swing.JOptionPane;
-import javax.tools.DocumentationTool.Location;
 
-import org.bouncycastle.asn1.icao.CscaMasterList;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -19,56 +15,158 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
-import com.google.gson.JsonArray;
-
 import Dash.BaseClass;
-import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.expenseFilters;
 import helperObjects.ExpenseHelper.hierarchyTileMapTabSelection;
 import helperObjects.HierarchyHelper;
 import helperObjects.UsageHelper;
 
 public class VisualPageLoad extends BaseClass 
 {
-	String leadingTextForAboveKpis = "Expenses for ";
-	String trailingTextForAboveKpis = " and its dependent units ";	
-	
-	public static String []  strArrayOne;
-	public static String []  strArrayTwo;
 	public static String tempString;
-	// public static String parentUnitPullDownText = "";
-	public static String parentUnit = "";
-	public static String fullTitleAboveKpiTiles = "";
-	public static String tempOne = "";
-	public static String tempTwo = "";
-	public static String dependentUnitInfo = "";
-	public static String hoverInfo = "";
 	public static String chartId = "";
+	public static expenseFiltersLocation currentExpenseFilterLocation;
 	
-	// for title above KPI tiles
-	public static String  firstPartTitleAboveKpiTiles = "Expenses for ";
-	public static String  lastPartTitleAboveKpiTiles = " and its dependent units";
-	public static String  maximumDisplaedExpected = "10";
-	
-	// for title above tile map.
-	public static String  tileMapTitlePartOne = "Top ";
-	public static String  tileMapTitlePartTwo = " (out of 100) dependent units of ";
-
-	// these are used for the end text for some titles that depend on the cost type selector selection.  
-	public static String  totalExpenseEnd = " - Total Expense";
-	public static String  optimizableExpenseEnd = " - Optimizable Expense";
-	public static String  roamingExpenseEnd = " - Roaming Expense";
-
-	public static double expectedValueDouble = 0;
-	public static double actualValueDouble = 0;
-	
-	public static int createErrorCounter = 0; // this can be used in 'GetExpectedValue'method to create an intentional error. 
+	public static List<String> expectedCostFilters = new ArrayList<>();	
 	
 	public static JavascriptExecutor js = (JavascriptExecutor) driver; // bladdxx
+
 	
-	// for Expense Trend title.
-	public static String  expenseTrendingPartOne = "Expense Trend for ";
+	// locators
+	public static String tileMapExpenseSeletorCssLocator = ".tdb-card>div:nth-of-type(1)>div"; // this is selectors above tile map
+	public static String expenseTrendExpenseSeletorCssLocator = ".tdb-card>div:nth-of-type(3)>div"; // this is selectors above expense trend.
+	//.tdb-card>div:nth-of-type(3)
+	//.tdb-card>div:nth-of-type(1)
 	
+	// this is for indicating which trend graph expense filter is being tested. 
+	public static enum expenseFiltersLocation
+	{
+		TileMap,
+		ExpenseTrend,
+	}
+
+	public static void SetupExpectedCostFilters()
+	{
+		expectedCostFilters.add("Total");
+		expectedCostFilters.add("Optimizable");
+		expectedCostFilters.add("Roaming");
+	}
+	
+	// this sets currentExpenseFilter to what expense filter is being used to click each selection.
+	public static void SetExpenseFilter(expenseFiltersLocation expFilter)
+	{
+		currentExpenseFilterLocation = expFilter;
+	}	
+	
+	
+	// this uses the 'currentExpenseFilter' value to decide which set of cost filters will be used to make the clicks across all the filters. 
+	// the 'ClickThroughFiltersAndVerify' method does the clicks and then calls the method that handles all the testing. 
+	public static void VerifySpendCateoryFilter() throws Exception 
+	{
+		switch(currentExpenseFilterLocation)
+		{
+			case TileMap:
+			{
+				ClickThroughFiltersAndVerify(tileMapExpenseSeletorCssLocator);
+				break;
+			}
+			case ExpenseTrend:
+			{
+				ClickThroughFiltersAndVerify(expenseTrendExpenseSeletorCssLocator);
+				break;
+			}
+			default:
+			{
+				Assert.fail("Bad case sent to sent to ExpenseHelper.VerifySpendCateoryFilter.");
+			}
+		}
+	}
+	
+	// this clicks through the 
+	public static void ClickThroughFiltersAndVerify(String css) throws Exception
+	{
+		// get a list of the web elements that are related to the xPath passed in.
+		// the xPath is pointing to one of the category filters. 
+		List<WebElement> listToClickThrough = driver.findElements(By.cssSelector(css));
+		
+		Assert.assertTrue(listToClickThrough.size() != 0, "Found empty list in ClickThroughFiltersAndVerify.");
+		
+		int x = 0;
+		
+		// go through the each filter selection and select them one at a time.
+		for(WebElement ele : listToClickThrough)
+		{
+			ele.click();
+			
+			Thread.sleep(1000);
+			
+			Assert.assertEquals(ele.getText(), expectedCostFilters.get(x), "");
+			
+			// this verifies other category selector that is not being clicked through. 
+			VerifyRemainingCategorySelectors(x);
+
+			Thread.sleep(1000);
+			
+			x++;
+		}
+	}
+	
+	// this is called after each tab click. this verifies the category selector tabs that are not being clicked through. 
+	// variable x passed in is the tab selection that should be selected/enabled.
+	public static void VerifyRemainingCategorySelectors(int x) 
+	{
+
+		List<WebElement> tempListOne;
+
+		switch(currentExpenseFilterLocation)
+		{
+			case TileMap: // the tabs above the tile map are being clicked through.
+			{
+				tempListOne = driver.findElements(By.cssSelector(expenseTrendExpenseSeletorCssLocator));   
+				VerifyCorrectSelection(tempListOne, x); // verify status of other set of tabs.
+				break;
+				
+			}
+			case ExpenseTrend: // the tabs above the expense trending are being clicked through.
+			{
+				tempListOne = driver.findElements(By.cssSelector(tileMapExpenseSeletorCssLocator));
+				VerifyCorrectSelection(tempListOne, x); // verify status of other set of tabs.
+				break;
+				
+			}
+			default:
+			{
+				Assert.fail("Bad case parameter in VerifyRemainingCostSelectors.");
+			}
+		}
+	}
+	
+	// this is sent a web list of selectors to look through. one of them is selected and the rest aren't.
+	// the one that is selected is indicated by the integer sent in. the rest of the cost filters are not selected.
+	// this verifies that the list element with the index 'x' is enabled and all the other list elements are not.  
+	public static void VerifyCorrectSelection(List<WebElement> eleList,  int x)
+	{
+		String errMessage = "Failed testing of enabled/disabled cost filters in VerifyCorrectSelection";
+		
+		Assert.assertTrue(eleList.size() != 0, "Method VerifyCorrectSelection has been paseed an empty web element list.");
+		
+		for(int y = 0; y < eleList.size(); y++)
+		{
+			if(y == x)
+			{
+				Assert.assertTrue(eleList.get(y).getAttribute("class").contains("option--selected"),errMessage); 
+			}
+			else
+			{
+				Assert.assertFalse(eleList.get(y).getAttribute("class").contains("option--selected"), errMessage);
+			}
+		}
+	}
+	
+	
+	
+	// this waits for the page to load.
 	public static void SelectAndWaitForPageLoad() throws Exception
 	{
 		js.executeScript("__TANGOE__setShouldCaptureTestData(true)"); // bladdxx
@@ -78,73 +176,55 @@ public class VisualPageLoad extends BaseClass
 		WaitForElementVisible(By.xpath("//span[text()='Total Expense']"), MediumTimeout); // this is text in top left corner tiles. 
 		WaitForElementVisible(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select"), MediumTimeout); // this is drop down in top left corner POV.
 		chartId =  UsageHelper.getChartId(0);
-		// WaitForElementClickable(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(10)"), MediumTimeout, ""); // TODO
+		HierarchyHelper.WaitForProgressBarInactive(TenTimeout);
+		Thread.sleep(2000); // time for tile map to load.
 	}
 	
-	public static void VerifyInitialStatesAfterPageLoad() throws Exception 
-	{
-		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), ExpenseHelper.desiredMonth, "");
-		
-		// wait for parent unit pulldown visible. -- GONE
-		// WaitForElementVisible(By.cssSelector(".tdb-kpi__header.tdb-h3.tdb-kpiSection__title.tdb-text--bold>span:nth-of-type(1)"), MediumTimeout);
-		
-		// /////////////////////
-		// verify all titles
-		// /////////////////////
-		
-		// this gets the complete string above the KPI tiles.
-		fullTitleAboveKpiTiles =  driver.findElement(By.cssSelector(".tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)")).getText();
-		
-		// now get the parent unit from the string above the KPI tiles.
-		parentUnit =  fullTitleAboveKpiTiles.replace(firstPartTitleAboveKpiTiles, "").replace(lastPartTitleAboveKpiTiles, "");
-		
-		// .tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)
-		
-		
-		// now get the parent unit name in the parent unit pulldown. -- GONE 
-		// parentUnitPullDownText =  new Select(driver.findElement(By.cssSelector(".tdb-space--half--top>select"))).getFirstSelectedOption().getText();
-		
-		// verify the full text above the KPI tiles is correct. -- pull downs GONE.    
-		//Assert.assertEquals(fullTitleAboveKpiTiles, firstPartTitleAboveKpiTiles + parentUnitPullDownText + lastPartTitleAboveKpiTiles,
-		//					"Failed check for title above KPI toles in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
-
-		// get complete title above tile map
-		tempString = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>h3")).getText();
-		
-		// verify title above tile map. -- NO pulldown 
-		//Assert.assertEquals(tileMapTitlePartOne + maximumDisplaedExpected + tileMapTitlePartTwo + parentUnitPullDownText + totalExpenseEnd, tempString, 
-		//		            "Failed check for title above tile map in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
-		
-		// verify 'Expense Trend' part of expense trending title.
-		WaitForElementVisible(By.xpath("//h2[text()='Expense Trending']"), ShortTimeout);
-		
-		// get complete title above the expense trending. 
-		tempString = driver.findElement(By.xpath("(//h2[text()='Expense Trending']/following ::h3)[1]")).getText();
-		
-		// verify title below 'Expense Trending'. - NO PULLDOWN.
-		//Assert.assertEquals(expenseTrendingPartOne +  parentUnitPullDownText + totalExpenseEnd, tempString, 
-		//		"Failed check for long title above 'Expense Trending' in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
-		
-		// //////////////////////////////////
-		// verify max displayed pull downs.
-		// //////////////////////////////////
-
-		// get the value of the POV 'maximum displayed' pulldown and verify it is the expected value. 
-		tempString = new Select(driver.findElement(By.xpath("(//span[text()='Maximum Displayed:'])[1]/following::select"))).getFirstSelectedOption().getText();
-		Assert.assertEquals(tempString, maximumDisplaedExpected, "Failed check for expected 'maximum diaplayed' for POV in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
-		
-		// get the tile map 'maximum displayed' pulldown and verify it is the expected value. 
-		tempString = new Select(driver.findElement(By.xpath("(//span[text()='Maximum Displayed:'])[2]/following::select"))).getFirstSelectedOption().getText();
-		Assert.assertEquals(tempString, maximumDisplaedExpected, "Failed check for expected 'maximum diaplayed' for  in VisualPageLoad.VerifyInitialStatesAfterPageLoad.");
-
-		
-		// driver.findElement(By.cssSelector("")
-		
-		
-		// .tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(1)
-		
-		
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// /////////////////////////////////////////////////////////////////////////////////
+	// NOTE BELOW - can eventually remove - was used for partial automated testing.
+	// /////////////////////////////////////////////////////////////////////////////////
+	
 	
 	public static void ConsoleOutForFileDiffActualValues() throws Exception
 	{
@@ -302,97 +382,4 @@ public class VisualPageLoad extends BaseClass
 			
 			ShowText("Exiting Loop BYE.");
 	}
-
-	public static void Hover() throws Exception
-	{
-		String dependentUnits = "";
-		
-		String tempString = UsageHelper.getChartId(0);
-		
-		DebugTimeout(2, "HOVER TEST START");
-
-		// ED said to try this sometime ....
-		//Object testObject =  js.executeScript("return __TANGOE__getCapturedTestData('hierarchy.PRIMARY.child')");
-		//if(testObject != null){	ShowText("good");} else{ShowText("null");}
-		
-		new Select(driver.findElement(By.xpath("(//span[text()='Maximum Displayed:'])[2]/following::select"))).selectByVisibleText("100");
-		
-		for(int x = 1; x <= 7; x++) // this loop can't go further than 90.
-		{ 
-			// get the json of the current tile map being shown
-			dependentUnits =  (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy.PRIMARY.child.payload.rows')");
-			Thread.sleep(1000);
-
-			// verify json fetch is OK.
-			Assert.assertTrue(dependentUnits != null); 
-
-			// do this here to also make sure json fetch worked
-			JSONArray array = new JSONArray(dependentUnits);			
-
-			// ShowText(dependentUnits.substring(0,50)); // DEBUG show some of the json return.
-
-			// these get the name info and the cost from the dependent in the UI. both of these are put in dependentUnitInfo string.
-			tempOne = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>a")).getText(); // name and id(s).
-			tempTwo = driver.findElement(By.cssSelector(".tdb-pov__itemList>li:nth-of-type(" + x + ")>span")).getText().replace("Total:",""); // numeric value and cost type.
-			
-			dependentUnitInfo = tempOne + " " + tempTwo; 
-			
-			// Thread.sleep(1000);
-			
-			// click tile x.
-			driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(6)>g:nth-of-type(" + x + ")")).click();
-			
-			Thread.sleep(1000);
-			
-			// these get the name info and the cost that was in the hover, after the click above. both of these are put in hoverInfo string.
-			tempOne = driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(1)")).getText().split("\\.")[1].trim();
-			tempTwo = driver.findElement(By.cssSelector("#" + tempString + ">svg>g:nth-of-type(10)>text>tspan:nth-of-type(2)")).getText();
-			
-			hoverInfo = (tempOne + " " + tempTwo); 
-			
-			Assert.assertEquals(dependentUnitInfo, hoverInfo); // verify hover value and it's corresponding dependent unit value are equal.  
-			
-			// get the double value found in the dependent info 
-			expectedValueDouble = Double.valueOf(dependentUnitInfo.split("\\$")[1]);
-			
-			// now get the dependent unit user cost value in the json array that was stored before the click to get hover info. 
-			// send in tempOne, the user name info, and this call will return the expected value as double.
-			actualValueDouble = GetExpectedValue(array, tempOne);
-			
-			Assert.assertEquals(actualValueDouble, expectedValueDouble,"ERR");
-			ShowText("Pass " + String.valueOf(x));
-			
-			
-			// click the bread crumb.
-			driver.findElement(By.cssSelector(".breadcrumbs>span>a")).click();
-			
-			Thread.sleep(1000);
-		}
-		
-		JOptionPane.showMessageDialog(frame, "THIS IS STOP");
-		
-	}
-	
-	public static double GetExpectedValue(JSONArray jArray, String name) throws Exception
-	{
-		JSONObject obj;
-		
-		for(int x = 0; x < jArray.length(); x++)
-		{
-			obj  = jArray.getJSONObject(x);
-			
-			// ShowText(jArray.getJSONObject(x).getString("name"));
-			if(obj.getString("name").equals(name))
-			{
-				return obj.getDouble("total_expense_rollup_ex");					
-			}
-		}
-
-		Assert.fail("FAIL XXXXX");
-		return 0;
-	}
-	
-	
-	
-	
 }

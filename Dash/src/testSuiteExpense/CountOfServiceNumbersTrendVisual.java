@@ -43,10 +43,12 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		
 		CountOfServiceNumbersTrend.SetChartId(4); // setup unique id for this control test.
 		
+		// bob - 4/19 - this was removed from 17.1 later on. it made no sense to have category selection in count of service numbers because
+		//              the category selection has no affect on count of service numbers.
 		// next two lines below use method in 'TotalExpensesTrend' class to test the trend tabs that were added to the 
 		// count of service number trend control in 17.1.
-		ExpenseHelper.SetExpenseFilter(expenseFilters.CountOfServiceNumbers); // this indicates which expense filter is being tested.
-		TotalExpensesTrend.VerifyTrendValues();
+		//ExpenseHelper.SetExpenseFilter(expenseFilters.CountOfServiceNumbers); // this indicates which expense filter is being tested.
+		//TotalExpensesTrend.VerifyTrendValues();
 
 		
 		// The title is 'Count of Service Number by Vendor/Country'

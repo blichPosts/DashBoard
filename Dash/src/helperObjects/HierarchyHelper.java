@@ -11,6 +11,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
 
 import Dash.BaseClass;
 
@@ -27,6 +28,15 @@ public class HierarchyHelper extends BaseClass {
 	
 	public final static String directlyAllocated = "Direct Allocation";
 	public final static String allocatedChildren = "Allocation to Dependent Units";
+	
+	//////////////////////////////////////////
+	// dependents and tile map items below.
+	//////////////////////////////////////////
+	public final static String dependentsListCssLocator = ".tdb-pov__itemList>li"; // this selects whole dependents list. 
+	public final static String breadcrumbListCssLocator = ".breadcrumbs>span"; // this selects the top of the bread crumbs.
+	public final static String textShownAboveKpiTilesCssLocator = ".tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)"; // this selects the text directly above the KPI tiles.
+	public final static String textShownAboveTileMapCssLocator = ".tdb-currentCharts-EXPENSE>h3"; // this selects the text directly above the tile map.
+
 	
 		
 	// Select the "VIEW BY HIERARCHY" button
@@ -275,7 +285,6 @@ public class HierarchyHelper extends BaseClass {
 
 	}
 
-
 	// Get a random dependent unit
 	public static int getDependentUnitToDrillDown() {
 		
@@ -291,6 +300,14 @@ public class HierarchyHelper extends BaseClass {
 		return dependentUnitRandom;
 		
 	}
+
+	// when the progress bar is active, tag name 'md-progress-bar' is visible and when the progress bar is inactive 'md-progress-bar' is not visible.
+	// this will wait the amount of seconds passed in. if the timeout is exceeded the assertTrue will fail.
+	public static void WaitForProgressBarInactive(int howLongToWait) throws Exception 
+	{
+		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.tagName("md-progress-bar"), howLongToWait), 
+				          "Failed to process wait for progress bar in WaitForProgressBarInactive() method.");
+	}	
 
 	
 }

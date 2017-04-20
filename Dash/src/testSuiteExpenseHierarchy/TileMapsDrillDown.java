@@ -1,5 +1,7 @@
 package testSuiteExpenseHierarchy;
 
+import javax.swing.JOptionPane;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -14,7 +16,7 @@ import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.hierarchyPulldownSelection;
 
-public class HierarchyNumbersTestsDrillDown extends BaseClass 
+public class TileMapsDrillDown extends BaseClass 
 {
 
 	@BeforeClass
@@ -28,6 +30,8 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 	public static void HierarchyNumbersTestDrillDown() throws Exception
 	{	
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
+		ShowText("Desired month is " + ExpenseHelper.desiredMonth);
+		
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
@@ -39,7 +43,7 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 		ExpenseHelper.failedtestNgTest = false;
 
 		// set how many levels to drill down to.
-		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(3);
+		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(7);
 
 		
 		// this sets the number of tiles to test and the number of tiles to show.
@@ -50,7 +54,6 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 
 		HierarchyNumbersDependents.LoopThroughTileMapTests();
 		
-		// repush
 		
 		/*
 		ShowText("\nDefault Cost Center Hierarchy Is Set ***** \n");
@@ -89,7 +92,7 @@ public class HierarchyNumbersTestsDrillDown extends BaseClass
 	{
 		System.out.println("Close Browser.");	
 		ExpenseHelper.SetWaitDefault();
-	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
+	    JOptionPane.showMessageDialog(frame, "TestComplete.");
 		driver.close();
 		driver.quit();
 	}	

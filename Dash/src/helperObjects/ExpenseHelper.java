@@ -1,7 +1,9 @@
 package helperObjects;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.text.ParseException;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,19 +14,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
+import org.openqa.selenium.Point;
 
 import Dash.BaseClass;
-import expenseHierarchy.HierarchyNumbersDependents;
-import expenses.CountOfServiceNumbersTrend;
-import junit.framework.AssertionFailedError;
-import testSuiteExpenseActions.CountOfServiceNumbersCountry;
+import Dash.BaseClass.LoginType;
 
 public class ExpenseHelper extends BaseClass
 {
 	public static String tmpStr = "";
 	public static String errMessage = "";	
 	// public static String desiredMonth = "May 2016";
-	public static String desiredMonth = "May 2016";
+	public static String desiredMonth = "August 2016";
 	public static String impericalDesiredMonth = ""; // this is found by going through the months and finding the month(s) with the most amount of vendors showing in the expense control. 
 	public static String chartId = "";
 	public static String otherText = "Other";
@@ -60,6 +60,9 @@ public class ExpenseHelper extends BaseClass
 
 	public static expenseFilters currentExpenseFilter; // this is used to indicate which expense filter is being tested. 
 
+	// hack
+	public static int x_iFrame;
+	public static int y_iFrame;
 	
 	
 	// this is for  distinguishing a control type in the expenses page. 
@@ -156,8 +159,7 @@ public class ExpenseHelper extends BaseClass
 	public static String  expenseTrendFilters = "((//div[@class='tdb-card'])[2]/div)[1]/div";  
 	public static String  costPerServiceNumberFilters = "((//div[@class='tdb-card'])[2]/div)[3]/div"; 
 	public static String  countofServiceNumberFilters = "((//div[@class='tdb-card'])[2]/div)[5]/div"; 
-	
-	
+
 	// setup - read comments below.
 	public static void SetupExpenseControSliceTesting()
 	{
@@ -202,13 +204,16 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	
+	// bob - fixed up on 4/13/17.
+	// this verifies that one of the countries attached to the vendor legends shown in the vendor view is shown in the country view. 
+	// tempStringList has the countries that go with the vendor legends shown in the vendor view. 
 	public static void WaitForCountryPageLoad() throws Exception 
 	{
-		DebugTimeout(7, "seven"); // started failing in  1.2.20
-		/*
+		// started failing in  1.2.20 ??
 		boolean foundCountryLegend = false;
 		chartId = UsageHelper.getChartId(4);
+		
+		//ShowListOfStrings(tempStringList); 
 		
 		if(webElementListLegends != null)
 		{
@@ -217,27 +222,26 @@ public class ExpenseHelper extends BaseClass
 		
 		long currentTime= System.currentTimeMillis();
 		long endTime = currentTime+10000;
-		int x = 0;
 		while(System.currentTimeMillis() < endTime) 
 		{
 			Thread.sleep(1000);
-			
-			// get list of web elements that are in chartId 4.
+
+			// get list of web elements (countries) that are in chartId 4 (bottom trend graph).  
 			webElementListLegends = driver.findElements(By.xpath("//div[@id='" + chartId + "']" + partialXpathToLegendsListInControls));
-			
-			//ShowText("temp String");
-			//ShowListOfStrings(tempStringList);
-			//ShowText("Actual string");
-			//for(WebElement ele : webElementListLegends){ShowText(ele.getText());}
-			
-			HierarchyNumbersDependents.Pause("Freeze");
+
+			//ShowWebElementListText(webElementListLegends);
 			
 			if(webElementListLegends != null)
 			{
-				if(tempStringList.contains(webElementListLegends.get(0).getText()))
+				// 'tempStringList' has the country names stored away from the vendor view. 
+				for(int y = 0; y < tempStringList.size(); y++)
 				{
-					foundCountryLegend = true;
-					break;
+					 // see if country shown in country view is 
+					if(tempStringList.contains(webElementListLegends.get(y).getText()))   
+					{
+						foundCountryLegend = true;
+						break;
+					}					
 				}
 			}
 		}
@@ -246,7 +250,6 @@ public class ExpenseHelper extends BaseClass
 		{
 			Assert.fail("Failed to find a country legend in method ExpenseHelper.WaitForCountryPageLoad.");			
 		}
-		*/
 	}
 	
 	// this uses the 'expenseControlSlicesElemntsList' list  (global in this object) that contains the slices in the 'total expense' control.
@@ -377,7 +380,6 @@ public class ExpenseHelper extends BaseClass
 		
 		//The top says 'Total Expense'		
 		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > h3")).getText(), ExpenseKpiNames[0], errMessage);
-		// css=.tdb-kpi:nth-of-type(1) > h3 // this type of indexing works.
 
 		VerifyExpenseTotalCost(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(1) > div> div:nth-of-type(1)")).getText(), errMessage);
 	}
@@ -389,7 +391,7 @@ public class ExpenseHelper extends BaseClass
 		//The top says 'Count of Service Numbers'		
 		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(2) > h3")).getText(), ExpenseKpiNames[1], errMessage);
 
-		VerifyCountServiceNumbers(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(2) > div> div:nth-of-type(1)")).getText(), errMessage);
+		// VerifyCountServiceNumbers(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(2) > div> div:nth-of-type(1)")).getText(), errMessage); // done in KPI numbers test.
 	}	
 	
 	public static void VerifyCostPerServiceNumberCostAndTitle() 
@@ -401,49 +403,7 @@ public class ExpenseHelper extends BaseClass
 
 		VerifyCostPerServiceNumber(driver.findElement(By.cssSelector(".tdb-kpi:nth-of-type(3) > div> div:nth-of-type(1)")).getText(), errMessage);
 	}		
-	
-	public static void TotalExpensedVerifyTrend()
-	{
-		errMessage = "Failure in ExpenseHelper.TotalExpensedVerifyTrend";
-		
-		VerifyTrendDetails(driver.findElement(By.xpath("((//div[@class='tdb-kpi__trend'])[1]/span)[2]")).getText(), errMessage);
-	}
-	
-	public static void CountServiceNumbersVerifyTrend()
-	{
-		errMessage = "Failure in ExpenseHelper.CountServiceNumbersVerifyTrend";
-		
-		VerifyTrendDetails(driver.findElement(By.xpath("((//div[@class='tdb-kpi__trend'])[2]/span)[2]")).getText(), errMessage);
-	}	
-	
-	public static void CostPerServiceNumberVerifyTrend()
-	{
-		errMessage = "Failure in ExpenseHelper.CostPerServiceNumberVerifyTrend";
-		
-		VerifyTrendDetails(driver.findElement(By.xpath("((//div[@class='tdb-kpi__trend'])[3]/span)[2]")).getText(), errMessage);
-	}		
-	
-	public static void VerifyRollingAverageTotalExpense()
-	{
-		errMessage = "Failure in ExpenseHelper.VerifyRollingAverage";
-		
-		VerifyRollingAverageTotalExpense(errMessage, "(//h4[@class='tdb-h4'])[1]/../..");
-	}
-	
-	public static void VerifyRollingAverageCountServiceNumbers()
-	{
-		errMessage = "Failure in ExpenseHelper.VerifyRollingAverageCountServiceNumbers";
-		
-		VerifyRollingAverageTotalExpense(errMessage, "(//h4[@class='tdb-h4'])[2]/../.."); 
-	}
-	
-	public static void VerifyRollingAverageCostPerServiceNumber()
-	{
-		errMessage = "Failure in ExpenseHelper.VerifyRollingAverageCountServiceNumbers";
-		
-		VerifyRollingAverageTotalExpense(errMessage, "(//h4[@class='tdb-h4'])[3]/../.."); 
-	}
-	
+
 	// this gets the legends in the expense control. this is here because all the legends in the other controls are supposed to
 	// match the total expense control. this is called by each control when the control's legends are verified to match the 
 	// total expense control's legends. 
@@ -1079,9 +1039,55 @@ public class ExpenseHelper extends BaseClass
 		return new Select(driver.findElement(By.cssSelector(".tdb-space--top>select"))).getFirstSelectedOption().getText();
 	}
 	
-	// //////////////////////////////////////////////////////////////////////////
-	//					Hierarchy Helpers   DONE ???
-	// //////////////////////////////////////////////////////////////////////////
+	// hack
+	// Get the location of the element on the UI 
+	public static Point getAbsoluteLocationFleetTrend(WebElement element) 
+	{
+		
+        int x = x_iFrame;
+        int y = y_iFrame;
+        
+        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
+		int headerHeight = header.getSize().getHeight();
+        
+        Point elementLoc = element.getLocation();
+
+    	x += elementLoc.getX() + 10;
+        y += elementLoc.getY() - (headerHeight * 11);
+        
+        Point p = new Point(x, y);
+        return p; 
+        
+	}
+
+	
+	// hack
+	// set chartId before this is called.
+	public static String ClickTrendBarCommand(int barIndex) throws Exception
+	{
+		// select the desired month/year legend.
+		WebElement barGraph = driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(8)>text:nth-of-type(" + barIndex + ")"));  
+		
+        Point p = getAbsoluteLocationFleetTrend(barGraph); 
+        
+        int x_offset = barGraph.getSize().getHeight() / 2;
+        int y_offset = barGraph.getSize().getWidth() / 2;
+        
+        int a = p.getX() + x_offset;
+        int b = p.getY() + y_offset;
+        
+        Robot robot = new Robot();
+        robot.mouseMove(a, b);
+        
+        Thread.sleep(500);
+        
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        
+        //Thread.sleep(2000); // orig
+        Thread.sleep(1000); 
+        return "";
+	}
 	
 	public static void SetupExpectedCostFilters()
 	{
@@ -1096,16 +1102,16 @@ public class ExpenseHelper extends BaseClass
 		expectedCostFilters.add("Other Charges");
 		expectedCostFilters.add("Account Level Charges");
 	}
-	
+
 	// this sets currentExpenseFilter to what expense filter is being used to click each selection.
 	public static void SetExpenseFilter(expenseFilters expFilter)
 	{
 		currentExpenseFilter = expFilter;
 	}
-	
+
 	// this uses the 'currentExpenseFilter' value to decide which set of cost filters will be used to make the clicks across all the filters. 
 	// the 'ClickThroughFiltersAndVerify' method does the clicks and then calls the method that handles all the testing. 
-	public static void VerifySpendCateoryFilter() throws Exception // bladdxx
+	public static void VerifySpendCateoryFilter() throws Exception 
 	{
 		switch(currentExpenseFilter)
 		{
@@ -1121,7 +1127,7 @@ public class ExpenseHelper extends BaseClass
 			}
 			case CountOfServiceNumbers:
 			{
-				ClickThroughFiltersAndVerify(countofServiceNumberFilters);
+				//ClickThroughFiltersAndVerify(countofServiceNumberFilters); // this filter was removed.
 				break;
 			}
 			default:
@@ -1137,6 +1143,8 @@ public class ExpenseHelper extends BaseClass
 		// get a list of the web elements that are related to the xPath passed in.
 		// the xPath is pointing to one of the category filters. 
 		List<WebElement> listToClickThrough = driver.findElements(By.xpath(xPath));
+		
+		Assert.assertTrue(listToClickThrough.size() != 0, "Found empty list in ClickThroughFiltersAndVerify.");
 		
 		int x = 0;
 		
@@ -1167,6 +1175,8 @@ public class ExpenseHelper extends BaseClass
 	{
 		errMessage = "Failed testing of enabled/disabled cost filters in ExpenseHelper.VerifyCorrectSelection";
 		
+		Assert.assertTrue(eleList.size() != 0, "Method VerifyCorrectSelection has been paseed an empty web element list.");
+		
 		for(int y = 0; y < eleList.size(); y++)
 		{
 			if(y == x)
@@ -1181,7 +1191,7 @@ public class ExpenseHelper extends BaseClass
 	}
 	
 	// this verifies the remaining category selectors. These two selectors were not clicked on. 
-	public static void VerifyRemainingCategorySelectors(int x) // bladdxx
+	public static void VerifyRemainingCategorySelectors(int x) 
 	{
 
 		List<WebElement> tempListOne;
@@ -1193,8 +1203,8 @@ public class ExpenseHelper extends BaseClass
 			{
 				tempListOne = driver.findElements(By.xpath(costPerServiceNumberFilters));  
 				VerifyCorrectSelection(tempListOne, x);
-				tempListTwo  = driver.findElements(By.xpath(countofServiceNumberFilters));
-				VerifyCorrectSelection(tempListTwo, x);
+				//tempListTwo  = driver.findElements(By.xpath(countofServiceNumberFilters));
+				//VerifyCorrectSelection(tempListTwo, x);
 				break;
 				
 			}
@@ -1202,17 +1212,17 @@ public class ExpenseHelper extends BaseClass
 			{
 				tempListOne = driver.findElements(By.xpath(expenseTrendFilters));
 				VerifyCorrectSelection(tempListOne, x);
-				tempListTwo  = driver.findElements(By.xpath(countofServiceNumberFilters));
-				VerifyCorrectSelection(tempListTwo, x);
+				//tempListTwo  = driver.findElements(By.xpath(countofServiceNumberFilters));
+				//VerifyCorrectSelection(tempListTwo, x);
 				break;
 				
 			}
 			case CountOfServiceNumbers:// count of service number trend is being clicked, verify other two category selectors.
 			{
-				tempListOne = driver.findElements(By.xpath(expenseTrendFilters));
-				VerifyCorrectSelection(tempListOne, x);
-				tempListTwo  = driver.findElements(By.xpath(costPerServiceNumberFilters));
-				VerifyCorrectSelection(tempListTwo, x);
+			//	tempListOne = driver.findElements(By.xpath(expenseTrendFilters));
+			//	VerifyCorrectSelection(tempListOne, x);
+			//	tempListTwo  = driver.findElements(By.xpath(costPerServiceNumberFilters));
+			//	VerifyCorrectSelection(tempListTwo, x);
 				break;
 			}
 			default:
@@ -1248,20 +1258,6 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	public static void VerifyRollingAverageTotalExpense(String errMess, String locator)   
-	{
-		// String strArray [] = driver.findElement(By.xpath("(//h4[@class='tdb-h4'])[1]/../..")).getText().split("\n");
-		
-		String strArray [] = driver.findElement(By.xpath(locator)).getText().split("\n");
-		
-		Assert.assertEquals(strArray[0], rollingAverages, errMess); // rolling averages text
-		Assert.assertEquals(strArray[1].split("s")[0] + "s", rollingMonthsThree, ""); // 3 months text 
-		Assert.assertEquals(strArray[2].split("s")[0] + "s", rollingMonthsSix, "");	//  6 months text
-	
-		VerifyInteger(strArray[1].split("months")[1].replace("K","").replace(".","").replace("$", "").trim(), errMess);	// numeric value	
-		VerifyInteger(strArray[2].split("months")[1].replace("K","").replace(".","").replace("$", "").trim(), errMess);	// numeric value
-	}
-	
 	public static void VerifyInteger(String tmpStr, String errMessage)
 	{
 		try
@@ -1277,23 +1273,23 @@ public class ExpenseHelper extends BaseClass
 	public static void VerifyExpenseTotalCost(String tmpStrIn, String errMess)
 	{
 		Assert.assertTrue(tmpStrIn.startsWith("$"), errMessage); // verify contains '$'.
-		Assert.assertTrue(tmpStrIn.endsWith("K"), errMessage); // verify contains 'K'.
+		// Assert.assertTrue(tmpStrIn.endsWith("K"), errMessage); // verify contains 'K'. // not always the case.
 		tmpStrIn = tmpStrIn.replace("K","").replace("$", "").replace(".",""); // remove all but numbers.
-		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
+		// VerifyInteger(tmpStrIn, errMess); // verify it has all integers. // not always the case.
 	}
 	
 	public static void VerifyCountServiceNumbers(String tmpStrIn, String errMess)
 	{
-		Assert.assertTrue(tmpStrIn.endsWith("K"), errMessage); // verify contains 'K'.
-		tmpStrIn = tmpStrIn.replace("K","").replace("$", "").replace(".",""); // remove all but numbers.
-		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
+		// Assert.assertTrue(tmpStrIn.endsWith("K"), errMessage); // verify contains 'K'. // // not always the case.
+		// tmpStrIn = tmpStrIn.replace("K","").replace("$", "").replace(".",""); // remove all but numbers.
+		// VerifyInteger(tmpStrIn, errMess); // verify it has all integers. // not always the case.
 	}	
 	
 	public static void VerifyCostPerServiceNumber(String tmpStrIn, String errMess)
 	{
 		Assert.assertTrue(tmpStrIn.startsWith("$"), errMessage); // verify contains '$'.
-		tmpStrIn = tmpStrIn.replace("$","").replace(".",""); // remove all but numbers.
-		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
+		// tmpStrIn = tmpStrIn.replace("$","").replace(".",""); // remove all but numbers.
+		// VerifyInteger(tmpStrIn, errMess); // verify it has all integers. // not always the case.
 	}	
 	
 	public static void VerifyCountServiceNumbersCost(String tmpStrIn, String errMess)
@@ -1302,17 +1298,6 @@ public class ExpenseHelper extends BaseClass
 		tmpStrIn = tmpStrIn.replace("K","").replace(".", "").replace(".",""); // remove all but numbers.
 		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
 	}	
-	
-	public static void VerifyTrendDetails(String tmpStrIn, String errMess)
-	{
-		// this is up arrow. - can't check
-		// tmpStr = driver.findElement(By.cssSelector(".tdb-kpi__trend > span:nth-of-type(1)")).getText();
-		// Assert.assertTrue(tmpStr.contains("?"), ""); 
-		
-		Assert.assertTrue(tmpStrIn.endsWith("%"), ""); // verify contains "%".		
-		tmpStrIn = tmpStrIn.replace("%", "").replace(".", ""); // get number with percent.
-		VerifyInteger(tmpStrIn, errMessage); // verify all integers after removing $, % , and '.'.
-	}
 };
 
 

@@ -34,14 +34,15 @@ public class SpendCategoryFilters extends BaseClass
 		// verify selecting expense trending 
 		ExpenseHelper.VerifySpendCateoryFilter();
 		
-		ExpenseHelper.SetExpenseFilter(expenseFilters.CountOfServiceNumbers); // this indicates which expense filter is being tested.
+		//ExpenseHelper.SetExpenseFilter(expenseFilters.CountOfServiceNumbers); // this indicates which expense filter is being tested.
 		
-		// verify selecting expense trending 
-		ExpenseHelper.VerifySpendCateoryFilter();
+		// this filter was removed.
+		// verify selecting count of trending 
+		//ExpenseHelper.VerifySpendCateoryFilter();
 
 		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
 		
-		// verify selecting expense trending 
+		// verify selecting cost per service trending 
 		ExpenseHelper.VerifySpendCateoryFilter();
 	}
 	
