@@ -43,7 +43,7 @@ public class TotalExpensesTrendVendorActions extends BaseClass
 		
 		TotalExpensesTrend.VerifyRemovingLegends();
 		
-		// verify expense trending control is empty.
+		// verify expense trending control is empty .
 		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.expenseTrending); // verify there are no bar graphs in expense spend category.
 		
 	}
