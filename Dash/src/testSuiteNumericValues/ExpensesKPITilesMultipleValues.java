@@ -50,7 +50,7 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 	
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
-		String path = UsageHelper.path;
+//		String path = UsageHelper.path;
 		int amountOfVendors = 5;
 		
 		// #1 Unselect all vendors
@@ -62,11 +62,10 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 		for (int i = 0; i < amountOfVendors; i++) {
 			
 			String vendor = vendorNames.get(i);
-			String vendorSelected = vendorNames.get(i);
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendorSelected);
+//			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);
 			
-			String file = vendorFileName + ".txt";
-			String completePath = path + file;
+//			String file = vendorFileName + ".txt";
+//			String completePath = path + file;
 			
 			// #2 Read data from file
 			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
@@ -176,9 +175,6 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 		driver.close();
 		driver.quit();
 	}
-
-	
-	
 
 }
 

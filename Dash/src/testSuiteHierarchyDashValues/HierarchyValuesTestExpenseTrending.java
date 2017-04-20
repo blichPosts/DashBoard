@@ -16,7 +16,6 @@ import helperObjects.HierarchyTrendData;
 import helperObjects.ReadFilesHelper;
 
 
-
 public class HierarchyValuesTestExpenseTrending extends BaseClass{
 
 	@BeforeClass
@@ -48,7 +47,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 			
 			HierarchyHelper.waitForChartToLoad(HierarchyHelper.expenseTrendingChart);  // <-- seems that is not useful :| 
 			
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 			
 			// #3 Get data from JSON
 			List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));

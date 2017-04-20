@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -269,8 +270,8 @@ public class BaseClass
 	// Modified by Ana
 	public static void SelectUsageTab()throws Exception	
 	{
-		WaitForElementClickable(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
-		driver.findElement(By.xpath("html/body/app-root/app-fleet-dashboard-container/header/div[2]/div[2]/a[text()='View Usage']")).click();
+		WaitForElementClickable(By.xpath("//a[text()='View Usage']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
+		driver.findElement(By.xpath("//a[text()='View Usage']")).click();
 	}
 	
 	
@@ -602,19 +603,26 @@ public class BaseClass
 			WaitForElementClickable(By.cssSelector("#menuMainReporting"),MainTimeout, "Failed wait in GoToOrderStatus");
 			DebugTimeout(1, ""); // this is needed to avoid the error with frames and clicking the wrong thing.
 			
+			WebElement pageHeader = driver.findElement(By.cssSelector("div.page-header"));
 			WebElement menu = driver.findElement(By.cssSelector("#menuMainReporting"));
-						
-			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-			// Get the location of the second line of the chart -> to get the "y" coordinate
+			
+			Dimension dimensionHeader = pageHeader.getSize();
+			int headerHeight = dimensionHeader.getHeight();
+			
 			// These coordinates will be used to put the mouse pointer over the button
+			Dimension dimensionMenu = menu.getSize();
+			int menuHeight = dimensionMenu.getHeight();
+			int menuWidth = dimensionMenu.getWidth();
+			
 			Point coordinates = menu.getLocation();
 			
-			Robot robot = new Robot(); 
-			int x = coordinates.getX() + 30;
-			int y = coordinates.getY() + 70;
+			int x = coordinates.getX() + menuWidth/2;  //+ 30;
+			int y = coordinates.getY() - menuHeight/2 + headerHeight;  //+ 70;
 			
+			Robot robot = new Robot(); 
 			robot.mouseMove(x, y);
-			//System.out.println("coordinates - x: " + x + "  y: " + y);
+			
+//			System.out.println("coordinates - x: " + x + "  y: " + y);
 			
 			Thread.sleep(1000);
 			
@@ -623,18 +631,24 @@ public class BaseClass
 			
 			
 //			driver.findElement(By.cssSelector("#menuMainReporting")).click();  // --> commented by Ana
-		    
+//		    
 //		    WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"),MainTimeout, "Failed wait in GoToOrderStatus");  // --> commented by Ana
-		    driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();  // --> commented by Ana
-		    
-		    // get to frame one.
-		    driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
-		    
-		    // this timeout is here because when at frame id "CONTENT" there is no DOM element to wait for.    
-		    DebugTimeout(1, ""); 
-		    
-		    // this will get to dash board frame. at this pint the dash board test code will wait for the dash page to load. 
-		    driver.switchTo().frame(driver.findElement(By.id("dashboard_iframe")));
+			
+			driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();  // --> commented by Ana
+			
+			GeneralHelper.setUpiFrame();  // anaaddxx  -- April 18
+			
+			GeneralHelper.switchToContentFrame(); // <-- this call replaces the code below, which is included on the method called - ana - April 20
+			
+//		    // get to frame one.
+//		    driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
+//		    
+//		    // this timeout is here because when at frame id "CONTENT" there is no DOM element to wait for.    
+//		    DebugTimeout(1, ""); 
+//		    
+//		    // this will get to dash board frame. at this pint the dash board test code will wait for the dash page to load. 
+//		    driver.switchTo().frame(driver.findElement(By.id("dashboard_iframe")));
+		   
 			
 		}
 

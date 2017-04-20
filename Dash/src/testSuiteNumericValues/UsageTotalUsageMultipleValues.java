@@ -53,8 +53,7 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 			
 		String path = UsageHelper.path;
-		int amountOfVendors = 1
-				;
+		int amountOfVendors = 10;
 
 		if (amountOfVendors > vendorNames.size()) {
 			amountOfVendors = vendorNames.size();
@@ -164,8 +163,7 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 			
 		} while (!monthYearToSelect.equals(lastMonthListedMonthSelector) && indexMonth < monthsToSelect.size());
 		
-		Thread.sleep(2000);		
-		
+				
 	}
 	
 	

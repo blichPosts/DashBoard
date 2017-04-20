@@ -95,9 +95,9 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 
-	public static void selectCategoryTopTen(int section, int category){
+	public static void selectCategoryTopTen(int category){  //  (int section, int category){
 		
-		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-boxSelector.tdb-align--right>div:nth-of-type(" + category + ")"));
+		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-child(" + category + ")"));   //".tdb-boxSelector.tdb-align--right>div:nth-of-type(" + category + ")"));
 		categoryToSelect.click();
 		
 	}

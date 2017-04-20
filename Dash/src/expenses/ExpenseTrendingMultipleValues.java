@@ -93,36 +93,15 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			
 			Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
 			
-			int y_offset = 0;
-			
-			if (loginType.equals(LoginType.Command)) {
-				
-				if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart) {
-					
-					y_offset = 100;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
-					
-				}
-				
-				if (barChartId == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
+			int y_offset = (int) GeneralHelper.getScrollPosition();
 						
-					y_offset = -200;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
-					
-				}
-				
-				if (barChartId == ExpenseHelperMultipleVendors.countServiceNumbersChart) {
-				
-					y_offset = -500;  // these coordinates work on CMD :) - Dash v.1.1.12 - Feb 24
-					
-				}
-				
-			} 
-			
 			int x = barCoordinates.getX();
 			int y = GeneralHelper.getYCoordinate(chartId) + y_offset;
 			
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);
-			// System.out.println("coordinates:  x: " + x + "  y: " + y);
+			
+			// ShowText("coordinates:  x: " + x + "  y: " + y);
 			
 			Thread.sleep(500);
 			
@@ -305,11 +284,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 						map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getNumberOfLines()), false));
 												
 					}
-					
-					// If the label to be added is not included on the expectedLabels list yet; and the label is included in the legends list 
-//					if(!expectedLabels.contains(keyVendor) && legends.contains(keyVendor))
-//						expectedLabels.add(keyVendor);
-					
+										
 				}
 									
 			}
@@ -318,9 +293,8 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			
 		}	
 		
-//		return expectedValues;
-		
 	}
+	
 	
 	
 	private static void calculateOtherExpectedValues(int barChartId, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector) {
@@ -355,8 +329,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			
 		}
 		
-		
-		
+				
 		//  Calculate the value for "Other"
 		boolean moreThanFiveVendorsSelected = vendorsSelectedCheckBox.size() > 5;
 		boolean sixVendorsInChart = vendorsInChartNames.size() == 6;
@@ -503,8 +476,6 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				}
 				
 			}
-			
-//			expectedLabels.add(otherVendors);
 			
 		}
 		

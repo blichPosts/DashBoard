@@ -298,34 +298,6 @@ public class UsageHelper extends BaseClass{
 							invoiceMonthAssigned = true;
 						}
 						
-						/*System.out.println("Domestic Voice previous value: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticVoice())));
-						System.out.println("Domestic Voice value to be added: " + Double.toString(Double.parseDouble(usage.getDomesticVoice())));
-						System.out.println("Domestic Voice summarized: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticVoice()) + Double.parseDouble(usage.getDomesticVoice())));
-						
-						System.out.println("Domestic Overage Voice previous value: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticOverageVoice())));
-						System.out.println("Domestic Overage Voice value to be added: " + Double.toString(Double.parseDouble(usage.getDomesticOverageVoice())));
-						System.out.println("Domestic Overage Voice summarized: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticOverageVoice()) + Double.parseDouble(usage.getDomesticOverageVoice())));
-						
-						System.out.println("Domestic Messages previous value: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticMessages())));
-						System.out.println("Domestic Messages value to be added: " + Double.toString(Double.parseDouble(usage.getDomesticMessages())));
-						System.out.println("Domestic Messages summarized: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticMessages()) + Double.parseDouble(usage.getDomesticMessages())));
-						
-						System.out.println("Domestic Data previous value: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticDataUsageKb())));
-						System.out.println("Domestic Data value to be added: " + Double.toString(Double.parseDouble(usage.getDomesticDataUsageKb())));
-						System.out.println("Domestic Data summarized: " + Double.toString(Double.parseDouble(usageSummarized.getDomesticDataUsageKb()) + Double.parseDouble(usage.getDomesticDataUsageKb())));
-						
-						System.out.println("Roaming Voice previous value: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingVoice())));
-						System.out.println("Roaming Voice value to be added: " + Double.toString(Double.parseDouble(usage.getRoamingVoice())));
-						System.out.println("Roaming Voice summarized: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingVoice()) + Double.parseDouble(usage.getRoamingVoice())));
-						
-						System.out.println("Roaming Messages previous value: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingMessages())));
-						System.out.println("Roaming Messages value to be added: " + Double.toString(Double.parseDouble(usage.getRoamingMessages())));
-						System.out.println("Roaming Messages summarized: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingMessages()) + Double.parseDouble(usage.getRoamingMessages())));
-						
-						System.out.println("Roaming Data previous value: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingDataUsageKb())));
-						System.out.println("Roaming Data value to be added: " + Double.toString(Double.parseDouble(usage.getRoamingDataUsageKb())));
-						System.out.println("Roaming Data summarized: " + Double.toString(Double.parseDouble(usageSummarized.getRoamingDataUsageKb()) + Double.parseDouble(usage.getRoamingDataUsageKb())));
-				*/		
 					}
 			
 				}
@@ -376,15 +348,7 @@ public class UsageHelper extends BaseClass{
 				for(UsageOneMonth usage: data.get(j)){
 					
 					if(month.equals(usage.getOrdinalMonth()) && year.equals(usage.getOrdinalYear())){
-												
-//						System.out.println("Total Charge previous value: " + Double.toString(Double.parseDouble(usageSummarized.getTotalCharge())));
-//						System.out.println("Total Charge value to be added: " + Double.toString(Double.parseDouble(usage.getTotalCharge())));
-//						System.out.println("Total Charge summarized: " + Double.toString(Double.parseDouble(usageSummarized.getTotalCharge()) + Double.parseDouble(usage.getTotalCharge())));
-//						
-//						System.out.println("Number of Lines previous value: " + Double.toString(Double.parseDouble(usageSummarized.getNumberOfLines())));
-//						System.out.println("Number of Lines value to be added: " + Double.toString(Double.parseDouble(usage.getNumberOfLines())));
-//						System.out.println("Number of Lines summarized: " + Double.toString(Double.parseDouble(usageSummarized.getNumberOfLines()) + Double.parseDouble(usage.getNumberOfLines())));
-						
+							
 						usageSummarized.setTotalCharge(Double.toString(Double.parseDouble(usageSummarized.getTotalCharge()) + Double.parseDouble(usage.getTotalCharge())));
 						
 						usageSummarized.setNumberOfLines(Double.toString(Double.parseDouble(usageSummarized.getNumberOfLines()) + Double.parseDouble(usage.getNumberOfLines())));
@@ -652,14 +616,14 @@ public class UsageHelper extends BaseClass{
 		
 		for (int i = 0; i < listVendorsSelectedData.size(); i++){
 			vendorNames.add(listVendorsSelectedData.get(i).getVendorName());
-//			System.out.println("   " + vendorNames.get(i));
+			// ShowText("   " + vendorNames.get(i));
 		}
 		
 		Collections.sort(vendorNames);
 		
 		for (int i = 0; i < listVendorsSelectedData.size(); i++){
 			
-//			System.out.println("   " + vendorNames.get(i));
+			// ShowText("   " + vendorNames.get(i));
 			UsageOneMonth usageTmp;
 			
 			int j = 0;
@@ -686,6 +650,8 @@ public class UsageHelper extends BaseClass{
 	
 	
 	public static List<String> getMonthYearListString() throws ParseException{
+		
+		CommonTestStepActions.initializeMonthSelector();
 		
 		List<String> listMonthYearInteger = CommonTestStepActions.YearMonthIntergerFromPulldown();
 		List<String> listMonthYearString = new ArrayList<>();

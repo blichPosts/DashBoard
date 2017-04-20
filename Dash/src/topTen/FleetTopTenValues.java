@@ -29,7 +29,7 @@ public class FleetTopTenValues extends BaseClass {
 	public static void verifyTopTenChartValues(int barChartId, int category) throws Exception {
 		
 		// Select category
-		HierarchyHelper.selectCategory(barChartId, category);
+		HierarchyHelper.selectCategoryTopTen(category);
 		
 		// Wait for the data to be updated on chart
 		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
@@ -110,6 +110,8 @@ public class FleetTopTenValues extends BaseClass {
 			
 			int x_offset = (int) (bar.getSize().width * 0.5);
 			int y_offset = (int) (bar.getSize().height * 0.7);
+			
+			y_offset += (int) GeneralHelper.getScrollPosition();
 			
 			int x = coordinates.getX() + x_offset;
 			int y = coordinates.getY() + y_offset;

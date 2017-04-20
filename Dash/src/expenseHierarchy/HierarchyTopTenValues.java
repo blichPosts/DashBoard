@@ -28,7 +28,7 @@ public class HierarchyTopTenValues extends BaseClass{
 	public static void verifyTopTenChartValues(String hierarchyId, int barChartId, int category) throws Exception {
 		
 		// Select category
-		HierarchyHelper.selectCategoryTopTen(barChartId, category);
+		HierarchyHelper.selectCategoryTopTen(category);  //(barChartId, category);
 		
 		// Wait for the data to be updated on chart
 		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
@@ -104,7 +104,6 @@ public class HierarchyTopTenValues extends BaseClass{
 			int x = coordinates[0];
 			int y = coordinates[1];
 			
-			
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);
 			Thread.sleep(500);
@@ -156,7 +155,7 @@ public class HierarchyTopTenValues extends BaseClass{
 
 
 	// Get the x and y coordinates of the bar 
-	private static int[] getCoordinates(String chartId, int index, int barsAmount) {
+	private static int[] getCoordinates(String chartId, int index, int barsAmount) throws InterruptedException {
 
 		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + index + ")";
 				
@@ -165,25 +164,13 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-		Point point = GeneralHelper.getAbsoluteLocationTopTenBar(bar);
+		Point point = GeneralHelper.getAbsoluteLocation(bar);
 		
 		int x_offset = (int) (bar.getSize().width * 0.5);
 		int y_offset = (int) (bar.getSize().height * 0.7);
 		
-		if (loginType.equals(LoginType.Command)) {
-			
-			if (barsAmount > 5) {
-			
-				y_offset = (int) (bar.getSize().height * 1.5);
+		y_offset += (int) GeneralHelper.getScrollPosition();
 				
-			} else {
-				
-				y_offset = (int) (bar.getSize().height); // <-- added on 4/6/17. This worked for a graph with 2 bars. Will need to see if it works with more bars
-				
-			}
-			
-		}
-		
 		int x = point.getX() + x_offset + 2;
 		int y = point.getY() + y_offset;
 		
@@ -249,7 +236,7 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		
 		// Select category
-		HierarchyHelper.selectCategoryTopTen(barChartId, category);
+		HierarchyHelper.selectCategoryTopTen(category);  // (barChartId, category);
 		
 		// Wait for the data to be updated on chart
 		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);

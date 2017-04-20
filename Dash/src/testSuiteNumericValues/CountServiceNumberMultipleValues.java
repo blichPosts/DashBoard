@@ -88,7 +88,6 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 		}
 		
 		
-		CommonTestStepActions.initializeMonthSelector();
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
 		
 		
@@ -142,25 +141,6 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 		} while (indexMonth < monthsToSelect.size());
 			
 		
-		// Vendors are listed in alphabetical order in the Usage Trending tooltips
-			
-		List<List<UsageOneMonth>> listAllMonthsSortedByVendor = new ArrayList<>();
-		
-		for (List<UsageOneMonth> list: dataForExpenseTrending) {
-			
-			listAllMonthsSortedByVendor.add(UsageHelper.sortVendorsAlphabetically(list));
-		
-		}
-		
-		
-//		for (List<UsageOneMonth> list: listAllMonthsSortedByVendor) {		
-//			for (UsageOneMonth u: list) {
-//				System.out.println(" Vendor: ** " + u.getVendorName() + " **, Month: " + u.getOrdinalMonth() + ", Year: " + u.getOrdinalYear() + ", Invoice Month: " + u.getInvoiceMonth());
-//			}
-//			System.out.println("");
-//		}
-		
-		
 		int indexMonthToSelect = 0;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
@@ -177,7 +157,7 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 			
 			try {
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, listAllMonthsSortedByVendor, ExpenseHelperMultipleVendors.categoryAll);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.countServiceNumbersChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryAll);
 				Thread.sleep(2000);
 				 
 				

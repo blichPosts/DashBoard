@@ -55,8 +55,8 @@ public class TotalExpensesMultipleValues extends BaseClass{
 		
 		String path = ExpenseHelperMultipleVendors.path;
 
-		// ** In many cases some of the sections of the pie chart are too small and the coordinates used to move the mouse to sometimes are not accurate.
-		// ** So, it's better to set the amountOfVendorsToSelect to maybe 2 or 3 at a time...
+		// ** In many cases some of the sections of the pie chart are too small and the coordinates used to locate the mouse sometimes are not accurate.
+		// ** So, it's better to set the amountOfVendorsToSelect to 2 or 3 at a time...
 		int amountOfVendorsToSelect = 3;
 		
 		if (amountOfVendorsToSelect > vendorNames.size())
@@ -135,9 +135,6 @@ public class TotalExpensesMultipleValues extends BaseClass{
 					
 				}
 				
-				// Vendors are listed in alphabetical order in the vertical axis
-				List<UsageOneMonth> listOneMonthSortedByVendor = UsageHelper.sortVendorsAlphabetically(listOneMonthData);
-				
 				
 				// #4 Select month on month/year selector
 				CommonTestStepActions.selectMonthYearPulldown(monthsToSelect.get(indexMonth));
@@ -147,10 +144,10 @@ public class TotalExpensesMultipleValues extends BaseClass{
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
 				
-				TotalExpensesValues.verifyTotalExpensesPieChartTooltip(ExpenseHelperMultipleVendors.expenseTotalExpensePieChart, listOneMonthSortedByVendor);
+				TotalExpensesValues.verifyTotalExpensesPieChartTooltip(ExpenseHelperMultipleVendors.expenseTotalExpensePieChart, listOneMonthData);
 				Thread.sleep(1000);
 				
-				TotalExpensesValues.verifyTotalExpensesBarChartTooltip(ExpenseHelperMultipleVendors.expenseTotalExpenseBarChart, listOneMonthSortedByVendor);
+				TotalExpensesValues.verifyTotalExpensesBarChartTooltip(ExpenseHelperMultipleVendors.expenseTotalExpenseBarChart, listOneMonthData);
 				Thread.sleep(1000);
 				
 				indexMonth++;

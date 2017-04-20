@@ -169,7 +169,6 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 								
 								// Adds the current month values to the list
 								valuesForThreeMonthAverage.add(valuesFromFile.get(indexMonth));
-							
 								// Adds the previous month values to the list
 								valuesForThreeMonthAverage.add(valuesFromFile.get(indexMonth+1));
 								// Adds values from 2 months ago to the list

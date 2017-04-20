@@ -16,6 +16,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
+import usage.TotalUsageValues;
 
 
 
@@ -35,6 +36,15 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 	public static void UsageTotalUsageTestValuesOneVendorTest() throws Exception
 	{
 
+		// Enable Start collecting data
+		ReadFilesHelper.startCollectingData();
+		Thread.sleep(2000);
+		
+		// Reload Fleet data
+		ReadFilesHelper.reloadFleetData();
+		Thread.sleep(2000);
+				
+		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -63,7 +73,7 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 			
 			
 			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFile = ReadFilesHelper.getDataFromSpreadsheet(completePath);
+			List<UsageOneMonth> valuesFromFile = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
 			
 				
 			// #3 Select only one vendor
@@ -93,34 +103,37 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 				
 				// #4 Select month on month/year selector
 				CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-				
 				Thread.sleep(2000);
+				
+				
+				List<UsageOneMonth> listOneMonthSortedByVendor = new ArrayList<>();
+				listOneMonthSortedByVendor.add(oneMonthData);
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
 				
 				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
+
+				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
+				Thread.sleep(2000);
 				
-//				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryVoice);
-//				Thread.sleep(1000);
-//				
-//				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryVoice);
-//				Thread.sleep(1000);				
-//				
-//				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
-//				
-//				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryData);
-//				Thread.sleep(1000);
-//				
-//				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryData);
-//				Thread.sleep(1000);				
-//				
-//				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
-//				
-//				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, oneMonthData, UsageHelper.categoryMessages);
-//				Thread.sleep(1000);
-//				
-//				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, oneMonthData, UsageHelper.categoryMessages);
-				Thread.sleep(1000);
+				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
+				Thread.sleep(2000);				
+				
+				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
+				
+				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
+				Thread.sleep(2000);
+				
+				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
+				Thread.sleep(2000);				
+				
+				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
+				
+				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
+				
+				TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
 								
 				indexMonth++;
 				
