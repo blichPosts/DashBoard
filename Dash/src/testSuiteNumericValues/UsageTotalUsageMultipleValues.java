@@ -16,6 +16,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
+import usage.TotalUsageValues;
 
 
 
@@ -136,27 +137,27 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 			
 			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 			
-//			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
-//			Thread.sleep(2000);
-//			
-//			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
-//			Thread.sleep(2000);				
-//			
-//			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
-//			
-//			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
-//			Thread.sleep(2000);
-//			
-//			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
-//			Thread.sleep(2000);				
-//			
-//			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
-//			
-//			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
-//			Thread.sleep(2000);
-//			
-//			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
-//			Thread.sleep(2000);
+			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
+			Thread.sleep(2000);
+			
+			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
+			Thread.sleep(2000);				
+			
+			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
+			
+			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
+			Thread.sleep(2000);
+			
+			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
+			Thread.sleep(2000);				
+			
+			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
+			
+			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
+			Thread.sleep(2000);
+			
+			TotalUsageValues.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
+			Thread.sleep(2000);
 						
 			indexMonth++;
 

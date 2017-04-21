@@ -28,7 +28,7 @@ public class HierarchyTopTenValues extends BaseClass{
 	public static void verifyTopTenChartValues(String hierarchyId, int barChartId, int category) throws Exception {
 		
 		// Select category
-		HierarchyHelper.selectCategoryTopTen(category);  //(barChartId, category);
+		HierarchyHelper.selectCategoryTopTen(barChartId, category);
 		
 		// Wait for the data to be updated on chart
 		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
@@ -236,7 +236,7 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		
 		// Select category
-		HierarchyHelper.selectCategoryTopTen(category);  // (barChartId, category);
+		HierarchyHelper.selectCategoryTopTen (barChartId, category);
 		
 		// Wait for the data to be updated on chart
 		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);

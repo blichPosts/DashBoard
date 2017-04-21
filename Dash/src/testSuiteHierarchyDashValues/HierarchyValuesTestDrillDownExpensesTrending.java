@@ -94,7 +94,6 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 					System.out.println(" **** Drilling down Level #" + j);
 					
 					HierarchyHelper.drillDownOnDependentUnitPoV(1);
-//					GeneralHelper.waitForDataToBeLoaded();  // <-- not useful 
 					Thread.sleep(3000);
 					
 					// #3 Get data from JSON

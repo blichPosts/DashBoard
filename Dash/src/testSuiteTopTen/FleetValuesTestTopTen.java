@@ -5,6 +5,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -46,7 +47,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 		String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);
 		String monthYearToSelect = "";
 		
-		int indexMonth = 0;
+		int indexMonth = 3;
 		
 		do {
 
@@ -66,7 +67,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 				
 				// Run test for "Expense" chart and category "All"
 				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseAll);
-
+				
 				// Run test for "Expense" chart and category "Voice"
 				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseVoice);
 						
@@ -101,7 +102,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.roamingUsageChart, GeneralTopTenHelper.categoryRoamingUsageMessages);
 				
 				
-			} catch(NullPointerException e) {
+			} catch (NoSuchElementException e) {
 				
 				System.out.println("chart not found");
 				
@@ -110,8 +111,6 @@ public class FleetValuesTestTopTen extends BaseClass {
 			indexMonth++;
 			
 		} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
-			
-		
 			
 	}
 	

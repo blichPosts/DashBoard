@@ -71,27 +71,6 @@ public class HierarchyHelper extends BaseClass {
 		
 	}
 	
-
-	// *** NOT WORKING FINE, REPLACE BY THE TWO METHODS BELOW .. SEE IF IT NEEDS TO BE ADDED BACK FOR OTHER TEST
-	
-//	public static void selectCategory(int chartNum, int category){
-		
-//		String xpath = "//div[@class='tdb-card'][" + Integer.toString(chartNum+1) + "]/div/div[" + Integer.toString(category) + "]"; 
-		
-//		String xpath = "//div[@class='tdb-card'][2]/div/div[1]";
-//		
-//		System.out.println("xpath: " + xpath);
-//		driver.findElement(By.xpath(xpath)).click();
-		
-//		driver.findElement(By.xpath("//div[@class='tdb-card'][2]/div/div[1]")).click();
-		
-//		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-card>div>div.tdb-inlineBlock:nth-child(" + category + ")"));
-//		WebElement categoryToSelect = driver.findElement(By.xpath("//div[@class='tdb-card'][" + (chartNum+1) + "]/div/div[" + category + "]"));
-//		categoryToSelect.click();
-		
-//	}
-		
-	
 	
 	public static void selectCategory(int section, int category){
 		
@@ -105,9 +84,10 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 
-	public static void selectCategoryTopTen(int category){  //  (int section, int category){
+	public static void selectCategoryTopTen(int section, int category){
 		
-		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-child(" + category + ")"));   //".tdb-boxSelector.tdb-align--right>div:nth-of-type(" + category + ")"));
+		String xpath = "//div[@class='tdb-card'][" + (section+1) +"]/div/div[" + category + "]";
+		WebElement categoryToSelect = driver.findElement(By.xpath(xpath));    //cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-child(" + category + ")"));   //".tdb-boxSelector.tdb-align--right>div:nth-of-type(" + category + ")"));
 		categoryToSelect.click();
 		
 	}
@@ -139,10 +119,10 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 	
-	public static void waitForChartToLoad(int chartId) throws Exception {
+	public static boolean waitForChartToLoad(int chartId) throws Exception {
 		
-		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g.highcharts-series";    // >svg>g>g>rect.highcharts-point:nth-child(1)";
-		WaitForElementPresentNoThrow(By.cssSelector(cssSelector), MainTimeout);
+		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g.highcharts-series>rect";
+		return WaitForElementPresentNoThrow(By.cssSelector(cssSelector), ShortTimeout);
 		
 	}
 	

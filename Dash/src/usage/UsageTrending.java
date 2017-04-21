@@ -5,7 +5,6 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -16,10 +15,7 @@ import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
-import helperObjects.GeneralHelper;
-import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
-import helperObjects.UsageOneMonth;
 
 
 public class UsageTrending extends BaseClass {

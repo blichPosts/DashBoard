@@ -55,8 +55,6 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 			GeneralHelper.selectFirstMonth();
 			HierarchyHelper.selectHierarchyFromDropdown(i);
 			
-//			GeneralHelper.waitForDataToBeLoaded();
-			
 			boolean monthSelected = true;
 			Thread.sleep(2000);
 		

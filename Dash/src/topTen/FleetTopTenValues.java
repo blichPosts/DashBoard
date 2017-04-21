@@ -29,22 +29,37 @@ public class FleetTopTenValues extends BaseClass {
 	public static void verifyTopTenChartValues(int barChartId, int category) throws Exception {
 		
 		// Select category
-		HierarchyHelper.selectCategoryTopTen(category);
+		HierarchyHelper.selectCategoryTopTen(barChartId, category);
+		
+		List<FleetTopTenData> valuesExpected = new ArrayList<>();
 		
 		// Wait for the data to be updated on chart
-		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
-		Thread.sleep(2000);
-	
-		// Get data from JSON
-		List<FleetTopTenData> valuesExpected = ReadFilesHelper.getJsonDataTopTenFleet(barChartId, category); 
-		
-		// Verify values on the selected Top Ten chart and for the selected category
-		if (!GeneralTopTenHelper.allValuesAreZero(valuesExpected)) {
-		
-			verifyTooltipTopTenChart(valuesExpected, barChartId, category);
+		// Run test only if there's data displayed on chart
+		if (HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart)) {
 			
-		}
+			Thread.sleep(2000);
+			
+			boolean chartHasData = false;
+			
+			// Get data from JSON
+			valuesExpected = ReadFilesHelper.getJsonDataTopTenFleet(barChartId, category);
+			
+			if (valuesExpected.size() > 0) {
+				chartHasData = true;
+				  
+			} else if (valuesExpected.size() == 0) {
+				chartHasData = false;
+				  
+			}
+			
+			// Verify values on the selected Top Ten chart and for the selected category
+			if (!GeneralTopTenHelper.allValuesAreZero(valuesExpected) && chartHasData) {
+			
+				verifyTooltipTopTenChart(valuesExpected, barChartId, category);
+				
+			}
 		
+		}
 		
 	}
 	
@@ -54,12 +69,12 @@ public class FleetTopTenValues extends BaseClass {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
 		
-		WebElement expenseTrendingSection = driver.findElement(By.cssSelector("#" + chartId));
-		new Actions(driver).moveToElement(expenseTrendingSection).perform();
+		WebElement topTenChart = driver.findElement(By.cssSelector("#" + chartId));
+		new Actions(driver).moveToElement(topTenChart).perform();
 		
 		Thread.sleep(2000);
 		
-		List<WebElement> chartElementNames = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels>text>tspan"));
+		List<WebElement> chartElementNames = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 		List<String> chartLabelsFound = new ArrayList<String>();
 		
 		List<String> expectedValuesList = new ArrayList<>();
@@ -72,14 +87,15 @@ public class FleetTopTenValues extends BaseClass {
 			chartLabelsFound.add(chartElementNames.get(i).getText());
 			
 		}
-		
-		
+			
+		// ShowText("expected labels:");
 		// Set up lists with expected values and labels		
 		for (FleetTopTenData data: topTenValues) {
 			
 			String label = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
 	    	expectedLabels.add(label);
-	    				   
+	    	// ShowText("label:  " + label);
+	    	
 	    	String value = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
 	    	expectedValuesList.add(value);
 	    	expectedValues.put(label, value);
@@ -136,16 +152,26 @@ public class FleetTopTenValues extends BaseClass {
 			// Verify the label and the amount shown in the tooltip 
 			
 			// Get the label and remove colon at the end of its text
-			String labelFound = tooltip.getText().split(":")[0].trim();
-
+			String labelFoundTmp = tooltip.getText().split(":")[0].trim();
+			
+			String labelFound = labelFoundTmp;
+			
+			if (!labelFoundTmp.equals("Average")) {
+			
+				labelFound = GeneralTopTenHelper.formatPhoneNumberUI(labelFoundTmp);
+				
+			}
+			
+			// ShowText("labelFound:  " + labelFound);
+			
 			// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
 			String valueFound = tooltip.getText().split(":")[1].trim().replace(" ", "");
 			
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-//			System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-//			System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+			// ShowText("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+			// ShowText("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
 			// They cannot be verified by order, since if there are 2 elements that have the same value (expenses value) the order in which they'll be listed cannot be known

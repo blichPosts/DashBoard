@@ -96,38 +96,6 @@ public class GeneralHelper extends BaseClass {
 		return -scrollHeight;
 		
 	}
-
-	
-	// *** NOT USED ANYMORE ***  TO BE REMOVED <----
-	public static Point getAbsoluteLocationTopTenBar(WebElement element) {
-		
-        int x = x_iFrame;
-        int y = y_iFrame;
-        
-        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
-		int headerHeight = header.getSize().getHeight();
-        
-        Point elementLoc = element.getLocation();
-
-        if (loginType.equals(LoginType.ReferenceApp)) {
-        	
-            x += elementLoc.getX();
-            y += elementLoc.getY() + headerHeight;
-            
-        	
-        } else if (loginType.equals(LoginType.Command)) {
-        	
-        	x += elementLoc.getX();
-            y += elementLoc.getY() + (headerHeight * 3);
-            
-        }
-        
-        Point p = new Point(x, y);
-        return p; 
-        
-	}
-
-	
 	
 
 	// It returns true if there's data for the vendor in the selected month. That means that the vendor will be displayed on the Usage Trending chart
@@ -240,12 +208,12 @@ public class GeneralHelper extends BaseClass {
 	
 	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
 		
-		// ShowText("Value actual: " + valueActual + "; Value expected: " + valueExpected);
+//		 ShowText("Value actual: " + valueActual + "; Value expected: " + valueExpected);
 		
 		double numActual = Double.parseDouble(getNumericValue(valueActual));
 		double numExpected = Double.parseDouble(getNumericValue(valueExpected));
 		
-		// ShowText("numActual: " + numActual + "; numExpected: " + numExpected);
+//		 ShowText("numActual: " + numActual + "; numExpected: " + numExpected);
 		
 		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
 		
