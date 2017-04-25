@@ -1,5 +1,6 @@
 package expenseHierarchy;
 
+import java.awt.Robot;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -7,38 +8,42 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.ExpenseHelper;
-import helperObjects.ExpenseHelper.expenseFilters;
+import helperObjects.GeneralHelper;
 import helperObjects.ExpenseHelper.hierarchyTileMapTabSelection;
 import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
-import helperObjects.UsageHelper;
 
 public class HierarchyGeneral extends BaseClass 
 {
 	public static String tempString;
 	public static String chartId = "";
 	public static expenseFiltersLocation currentExpenseFilterLocation;
+	public static String expectedHoverText = "\"Optimizable Expense\" equals the access and overage charges, less discounts, for voice, data and messaging.";
+	
+	
+	// "Optimizable Expense" equals the access and overage charges, less discounts, for voice, data and messaging.
 	
 	public static List<String> expectedCostFilters = new ArrayList<>();	
+	public static List<String> expectedMaxPullDownValues = new ArrayList<>();
 	
-	public static JavascriptExecutor js = (JavascriptExecutor) driver; // bladdxx
+	public static JavascriptExecutor js = (JavascriptExecutor) driver; 
 
 	
 	// locators
 	public static String tileMapExpenseSeletorCssLocator = ".tdb-card>div:nth-of-type(1)>div"; // this is selectors above tile map
 	public static String expenseTrendExpenseSeletorCssLocator = ".tdb-card>div:nth-of-type(3)>div"; // this is selectors above expense trend.
-	//.tdb-card>div:nth-of-type(3)
-	//.tdb-card>div:nth-of-type(1)
+	public static String maxPullDownPOVxpath = "(//option/..)[3]"; // this is max pulldown in POV.
+	public static String maxPullDownTileMapxpath = "(//option/..)[4]"; // this is max pulldown above tile map.
+
 	
 	// this is for indicating which trend graph expense filter is being tested. 
 	public static enum expenseFiltersLocation
@@ -165,34 +170,157 @@ public class HierarchyGeneral extends BaseClass
 		}
 	}
 	
+	// start the JavascriptExecutor.
 	public static void InitialIze() throws Exception
 	{
-		ReadFilesHelper.startCollectingData(); // start the JavascriptExecutor.
+		ReadFilesHelper.startCollectingData();
+		
 	}
 	
-	// this selects and waits for the hierarchy dash page to load.
-	public static void SelectAndWaitForPageLoad() throws Exception
+	// verify icons for optimizable.
+	public static void VerifyOptimizableHoverIcons() throws Exception
 	{
-		WaitForElementClickable(By.xpath("//a[text()='View by Hierarchy']"), MediumTimeout, "");
-		driver.findElement(By.xpath("//a[text()='View by Hierarchy']")).click();
-		WaitForElementVisible(By.xpath("//span[text()='Total Expense']"), MediumTimeout); // this is text in top left corner tiles. 
-		WaitForElementVisible(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select"), MediumTimeout); // this is drop down in top left corner POV.
+		
+		List<WebElement> tempList =  driver.findElements(By.cssSelector(".tbd-icon__info")); // get all the icons.
+		
+		Assert.assertTrue(tempList.size() == 1); // there should only be one icon at startup. 
+
+		// verify correct text in DOM
+		for(WebElement ele : tempList) 
+		{
+			Assert.assertEquals(ele.getAttribute("title"), expectedHoverText);
+		}
+		
+		// now select the optimizable tab to make three icons show.
+		ExpenseHelper.SetHierarchyCostFilter(hierarchyTileMapTabSelection.Optimizable); // select category selector tab.
 		HierarchyHelper.WaitForProgressBarInactive(TenTimeout);
-		Thread.sleep(2000); // time for tile map to load.
+		
+		tempList =  driver.findElements(By.cssSelector(".tbd-icon__info")); // get all the icons.
+		
+		Assert.assertTrue(tempList.size() == 3); // should be three.
+		
+		// verify correct text in DOM		
+		for(WebElement ele : tempList)
+		{
+			Assert.assertEquals(ele.getAttribute("title"), expectedHoverText);
+		}
 	}
 	
+	public static void VerifyMaxDisplayedPullDowns() throws Exception
+	{
+		SetupExpectedMaxPullDownValues();
+
+		// verify pull down items in POV.
+		VerifyCorrectPullDownValues(maxPullDownPOVxpath);
+		VerifyCorrectPullDownValues(maxPullDownTileMapxpath);
+	}
 	
+	// go through the POV max pull down selection and verify the max tile map pulldown values track.   
+	// go through the tile map max pull down selection and verify the max POVpulldown values track.
+	public static void VerifySelectionsMatchUsingPovPullDown() throws Exception
+	{
+		// verify tile map max pulldown tracks POV max pulldown.
+		for(int x = 0; x < expectedMaxPullDownValues.size(); x++)
+		{
+			Thread.sleep(2000);
+			new Select(driver.findElement(By.xpath(maxPullDownPOVxpath))).selectByIndex(x);
+			WebElement ele = new Select(driver.findElement(By.xpath(maxPullDownTileMapxpath))).getFirstSelectedOption(); // get web element text in max tile map pulldown. 
+			Assert.assertEquals(ele.getText(), expectedMaxPullDownValues.get(x));
+		}
+		
+		// verify POV max pulldown tracks tile map max pulldown.
+		for(int x = 0; x < expectedMaxPullDownValues.size(); x++)
+		{
+			Thread.sleep(2000);
+			new Select(driver.findElement(By.xpath(maxPullDownTileMapxpath))).selectByIndex(x);
+			WebElement ele = new Select(driver.findElement(By.xpath(maxPullDownPOVxpath))).getFirstSelectedOption(); // get web element text in max POV pulldown. 
+			Assert.assertEquals(ele.getText(), expectedMaxPullDownValues.get(x));
+		}		
+	}
 	
+	//	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	//														helpers 
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
+	// this compares values in a pulldown to the expected pulldown. the pulldown to use is passed in vie xpath. 
+	public static void VerifyCorrectPullDownValues(String xpath)
+	{
+		// get the values in the pull down sent in by xpath.
+		List<WebElement> actualList = new Select(driver.findElement(By.xpath(xpath))).getOptions();
+		
+		// verify the list size of items coming back from UI equals the expected list size.  
+		Assert.assertEquals(actualList.size() ,expectedMaxPullDownValues.size(),"Actual and Expected list sizes are different in 'VerifyCorrectPullDownValues'");
+		
+		
+		for(int x = 0; x < actualList.size(); x++)
+		{
+			Assert.assertEquals(actualList.get(x).getText(), expectedMaxPullDownValues.get(x));
+		}
+		
+	}
 	
+	// this sets up the expected values to be seen in the max displayed pull downs.
+	public static void SetupExpectedMaxPullDownValues() 
+	{
+		expectedMaxPullDownValues.add("5");
+		expectedMaxPullDownValues.add("10");
+		expectedMaxPullDownValues.add("20");
+		expectedMaxPullDownValues.add("30");
+		expectedMaxPullDownValues.add("40");
+		expectedMaxPullDownValues.add("50");
+		expectedMaxPullDownValues.add("100");
+	}
 	
+	// NOT USED -- keep for reference on getting a precise target. ----------- NOT USED  
+	public static void MoveMouseToOptimizableHover(/*String chartId, int indexHighchart*/) throws Exception
+	{
+		String cssBar = ".tbd-icon__info";
+		
+		// 'bar' WebElement will be used to set the position of the mouse on the chart. this is the hover selector.
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+				
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
+		
+		int x = barCoordinates.getX();
+		// int y = GeneralHelper.getYCoordinate(chartId);
+		
+		WebElement optim = driver.findElement(By.cssSelector(".tdb-kpi>div>h3")); // this is the rectangle around the optimizable hover selector. 
+		Point coordinatesRectangle = GeneralHelper.getAbsoluteLocation(optim);
+		int y = coordinatesRectangle.getY();
+		
+		int y_offset = (int) GeneralHelper.getScrollPosition();
+		y += y_offset; 
+		
+		y = y + 20;
+		x = x + 10;
+		
+		Robot robot = new Robot(); 
+		robot.mouseMove(x, y);
+		// System.out.println("coordinates - x: " + x + "  y: " + y);
+		
+		Thread.sleep(500);
+		
+		//robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		//robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+
+		/*
+		try 
+		{
+			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+		} 
+		catch (Exception e) 
+		{
+			System.out.println("Tooltip NOT present in DOM.");
+			e.printStackTrace();
+		}
+		*/
+	}
 	
+
 	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	

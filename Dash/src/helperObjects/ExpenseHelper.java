@@ -948,7 +948,13 @@ public class ExpenseHelper extends BaseClass
 
 		// get web list that holds the DOM section that holds the hover values.
 		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
-
+		
+		//ShowWebElementListText(webEleListBarGraphHoverValues); // DEBUG
+		
+		//ShowText("Actual Month " + webEleListBarGraphHoverValues.get(0).getText()); // DEBUG
+		//ShowText("Expect Month " + expectedMonth); // DEBUG
+		//Pause("");
+		
 		Assert.assertEquals(webEleListBarGraphHoverValues.get(0).getText(), expectedMonth, errMessage + "month value in hover text."); // verify month at top of hover.
 		
 		for(WebElement ele : webEleListBarGraphHoverValues)
@@ -1042,11 +1048,8 @@ public class ExpenseHelper extends BaseClass
 	public static void MoveMouseToBarExpenseActions(String chartId, int indexHighchart) throws InterruptedException, AWTException
 	{
 		
-		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-		
-		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>g:nth-of-type(4)>path:nth-of-type(" + indexHighchart + ")";
-		
-		// #highcharts-fxny34j-6>svg>.highcharts-series-group>g:nth-of-type(4)>path:nth-of-type(2) // this is first column from the left
+		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+		String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
 		
 		// 'bar' WebElement will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -1071,8 +1074,6 @@ public class ExpenseHelper extends BaseClass
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 
-		// DebugTimeout(9999, "9999");
-		
 		try 
 		{
 			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);

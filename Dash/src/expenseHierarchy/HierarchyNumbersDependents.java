@@ -391,7 +391,6 @@ public class HierarchyNumbersDependents extends BaseClass
 	// this will return the string value for the tile map number hovered hovered in the tile map. 
 	public static String GetTooltipText(int index) throws AWTException, InterruptedException
 	{
-		int x;
 		WebElement tileNumber = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + index + ")")); // select tile map number
         
         Point p = getAbsoluteLocationTileMap(tileNumber); 
@@ -614,12 +613,13 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			// get the actual value (from UI) and the expected value (from sorted json list) into variables.  
 			
-			// with real data, there is a decimal cents (ex: $45.39 - .39 is the decimal cents). need to remove the decimal cents.
-			if(ele.getText().contains("."))
+			// with real data, there is a decimal cents (ex: $45.39). The .39 is the decimal cents. need to remove the decimal cents.
+			// NeedsCorrected method tells if the number to the right of the dollar sign contains a decimal.
+			if(ele.getText().contains(".") && NeedsCorrected(ele.getText()))
 			{
 				tempString =  TrimDecimal(ele);
 			}
-			else
+			else // there is no decimal.
 			{
 				tempString = ele.getText();
 			}			
@@ -634,7 +634,6 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText("tempString that failed parsing = " + tempString);
 				//ShowInt(actualInt);
 				ShowText(ex.getMessage());
-				ShowText("tempString " + tempString);
 			    JOptionPane.showMessageDialog(frame, "FROZEN AT RANDOM ERROR ----------------------. ");
 			}
 			
@@ -661,7 +660,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				Assert.assertEquals(ele.getText().split("\n")[0], childList.get(loopCntr).childName, ""); // orig		
 				// ShowText(ele.getText().split("\n")[0] + "  " +   childList.get(loopCntr).childName); // DEBUG
 			}
-			catch (AssertionError sertErr)
+			catch (AssertionError sertErr) // sometimes two or more units have the same numeric value in each list but the units are in different orders.
 			{
 				//ShowText("Try catch"); 
 				//ShowText("Actual:    " + ele.getText().split("\n")[0]); 
@@ -726,7 +725,10 @@ public class HierarchyNumbersDependents extends BaseClass
 			Assert.assertEquals(GetCostFromString(str), expectedTotal, "Expected total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
 		}
 		
-		RemoveDecimalValueFromActualValueList(); 
+		if(!expectedTotal.equals("0")) // bladdd - if expected cost is '0' there is no decimal to remove.
+		{
+			RemoveDecimalValueFromActualValueList();
+		}
 		
 		// verify cross check.
 		for(String str : expectedList)
@@ -760,12 +762,29 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		if(tempString.contains("."))
 		{
-			x = tempString.length() - tempString.indexOf(".");
+			// x = tempString.length() - tempString.indexOf(".");
+			x = tempString.length() - tempString.lastIndexOf("."); // bladdd
 			tempString = tempString.substring(0, tempString.length() - x);
 		}
 
 		return tempString;
 	}		
+	
+	public static boolean NeedsCorrected(String fullString) // bladdd
+	{
+		String rightOfDollarSign = ""; 
+		
+		rightOfDollarSign = fullString.split("\\$")[1];
+		
+		if(rightOfDollarSign.contains("."))
+		{
+			return true;			
+		}
+		else
+		{
+			return false;
+		}
+	}			
 	
 	public static String GetCostFromString(String stringWithExpectedCost)
 	{
@@ -1029,6 +1048,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			// this is needed if the last of the dependent list has users with common cost values.
 			HierarchyNumbersDependents.FinishFinalTest();
 			childList.clear();
+			actualList.clear(); // bladdd
+			expectedList.clear(); // bladdd
 
 			// Pause("one pass through test if dependents list."); // DEBUG
 			

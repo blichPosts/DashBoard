@@ -101,13 +101,11 @@ public class CostPerServiceNumberTrend extends  BaseClass
 				if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
 				{
 					ExpenseValuesHelper.CostPerServiceNumberclickBarIndex(y); // 1/29/17 - changed to call ExpenseValuesHelper. this has a more reliable click method.
-					// clickBarIndex(y);
 				}
 				else
 				{
 					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y);
 				}				
-				
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}

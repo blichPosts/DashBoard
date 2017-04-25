@@ -35,8 +35,28 @@ public class HierarchyNonNumericGeneral extends BaseClass
 		HierarchyHelper.SelectAndWaitForPageLoad();
 
 		// ///////////////////////////////////////////////////////////////////////////////
-		// below is test for expense category selectors.
+		// verify optimizable icons.
 		// ///////////////////////////////////////////////////////////////////////////////
+
+		ShowText("Verify Optimizable Icons");
+
+		HierarchyGeneral.VerifyOptimizableHoverIcons();
+
+		// ///////////////////////////////////////////////////////////////////////////////
+		// verify maximum pull downs.
+		// ///////////////////////////////////////////////////////////////////////////////
+		
+		ShowText("Verify maximum pulldowns.");
+		
+		HierarchyGeneral.VerifyMaxDisplayedPullDowns();
+		
+		HierarchyGeneral.VerifySelectionsMatchUsingPovPullDown();
+
+		// ///////////////////////////////////////////////////////////////////////////////
+		// verify Category selectors.
+		// ///////////////////////////////////////////////////////////////////////////////
+		
+		ShowText("Verify category selectors.");
 		
 		HierarchyGeneral.SetupExpectedCostFilters();
 
@@ -47,7 +67,10 @@ public class HierarchyNonNumericGeneral extends BaseClass
 		HierarchyGeneral.VerifySpendCateoryFilter(); // verify both selector tabs.
 		
 		// VisualPageLoad.VerifyInitialStatesAfterPageLoad();
-	
+
+		// HierarchyGeneral.VerifyTest(); // NOTE: keep this for reference on hitting a precise target for hover.
+		
+		
 		// ///////////////////////////////////////////////////////////////////////////////
 		// 							MANUAL TEST
 		// ///////////////////////////////////////////////////////////////////////////////

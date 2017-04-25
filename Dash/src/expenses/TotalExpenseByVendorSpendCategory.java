@@ -1,15 +1,21 @@
 package expenses;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 import org.testng.internal.TestMethodWithDataProviderMethodWorker;
 
 import Dash.BaseClass;
 import helperObjects.ExpenseHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageHelper;
 import helperObjects.ExpenseHelper.controlType;
 
@@ -122,13 +128,26 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		
 		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
 		{
-			//DebugTimeout(1, "starting click");
+			DebugTimeout(0, "starting click");
 			Thread.sleep(2000);
 			
-			// these two clicks make the hover visible.
-			expenseControlSlicesElemntsList.get(x).click();
-			expenseControlSlicesElemntsList.get(x).click();
-
+			if(loginType.equals(loginType.ReferenceApp))
+			{
+				// these two clicks make the hover visible.
+				expenseControlSlicesElemntsList.get(x).click();
+				expenseControlSlicesElemntsList.get(x).click();
+			}
+			else
+			{
+				// move to the spend category control.
+				WebElement expenseTrendingSection = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)"));
+				new Actions(driver).moveToElement(expenseTrendingSection).perform();
+				
+				Thread.sleep(1000);
+				
+				MoveMouseToSpendCategory();
+			}
+			
 			Thread.sleep(2000);
 
 			// store the info found in the hover.  
@@ -289,6 +308,48 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			Assert.assertTrue(vendorsList.contains(otherString));
 		}
 	}
+	
+	public static void MoveMouseToSpendCategory(/*String chartId,*/ /*int indexHighchart*/) throws Exception
+	{
+		
+		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+		// String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
+		
+		String referencePoint = "#" + chartId +  ">svg>g:nth-of-type(3)>text"; 
+		
+		// 'bar' WebElement will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(referencePoint));
+				
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
+		
+		int x = barCoordinates.getX();
+		int y = GeneralHelper.getYCoordinate(chartId);
+		
+		int y_offset = (int) GeneralHelper.getScrollPosition();
+		y += y_offset + 60; 
+		
+		Robot robot = new Robot(); 
+		robot.mouseMove(x, y);
+		// System.out.println("coordinates - x: " + x + "  y: " + y);
+		
+		Thread.sleep(500);
+		
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		
+		try 
+		{
+			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+		} 
+		catch (Exception e) 
+		{
+			System.out.println("Tooltip NOT present in DOM.");
+			e.printStackTrace();
+		}
+	}
+
 	
 	
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
