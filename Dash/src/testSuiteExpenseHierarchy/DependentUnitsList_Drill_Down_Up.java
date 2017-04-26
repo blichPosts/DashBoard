@@ -32,6 +32,8 @@ public class DependentUnitsList_Drill_Down_Up extends BaseClass
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 		HierarchyHelper.SelectAndWaitForPageLoad();
 
+		ExpenseHelper.ShowSelectedMonth();
+		
 		ExpenseHelper.SetHierarchyMaxDisplayed(100);
 		Thread.sleep(1000);
 

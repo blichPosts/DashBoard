@@ -55,7 +55,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static String currentLevelName = "";
 	public static String currentCategorySelection = "";
 	public static String totalCount = "";
-	
+	public static String requestedTileMapsToTest = "";	
 	
 	public static Stack<String> aboveTileStack = new Stack<String>();
 	public static Stack<String> aboveKpiStack = new Stack<String>();	
@@ -77,6 +77,8 @@ public class HierarchyNumbersDependents extends BaseClass
 
 	public static TileMapTestType currentTileMapTestType;
 	public static DrillDownPageType drillDownPageType;
+	
+	public static boolean tileMapInteractive = true;
 	
 	public static enum DrillDownPageType
 	{
@@ -277,6 +279,16 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		// get the number of tiles in the tile map and setup loop counter.
 		loopCntr = NumberOfTilesToTestTwo();
+		
+		if(tileMapInteractive)
+		{
+			loopCntr = UserNumberTileMapsToTest();
+			if(loopCntr == 0)
+			{
+				loopCntr = NumberOfTilesToTestTwo();
+			}
+		}
+
 		
 		System.out.println("loopCntr max = " + loopCntr);
 		
@@ -748,6 +760,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		for(int x = 0 ; x < actualList.size(); x++)
 		{
+			ShowText("Before Remove " + actualList.get(x));
 			tempList.add(RemoveDecimal(actualList.get(x)));
 		}
 		actualList.clear();
@@ -1091,8 +1104,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			Thread.sleep(2000); // wait for tile map to fill in.
 			
 			ShowText("Start category selector --- " + values[x].name() + ".");
-			HierarchyHelper.WaitForProgressBarInactive(TenTimeout); 
-			Thread.sleep(3000); // let tile map load.
+			//HierarchyHelper.WaitForProgressBarInactive(TenTimeout); 
+			//Thread.sleep(3000); // let tile map load.
 			HierarchyNumbersDependents.RunTilesInCommand();
 			ShowText("Pass complete for --- " + values[x].name() +".");
 		}
@@ -1159,9 +1172,6 @@ public class HierarchyNumbersDependents extends BaseClass
 		// get list of web elements, one for each hierarchy.
 		List<WebElement> hierarchyList = driver.findElements(By.cssSelector(".tdb-space--top>select>option"));
 		
-		// show selected month.
-		ShowText("Selected month is: " + ExpenseHelper.desiredMonth + "\n");
-		
 		ShowText(" ------------ Start Looping Through Hierarchies With Drilldowns. -----------------\n\n");
 		
 		int hierarchyCntr = 0; // this is used for debug.
@@ -1197,7 +1207,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText("Hierarchy Name: " + ele.getText());
 				ele.click();
 				HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
-				Thread.sleep(1000);
+				// Thread.sleep(1000);
 				RunTileMapTest(currentTileMapTestType); // run test.
 				//LoopThroughCatergoriyDrillDownsForTileMapCommand(); // bladdxx 
 				hierarchyCntr++;
@@ -1371,6 +1381,23 @@ public class HierarchyNumbersDependents extends BaseClass
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public static int UserNumberTileMapsToTest()
+	{
+		requestedTileMapsToTest = JOptionPane.showInputDialog("Enter number of tile maps to test.");
+		
+		if(requestedTileMapsToTest.equals("0"))
+		{
+			return 0;
+		}
+		else
+		{
+			return Integer.parseInt(requestedTileMapsToTest);			
+		}
+
+	}
+	
+	
+	
 	// this checks to see if the current dependent unit to be selected in the tile map is zero.
 	public static boolean DependentUnitValueIsZero(String dependentUnit)
 	{

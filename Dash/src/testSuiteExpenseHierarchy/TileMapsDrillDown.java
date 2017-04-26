@@ -27,14 +27,22 @@ public class TileMapsDrillDown extends BaseClass
 	@Test
 	public static void HierarchyNumbersTestDrillDown() throws Exception
 	{	
-		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
-		ShowText("Desired month is " + ExpenseHelper.desiredMonth);
+		//CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth); // bladdzzz
 		
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth); // bladdzzz
+		
+		Pause("After month select.");
+		
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 
+		
+		
+		
 		HierarchyHelper.SelectAndWaitForPageLoad();
+
+		ExpenseHelper.ShowSelectedMonth();
 		
 		HierarchyNumbersDependents.SetChartId();
 

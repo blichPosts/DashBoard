@@ -561,7 +561,7 @@ public class CommonTestStepActions extends BaseClass
 	public static void selectMonthYearPulldown(String monthYear){
 		
 		// this list will have ALL the 'Month Year' listed on the pulldown on the Point of View section
-		List<WebElement> listMonthYear = driver.findElements(By.cssSelector("select>option"));  //(".//select/option"));
+		List<WebElement> listMonthYear = driver.findElements(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select>option"));  //(".//select/option"));		
 		List<String> listMonthNames = new ArrayList<>();
 		
 		for (WebElement month: listMonthYear) {
@@ -573,7 +573,7 @@ public class CommonTestStepActions extends BaseClass
 			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
 			if(listMonthNames.get(i).equals(monthYear)){
 				
-				driver.findElement(By.cssSelector("select>option:nth-of-type(" + (i+1) + ")")).click();
+				driver.findElement(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select>option:nth-of-type(" + (i+1) + ")")).click(); 
 				
 			}
 			

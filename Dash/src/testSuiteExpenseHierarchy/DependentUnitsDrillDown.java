@@ -32,6 +32,8 @@ public class DependentUnitsDrillDown extends BaseClass
 		
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 
+		ExpenseHelper.ShowSelectedMonth();
+		
 		ReadFilesHelper.startCollectingData(); // start the JavascriptExecutor.
 		
 		HierarchyHelper.SelectAndWaitForPageLoad();

@@ -290,7 +290,6 @@ public class BaseClass
            WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);
            WaitForElementVisible(By.xpath("//h3[text()='Count of Service Numbers']"), MediumTimeout);            
            WaitForElementVisible(By.xpath("//div/h3[text()='Count of Service Numbers']"), MediumTimeout);            
-           WaitForElementClickable(By.xpath("//select"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");      
            
            String chartId = UsageHelper.getChartId(4);
            WaitForElementPresent(By.xpath(".//*[@id='" + chartId + "']"), MediumTimeout);

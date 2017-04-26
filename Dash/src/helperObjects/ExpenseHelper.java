@@ -972,6 +972,13 @@ public class ExpenseHelper extends BaseClass
 		Assert.assertEquals(actualList, copy, errMessage + "vendor.");
 	}
 	
+	
+	public static void ShowSelectedMonth()
+	{
+		ShowText("Selected month is " + desiredMonth);
+	}
+	
+	
 	// //////////////////////////////////////////////////////////////////////////
 	//					Hierarchy Helpers  
 	// //////////////////////////////////////////////////////////////////////////
