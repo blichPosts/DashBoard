@@ -12,7 +12,7 @@ public class HierarchyTopTenActions extends BaseClass {
 
 	public static void verifyTopTenLabelCategory(int chartId, int category) throws Exception {
 		
-		HierarchyHelper.selectCategoryTopTen(category);  // (chartId, category);
+		HierarchyHelper.selectCategoryTopTen(chartId, category);
 		
 		// Wait for the data to be updated on chart
 		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);

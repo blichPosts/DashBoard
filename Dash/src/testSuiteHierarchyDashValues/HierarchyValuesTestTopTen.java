@@ -14,7 +14,6 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyTopTenValues;
 import helperObjects.CommonTestStepActions;
-import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
@@ -39,65 +38,60 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		
+		
 		// #1 Select the "VIEW BY HIERARCHY" button
 		HierarchyHelper.selectHierarchyView();
-					
+		
+		
 		// #2 Select the "TOP TEN VIEW" 
 		HierarchyHelper.selectTopTenView(2);
 		Thread.sleep(2000);
 		
-		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
+		
+		// #3 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
+//		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
-		for (int i = 1; i <= hierarchies.size(); i++) {
-			
-			GeneralHelper.selectFirstMonth();
-			HierarchyHelper.selectHierarchyFromDropdown(i);
-			
-//			GeneralHelper.waitForDataToBeLoaded();
-			
-			boolean monthSelected = true;
-			Thread.sleep(2000);
+		int amountHierarchies = 1;
 		
+		if (hierarchies.size() > amountHierarchies) {
+			amountHierarchies = hierarchies.size();
+		}
 		
-			// #3 Get the last month listed on month selector
+		for (int i = 0; i < amountHierarchies; i++) {
+			
+			String hierarchyValue = HierarchyHelper.getHierarchyValue(i);
+			
+		
+			// #4 Get the last month listed on month selector
 			List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown(); 
 	
 			String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);
 			String monthYearToSelect = "";
 			
 			int indexMonth = 0;
+			boolean dataForMonthSelected = true;
+			
+			String cssSelector = "#" + UsageHelper.getChartId(HierarchyHelper.topTenChart) + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-child(2)";
+			
 			
 			do {
-				
-				if (!monthSelected) {
 					
-					monthYearToSelect = monthsInDropdown.get(indexMonth);
-					System.out.println("Month Year: " + monthYearToSelect);
-					
-					// #4 Select month on month/year selector
-					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-					
-					// Wait for chart to be loaded
-					WaitForElementVisible(By.cssSelector("chart>div"), MediumTimeout);
-					
-				}
+				// #5 Select month on month/year selector
+				monthYearToSelect = monthsInDropdown.get(indexMonth);
+				CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
+				Thread.sleep(2000);
 				
-								
-				// #5 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
+				System.out.println("Month Year: " + monthYearToSelect);
 				
-				boolean dataForMonthSelected = true;
-				
+				// #6 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
 				try {
-					
-					String cssSelector = "#" + UsageHelper.getChartId(HierarchyHelper.topTenChart) + ">svg>g>g>rect.highcharts-point:nth-child(1)";
-					driver.findElement(By.cssSelector(cssSelector));
+				
+					dataForMonthSelected = WaitForElementVisibleNoThrow(By.cssSelector(cssSelector), TenTimeout);
 					
 				} catch (NoSuchElementException e) {
 					
 					System.out.println("No data for the selected month");
-					dataForMonthSelected = false;
 					
 				}
 				
@@ -106,16 +100,16 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 					try {
 						
 						// Run test for "Expense" chart and category "Total"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyValue, HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
 						
 						// Run test for "Expense" chart and category "Optimizable"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyValue, HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
 						
 						// Run test for "Expense" chart and category "Roaming"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyValue, HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
 						
 						
-					} catch(NullPointerException e) {
+					} catch (NullPointerException e) {
 						
 						System.out.println("chart not found");
 						
@@ -124,7 +118,6 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 				}
 				
 				indexMonth++;
-				monthSelected = false;
 				
 			} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
 			

@@ -71,27 +71,6 @@ public class HierarchyHelper extends BaseClass {
 		
 	}
 	
-
-	// *** NOT WORKING FINE, REPLACE BY THE TWO METHODS BELOW .. SEE IF IT NEEDS TO BE ADDED BACK FOR OTHER TEST
-	
-//	public static void selectCategory(int chartNum, int category){
-		
-//		String xpath = "//div[@class='tdb-card'][" + Integer.toString(chartNum+1) + "]/div/div[" + Integer.toString(category) + "]"; 
-		
-//		String xpath = "//div[@class='tdb-card'][2]/div/div[1]";
-//		
-//		System.out.println("xpath: " + xpath);
-//		driver.findElement(By.xpath(xpath)).click();
-		
-//		driver.findElement(By.xpath("//div[@class='tdb-card'][2]/div/div[1]")).click();
-		
-//		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-card>div>div.tdb-inlineBlock:nth-child(" + category + ")"));
-//		WebElement categoryToSelect = driver.findElement(By.xpath("//div[@class='tdb-card'][" + (chartNum+1) + "]/div/div[" + category + "]"));
-//		categoryToSelect.click();
-		
-//	}
-		
-	
 	
 	public static void selectCategory(int section, int category){
 		
@@ -105,9 +84,10 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 
-	public static void selectCategoryTopTen(int category){  //  (int section, int category){
+	public static void selectCategoryTopTen(int section, int category){
 		
-		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-child(" + category + ")"));   //".tdb-boxSelector.tdb-align--right>div:nth-of-type(" + category + ")"));
+		String xpath = "//div[@class='tdb-card'][" + (section+1) +"]/div/div[" + category + "]";
+		WebElement categoryToSelect = driver.findElement(By.xpath(xpath));    //cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-child(" + category + ")"));   //".tdb-boxSelector.tdb-align--right>div:nth-of-type(" + category + ")"));
 		categoryToSelect.click();
 		
 	}
@@ -139,10 +119,10 @@ public class HierarchyHelper extends BaseClass {
 	}
 	
 	
-	public static void waitForChartToLoad(int chartId) throws Exception {
+	public static boolean waitForChartToLoad(int chartId) throws Exception {
 		
-		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g.highcharts-series";    // >svg>g>g>rect.highcharts-point:nth-child(1)";
-		WaitForElementPresentNoThrow(By.cssSelector(cssSelector), MainTimeout);
+		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g.highcharts-series>rect";
+		return WaitForElementPresentNoThrow(By.cssSelector(cssSelector), ShortTimeout);
 		
 	}
 	
@@ -307,6 +287,31 @@ public class HierarchyHelper extends BaseClass {
 	{
 		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.tagName("md-progress-bar"), howLongToWait), 
 				          "Failed to process wait for progress bar in WaitForProgressBarInactive() method.");
+	}
+
+
+	
+	public static String getHierarchyValue(int index) throws Exception {
+		
+		String hierarchyValue = "";
+		List<String> hierarchyValues = HierarchyHelper.getHierarchiesValues();
+		
+		// If there's more than one hierarchy, select hierarchy from dropdown and get its value
+		if (hierarchyValues.size() > 1) {
+			
+			selectHierarchyFromDropdown(index+1);
+			hierarchyValue = hierarchyValues.get(index);
+			
+		} else { // If there's only one hierarchy, dropdown might not be displayed, so get its value from the Ajax call
+			
+			hierarchyValue = ReadFilesHelper.getHierarchyValue();
+			
+		}
+		
+		Thread.sleep(2000);
+		
+		return hierarchyValue;
+		
 	}	
 
 	// this selects and waits for the hierarchy dash page to load.

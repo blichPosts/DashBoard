@@ -21,23 +21,28 @@ public class UsageCalculationHelper extends BaseClass{
 		//System.out.println("Original amount: " + amount);
 			
 		if (amount < 1000.0) {
+			
 			tmpAmount = amount;
 		}
 		else if (amount > 1000.0 && amount < 1000000.0) {
+			
 			tmpAmount = amount / 1024;
-			//unit = "K";
+			
 		}
 		else if (amount > 1000000.0 && amount < 1000000000.0) {
+			
 			tmpAmount = amount / Math.pow(1024, 2);
-			//unit = "M";
+			
 		}
 		else if (amount > 1000000000.0 && amount < 1000000000000.0) {
+			
 			tmpAmount = amount / Math.pow(1024, 3);
-			//unit = "G";
+			
 		}
 		else if (amount > 1000000000000.0) {
+			
 			tmpAmount = amount / Math.pow(1024, 4);
-			//unit = "T";
+			
 		}
 		
 		//System.out.println("Temp amount: " + tmpAmount);
@@ -50,17 +55,17 @@ public class UsageCalculationHelper extends BaseClass{
 			
 			if (amountConvertedTmp.endsWith(".0")) {
 				
-				amountConverted = Integer.toString(rounded.toBigIntegerExact().intValue());  // + unit;
+				amountConverted = Integer.toString(rounded.toBigIntegerExact().intValue());
 				
 			} else {
 				
-				amountConverted = Double.toString(rounded.doubleValue());  // + unit;
+				amountConverted = Double.toString(rounded.doubleValue());
 				
 			}
 			
 		} else {
 			long roundedValue = Math.round(tmpAmount);
-			amountConverted = Long.toString(roundedValue);  // + unit;
+			amountConverted = Long.toString(roundedValue);
 						
 		}
 		
@@ -101,6 +106,19 @@ public class UsageCalculationHelper extends BaseClass{
 		return amountConverted;
 		
 	}
+
+	
+	// Round value, up to two decimal digits
+	public static String roundTwoDecimalDigits(double notRoundedValue) {
+		
+		BigDecimal rounded = new BigDecimal(notRoundedValue);
+		rounded = rounded.setScale(2, RoundingMode.HALF_UP);
+		String amountRounded = Double.toString(rounded.doubleValue());
+			
+		return amountRounded;
+		
+	}
+	
 	
 	
 	// Used to convert *Voice* and *Messages* values to different units

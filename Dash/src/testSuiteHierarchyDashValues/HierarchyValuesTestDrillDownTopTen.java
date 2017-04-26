@@ -46,17 +46,20 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 		
 		// #3 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
-		CommonTestStepActions.initializeMonthSelector();
-		List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
+		List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown();
 		
-		for (int i = 1; i <= hierarchies.size(); i++) {
+		int amountHierarchies = 1;
+		
+		if (hierarchies.size() > amountHierarchies) {
+			amountHierarchies = hierarchies.size();
+		}
+		
+		for (int i = 0; i < amountHierarchies; i++) {
 			
-			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
+//			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
 			
-			HierarchyHelper.selectHierarchyFromDropdown(i);
-			Thread.sleep(2000);
+			String hierarchyValue = HierarchyHelper.getHierarchyValue(i);
 			
 			List<WebElement> dependentUnits = HierarchyHelper.getDependentUnitsPoV();
 			List<WebElement> breadcrumbs = HierarchyHelper.getBreadcrumbs();
@@ -76,17 +79,17 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 			
 			while (j <= levelsToDrillDown) {
 			
-				int monthIndex = 1;
+				int indexMonth = 1;
 				
 				// While hierarchy is in the Top level, and there are no dependent units to drill down, 
 				// then select the previous month to see if it has dependent units to drill down.
-				while (j == 1 && HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
+				while (j == 1 && HierarchyHelper.getDependentUnitsPoV().isEmpty() && indexMonth < monthsInDropdown.size()) {
 					
-					String monthYear = monthsInSelector.get(monthIndex).getText();
-					CommonTestStepActions.selectMonthYearPulldown(monthYear);
-					monthIndex++;
+					String monthYearToSelect = monthsInDropdown.get(indexMonth);
+					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
+					indexMonth++;
 					
-					ShowText("... no dependent units.. select a different month.. --> Month Year selected: " + monthYear);
+					ShowText("... no dependent units.. select a different month.. --> Month Year selected: " + monthYearToSelect);
 					
 					GeneralHelper.waitForDataToBeLoaded();
 				
@@ -108,13 +111,13 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 					try {
 						
 						// Run test for "Expense" chart and category "Total"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyValue, HierarchyHelper.topTenChart, HierarchyHelper.categoryTotal);
 						
 						// Run test for "Expense" chart and category "Optimizable"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyValue, HierarchyHelper.topTenChart, HierarchyHelper.categoryOptimizable);
 						
 						// Run test for "Expense" chart and category "Roaming"
-						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyIds.get(i-1), HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
+						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyValue, HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
 						
 						
 					} catch(NullPointerException e) {

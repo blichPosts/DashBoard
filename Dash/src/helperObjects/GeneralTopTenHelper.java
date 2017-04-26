@@ -3,6 +3,7 @@ package helperObjects;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.testng.Assert;
 
@@ -80,7 +81,12 @@ public class GeneralTopTenHelper extends BaseClass {
 		String employeeNamePart = "";
 		
 		try {
-			servNumberPart = label.split("[A-Z]")[0];  // label.split(" " + "[A-Z]")[0];
+			
+			if (Pattern.matches("[A-Z]", label)) {
+				servNumberPart = label.split("[A-Z]")[0];  // label.split(" " + "[A-Z]")[0];
+			} else {
+				servNumberPart = label;
+			}
 		} catch (ArrayIndexOutOfBoundsException e1) {
 			
 		}
@@ -88,7 +94,11 @@ public class GeneralTopTenHelper extends BaseClass {
 		String[] tmpEmpNamePart = label.split("[0-9]");
 		
 		try {
-			employeeNamePart = tmpEmpNamePart[tmpEmpNamePart.length-1];  // label.split("[0-9]" + " ")[1];
+			if (!Pattern.matches("[A-Z]", label)) {
+				employeeNamePart = ""; 
+			} else {
+				employeeNamePart = tmpEmpNamePart[tmpEmpNamePart.length-1];  // label.split("[0-9]" + " ")[1];
+			}
 		} catch (ArrayIndexOutOfBoundsException e2) {
 			
 		}

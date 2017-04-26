@@ -42,16 +42,24 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
+//		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
-		CommonTestStepActions.initializeMonthSelector();
-		List<WebElement> monthsInSelector = CommonTestStepActions.webListPulldown;
+//		CommonTestStepActions.initializeMonthSelector();
+		List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown();  //CommonTestStepActions.webListPulldown;
 		
-		for (int i = 1; i <= hierarchies.size(); i++) {
+		int amountHierarchies = 1;
 		
-			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
+		if (hierarchies.size() > amountHierarchies) {
+			amountHierarchies = hierarchies.size();
+		}
+		
+		for (int i = 0; i < amountHierarchies; i++) {
+		
+//			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
 			
-			HierarchyHelper.selectHierarchyFromDropdown(i);
+			String hierarchyValue = HierarchyHelper.getHierarchyValue(i);
+			
+//			HierarchyHelper.selectHierarchyFromDropdown(i);
 			HierarchyHelper.waitForTileMapToBeDisplayed();
 			
 			List<WebElement> dependentUnits = HierarchyHelper.getDependentUnitsPoV();
@@ -76,13 +84,13 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 				
 				// While hierarchy is in the Top level, and there are no dependent units to drill down, 
 				// then select the previous month to see if it has dependent units to drill down.
-				while (j == 1 && HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInSelector.size()) {
+				while (j == 1 && HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInDropdown.size()) {
 					
-					String monthYear = monthsInSelector.get(monthIndex).getText();
-					CommonTestStepActions.selectMonthYearPulldown(monthYear);
+					String monthYearToSelect = monthsInDropdown.get(monthIndex); //.getText();
+					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 					monthIndex++;
 					
-					ShowText("... no dependent units.. select a different month.. --> Month Year selected: " + monthYear);
+					ShowText("... no dependent units.. select a different month.. --> Month Year selected: " + monthYearToSelect);
 					
 					GeneralHelper.waitForDataToBeLoaded();
 					
@@ -94,11 +102,10 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 					System.out.println(" **** Drilling down Level #" + j);
 					
 					HierarchyHelper.drillDownOnDependentUnitPoV(1);
-//					GeneralHelper.waitForDataToBeLoaded();  // <-- not useful 
 					Thread.sleep(3000);
 					
 					// #3 Get data from JSON
-					List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));	
+					List<HierarchyTrendData> valuesFromFile = ReadFilesHelper.getJsonDataTrend(hierarchyValue);	
 					
 					// #4 Verify that the values displayed on the tooltips of "Expenses Trending" chart are the same as the ones read from ajax calls 
 					// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info

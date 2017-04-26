@@ -5,14 +5,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -290,9 +288,8 @@ public class CommonTestStepActions extends BaseClass
 	// added by Ana
 	public static void GoToUsagePageDetailedWait() throws Exception
 	{
-		//WaitForExpensePageDetailedLoad();  // wait for Expense page to load since it's the page loaded by default when loading Dashboard UI
 		WaitForViewUsageSelector();
-		//SelectUsageTab();
+		
 	}
 
 	
@@ -370,10 +367,6 @@ public class CommonTestStepActions extends BaseClass
 	public static void BobTest()
 	{
 		
-	}
-
-	public static void anaTest(){
-		// testing branches
 	}
 
 	
@@ -561,7 +554,8 @@ public class CommonTestStepActions extends BaseClass
 	public static void selectMonthYearPulldown(String monthYear){
 		
 		// this list will have ALL the 'Month Year' listed on the pulldown on the Point of View section
-		List<WebElement> listMonthYear = driver.findElements(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select>option"));  //(".//select/option"));		
+
+		List<WebElement> listMonthYear = driver.findElements(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select>option")); 
 		List<String> listMonthNames = new ArrayList<>();
 		
 		for (WebElement month: listMonthYear) {
@@ -590,13 +584,13 @@ public class CommonTestStepActions extends BaseClass
 	}
 	
 	
-	// It switches to the frame that contains the PoV, KPIs, charts
-	public static void switchToContentFrame(){
-		
-		WebElement frame = driver.findElement(By.cssSelector("iframe#CONTENT"));   //(By.xpath(".//iframe[@id='CONTENT']"));
-		driver.switchTo().frame(frame);
-		
-	}
+	// It switches to the frame that contains the PoV, KPIs, charts -- NOT USED - REMOVE
+//	public static void switchToContentFrame(){
+//		
+//		WebElement frame = driver.findElement(By.cssSelector("iframe#CONTENT"));   //(By.xpath(".//iframe[@id='CONTENT']"));
+//		driver.switchTo().frame(frame);
+//		
+//	}
 
 	
 	public static List<List<WebElement>> getCountriesAndVendors() {

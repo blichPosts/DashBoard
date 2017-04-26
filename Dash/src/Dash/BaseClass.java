@@ -8,7 +8,6 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +28,6 @@ import org.testng.Assert;
 
 import helperObjects.Country;
 import helperObjects.GeneralHelper;
-import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 
 public class BaseClass
@@ -65,8 +63,8 @@ public class BaseClass
 	//public static String commandPassword = "hop*ititmb9";	
 	
 	
-	public static String commandUserName = "archana.trojic@tangoe.com pwc";
-	public static String commandPassword = "traq06";
+	public static String commandUserName = "analaura.pace@tangoe.com pwc";
+	public static String commandPassword = "tngo111";
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
 	public static LoginType loginType; // bladdxx // new

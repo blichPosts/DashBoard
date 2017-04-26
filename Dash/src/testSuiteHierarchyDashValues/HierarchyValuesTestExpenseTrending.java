@@ -39,23 +39,30 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
+//		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
 		
-		for (int i = 1; i <= hierarchies.size(); i++) {
+		int amountHierarchies = 1;
+		
+		if (hierarchies.size() > amountHierarchies) {
+			amountHierarchies = hierarchies.size();
+		}
+		
+		
+		for (int i = 0; i < amountHierarchies; i++) {
 			
-			HierarchyHelper.selectHierarchyFromDropdown(i);
+			String hierarchyValue = HierarchyHelper.getHierarchyValue(i); //HierarchyHelper.selectHierarchyFromDropdown(i);
 			
 			HierarchyHelper.waitForChartToLoad(HierarchyHelper.expenseTrendingChart);  // <-- seems that is not useful :| 
 			
 			Thread.sleep(3000);
 			
 			// #3 Get data from JSON
-			List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));
+			List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyValue);
 					
 			
-			// #4 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
+			// #4 Verify that the values displayed on the tooltips of "Expense Trending" chart are the same as the ones read from file
 			// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
-			// will be displayed on the Usage Trending charts 
+			// will be displayed on the Expense Trending chart. 
 			
 			try {
 				

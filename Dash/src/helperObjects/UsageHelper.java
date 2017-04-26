@@ -1,7 +1,5 @@
 package helperObjects;
 
-import java.awt.AWTException;
-import java.awt.Robot;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -184,10 +182,7 @@ public class UsageHelper extends BaseClass{
 			} 
 			
 			if (!monthYear.equals(monthsList.get(i).getText())){
-				/*System.out.println("fileIndex: " + (fileIndex));
-				System.out.println("month from monthsList: " + monthsList.get(i).getText());
-				System.out.println("monthYear from file: " + monthYear);  
-				*/
+
 				String[] monthYearParts = monthsList.get(i).getText().split(" "); 
 				String monthNum = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
 				/*if(monthNum.length() == 1){
@@ -209,33 +204,11 @@ public class UsageHelper extends BaseClass{
 				usageMonthTmp.setOrdinalMonth(monthTmp);
 				
 				valuesFromFileNew.add(i, usageMonthTmp);
-				//System.out.println("monthYear from file: " + valuesFromFileNew.get(i).getOrdinalMonth() + " " + valuesFromFileNew.get(i).getOrdinalYear());
 				previousMonthExisted = true;
 				fileIndex++;
 			}
 			
 		}
-		
-		/*
-		for (UsageOneMonth m: valuesFromFileNew){
-			
-			System.out.println("vendor name: " + m.getVendorName());
-			System.out.println("year: " + m.getOrdinalYear());
-			System.out.println("month: " + m.getOrdinalMonth());
-			System.out.println("invoice month: " + m.getInvoiceMonth());
-			System.out.println("domestic voice: " + m.getDomesticVoice());
-			System.out.println("overage voice: " + m.getDomesticOverageVoice());
-			System.out.println("domestic messages: " + m.getDomesticMessages());
-			System.out.println("domestic data:" + m.getDomesticDataUsageKb());
-			System.out.println("roaming voice: " + m.getRoamingVoice());
-			System.out.println("roaming data: " + m.getRoamingDataUsageKb());
-			System.out.println("roaming messages: " + m.getRoamingMessages()); 
-		    
-			System.out.println("month: " + m.getOrdinalMonth() + " " + m.getOrdinalYear());
-			
-		} */
-		
-//		System.out.println("amount of months for " + valuesFromFileNew.get(0).getVendorName() + " is " + valuesFromFileNew.size());
 		
 		return valuesFromFileNew;
 		
