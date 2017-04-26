@@ -403,7 +403,17 @@ public class ReadFilesHelper extends BaseClass {
 	}
 	
 	
-	
+	public static String getHierarchyValue() throws JSONException {
+		
+		String topTenData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy')");
+		
+		String[] tmpValues = topTenData.split(":"); 
+		
+		String value = tmpValues[0].replace("\"", "").replace("{", "").trim(); 
+		
+		return value;
+		
+	}
 	
 	
 	

@@ -63,7 +63,7 @@ public class BaseClass
 	//public static String commandPassword = "hop*ititmb9";	
 	
 	
-	public static String commandUserName = "analaura.pace@tangoe.com acc";
+	public static String commandUserName = "analaura.pace@tangoe.com pwc";
 	public static String commandPassword = "tngo111";
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	

@@ -106,6 +106,19 @@ public class UsageCalculationHelper extends BaseClass{
 		return amountConverted;
 		
 	}
+
+	
+	// Round value, up to two decimal digits
+	public static String roundTwoDecimalDigits(double notRoundedValue) {
+		
+		BigDecimal rounded = new BigDecimal(notRoundedValue);
+		rounded = rounded.setScale(2, RoundingMode.HALF_UP);
+		String amountRounded = Double.toString(rounded.doubleValue());
+			
+		return amountRounded;
+		
+	}
+	
 	
 	
 	// Used to convert *Voice* and *Messages* values to different units

@@ -167,7 +167,7 @@ public class HierarchyTopTenValues extends BaseClass{
 		Point point = GeneralHelper.getAbsoluteLocation(bar);
 		
 		int x_offset = (int) (bar.getSize().width * 0.5);
-		int y_offset = (int) (bar.getSize().height * 0.7);
+		int y_offset = (int) (bar.getSize().height);
 		
 		y_offset += (int) GeneralHelper.getScrollPosition();
 				
@@ -201,14 +201,22 @@ public class HierarchyTopTenValues extends BaseClass{
     			if (!data.getEmployeeFirstname().isEmpty()) 
     				firstName = data.getEmployeeFirstname().substring(0, 1); 
     			
-    			if (!data.getEmployeeLastname().isEmpty()) 
+    			if (!data.getEmployeeLastname().isEmpty()) {
+    			
     				lastName = data.getEmployeeLastname().replace(" ", "");
+    			 	lastName = lastName.replace("-", "");
+    			 	
+    			}
     			
-    			if (!firstName.isEmpty() && !lastName.isEmpty())
+    			if (!firstName.isEmpty() && !lastName.isEmpty()) {
+    			
     				employeeName = firstName + "." + lastName;
+    				
+    			} else if (firstName.isEmpty() && !lastName.isEmpty()) {
     			
-    			else if (firstName.isEmpty() && !lastName.isEmpty())
     				employeeName = lastName;
+    			
+    			}
     			
     			label = serviceNumber + employeeName;
     			break;
@@ -277,15 +285,23 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		String label = "";
 		int indexHighchart = 1;
-		
+				
+		// Select a random bar to be clicked
 		do {
+			double random = 0;
+			do {
+				random = Math.random();
+				
+			} while (random == 0);
 			
-			indexHighchart = (int) (Math.random() * 11);
+			indexHighchart =  (int) (random * elementLabels.size());
 			label = topTenValues.get(indexHighchart-1).getType();
 				
 		} while (label.equals("AVERAGE") || indexHighchart == 0);
 		
+		
 		ShowText("Service Number to be clicked: " + topTenValues.get(indexHighchart-1).getServiceNumber());
+		
 		
 		HierarchyTopTenData expectedValues = topTenDataMap.get(servNumbersLabels.get(indexHighchart-1));
 		
@@ -306,7 +322,7 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		String hierarchyExpected = driver.findElement(By.cssSelector("div.tdb-kpi__header>span>span")).getText();
 		String serviceNumberExpected = expectedValues.getServiceNumber();
-		String totalChargesValueExpected = "$" + expectedValues.getValue(); 
+		String totalChargesValueExpected = "$" + UsageCalculationHelper.roundTwoDecimalDigits(expectedValues.getValue()); 
 		
 		if (totalChargesValueExpected.contains(".")) {
 			if (totalChargesValueExpected.split("\\.")[1].length() == 1) {
@@ -322,6 +338,7 @@ public class HierarchyTopTenValues extends BaseClass{
 			
 		// Values found on Report
 		String fullNameFound = driver.findElement(By.cssSelector(".pad-l5r5>a")).getText();
+		fullNameFound = fullNameFound.split(" ")[0] + " " + fullNameFound.split(" ")[1];
 		String hierarchyFound = driver.findElement(By.cssSelector("tr.top>.pad-r5:nth-of-type(3)")).getText().split("\n")[1];
 		String serviceNumberFound = GeneralTopTenHelper.formatPhoneNumber(driver.findElement(By.cssSelector("tr.data-row>td:nth-of-type(2)>a")).getText());
 		String totalChargesValueFound = driver.findElements(By.cssSelector(".data-cell.datar>strong")).get(6).getText().replace(",", "");

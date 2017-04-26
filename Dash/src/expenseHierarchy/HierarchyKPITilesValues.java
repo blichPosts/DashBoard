@@ -61,10 +61,10 @@ public class HierarchyKPITilesValues extends BaseClass{
 		
 		GeneralHelper.verifyExpectedAndActualValues(costPerServNumKPIFromDash, costPerServNumKPICalculated);
 		
-// ShowText("KPI Tile Total Expense Actual: " + totalExpenseKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalExpenseKPICalculated);		
-		// ShowText("KPI Tile Optimizable Actual: " + optimizableKPIFromDash + ",  KPI Tile Optimizable Expected: " + optimizableKPICalculated);		
-		// ShowText("KPI Tile Roaming Actual: " + roamingKPIFromDash + ",  KPI Tile Roaming Expected: " + roamingKPICalculated);
-		// ShowText("KPI Tile Cost Per Service Number Actual: " + costPerServNumKPIFromDash + ",  KPI Tile Cost Per Service Number Expected: " + costPerServNumKPICalculated); 
+		 ShowText("KPI Tile Total Expense Actual: " + totalExpenseKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalExpenseKPICalculated);		
+		 ShowText("KPI Tile Optimizable Actual: " + optimizableKPIFromDash + ",  KPI Tile Optimizable Expected: " + optimizableKPICalculated);		
+		 ShowText("KPI Tile Roaming Actual: " + roamingKPIFromDash + ",  KPI Tile Roaming Expected: " + roamingKPICalculated);
+		 ShowText("KPI Tile Cost Per Service Number Actual: " + costPerServNumKPIFromDash + ",  KPI Tile Cost Per Service Number Expected: " + costPerServNumKPICalculated); 
 		
 		
 		// Verify the secondary values on KPIs
@@ -96,10 +96,10 @@ public class HierarchyKPITilesValues extends BaseClass{
 		
 		GeneralHelper.verifyExpectedAndActualValues(amountOfServNumKPICalculated, amountOfServNumKPIFromDash);
 
-		// ShowText("KPI Tile Total Expenses Directly Allocated Actual: " + totalExpenseDirectlyAllocatedKPIFromDash + ",  KPI Tile Total Expenses Directly Allocated Expected: " + totalExpenseDirectlyAllocatedKPICalculated); 
-		// ShowText("KPI Tile Optimizable Expenses Directly Allocated Actual: " + optimizableDirectlyAllocatedKPIFromDash + ",  KPI Tile Optimizable Expenses Directly Allocated Expected: " + optimizableDirectlyAllocatedKPICalculated); 
-		// ShowText("KPI Tile Roaming Expenses Directly Allocated Actual: " + roamingDirectlyAllocatedKPIFromDash + ",  KPI Tile Roaming Expenses Directly Allocated Expected: " + roamingDirectlyAllocatedKPICalculated); 
-		// ShowText("KPI Tile Amount of Service Numbers Actual: " + amountOfServNumKPIFromDash + ",  KPI Tile Amount of Service Numbers Expected: " + amountOfServNumKPICalculated); 
+		 ShowText("KPI Tile Total Expenses Directly Allocated Actual: " + totalExpenseDirectlyAllocatedKPIFromDash + ",  KPI Tile Total Expenses Directly Allocated Expected: " + totalExpenseDirectlyAllocatedKPICalculated); 
+		 ShowText("KPI Tile Optimizable Expenses Directly Allocated Actual: " + optimizableDirectlyAllocatedKPIFromDash + ",  KPI Tile Optimizable Expenses Directly Allocated Expected: " + optimizableDirectlyAllocatedKPICalculated); 
+		 ShowText("KPI Tile Roaming Expenses Directly Allocated Actual: " + roamingDirectlyAllocatedKPIFromDash + ",  KPI Tile Roaming Expenses Directly Allocated Expected: " + roamingDirectlyAllocatedKPICalculated); 
+		 ShowText("KPI Tile Amount of Service Numbers Actual: " + amountOfServNumKPIFromDash + ",  KPI Tile Amount of Service Numbers Expected: " + amountOfServNumKPICalculated); 
 
 	}
 
@@ -192,7 +192,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 						
 				}
 				
-//				System.out.println("3 Month Avg Actual: " + threeMonthAvgActual + ", 3 Month Avg Expected: " + threeMonthAvgExpected);
+				ShowText("3 Month Avg Actual: " + threeMonthAvgActual + ", 3 Month Avg Expected: " + threeMonthAvgExpected);
 				
 				// Verifies that the '3 month rolling average' displayed equals to the '3 month rolling average' calculated
 				GeneralHelper.verifyExpectedAndActualValues(threeMonthAvgActual, threeMonthAvgExpected);
@@ -201,8 +201,8 @@ public class HierarchyKPITilesValues extends BaseClass{
 				// --> If trending % is 0%, it won't be displayed
 				if(kpiValue != rollingAverage){
 				  
-					// System.out.println("kpiValue: "  + kpiValue);
-					// System.out.println("rollingAverage: "  + rollingAverage);
+					// ShowText("kpiValue: "  + kpiValue);
+					// ShowText("rollingAverage: "  + rollingAverage);
 					
 					int trendValueExpected = calculateTrendingPercentage(kpiValue, rollingAverage);
 					
@@ -215,7 +215,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 						GeneralHelper.verifyExpectedAndActualValues(trendValueActual, trendValueExpected);
 						Assert.assertTrue(trend.endsWith("%"));
 																		
-//						System.out.println("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
+						ShowText("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
  
 					}
 					
@@ -304,7 +304,7 @@ public class HierarchyKPITilesValues extends BaseClass{
 						
 				}
 				
-				// ShowText("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
+				 ShowText("6 Month Avg Actual: " + sixMonthAvgActual + ", 6 Month Avg Expected: " + sixMonthAvgExpected);
 				
 				// Verifies that the '6 months rolling average' displayed equals to the '6 months rolling average' calculated
 				GeneralHelper.verifyExpectedAndActualValues(sixMonthAvgActual, sixMonthAvgExpected);

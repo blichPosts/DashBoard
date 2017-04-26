@@ -287,6 +287,31 @@ public class HierarchyHelper extends BaseClass {
 	{
 		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.tagName("md-progress-bar"), howLongToWait), 
 				          "Failed to process wait for progress bar in WaitForProgressBarInactive() method.");
+	}
+
+
+	
+	public static String getHierarchyValue(int index) throws Exception {
+		
+		String hierarchyValue = "";
+		List<String> hierarchyValues = HierarchyHelper.getHierarchiesValues();
+		
+		// If there's more than one hierarchy, select hierarchy from dropdown and get its value
+		if (hierarchyValues.size() > 1) {
+			
+			selectHierarchyFromDropdown(index+1);
+			hierarchyValue = hierarchyValues.get(index);
+			
+		} else { // If there's only one hierarchy, dropdown might not be displayed, so get its value from the Ajax call
+			
+			hierarchyValue = ReadFilesHelper.getHierarchyValue();
+			
+		}
+		
+		Thread.sleep(2000);
+		
+		return hierarchyValue;
+		
 	}	
 
 	
