@@ -595,61 +595,27 @@ public class BaseClass
 		}
 		
 		// bladdxx
+		
 		public static void GoToDashboard() throws Exception
 		{
 			// get to the dash page
-			WaitForElementClickable(By.cssSelector("#menuMainReporting"),MainTimeout, "Failed wait in GoToOrderStatus");
-			DebugTimeout(1, ""); // this is needed to avoid the error with frames and clicking the wrong thing.
+		
+			WaitForElementClickable(By.cssSelector("#menuMainReporting"), MainTimeout, "Failed wait in GoToDashboard"); 
 			
-			WebElement pageHeader = driver.findElement(By.cssSelector("div.page-header"));
-			WebElement menu = driver.findElement(By.cssSelector("#menuMainReporting"));
+			driver.findElement(By.cssSelector("#menuMainReporting")).click();
+
+		    WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"), MainTimeout, "Failed wait in GoToDashboard");
 			
-			Dimension dimensionHeader = pageHeader.getSize();
-			int headerHeight = dimensionHeader.getHeight();
+			driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();
 			
-			// These coordinates will be used to put the mouse pointer over the button
-			Dimension dimensionMenu = menu.getSize();
-			int menuHeight = dimensionMenu.getHeight();
-			int menuWidth = dimensionMenu.getWidth();
+			GeneralHelper.setUpiFrame();
 			
-			Point coordinates = menu.getLocation();
-			
-			int x = coordinates.getX() + menuWidth/2;  //+ 30;
-			int y = coordinates.getY() - menuHeight/2 + headerHeight;  //+ 70;
-			
-			Robot robot = new Robot(); 
-			robot.mouseMove(x, y);
-			
-//			System.out.println("coordinates - x: " + x + "  y: " + y);
-			
-			Thread.sleep(1000);
-			
-			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-			
-			
-//			driver.findElement(By.cssSelector("#menuMainReporting")).click();  // --> commented by Ana
-//		    
-//		    WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"),MainTimeout, "Failed wait in GoToOrderStatus");  // --> commented by Ana
-			
-			driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();  // --> commented by Ana
-			
-			GeneralHelper.setUpiFrame();  // anaaddxx  -- April 18
-			
-			GeneralHelper.switchToContentFrame(); // <-- this call replaces the code below, which is included on the method called - ana - April 20
-			
-//		    // get to frame one.
-//		    driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
-//		    
-//		    // this timeout is here because when at frame id "CONTENT" there is no DOM element to wait for.    
-//		    DebugTimeout(1, ""); 
-//		    
-//		    // this will get to dash board frame. at this pint the dash board test code will wait for the dash page to load. 
-//		    driver.switchTo().frame(driver.findElement(By.id("dashboard_iframe")));
-		   
+			GeneralHelper.switchToContentFrame();
 			
 		}
+		
 
+		
 		// bladdxx - new
 		public static void MainLogin() throws Exception
 		{

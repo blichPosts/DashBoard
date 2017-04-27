@@ -57,7 +57,7 @@ public class TotalExpensesMultipleValues extends BaseClass{
 
 		// ** In many cases some of the sections of the pie chart are too small and the coordinates used to locate the mouse sometimes are not accurate.
 		// ** So, it's better to set the amountOfVendorsToSelect to 2 or 3 at a time...
-		int amountOfVendorsToSelect = 3;
+		int amountOfVendorsToSelect = 4;
 		
 		if (amountOfVendorsToSelect > vendorNames.size())
 			amountOfVendorsToSelect = vendorNames.size();
