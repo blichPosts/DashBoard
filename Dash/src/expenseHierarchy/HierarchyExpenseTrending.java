@@ -64,6 +64,8 @@ public class HierarchyExpenseTrending extends BaseClass {
 
 		// Verify the info contained on each of the tooltips for the 13 months 		
 		
+		boolean firstBar = true;
+		
 		while (indexHighchart <= monthYearList.size()) {
 			
 			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
@@ -75,20 +77,27 @@ public class HierarchyExpenseTrending extends BaseClass {
 			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 			
 			Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
-			int x = coordinates.getX();
-			int y = GeneralHelper.getYCoordinate(chartId);
 			
+			int x_offset = bar.getSize().getWidth() / 2;
 			int y_offset = (int) GeneralHelper.getScrollPosition();
-			y += y_offset;
+			
+			int x = coordinates.getX() + x_offset;
+			int y = GeneralHelper.getYCoordinate(chartId) + y_offset;;
 			
 			Robot robot = new Robot();
-			robot.mouseMove(x, y);
 			
+			if (firstBar) {
+				robot.mouseMove(x - x_offset, y);
+				Thread.sleep(500);
+			}
+			
+			robot.mouseMove(x, y);
 			Thread.sleep(500);
 			
 			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 				
+			firstBar = false;
 			
 			try {
 				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
@@ -131,8 +140,8 @@ public class HierarchyExpenseTrending extends BaseClass {
 				 		
 				// Verify the labels' text and amounts shown on the tooltip
 				
-				// System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-    			// System.out.println("valueFound: " + valueFoundRounded + ", valueExpected: " + valueExpected);
+				 System.out.println("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+    			 System.out.println("valueFound: " + valueFoundRounded + ", valueExpected: " + valueExpected);
 				
 				Assert.assertEquals(labelFound, labelExpected);
 				GeneralHelper.verifyExpectedAndActualValues(valueFoundRounded, valueExpected);

@@ -50,7 +50,7 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 		
 		// #3 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-//		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
+
 		
 		int amountHierarchies = 1;
 		

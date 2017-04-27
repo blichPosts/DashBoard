@@ -39,7 +39,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-//		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
+
 		
 		int amountHierarchies = 1;
 		
@@ -50,7 +50,7 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		for (int i = 0; i < amountHierarchies; i++) {
 			
-			String hierarchyValue = HierarchyHelper.getHierarchyValue(i); //HierarchyHelper.selectHierarchyFromDropdown(i);
+			String hierarchyValue = HierarchyHelper.getHierarchyValue(i);
 			
 			HierarchyHelper.waitForChartToLoad(HierarchyHelper.expenseTrendingChart);  // <-- seems that is not useful :| 
 			

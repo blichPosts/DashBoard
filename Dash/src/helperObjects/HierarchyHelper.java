@@ -63,10 +63,18 @@ public class HierarchyHelper extends BaseClass {
 	// Select the "VIEW TOP TEN" button
 	public static void selectTopTenView(int toggleNum) throws Exception {
 
-		WaitForElementClickable(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"), MediumTimeout, "VIEW TOP TEN button not clickable");
-		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"));
-		viewTopTenToggle.click();
-		WaitForElementVisible(By.xpath("//h3[text()='Top 10 Service Numbers by Expense Amount - ']"), MediumTimeout);	
+		String cssToggle = "div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")";
+		
+		WaitForElementClickable(By.cssSelector(cssToggle), MediumTimeout, "VIEW TOP TEN button not clickable");
+		driver.findElement(By.cssSelector(cssToggle)).click();
+		
+		WaitForElementVisible(By.xpath("//h3[text()='Top 10 Service Numbers by Expense Amount. - ']"), MediumTimeout);
+		
+		
+//		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"));
+		
+//		viewTopTenToggle.click();
+			
 		//waitForTopTenChartToLoad();
 		
 	}

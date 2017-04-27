@@ -42,10 +42,8 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-//		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
+		List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown();
 		
-//		CommonTestStepActions.initializeMonthSelector();
-		List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown();  //CommonTestStepActions.webListPulldown;
 		
 		int amountHierarchies = 1;
 		
