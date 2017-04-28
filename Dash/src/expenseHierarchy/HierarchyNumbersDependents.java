@@ -55,7 +55,9 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static String currentLevelName = "";
 	public static String currentCategorySelection = "";
 	public static String totalCount = "";
-	public static String requestedTileMapsToTest = "";	
+	public static String requestedTileMapsToTest = "";
+	
+	public static boolean runningDependentsThroughMonths = true;
 	
 	public static Stack<String> aboveTileStack = new Stack<String>();
 	public static Stack<String> aboveKpiStack = new Stack<String>();	
@@ -571,17 +573,20 @@ public class HierarchyNumbersDependents extends BaseClass
 			{
 				case Total:
 				{
-					childList.add(new Child(obj.getString("name"), obj.getInt("total_expense_rollup_ex")));
+					//childList.add(new Child(obj.getString("name"), obj.getInt("total_expense_rollup_ex")));
+					childList.add(new Child(obj.getString("name"), obj.getDouble("total_expense_rollup_ex")));
 					break;
 				}
 				case Optimizable:
 				{
-					childList.add(new Child(obj.getString("name"), obj.getInt("optimizable_expense_rollup_ex")));
+					//childList.add(new Child(obj.getString("name"), obj.getInt("optimizable_expense_rollup_ex")));
+					childList.add(new Child(obj.getString("name"), obj.getDouble("optimizable_expense_rollup_ex")));
 					break;
 				}
 				case Roaming:
 				{
-					childList.add(new Child(obj.getString("name"), obj.getInt("roaming_expense_rollup_ex")));
+					//childList.add(new Child(obj.getString("name"), obj.getInt("roaming_expense_rollup_ex")));
+					childList.add(new Child(obj.getString("name"), obj.getDouble("roaming_expense_rollup_ex")));
 					break;
 				}
 				default:
@@ -592,6 +597,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
+	/*
 	// * get the dependent units list using a json call. this list is sorted by numeric value. (expected list)
 	// * get the dependent units list in the UI. (Actual list)
 	// * go through  the lists and verify the numeric values are sorted identically between the actual and expected.
@@ -703,14 +709,148 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 		}
 	}
+	*/
+	
+	// * get the dependent units list using a json call. this list is sorted by numeric value. (expected list)
+	// * get the dependent units list in the UI. (Actual list)
+	// * go through  the lists and verify the numeric values are sorted identically between the actual and expected.
+	// * go through  the lists and verify the names info is identical between the actual and expected. sometimes when
+	//   there are two or more users with the same numeric value the sorting of the names can be in different order, 
+	//   between the actual and expected list. in this case, store these names into  their own separate actual and expected 
+	//   lists into and send both lists to the 'VerifyAllDependentChildren' method.
+	// * the 'VerifyAllDependentChildren' method will verify that the names between the two list are identical and the numeric
+	//   values are all the same.
+	public static void VerifyActualExpectedDependentUnitsTwo() throws Exception 
+	{
+		ShowText ("Verifying Actual/Expected Dependents");  
 
+		int actualInt = 0;
+		int expectedInt = 0;
+		String actualString = "";
+		String expectedString = "";
+		
+		int loopCntr = 0;
+		// int latestCost = -9999; // bladdzz
+		double latestCost = -9999.0; // bladdzz
+		int x = 0;
+		String costSelectorString = "";
+		String tempString = "";
+		
+		Thread.sleep(2000);
+		
+		// get the actual dependent units from the list of dependent units in the UI.
+		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
+		
+		Thread.sleep(1000);
+		ShowInt(eleList.size());
+		
+		// verify text above tile map.
+		VerifyTextAboveTileMapAndKpi();
+		
+		// go through the web element list of dependent units from the list of dependent units in the UI. 
+		// verify the actual list of data from the UI is the same as the sorted (expected) list created from the json response.  
+		for(WebElement ele : eleList)  
+		{
+			// get the actual cost string for the current dependent unit web element being looped on. 
+			actualString = ele.getText().split("\n")[1].replace(GetCostFilterString(), "").replace(",","");
+			
+			// convert the actual cost string to a double and put into a variable  
+			double actualDouble = Double.parseDouble(actualString);
+			
+			// get the expected cost double from the selected item in the child list and put into a variable
+			double expectedDouble = childList.get(loopCntr).cost;
+			
+			try // verify actual and expected double values.
+			{
+				System.out.println(actualDouble + " ** " + expectedDouble);
+				Assert.assertEquals(actualDouble, expectedDouble, "Fail in sorting compare for numeric cost in HierarchyNumbersDependents.VerifyActualExpectedDependentUnits"); // verify cost in json list equals cost in actual list.
+			}
+			catch(AssertionError err)
+			{
+				ShowText("Odd Failure ====== " + err.getMessage());
+				System.out.println("Expect = " + childList.get(loopCntr).childName + "Cost = " +  expectedDouble);
+				System.out.println("Actual = " + ele.getText().split("\n")[0] + "Cost = " +  actualDouble);
+				if((expectedDouble - actualDouble) > 1.0)
+				{
+					Pause("Diff Greater Than One Error");
+					ShowChildList();
+					Pause("Look at List");
+					loopCntr++;
+				}
+				loopCntr++;
+				continue;
+			}
+			
+			// *******************************************************************************************************************************
+			// 										START NAME CHECK
+			// *******************************************************************************************************************************
+			// compare names. sometimes the numeric values will match and the names won't match. this happens when two or more
+			// units have the same numeric value in each list but the units are in different orders.  
+			try
+			{
+				// in some cases (one tenant/month so far) there will be two spaces between the first and last name in the json response and the UI 
+				// will have only one space between the first and last name. This couldn't find two spaces ===> if(childList.get(loopCntr).childName.contains("     "));
+				// the if statement below was found on this stack trace link directly below. it is some type of regular expression.
+				// http://stackoverflow.com/questions/19711689/how-to-detect-if-a-string-input-has-more-than-one-consecutive-space
+				if ((childList.get(loopCntr).childName.matches(".*  .*")))
+				{
+					ShowText("found name with two space separator. Name is: " + childList.get(loopCntr).childName);
+					childList.get(loopCntr).childName = childList.get(loopCntr).childName.replace("  ",  " "); 
+				}
+
+				Assert.assertEquals(ele.getText().split("\n")[0], childList.get(loopCntr).childName, ""); // orig		
+				// ShowText(ele.getText().split("\n")[0] + "  " +   childList.get(loopCntr).childName); // DEBUG
+			}
+			catch (AssertionError sertErr) // sometimes two or more units have the same numeric value in each list but the units are in different orders.
+			{
+				ShowText("Try catch"); 
+				//ShowText("Actual:    " + ele.getText().split("\n")[0]); 
+				//ShowText("Expected:  " + childList.get(loopCntr).childName);
+				
+				// when reach a point where the cost is not the same as last cost, do the verification.
+				if(childList.get(loopCntr).cost != latestCost)
+				{
+					if(expectedList.size() != 0)
+					{
+						// this verifies all the names have the same value, the actual and expected lists are the same size, and the all have the expected cost value.
+						ShowText("actual list ========================================================================================================");
+						ShowActualList();
+						ShowText("expect list ========================================================================================================");
+						ShowExpectedList();
+						VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));  
+					}
+					expectedList.clear();
+					actualList.clear();
+					latestCost = childList.get(loopCntr).cost; 
+				}
+				
+				// this gets the string to be filtered out of the actual data in the UI.
+				costSelectorString = HierarchyNumbersDependents.GetCostFilterString();  
+				
+				String temp = ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " ") +".0";
+				// ShowText("Add to actual " + temp);
+				actualList.add(temp);
+				expectedList.add(childList.get(loopCntr).childName + " " +  String.valueOf(expectedDouble));
+			}			
+			// *******************************************************************************************************************************
+			// 										FINISH NAME CHECK
+			// *******************************************************************************************************************************
+			loopCntr++;
+		}
+	}
+	
+	
+	
 	public static void FinishFinalTest()
 	{
 		if(actualList.size() != 0)
 		{
 			VerifyAllDependentChildren(GetCostFromString(expectedList.get(0)));
-			//ShowExpectedList();
-			//ShowActualList();
+			ShowText("actual list ========================================================================================================");
+			ShowActualList();
+			ShowText("expect list ========================================================================================================");
+			ShowExpectedList();
+
 		}
 	}
 	
@@ -728,18 +868,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(String str : actualList)
 		{
 			// Assert.assertEquals(GetCostFromString(str), expectedTotal, "Actual total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
-			Assert.assertEquals(GetCostFromStringTwo(str), expectedTotal, "Actual total failed actual: " + GetCostFromStringTwo(str) +   " expected "  + expectedTotal); 
+			// Assert.assertEquals(GetCostFromStringTwo(str), expectedTotal, "Actual total failed actual: " + GetCostFromStringTwo(str) +   " expected "  + expectedTotal);
+			Assert.assertEquals(GetCostFromStringTwo(str), expectedTotal, "");
 		}
 		
 		// verify all expected values have total value equal to 'expectedTotal' passed in.
 		for(String str : expectedList)
 		{
 			Assert.assertEquals(GetCostFromString(str), expectedTotal, "Expected total failed actual: " + GetCostFromString(str) +   " expected "  + expectedTotal);
-		}
-		
-		if(!expectedTotal.equals("0")) // bladdd - if expected cost is '0' there is no decimal to remove.
-		{
-			RemoveDecimalValueFromActualValueList();
 		}
 		
 		// verify cross check.
@@ -812,11 +948,11 @@ public class HierarchyNumbersDependents extends BaseClass
 		String [] arr = stringWithExpectedCost.split(" "); 
 		tempString = arr[arr.length - 1];
 
-		if(tempString.contains("."))
-		{
-			x = tempString.length() - tempString.indexOf(".");
-			tempString = tempString.substring(0, tempString.length() - x);
-		}
+		//if(tempString.contains("."))
+		//{
+		//	x = tempString.length() - tempString.indexOf(".");
+		//	tempString = tempString.substring(0, tempString.length() - x);
+		//}
 		return tempString;
 	}	
 	
@@ -979,7 +1115,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); 
 			
-			// System.out.println("# of dependents before click. " + numberOfDependentUnits);
+			System.out.println("# of dependents before click. " + numberOfDependentUnits);
 			
 			// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)); 
@@ -1046,17 +1182,24 @@ public class HierarchyNumbersDependents extends BaseClass
 			// create list of dependent units from Json call.
 			BuildDependentChildObjects(); 
 			
-			// ShowChildList(); // DEBUG
+			RoundValuesInChildList();
+			
+			//ShowChildList(); // DEBUG
 			
 			// sort list of dependent units from Json call.
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); 
 			Thread.sleep(1000);
 			
-			// ShowChildList(); // DEBUG
-			// Pause("Freeze.."); // DEBUG
+			//ShowChildList(); // DEBUG
+			//Pause("Freeze after sort."); // DEBUG
+			
+			//RoundValuesInChildList();
+			
+			//ShowChildList(); // DEBUG
+			//Pause("Freeze after round."); // DEBUG
 			
 			// this verifies the json dependents list sent in matches the list shown in the UI, after the Json list is sorted.
-			HierarchyNumbersDependents.VerifyActualExpectedDependentUnits();
+			HierarchyNumbersDependents.VerifyActualExpectedDependentUnitsTwo();
 			
 			// this is needed if the last of the dependent list has users with common cost values.
 			HierarchyNumbersDependents.FinishFinalTest();
@@ -1160,8 +1303,11 @@ public class HierarchyNumbersDependents extends BaseClass
 				
 				Thread.sleep(2500); // wait for tile map numbers to fill in.
 				
-				VerifyMainTitle(ele.getText());
-				
+				if(runningDependentsThroughMonths)
+				{
+					VerifyMainTitle(ele.getText());					
+				}
+
 				DrillDownDependentUnitsTwo(maxLevelsToDrillDownTo); // run the drill down tests for each category selector.
 				hierarchyCntr++;
 		}
@@ -1227,11 +1373,35 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			if(!LookForNoDependentsFound())
 			{
-				ShowText("current minth:" + ele.getText());
+				ShowText("current month:" + ele.getText());
 				// HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnits(); // for ref app.
 			}
 		}
 	}
+	
+	public static void LoopThroughMonthsDependentUnits() throws Exception // bladdzzz
+	{
+		runningDependentsThroughMonths = false;
+		
+		CommonTestStepActions.initializeMonthSelector();
+
+		for(WebElement ele : CommonTestStepActions.webListPulldown)
+		{
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
+			
+			//ShowText("current " + ele.getText());
+			
+			Thread.sleep(3000); 
+			
+			if(!LookForNoDependentsFound())
+			{
+				ShowText("Current Month: " + ele.getText());
+				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); // for ref app.
+			}
+		}
+	}	
+	
+	
 	
 	public static void LoopThroughHierarchiesDependentUnits() throws Exception 
 	{
@@ -1381,6 +1551,18 @@ public class HierarchyNumbersDependents extends BaseClass
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public static void RoundValuesInChildList()
+	{
+		double tempDbl = 0.0;
+		
+		for(Child chld: childList) 
+		{
+			tempDbl = Math.round(chld.cost); 
+			chld.cost = tempDbl; 
+		}
+		// http://stackoverflow.com/questions/14204905/java-how-to-remove-trailing-zeros-from-a-double
+	}
+	
 	public static int UserNumberTileMapsToTest()
 	{
 		requestedTileMapsToTest = JOptionPane.showInputDialog("Enter number of tile maps to test.");

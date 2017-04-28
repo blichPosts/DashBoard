@@ -63,8 +63,8 @@ public class BaseClass
 	//public static String commandPassword = "hop*ititmb9";	
 	
 	
-	public static String commandUserName = "analaura.pace@tangoe.com pwc";
-	public static String commandPassword = "tngo111";
+	public static String commandUserName = "archana.trojic@tangoe.com em1";
+	public static String commandPassword = "traq06";
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
 	public static LoginType loginType; // bladdxx // new
@@ -211,7 +211,7 @@ public class BaseClass
 		System.setProperty("webdriver.chrome.driver", projectPath + "\\chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-extensions");
-		options.addArguments("disable-infobars");  // <-- Line added by Ana. Needed because with the chromedriver 2.28, there's an info bar that we don't want to have when browser is launched 
+		options.addArguments("disable-infobars");  // <-- Line added by Ana. Needed because with the chromedriver 2.28, there's an info bar that we don't want to have when browser is launched
 		driver = new ChromeDriver(options);		
 		
 		switch(loginType)

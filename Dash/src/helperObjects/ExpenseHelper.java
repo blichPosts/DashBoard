@@ -60,11 +60,6 @@ public class ExpenseHelper extends BaseClass
 
 	public static expenseFilters currentExpenseFilter; // this is used to indicate which expense filter is being tested. 
 
-	// hack
-	//public static int x_iFrame;
-	//public static int y_iFrame;
-	
-	
 	// this is for  distinguishing a control type in the expenses page. 
 	public static enum controlType
 	{
@@ -1094,7 +1089,7 @@ public class ExpenseHelper extends BaseClass
 	
 	
 	/*
-	// hack
+	// remove?
 	// Get the location of the element on the UI 
 	public static Point getAbsoluteLocationFleetTrend(WebElement element) 
 	{
@@ -1116,7 +1111,7 @@ public class ExpenseHelper extends BaseClass
 	}
 	*/
 	/*
-	// hack
+	// remove?
 	// set chartId before this is called.
 	public static String ClickTrendBarCommand(int barIndex) throws Exception
 	{

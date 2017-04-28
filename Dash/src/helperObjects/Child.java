@@ -7,21 +7,29 @@ public class Child implements Comparator<Child>, Comparable<Child>
 {
 	// members
 	public String childName;
-	public int cost;
+	// public int cost;
+	public double cost;
    
 	public String [] tempArray;
 	public String tempName = "";
-	public int tempCost = 0;
+	// public int tempCost = 0;
+	public double tempCost = 0;
 	static int childRowNumber = 0; //  this keeps track 
    
 	public Child(){}
 			
-	public Child(String chName, int cst) 
+	//public Child(String chName, int cst) 
+	//{
+	//	childName = chName;
+	//	cost = cst;
+	//}
+
+	public Child(String chName, double cst) 
 	{
 		childName = chName;
 		cost = cst;
 	}
-
+	
 	// Overriding the compareTo method
 	public int compareTo(Child d) 
 	{
@@ -29,11 +37,44 @@ public class Child implements Comparator<Child>, Comparable<Child>
 	}
 
 	// Overriding the compare method to sort the age 
+	//public int compare(Child d, Child d1) 
+	//{
+	//	return d1.cost - d.cost;
+	//}
+   
 	public int compare(Child d, Child d1) 
 	{
-		return d1.cost - d.cost;
+		// return (int) (d1.cost - (d.cost)); // descending. // original
+		
+		if(d.cost > d1.cost)
+		{
+			return -1;			
+		}
+		else
+		{
+			return 0;
+		}
+		
+		
+		// return (int) (d.cost - (d1.cost)); // ascending.
 	}
-   
+	
+	/*
+	// Overriding the compare method to sort the age -- DOUBLE ------------------ <<<<<<<<<<<<<<<<<<<<<<<< =======================  NEW ??? 
+	public int compare(Child d, Child d1) 
+	{
+		if(d1.cost != d.cost)
+		{
+			return (int) (d1.cost - (d.cost)); // descending.			
+		}
+		else
+		{
+			return (d.childName).compareTo(d1.childName);
+		}
+	}
+	*/
+	
+	
 	public void Show()
 	{
 		// System.out.println("----------------");
