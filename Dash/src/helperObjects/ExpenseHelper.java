@@ -955,6 +955,7 @@ public class ExpenseHelper extends BaseClass
 		//ShowText("Expect Month " + expectedMonth); // DEBUG
 		//Pause("");
 		
+
 		Assert.assertEquals(webEleListBarGraphHoverValues.get(0).getText(), expectedMonth, errMessage + "month value in hover text."); // verify month at top of hover.
 		
 		for(WebElement ele : webEleListBarGraphHoverValues)
@@ -1052,12 +1053,12 @@ public class ExpenseHelper extends BaseClass
 		return new Select(driver.findElement(By.cssSelector(".tdb-space--top>select"))).getFirstSelectedOption().getText();
 	}
 	
-	public static void MoveMouseToBarExpenseActions(String chartId, int indexHighchart) throws InterruptedException, AWTException
+	public static void MoveMouseToBarExpenseActions(String chartId, int indexHighchart, boolean firstMonth) throws InterruptedException, AWTException
 	{
-		
+ 
 		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
 		String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
-		
+
 		// 'bar' WebElement will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
 				
@@ -1065,14 +1066,19 @@ public class ExpenseHelper extends BaseClass
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
 		
-		int x = barCoordinates.getX();
-		int y = GeneralHelper.getYCoordinate(chartId);
-		
+		int x_offset = bar.getSize().getWidth() / 2;  // <-- ana_add 
 		int y_offset = (int) GeneralHelper.getScrollPosition();
-		y += y_offset; 
 		
+		int x = barCoordinates.getX() + x_offset;
+		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;
 		
 		Robot robot = new Robot(); 
+		
+		if (firstMonth) { // <-- ana_add 
+			robot.mouseMove(x - x_offset, y);
+			Thread.sleep(500);
+		}
+		
 		robot.mouseMove(x, y);
 		// System.out.println("coordinates - x: " + x + "  y: " + y);
 		

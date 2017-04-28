@@ -583,16 +583,7 @@ public class CommonTestStepActions extends BaseClass
 		
 	}
 	
-	
-	// It switches to the frame that contains the PoV, KPIs, charts -- NOT USED - REMOVE
-//	public static void switchToContentFrame(){
-//		
-//		WebElement frame = driver.findElement(By.cssSelector("iframe#CONTENT"));   //(By.xpath(".//iframe[@id='CONTENT']"));
-//		driver.switchTo().frame(frame);
-//		
-//	}
 
-	
 	public static List<List<WebElement>> getCountriesAndVendors() {
 
 		
