@@ -111,6 +111,8 @@ public class TotalExpensesTrend extends BaseClass
 		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
+			boolean firstMonth = true; // <-- ana_add
+			
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
 				if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
@@ -118,8 +120,8 @@ public class TotalExpensesTrend extends BaseClass
 					clickBarIndex(y);
 				}
 				else
-				{
-					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y);
+				{  // ** NEXT LINE TO BE UNCOMMENTED **
+					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
 				}
 				
 				Thread.sleep(500);

@@ -93,6 +93,8 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
+			boolean firstMonth = true; // <-- ana_add
+			
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
 				//clickBarIndex(y);  
@@ -104,7 +106,8 @@ public class CostPerServiceNumberTrend extends  BaseClass
 				}
 				else
 				{
-					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y);
+					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
+					firstMonth = false; // <-- ana_add
 				}				
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value

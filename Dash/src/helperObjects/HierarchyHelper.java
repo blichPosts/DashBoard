@@ -68,7 +68,7 @@ public class HierarchyHelper extends BaseClass {
 		WaitForElementClickable(By.cssSelector(cssToggle), MediumTimeout, "VIEW TOP TEN button not clickable");
 		driver.findElement(By.cssSelector(cssToggle)).click();
 		
-		WaitForElementVisible(By.xpath("//h3[text()='Top 10 Service Numbers by Expense Amount. - ']"), MediumTimeout);
+		WaitForElementVisible(By.xpath("//h3[contains(text(), 'Top 10 Service Numbers by Expense Amount')]"), MediumTimeout);
 		
 		
 //		WebElement viewTopTenToggle = driver.findElement(By.cssSelector("div.tdb-dashboardToggle__option:nth-child(" + toggleNum + ")"));
