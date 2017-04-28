@@ -3,7 +3,7 @@ package helperObjects;
 import java.util.Comparator;
 
 // this is a dependent unit
-public class Child implements Comparator<Child>, Comparable<Child>
+public class Child implements Comparator<Child> /*, Comparable<Child>*/
 {
 	// members
 	public String childName;
@@ -42,9 +42,10 @@ public class Child implements Comparator<Child>, Comparable<Child>
 	//	return d1.cost - d.cost;
 	//}
    
+	/*// TRY ONE
 	public int compare(Child d, Child d1) 
 	{
-		// return (int) (d1.cost - (d.cost)); // descending. // original
+		// return (int) (d1.cost - (d.cost)); // descending. // original  with int
 		
 		if(d.cost > d1.cost)
 		{
@@ -52,12 +53,26 @@ public class Child implements Comparator<Child>, Comparable<Child>
 		}
 		else
 		{
-			return 0;
+			return 1;
 		}
 		
 		
 		// return (int) (d.cost - (d1.cost)); // ascending.
 	}
+	*/
+	
+	// http://stackoverflow.com/questions/4242023/comparator-with-double-type
+	public int compare(Child d, Child d1) 
+	{
+	    double delta = d1.cost - d.cost;
+	    if(delta > 0.00001) return 1;
+	    if(delta < -0.00001) return -1;
+	    return 0;	
+	
+	}
+	
+	
+	
 	
 	/*
 	// Overriding the compare method to sort the age -- DOUBLE ------------------ <<<<<<<<<<<<<<<<<<<<<<<< =======================  NEW ??? 

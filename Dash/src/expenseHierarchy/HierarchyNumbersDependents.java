@@ -724,19 +724,8 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		ShowText ("Verifying Actual/Expected Dependents");  
 
-		int actualInt = 0;
-		int expectedInt = 0;
 		String actualString = "";
-		String expectedString = "";
-		
 		int loopCntr = 0;
-		// int latestCost = -9999; // bladdzz
-		double latestCost = -9999.0; // bladdzz
-		int x = 0;
-		String costSelectorString = "";
-		String tempString = "";
-		
-		Thread.sleep(2000);
 		
 		// get the actual dependent units from the list of dependent units in the UI.
 		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
@@ -762,7 +751,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			try // verify actual and expected double values.
 			{
-				System.out.println(actualDouble + " ** " + expectedDouble);
+				// System.out.println(actualDouble + " ** " + expectedDouble);
 				Assert.assertEquals(actualDouble, expectedDouble, "Fail in sorting compare for numeric cost in HierarchyNumbersDependents.VerifyActualExpectedDependentUnits"); // verify cost in json list equals cost in actual list.
 			}
 			catch(AssertionError err)
@@ -770,17 +759,24 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText("Odd Failure ====== " + err.getMessage());
 				System.out.println("Expect = " + childList.get(loopCntr).childName + "Cost = " +  expectedDouble);
 				System.out.println("Actual = " + ele.getText().split("\n")[0] + "Cost = " +  actualDouble);
+				//Pause("Look");
+				//ShowText("Expected List ***************************");
+				//ShowChildList();
+				//ShowText("UI/Actual list *******************************");
+				//for(WebElement eleNew : eleList)
+				//{
+				//	ShowText(eleNew.getText().replace("\n", ""));
+				//}
+				//Pause("Look at List - Stop Program !!!!!!!!!!!!!!!!!!!!");
+
 				if((expectedDouble - actualDouble) > 1.0)
 				{
 					Pause("Diff Greater Than One Error");
-					ShowChildList();
-					Pause("Look at List");
-					loopCntr++;
 				}
-				loopCntr++;
-				continue;
+				//loopCntr++;
+				//continue;
 			}
-			
+			/*
 			// *******************************************************************************************************************************
 			// 										START NAME CHECK
 			// *******************************************************************************************************************************
@@ -835,6 +831,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			// *******************************************************************************************************************************
 			// 										FINISH NAME CHECK
 			// *******************************************************************************************************************************
+			 */ 
+
 			loopCntr++;
 		}
 	}
@@ -1114,6 +1112,13 @@ public class HierarchyNumbersDependents extends BaseClass
 		while (cntr != maxNumberOfLevels)
 		{
 			numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); 
+
+			if(numberOfDependentUnits == 0)
+			{
+				ShowText("No dependents found");
+				cntr++;
+				continue;
+			}
 			
 			System.out.println("# of dependents before click. " + numberOfDependentUnits);
 			
@@ -1121,7 +1126,6 @@ public class HierarchyNumbersDependents extends BaseClass
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
 			
-			Thread.sleep(1000);
 			
 			System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **");
 			
@@ -1175,28 +1179,28 @@ public class HierarchyNumbersDependents extends BaseClass
 			ShowText("Start test for category --- " + values[x].name() +".");
 			
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
-			Thread.sleep(2000);
+			HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
+			
+			Thread.sleep(1000);
 			
 			currentCategorySelection = values[x].name(); // store current category for later testing of text above tile map.
 			
 			// create list of dependent units from Json call.
 			BuildDependentChildObjects(); 
 			
+			Thread.sleep(1000);
+
 			RoundValuesInChildList();
 			
+			Thread.sleep(1000);
+
+			//ShowText("Child list before sort ----");
 			//ShowChildList(); // DEBUG
 			
+			ShowText("Sort");
 			// sort list of dependent units from Json call.
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); 
 			Thread.sleep(1000);
-			
-			//ShowChildList(); // DEBUG
-			//Pause("Freeze after sort."); // DEBUG
-			
-			//RoundValuesInChildList();
-			
-			//ShowChildList(); // DEBUG
-			//Pause("Freeze after round."); // DEBUG
 			
 			// this verifies the json dependents list sent in matches the list shown in the UI, after the Json list is sorted.
 			HierarchyNumbersDependents.VerifyActualExpectedDependentUnitsTwo();
@@ -1398,6 +1402,8 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText("Current Month: " + ele.getText());
 				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); // for ref app.
 			}
+			
+			Pause("Move Up");
 		}
 	}	
 	
@@ -1551,13 +1557,14 @@ public class HierarchyNumbersDependents extends BaseClass
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public static void RoundValuesInChildList()
+	public static void RoundValuesInChildList() throws InterruptedException
 	{
 		double tempDbl = 0.0;
 		
 		for(Child chld: childList) 
 		{
 			tempDbl = Math.round(chld.cost); 
+			// Thread.sleep(500);
 			chld.cost = tempDbl; 
 		}
 		// http://stackoverflow.com/questions/14204905/java-how-to-remove-trailing-zeros-from-a-double
