@@ -724,6 +724,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		ShowText ("Verifying Actual/Expected Dependents");  
 
+		double latestCost = -99999.0;
 		String actualString = "";
 		int loopCntr = 0;
 		
@@ -776,7 +777,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				//loopCntr++;
 				//continue;
 			}
-			/*
+
 			// *******************************************************************************************************************************
 			// 										START NAME CHECK
 			// *******************************************************************************************************************************
@@ -821,7 +822,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				}
 				
 				// this gets the string to be filtered out of the actual data in the UI.
-				costSelectorString = HierarchyNumbersDependents.GetCostFilterString();  
+				String costSelectorString = HierarchyNumbersDependents.GetCostFilterString();  
 				
 				String temp = ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " ") +".0";
 				// ShowText("Add to actual " + temp);
@@ -831,7 +832,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// *******************************************************************************************************************************
 			// 										FINISH NAME CHECK
 			// *******************************************************************************************************************************
-			 */ 
+ 
 
 			loopCntr++;
 		}
@@ -1115,9 +1116,15 @@ public class HierarchyNumbersDependents extends BaseClass
 
 			if(numberOfDependentUnits == 0)
 			{
-				ShowText("No dependents found");
+				ShowText("No dependents found -- break from drill down loop. Ending drill down");
 				cntr++;
-				continue;
+
+				WaitForElementVisible(By.cssSelector(".breadcrumbs>span"), MediumTimeout); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
+				WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
+	
+				
+				// continue;
+				break;
 			}
 			
 			System.out.println("# of dependents before click. " + numberOfDependentUnits);
@@ -1155,6 +1162,9 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 			cntr++;
 		}
+		
+		ShowText("Have hit 'End Of Drill Down Loop.'");
+		
 	}
 	
 	public static void ShowChildList()
@@ -1403,7 +1413,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); // for ref app.
 			}
 			
-			Pause("Move Up");
+			Pause("Move Up From Months");
 		}
 	}	
 	

@@ -311,6 +311,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	
 	public static void MoveMouseToSpendCategory(/*String chartId,*/ /*int indexHighchart*/) throws Exception
 	{
+		Robot robot = new Robot();
 		
 		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
 		// String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
@@ -330,7 +331,10 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		int y_offset = (int) GeneralHelper.getScrollPosition();
 		y += y_offset + 60; 
 		
-		Robot robot = new Robot(); 
+		robot.mouseMove(x - 10, y); // bob addeed  these lines after. 
+		Thread.sleep(500);
+		
+ 
 		robot.mouseMove(x, y);
 		// System.out.println("coordinates - x: " + x + "  y: " + y);
 		
