@@ -1,4 +1,4 @@
-package testSuiteExpense;
+package testSuiteExpenseVisual;
 
 
 // 1/14/16 - update country view wait and verify no "visibility" attributes when testing legends/control sections.

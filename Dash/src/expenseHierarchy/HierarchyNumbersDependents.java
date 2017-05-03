@@ -732,7 +732,8 @@ public class HierarchyNumbersDependents extends BaseClass
 		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
 		
 		Thread.sleep(1000);
-		ShowInt(eleList.size());
+		System.out.println("Number of dependents being tested = " + eleList.size()); 
+		
 		
 		// verify text above tile map.
 		VerifyTextAboveTileMapAndKpi();
@@ -1056,7 +1057,6 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 			
 			HierarchyNumbersDependents.LoopThroughCatergoriesForTileMapCommand();
-			//RunTilesInCommand(); // bladdxx tile map
 			
 			// get dependent numbers size after drilling down. this will be used to  
 			numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size();
@@ -1119,24 +1119,23 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText("No dependents found -- break from drill down loop. Ending drill down");
 				cntr++;
 
-				WaitForElementVisible(By.cssSelector(".breadcrumbs>span"), MediumTimeout); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
-				WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
-	
-				
-				// continue;
+				// clear the bread crumbs if they are present.
+				WaitForElementVisible(By.cssSelector(".breadcrumbs>span"), MediumTimeout); 
+				WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); 
+				driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + 1 + ")")).click();
+
 				break;
 			}
 			
-			System.out.println("# of dependents before click. " + numberOfDependentUnits);
+			// System.out.println("# of dependents before click. " + numberOfDependentUnits);
 			
 			// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
 			
-			
 			System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **");
 			
-			// store this to for checking string above tile map later.
+			// store this for checking string above tile map later.
 			currentLevelName = unitsList.get(dependentUnitToSelect).getText().split("\n")[0];  
 			
 			unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
@@ -1150,7 +1149,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// wait for the new bread crumb to be added.
 			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
 			
-			ShowText("dead spot wait after click to see if have hit end of drill down."); 
+			ShowText("Checking to see if have hit end of drill down."); 
 			
 			// if have hit a page with no dependents then break.
 			if(WaitForNoDependentsInPage(cntr))
@@ -1163,8 +1162,13 @@ public class HierarchyNumbersDependents extends BaseClass
 			cntr++;
 		}
 		
-		ShowText("Have hit 'End Of Drill Down Loop.'");
-		
+		ShowText("Have hit End Of Drill Down Loop. Remove breadcrumbs if they exist.");
+
+		if(WaitForElementPresentNoThrow(By.cssSelector(".breadcrumbs>span"), MediumTimeout)) // bladdxx
+		{
+			// WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
+			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + 1 + ")")).click();
+		}
 	}
 	
 	public static void ShowChildList()
@@ -1269,7 +1273,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	// go through the hierarchies and run a single level tile map test.
-	public static void LoopThroughCatergoriyDrillDownsForTileMapCommand() throws Exception // bladdxx - new tile map  
+	public static void LoopThroughCatergoriyDrillDownsForTileMapCommand() throws Exception   
 	{
 		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
 		
@@ -1315,7 +1319,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 				// Pause("hierarchy selected");
 				
-				Thread.sleep(2500); // wait for tile map numbers to fill in.
+				Thread.sleep(2000); // wait for tile map numbers to fill in.
 				
 				if(runningDependentsThroughMonths)
 				{
@@ -1369,7 +1373,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 				// Thread.sleep(1000);
 				RunTileMapTest(currentTileMapTestType); // run test.
-				//LoopThroughCatergoriyDrillDownsForTileMapCommand(); // bladdxx 
+				//LoopThroughCatergoriyDrillDownsForTileMapCommand();  
 				hierarchyCntr++;
 		}	
 	}
@@ -1403,17 +1407,20 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
 			
-			//ShowText("current " + ele.getText());
+			ShowText("Selected Month is " + ele.getText());
 			
-			Thread.sleep(3000); 
+			HierarchyHelper.WaitForProgressBarInactive(TenTimeout);
+			
+			Thread.sleep(2000); 
 			
 			if(!LookForNoDependentsFound())
 			{
 				ShowText("Current Month: " + ele.getText());
 				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); // for ref app.
 			}
-			
-			Pause("Move Up From Months");
+
+			ShowText("Mobnth Complete - short pause.");
+			Thread.sleep(1500);
 		}
 	}	
 	
@@ -1624,7 +1631,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TinyTimeout))
 		{
 			System.out.println("Finished drill down testing to level " + level);
-			System.out.println("The last click found the 'No Dependents' message\n");
+			System.out.println("The last click found the 'No Dependents' message.");
 			return true;
 		}
 		else
@@ -1902,9 +1909,9 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static boolean LookForNoDependentsFound() throws Exception
 	{
 		// wait to see if 'No Dependents' message is found.
-		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 4))
 		{
-			System.out.println("Have found the 'No Dependents' message in expense page.\n");
+			System.out.println("Have found the 'No Dependents' message" + "\n");
 			return true;
 		}		
 		return false;

@@ -1,4 +1,4 @@
-package testSuiteExpense;
+package testSuiteExpenseVisual;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
