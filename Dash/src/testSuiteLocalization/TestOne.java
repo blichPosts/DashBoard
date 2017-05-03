@@ -36,6 +36,8 @@ public class TestOne extends BaseClass
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
 		ClassOne.OpenSeetingsPanel();
+		
+		Pause("");
 
 		ClassOne.VerifyTextInSettingsPanel();
 		

@@ -602,6 +602,8 @@ public class BaseClass
 		
 			WaitForElementClickable(By.cssSelector("#menuMainReporting"), MainTimeout, "Failed wait in GoToDashboard"); 
 			
+			Thread.sleep(2000); // bob added this. was getting click conflicts in getting dash in pull down. i have this fix this problem in other cases.  
+			
 			driver.findElement(By.cssSelector("#menuMainReporting")).click();
 
 		    WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"), MainTimeout, "Failed wait in GoToDashboard");
