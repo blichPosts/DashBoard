@@ -36,7 +36,7 @@ public class TotalExpensesValues extends BaseClass {
 	private static List<WebElement> vendorsSelectedCheckBox;
 	private static List<WebElement> vendorsInChart;
 	private static List<String> vendorsInChartNames;
-	
+	private static boolean noVendorsVerifiedYet;
 	
 	
 	// Verifies the content of the tooltips displayed on charts under Total Expenses BAR chart
@@ -438,9 +438,6 @@ public class TotalExpensesValues extends BaseClass {
 		// then the vendors that have data for the selected month are summarized in the "Other" item.
 		if (moreThanFiveVendorsSelected && sixVendorsInChart) {
 			
-//			System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
-//			System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
-			
 			double totalTmpSum = 0;
 			
 			for (int i = 0; i < vendorsSelectedCheckBox.size(); i++){
@@ -449,7 +446,7 @@ public class TotalExpensesValues extends BaseClass {
 				
 				if (!vendorsInChartNames.contains(v)){
 					
-//					System.out.println("Vendor " + v + ", is not listed in chart");
+					// ShowText("Vendor " + v + ", is not listed in chart");
 				
 					UsageOneMonth usage = (UsageOneMonth) vendorExpensesMap.get(v);
 
@@ -472,11 +469,11 @@ public class TotalExpensesValues extends BaseClass {
 						totalTmpSum += Double.parseDouble(usage.getTotalCharge());
 						totalValueOther = UsageCalculationHelper.roundNoDecimalDigits(totalTmpSum, true);
 						totalExpensesValues.put(otherVendors, totalValueOther);
-//						System.out.println("there's data for the vendor");
+						// ShowText("there's data for the vendor");
 						
 					} else {
 						
-//						System.out.println("there's NO data for the vendor");
+						// ShowText("there's NO data for the vendor");
 						
 					}
 						
@@ -511,7 +508,7 @@ public class TotalExpensesValues extends BaseClass {
 		
 		int indexVendorSelected = 0;
 		int indexVendorInChart = 0;
-		boolean noVendorsVerifiedYet = true;
+		noVendorsVerifiedYet = true;
 				
 		List<String> tmpListVendorFound = new ArrayList<>();
 		
@@ -523,55 +520,10 @@ public class TotalExpensesValues extends BaseClass {
 			if (vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()) || vendorsInChartNames.get(indexVendorInChart).equals("Other")) {
 				
 				// The 'bar' WebElement will be used to set the position of the mouse on the chart
-				WebElement slice = listChartParts.get(indexVendorInChart); 
-						
-				// Get the location of the slice of the pie chart
-				Point coordinates = GeneralHelper.getAbsoluteLocation(slice);
+				WebElement slice = listChartParts.get(indexVendorInChart);
+				int amountSlices = listChartParts.size();
 				
-				int x = coordinates.getX();
-				int y = coordinates.getY();
-				
-				Dimension d = slice.getSize();
-				int height = d.getHeight();
-				int width = d.getWidth();
-
-				Robot robot = new Robot();
-				
-				if (listChartParts.size() == 1 || noVendorsVerifiedYet) {
-				
-					robot.mouseMove((x - 20), (y - 20));
-					noVendorsVerifiedYet = false;
-					
-				}
-				
-				Thread.sleep(1000);
-				
-				int x_sliceOffset = (int) (width * 0.5);
-				int y_sliceOffset = (int) (height * 0.5);
-				
-				int y_offset = (int) GeneralHelper.getScrollPosition();
-							
-//				if (loginType.equals(LoginType.Command)) {
-//					
-//					//y_offset = y_offset + 260;  // these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
-//					
-//				}						
-
-				x = x + x_sliceOffset;
-				y = y + y_sliceOffset + y_offset;
-				
-				robot.mouseMove(x, y); 
-				
-				
-				
-				try {
-					WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
-					//System.out.println("Tooltip present");
-				} catch (Exception e) {
-					System.out.println("Tooltip NOT present");
-					e.printStackTrace();
-				}
-				
+				moveMouseToElement(slice, amountSlices, chartId);
 				
 				List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
 				
@@ -609,8 +561,8 @@ public class TotalExpensesValues extends BaseClass {
 				Assert.assertEquals(labelFound, labelExpected);
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				
-//				System.out.println("  labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-//				System.out.println("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+				// ShowText("  labelFound: " + labelFound + ", labelExpected: " + labelExpected);
+				// ShowText("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 				
 				indexVendorInChart++;
 				
@@ -625,6 +577,53 @@ public class TotalExpensesValues extends BaseClass {
 		
 	}
 
+	
+	
+	public static void moveMouseToElement(WebElement slice, int amountSlices, String chartId) throws AWTException, InterruptedException {
+		
+		
+		// Get the location of the slice of the pie chart
+		Point coordinates = GeneralHelper.getAbsoluteLocation(slice);
+		
+		int x = coordinates.getX();
+		int y = coordinates.getY();
+		
+		Dimension d = slice.getSize();
+		int height = d.getHeight();
+		int width = d.getWidth();
+
+		Robot robot = new Robot();
+		
+		if (amountSlices == 1 || noVendorsVerifiedYet) {
+		
+			robot.mouseMove((x - 20), (y - 20));
+			noVendorsVerifiedYet = false;
+			
+		}
+		
+		Thread.sleep(1000);
+		
+		int x_sliceOffset = (int) (width * 0.5);
+		int y_sliceOffset = (int) (height * 0.5);
+		
+		int y_offset = (int) GeneralHelper.getScrollPosition();
+					
+		x = x + x_sliceOffset - 3;
+		y = y + y_sliceOffset + y_offset;
+		
+		robot.mouseMove(x, y); 
+				
+		
+		try {
+			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+			//System.out.println("Tooltip present");
+		} catch (Exception e) {
+			System.out.println("Tooltip NOT present");
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	
 }

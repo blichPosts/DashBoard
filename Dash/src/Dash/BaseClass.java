@@ -63,8 +63,8 @@ public class BaseClass
 	//public static String commandPassword = "hop*ititmb9";	
 	
 	
-	public static String commandUserName = "archana.trojic@tangoe.com em1";
-	public static String commandPassword = "traq06";
+	public static String commandUserName = "analaura.pace@tangoe.com pwc";
+	public static String commandPassword = "tngo111";
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
 	public static LoginType loginType; // bladdxx // new
@@ -304,18 +304,6 @@ public class BaseClass
 		
 	}
 	
-	
-	// Added by Ana -- **** not sure if needed *****  -- TO BE REMOVED
-	public static void WaitForUsagePageDetailedLoad() throws Exception {
-		
-		//WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);
-		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/div[2]/main/app-usage-dashboard/div/app-usage-kpis/div[1]/div[1]/div/div[1]/h3[text()='Voice (min)']"), MediumTimeout);		
-		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/div[2]/main/app-usage-dashboard/div/app-usage-kpis/div[1]/div[1]/div/div[2]/h3[text()='Data (TB)']"), MediumTimeout);	
-		WaitForElementVisible(By.xpath("html/body/app-root/app-fleet-dashboard-container/div[2]/main/app-usage-dashboard/div/app-usage-kpis/div[1]/div[1]/div/div[3]/h3[text()='Messages']"), MediumTimeout);
-		
-		
-		
-	}
 	
 	
 	public static void ShowCountryVendorList()
@@ -592,6 +580,7 @@ public class BaseClass
 		    WaitForElementVisible(By.cssSelector("#tngoMainFooter"), MainTimeout); // this waits for the copyright box at the bottom of the landing page.
 		    
 		    GoToDashboard();
+		    // GoToDashboardBackUp();
 		}
 		
 		// bladdxx
@@ -615,6 +604,60 @@ public class BaseClass
 		}
 		
 
+		
+		// alternative to the GoToDashboard method. It uses the coordinates to locate the menu to click ok.
+		public static void GoToDashboardBackUp() throws Exception {
+			
+			// get to the dash page
+			WaitForElementClickable(By.cssSelector("#menuMainReporting"),MainTimeout, "Failed wait in GoToDashboard");
+			DebugTimeout(1, ""); // this is needed to avoid the error with frames and clicking the wrong thing.
+			
+			WebElement pageHeader = driver.findElement(By.cssSelector("div.page-header"));
+			WebElement menuSummarize = driver.findElement(By.cssSelector("#menuMainReporting"));
+			
+			Dimension dimensionHeader = pageHeader.getSize();
+			int headerHeight = dimensionHeader.getHeight();
+			
+			// These coordinates will be used to put the mouse pointer over the button
+			int menuHeight = menuSummarize.getSize().getHeight();
+			int menuWidth = menuSummarize.getSize().getWidth();
+			
+			Point coordinates = menuSummarize.getLocation();
+			
+			int x = coordinates.getX() + menuWidth/2;
+			int y = coordinates.getY() - menuHeight/2 + headerHeight;
+			
+			Robot robot = new Robot(); 
+			robot.mouseMove(x, y);
+			robot.mouseMove(x+5, y);
+			
+			Thread.sleep(1000);
+			
+			WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"), MainTimeout, "Failed wait in GoToDashboard"); 
+			
+			WebElement menuDashboard = driver.findElement(By.cssSelector("#menuMainReporting_Dashboard"));
+			
+			int menuDashboardHeight = menuDashboard.getSize().getHeight();
+			int menuDashboardWidth = menuDashboard.getSize().getWidth();
+			
+			Point coordinatesDashMenu = menuDashboard.getLocation();
+			
+			x = coordinatesDashMenu.getX() + menuDashboardWidth/2;
+			y = coordinatesDashMenu.getY() - menuDashboardHeight/2 + headerHeight;
+			
+			robot.mouseMove(x, y);
+			// ShowText(" #menuMainReporting_Dashboard coordinates x: " + x + ", y: " + y);
+			
+			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+			
+			GeneralHelper.setUpiFrame();
+			
+			GeneralHelper.switchToContentFrame();
+					
+		}
+		
+		
 		
 		// bladdxx - new
 		public static void MainLogin() throws Exception

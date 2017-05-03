@@ -3,21 +3,16 @@ package expenses;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.bouncycastle.eac.EACCertificateBuilder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
-import com.sun.jna.StringArray;
-
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
-import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 import helperObjects.UsageHelper;
