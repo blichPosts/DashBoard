@@ -724,25 +724,16 @@ public class HierarchyNumbersDependents extends BaseClass
 	{
 		ShowText ("Verifying Actual/Expected Dependents");  
 
-		int actualInt = 0;
-		int expectedInt = 0;
+		double latestCost = -99999.0;
 		String actualString = "";
-		String expectedString = "";
-		
 		int loopCntr = 0;
-		// int latestCost = -9999; // bladdzz
-		double latestCost = -9999.0; // bladdzz
-		int x = 0;
-		String costSelectorString = "";
-		String tempString = "";
-		
-		Thread.sleep(2000);
 		
 		// get the actual dependent units from the list of dependent units in the UI.
 		List<WebElement> eleList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList));
 		
 		Thread.sleep(1000);
-		ShowInt(eleList.size());
+		System.out.println("Number of dependents being tested = " + eleList.size()); 
+		
 		
 		// verify text above tile map.
 		VerifyTextAboveTileMapAndKpi();
@@ -762,7 +753,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			try // verify actual and expected double values.
 			{
-				System.out.println(actualDouble + " ** " + expectedDouble);
+				// System.out.println(actualDouble + " ** " + expectedDouble);
 				Assert.assertEquals(actualDouble, expectedDouble, "Fail in sorting compare for numeric cost in HierarchyNumbersDependents.VerifyActualExpectedDependentUnits"); // verify cost in json list equals cost in actual list.
 			}
 			catch(AssertionError err)
@@ -770,17 +761,24 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText("Odd Failure ====== " + err.getMessage());
 				System.out.println("Expect = " + childList.get(loopCntr).childName + "Cost = " +  expectedDouble);
 				System.out.println("Actual = " + ele.getText().split("\n")[0] + "Cost = " +  actualDouble);
+				//Pause("Look");
+				//ShowText("Expected List ***************************");
+				//ShowChildList();
+				//ShowText("UI/Actual list *******************************");
+				//for(WebElement eleNew : eleList)
+				//{
+				//	ShowText(eleNew.getText().replace("\n", ""));
+				//}
+				//Pause("Look at List - Stop Program !!!!!!!!!!!!!!!!!!!!");
+
 				if((expectedDouble - actualDouble) > 1.0)
 				{
 					Pause("Diff Greater Than One Error");
-					ShowChildList();
-					Pause("Look at List");
-					loopCntr++;
 				}
-				loopCntr++;
-				continue;
+				//loopCntr++;
+				//continue;
 			}
-			
+
 			// *******************************************************************************************************************************
 			// 										START NAME CHECK
 			// *******************************************************************************************************************************
@@ -825,7 +823,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				}
 				
 				// this gets the string to be filtered out of the actual data in the UI.
-				costSelectorString = HierarchyNumbersDependents.GetCostFilterString();  
+				String costSelectorString = HierarchyNumbersDependents.GetCostFilterString();  
 				
 				String temp = ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " ") +".0";
 				// ShowText("Add to actual " + temp);
@@ -835,6 +833,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			// *******************************************************************************************************************************
 			// 										FINISH NAME CHECK
 			// *******************************************************************************************************************************
+ 
+
 			loopCntr++;
 		}
 	}
@@ -1057,7 +1057,6 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 			
 			HierarchyNumbersDependents.LoopThroughCatergoriesForTileMapCommand();
-			//RunTilesInCommand(); // bladdxx tile map
 			
 			// get dependent numbers size after drilling down. this will be used to  
 			numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size();
@@ -1114,18 +1113,29 @@ public class HierarchyNumbersDependents extends BaseClass
 		while (cntr != maxNumberOfLevels)
 		{
 			numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); 
+
+			if(numberOfDependentUnits == 0)
+			{
+				ShowText("No dependents found -- break from drill down loop. Ending drill down");
+				cntr++;
+
+				// clear the bread crumbs if they are present.
+				WaitForElementVisible(By.cssSelector(".breadcrumbs>span"), MediumTimeout); 
+				WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); 
+				driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + 1 + ")")).click();
+
+				break;
+			}
 			
-			System.out.println("# of dependents before click. " + numberOfDependentUnits);
+			// System.out.println("# of dependents before click. " + numberOfDependentUnits);
 			
 			// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
 			
-			Thread.sleep(1000);
-			
 			System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **");
 			
-			// store this to for checking string above tile map later.
+			// store this for checking string above tile map later.
 			currentLevelName = unitsList.get(dependentUnitToSelect).getText().split("\n")[0];  
 			
 			unitsList.get(dependentUnitToSelect).click(); // select dependent unit.
@@ -1139,7 +1149,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// wait for the new bread crumb to be added.
 			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
 			
-			ShowText("dead spot wait after click to see if have hit end of drill down."); 
+			ShowText("Checking to see if have hit end of drill down."); 
 			
 			// if have hit a page with no dependents then break.
 			if(WaitForNoDependentsInPage(cntr))
@@ -1150,6 +1160,14 @@ public class HierarchyNumbersDependents extends BaseClass
 			HierarchyNumbersDependents.LoopThroughCatergoriesDependentUnits(); // this test loops through all of the category selectors.
 		
 			cntr++;
+		}
+		
+		ShowText("Have hit End Of Drill Down Loop. Remove breadcrumbs if they exist.");
+
+		if(WaitForElementPresentNoThrow(By.cssSelector(".breadcrumbs>span"), MediumTimeout)) // bladdxx
+		{
+			// WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
+			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + 1 + ")")).click();
 		}
 	}
 	
@@ -1175,28 +1193,28 @@ public class HierarchyNumbersDependents extends BaseClass
 			ShowText("Start test for category --- " + values[x].name() +".");
 			
 			ExpenseHelper.SetHierarchyCostFilter(values[x]); // select category selector tab.
-			Thread.sleep(2000);
+			HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
+			
+			Thread.sleep(1000);
 			
 			currentCategorySelection = values[x].name(); // store current category for later testing of text above tile map.
 			
 			// create list of dependent units from Json call.
 			BuildDependentChildObjects(); 
 			
+			Thread.sleep(1000);
+
 			RoundValuesInChildList();
 			
+			Thread.sleep(1000);
+
+			//ShowText("Child list before sort ----");
 			//ShowChildList(); // DEBUG
 			
+			ShowText("Sort");
 			// sort list of dependent units from Json call.
 			Collections.sort(HierarchyNumbersDependents.childList, new Child()); 
 			Thread.sleep(1000);
-			
-			//ShowChildList(); // DEBUG
-			//Pause("Freeze after sort."); // DEBUG
-			
-			//RoundValuesInChildList();
-			
-			//ShowChildList(); // DEBUG
-			//Pause("Freeze after round."); // DEBUG
 			
 			// this verifies the json dependents list sent in matches the list shown in the UI, after the Json list is sorted.
 			HierarchyNumbersDependents.VerifyActualExpectedDependentUnitsTwo();
@@ -1255,7 +1273,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	// go through the hierarchies and run a single level tile map test.
-	public static void LoopThroughCatergoriyDrillDownsForTileMapCommand() throws Exception // bladdxx - new tile map  
+	public static void LoopThroughCatergoriyDrillDownsForTileMapCommand() throws Exception   
 	{
 		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
 		
@@ -1301,7 +1319,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 				// Pause("hierarchy selected");
 				
-				Thread.sleep(2500); // wait for tile map numbers to fill in.
+				Thread.sleep(2000); // wait for tile map numbers to fill in.
 				
 				if(runningDependentsThroughMonths)
 				{
@@ -1355,7 +1373,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 				// Thread.sleep(1000);
 				RunTileMapTest(currentTileMapTestType); // run test.
-				//LoopThroughCatergoriyDrillDownsForTileMapCommand(); // bladdxx 
+				//LoopThroughCatergoriyDrillDownsForTileMapCommand();  
 				hierarchyCntr++;
 		}	
 	}
@@ -1389,15 +1407,20 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
 			
-			//ShowText("current " + ele.getText());
+			ShowText("Selected Month is " + ele.getText());
 			
-			Thread.sleep(3000); 
+			HierarchyHelper.WaitForProgressBarInactive(TenTimeout);
+			
+			Thread.sleep(2000); 
 			
 			if(!LookForNoDependentsFound())
 			{
 				ShowText("Current Month: " + ele.getText());
 				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); // for ref app.
 			}
+
+			ShowText("Mobnth Complete - short pause.");
+			Thread.sleep(1500);
 		}
 	}	
 	
@@ -1551,13 +1574,14 @@ public class HierarchyNumbersDependents extends BaseClass
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public static void RoundValuesInChildList()
+	public static void RoundValuesInChildList() throws InterruptedException
 	{
 		double tempDbl = 0.0;
 		
 		for(Child chld: childList) 
 		{
 			tempDbl = Math.round(chld.cost); 
+			// Thread.sleep(500);
 			chld.cost = tempDbl; 
 		}
 		// http://stackoverflow.com/questions/14204905/java-how-to-remove-trailing-zeros-from-a-double
@@ -1607,7 +1631,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TinyTimeout))
 		{
 			System.out.println("Finished drill down testing to level " + level);
-			System.out.println("The last click found the 'No Dependents' message\n");
+			System.out.println("The last click found the 'No Dependents' message.");
 			return true;
 		}
 		else
@@ -1885,9 +1909,9 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static boolean LookForNoDependentsFound() throws Exception
 	{
 		// wait to see if 'No Dependents' message is found.
-		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), ShortTimeout))
+		if(WaitForElementPresentNoThrow(By.cssSelector(".tdb-charts__contentMessage"), 4))
 		{
-			System.out.println("Have found the 'No Dependents' message in expense page.\n");
+			System.out.println("Have found the 'No Dependents' message" + "\n");
 			return true;
 		}		
 		return false;

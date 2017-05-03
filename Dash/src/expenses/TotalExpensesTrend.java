@@ -328,8 +328,6 @@ public class TotalExpensesTrend extends BaseClass
 	{
 		errMessage = "Failed check in TotalExpensesTrend.VerifyTitlesVendorView";
 		
-		WaitForElementVisible(By.xpath("(//span[text()='Country'])[2]"), MediumTimeout);
-		
 		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(1)")).getText(), countryTitle, errMessage);
 		
 		Assert.assertEquals(driver.findElement(By.xpath("(//div[@class='tdb-card'])[2]/h2")).getText(), mainTitle, errMessage);

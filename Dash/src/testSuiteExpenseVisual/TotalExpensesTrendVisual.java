@@ -1,4 +1,4 @@
-package testSuiteExpense;
+package testSuiteExpenseVisual;
 
 import javax.swing.JOptionPane;
 
@@ -73,10 +73,20 @@ public class TotalExpensesTrendVisual extends BaseClass
 	    TotalExpensesTrend.VerifyVendorsCountriesLegends();
 		TotalExpensesTrend.VerifyNumLegendsMatchNumBarSections();
 	 	
-		// #3
+		// #3 
 		// Un-select all the vendors in the point of view, select 'Country' in the 'Country/ Vendor View Selector', and select a vendor in each country. 
 		// NOTE for above: currently, when switch to country view all of the vendors are selected and that means many of the countries are shown in the legend (not all).   
+		
+		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+		// this list is stored in the expense helper class.
+		ExpenseHelper.SetupForCountryPageWait();
+		
+		// move to country view.
 		CommonTestStepActions.SelectCountryView();
+		
+		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.		
+		ExpenseHelper.WaitForCountryPageLoad();
 		
 		
 		// #4

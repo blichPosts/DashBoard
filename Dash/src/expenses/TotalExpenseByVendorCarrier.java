@@ -236,8 +236,6 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	{
 		String errMessage = "Failed check for country text in TotalExpenseByVendorCarrier.VerifyCountryView.";
 		
-		WaitForElementVisible(By.xpath("//span[text()='Country']"), MainTimeout);
-		
 		Assert.assertEquals(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText(), titlecountry, errMessage);
 		Assert.assertEquals(CommonTestStepActions.GetPulldownTextSelected(), driver.findElement(By.xpath(expensePieDateLocator)).getText(), errMessage);
 	}	

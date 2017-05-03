@@ -1,23 +1,21 @@
-package testSuiteExpense;
+package testSuiteLocalization;
 
-
-// 1/14/16 - update country view wait and verify no "visibility" attributes when testing legends/control sections.
-
+import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import expenses.CostPerServiceNumberTrend;
-import expenses.CountOfServiceNumbersTrend;
 import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.expenseFilters;
+import localization.ClassOne;
 
-public class CostPerServiceNumberTrendVisual extends BaseClass 
+public class TestOne extends BaseClass 
 {
-	
+
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
@@ -26,7 +24,7 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 	}
 	
 	@Test
-	public static void CostPerServiceNumbersTrendVisualTest() throws Exception
+	public static void TestOneTest() throws Exception
 	{
 		// #1
 		// Select vendors view and view the 'Count of Service Numbers' component.
@@ -37,9 +35,26 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 		
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
-		CostPerServiceNumberTrend.SetupChartId(); // setup unique id for this control test.
+		ClassOne.OpenSeetingsPanel();
 		
+		Pause("");
 
+		ClassOne.VerifyTextInSettingsPanel();
+		
+		
+		//WaitForElementClickable(By.xpath("(//div[@class='md-sidenav-content']/div/div/button)[2]"), MediumTimeout, "");
+		
+		//driver.findElement(By.xpath("(//div[@class='md-sidenav-content']/div/div/button)[2]")).click();
+		
+		Pause("");
+		
+		// .tdb-slideout__body>div>div:nth-of-type(1) 
+		
+		// (//div[@class='md-sidenav-content']/div/div/button)[2]/span // this select top left columns...
+		
+		// CostPerServiceNumberTrend.SetupChartId(); // setup unique id for this control test.
+		
+		/*
 		// next two lines below use method in 'TotalExpensesTrend' class to test the trend tabs that were added to the 
 		// cost per service number trend control in 17.1
 		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
@@ -79,6 +94,7 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 		CostPerServiceNumberTrend.VerifyLegends();
 		CostPerServiceNumberTrend.VerifyMonths();
 		CostPerServiceNumberTrend.VerifyNumLegendsMatchNumBarSections();
+		*/
 	}
 	
 	@AfterClass
@@ -88,5 +104,8 @@ public class CostPerServiceNumberTrendVisual extends BaseClass
 	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
 		driver.close();
 		driver.quit();
-	}	
+	}		
+	
+	
+	
 }

@@ -63,8 +63,10 @@ public class BaseClass
 	//public static String commandPassword = "hop*ititmb9";	
 	
 	
-	public static String commandUserName = "analaura.pace@tangoe.com pwc";
-	public static String commandPassword = "tngo111";
+
+	public static String commandUserName = "archana.trojic@tangoe.com phi";  // pwc done
+	public static String commandPassword = "traq06";
+
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
 	public static LoginType loginType; // bladdxx // new
@@ -590,6 +592,8 @@ public class BaseClass
 			// get to the dash page
 		
 			WaitForElementClickable(By.cssSelector("#menuMainReporting"), MainTimeout, "Failed wait in GoToDashboard"); 
+			
+			Thread.sleep(2000); // bob added this. was getting click conflicts in getting dash in pull down. i have this fix this problem in other cases.  
 			
 			driver.findElement(By.cssSelector("#menuMainReporting")).click();
 

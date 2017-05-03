@@ -1218,7 +1218,9 @@ public class ExpenseHelper extends BaseClass
 			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[2]"), MediumTimeout); 
 			
 			// this waits for the correct text in Cost per Service Number.
-			WaitForElementVisible(By.xpath("//h3[contains(text(), 'Count of Service Numbers by')]"), MediumTimeout);
+			WaitForElementVisible(By.xpath("//span[text()='Cost per Service Numbers by Vendor']"), MediumTimeout);
+			
+			// //span[text()='Cost per Service Numbers by Vendor']
 			
 			VerifyCorrectSelection(listToClickThrough, x); // verify the correct enable/disable states for control xPath sent in to this method.
 			

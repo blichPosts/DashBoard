@@ -77,14 +77,14 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		{
 			case vendor:
 			{
-				WaitForElementVisible(By.xpath("//h3/span[text()='Vendor']"), MediumTimeout);
-				Assert.assertEquals(driver.findElement(By.xpath("(//h3[starts-with(text(), 'Count of Service Numbers')])[2]")).getText(), vendorTitle, errMessage);
+				WaitForElementVisible(By.xpath("(//h3/span)[1][contains(text(),'Vendor')]"), MediumTimeout);
+				Assert.assertEquals(driver.findElement(By.xpath("(//h3/span[contains(text(),'Count of Service Numbers')])[1]")).getText(), vendorTitle, errMessage);
 				break;
 			}
 			case country:
 			{
-				WaitForElementVisible(By.xpath("//h3/span[text()='Country']"), MediumTimeout);
-				Assert.assertEquals(driver.findElement(By.xpath("(//h3[starts-with(text(), 'Count of Service Numbers')])[2]")).getText(), countryTitle, errMessage);
+				WaitForElementVisible(By.xpath("(//h3/span)[1][contains(text(),'Country')]"), MediumTimeout);
+				Assert.assertEquals(driver.findElement(By.xpath("(//h3/span[contains(text(),'Count of Service Numbers')])[1]")).getText(), countryTitle, errMessage);
 				break;				
 			}
 		}

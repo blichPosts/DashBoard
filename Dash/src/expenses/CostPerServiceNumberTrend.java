@@ -29,8 +29,8 @@ public class CostPerServiceNumberTrend extends  BaseClass
 {
 	
 	public static String chartId = "";
-	public static String vendorTitle = "Cost per Service Number by Vendor - All Categories";
-	public static String countryTitle = "Cost per Service Number by Country - All Categories";	
+	public static String vendorTitle = "Cost per Service Numbers by Vendor - All Categories";
+	public static String countryTitle = "Cost per Service Numbers by Country - All Categories";	
 	
 	public static List<WebElement> webEleListLegends;
 	public static List<WebElement> webEleListBarGraphHoverValues;
@@ -164,13 +164,13 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		{
 			case vendor:
 			{
-				WaitForElementVisible(By.xpath("//h3/span[text()='Vendor']"), MediumTimeout);
+				WaitForElementVisible(By.xpath("(//h3/span)[1][contains(text(),'Vendor')]"), MediumTimeout);
 				Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(2)")).getText(), vendorTitle, errMessage);
 				break;
 			}
 			case country:
 			{
-				WaitForElementVisible(By.xpath("//h3/span[text()='Country']"), MediumTimeout);
+				WaitForElementVisible(By.xpath("(//h3/span)[1][contains(text(),'Country')]"), MediumTimeout);
 				Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(2)")).getText(), countryTitle, errMessage);
 				break;				
 			}
