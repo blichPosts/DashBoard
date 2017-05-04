@@ -632,6 +632,28 @@ public class CommonTestStepActions extends BaseClass
 	    return monthYearNumber;
 	    
 	}
+
+	// open settings panel under the gear in the top right corner.
+	public static void OpenSettingsPanel()
+	{
+		WaitForElementClickable(By.xpath("(//div[@class='md-sidenav-content']/div/div/button)[2]"), MediumTimeout, "Couldn't find gear to click for opening settings panel.");
+		driver.findElement(By.xpath("(//div[@class='md-sidenav-content']/div/div/button)[2]")).click();
+	}
 	
+	// close open settings panel.
+	public static void CloseSettingsPanel() throws Exception
+	{
+		// make sure the panel is open
+		if(WaitForElementNotPresentNoThrow(By.cssSelector(".tdb-slideout>header>div:nth-of-type(1)"), MiniTimeout)) 
+		{
+			// close panel
+			WaitForElementClickable(By.xpath("(//button[@class='md-primary'])[1]"), MediumTimeout, "Couldn't find button to close the settings panel.");
+			driver.findElement(By.xpath("(//button[@class='md-primary'])[1]")).click();
+		}
+		else
+		{
+			ShowText("Nothing to close. Settings pane appears already closed.");
+		}
+	}	
 	
 }

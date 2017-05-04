@@ -129,9 +129,9 @@ public class TotalExpensesTrend extends BaseClass
 			}
 			
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
-			Thread.sleep(500);
-			webEleListLegends.get(x).click();
 			Thread.sleep(2000);
+			webEleListLegends.get(x).click();
+			Thread.sleep(1500);
 		}
 	}
 	

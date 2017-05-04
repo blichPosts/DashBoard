@@ -112,10 +112,10 @@ public class CostPerServiceNumberTrend extends  BaseClass
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
-			Thread.sleep(500);
+			Thread.sleep(2000);
 			webEleListLegends.get(x).click();
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
-			Thread.sleep(2000);
+			Thread.sleep(1500);
 		}
 	}
 	

@@ -11,9 +11,9 @@ import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.expenseFilters;
-import localization.ClassOne;
+import localization.FleetExpense;
 
-public class TestOne extends BaseClass 
+public class TestExpense extends BaseClass 
 {
 
 	@BeforeClass
@@ -24,7 +24,7 @@ public class TestOne extends BaseClass
 	}
 	
 	@Test
-	public static void TestOneTest() throws Exception
+	public static void TestExpensesTest() throws Exception
 	{
 		// #1
 		// Select vendors view and view the 'Count of Service Numbers' component.
@@ -35,24 +35,24 @@ public class TestOne extends BaseClass
 		
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
-		ClassOne.OpenSeetingsPanel();
+		CommonTestStepActions.OpenSettingsPanel();
 		
-		Pause("");
 
-		ClassOne.VerifyTextInSettingsPanel();
+
+		FleetExpense.VerifySomeTextInSettingsPanel();
+
+		FleetExpense.selectLanguage("es-ES");
+
+		CommonTestStepActions.CloseSettingsPanel();
 		
-		
-		//WaitForElementClickable(By.xpath("(//div[@class='md-sidenav-content']/div/div/button)[2]"), MediumTimeout, "");
-		
-		//driver.findElement(By.xpath("(//div[@class='md-sidenav-content']/div/div/button)[2]")).click();
-		
+		//FleetExpense.KpiTitleTitle();
+		//FleetExpense.KpiTileRolling();
+		//FleetExpense.KpiTileThreeMonth();
+		//FleetExpense.KpiTileSixMonth();
+		//FleetExpense.TwoMainTitles();
+		FleetExpense.SubTitles();
 		Pause("");
 		
-		// .tdb-slideout__body>div>div:nth-of-type(1) 
-		
-		// (//div[@class='md-sidenav-content']/div/div/button)[2]/span // this select top left columns...
-		
-		// CostPerServiceNumberTrend.SetupChartId(); // setup unique id for this control test.
 		
 		/*
 		// next two lines below use method in 'TotalExpensesTrend' class to test the trend tabs that were added to the 

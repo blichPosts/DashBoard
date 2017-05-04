@@ -607,8 +607,6 @@ public class BaseClass
 			
 		}
 		
-
-		
 		// alternative to the GoToDashboard method. It uses the coordinates to locate the menu to click ok.
 		public static void GoToDashboardBackUp() throws Exception {
 			

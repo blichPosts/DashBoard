@@ -139,9 +139,9 @@ public class CountOfServiceNumbersTrend extends BaseClass
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
-			Thread.sleep(500);
-			webEleListLegends.get(x).click();
 			Thread.sleep(2000);
+			webEleListLegends.get(x).click();
+			Thread.sleep(1500);
 		}
 	}
 	
