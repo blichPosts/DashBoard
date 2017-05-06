@@ -78,8 +78,11 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		
 		// get the 'Cost per Service Number trending' control visible by moving to it. 
 		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(2)"));
-		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(4)"));		
-		// .tdb-card>div:nth-of-type(4)
+		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(4)"));
+		
+		// change to below because of legend click problems. 5/6/17
+		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));  
+		
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
 		Thread.sleep(1000);
@@ -94,7 +97,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
 			boolean firstMonth = true; // <-- ana_add
-			
+
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
 				//clickBarIndex(y);  
@@ -112,9 +115,13 @@ public class CostPerServiceNumberTrend extends  BaseClass
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
+
 			Thread.sleep(2000);
-			webEleListLegends.get(x).click();
+			// webEleListLegends.get(x).click();
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
+			
+			ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);
+			
 			Thread.sleep(1500);
 		}
 	}

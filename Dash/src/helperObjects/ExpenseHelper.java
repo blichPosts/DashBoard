@@ -1096,58 +1096,36 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
-	
-	/*
-	// remove?
-	// Get the location of the element on the UI 
-	public static Point getAbsoluteLocationFleetTrend(WebElement element) 
+	// this is for clicking legends under a trend chart using x/y locator. 
+	public static void SelectLegendWithPointer(String chartId, int indexHighchart) throws InterruptedException, AWTException // jnupp
 	{
+		// this is css for legend.
+		String cssBar = "#" + chartId + ">svg>g.highcharts-legend>g>g>g:nth-of-type(" + indexHighchart +  ")";
 		
-        int x = x_iFrame;
-        int y = y_iFrame;
-        
-        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
-		int headerHeight = header.getSize().getHeight();
-        
-        Point elementLoc = element.getLocation();
-
-    	x += elementLoc.getX() + 10;
-        y += elementLoc.getY() - (headerHeight * 11);
-        
-        Point p = new Point(x, y);
-        return p; 
-        
-	}
-	*/
-	/*
-	// remove?
-	// set chartId before this is called.
-	public static String ClickTrendBarCommand(int barIndex) throws Exception
-	{
-		// select the desired month/year legend.
-		WebElement barGraph = driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(8)>text:nth-of-type(" + barIndex + ")"));  
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+				
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// These coordinates will be used to put the mouse pointer over the requested legend.
+		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
 		
-        Point p = getAbsoluteLocationFleetTrend(barGraph); 
-        
-        int x_offset = barGraph.getSize().getHeight() / 2;
-        int y_offset = barGraph.getSize().getWidth() / 2;
-        
-        int a = p.getX() + x_offset;
-        int b = p.getY() + y_offset;
-        
-        Robot robot = new Robot();
-        robot.mouseMove(a, b);
-        
-        Thread.sleep(500);
-        
+		int x_offset = bar.getSize().getWidth() / 2;  
+		int y_offset = (int) GeneralHelper.getScrollPosition();
+		
+		y_offset = -629;  // orig -630... -631 moves up.
+		int x = barCoordinates.getX() + 8; 
+		int y = GeneralHelper.getYCoordinate(chartId) + y_offset; 
+		
+		Robot robot = new Robot(); 
+		
+		robot.mouseMove(x, y);
+		
+		Thread.sleep(1000);
+		
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-        
-        //Thread.sleep(2000); // orig
-        Thread.sleep(1000); 
-        return "";
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK); 
 	}
-	*/
+
+	
 	
 	public static void SetupExpectedCostFilters()
 	{

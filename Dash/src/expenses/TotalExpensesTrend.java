@@ -112,7 +112,7 @@ public class TotalExpensesTrend extends BaseClass
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
 			boolean firstMonth = true; // <-- ana_add
-			
+            
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
 				if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
@@ -127,10 +127,13 @@ public class TotalExpensesTrend extends BaseClass
 				Thread.sleep(500);
 				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
 			}
-			
+
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(2000);
-			webEleListLegends.get(x).click();
+			// webEleListLegends.get(x).click();
+			
+			ExpenseHelper.SelectLegendWithPointer(chartId, x + 1); // jnupp
+			
 			Thread.sleep(1500);
 		}
 	}

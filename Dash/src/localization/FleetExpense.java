@@ -26,9 +26,6 @@ public class FleetExpense extends BaseClass
 		  new Select(driver.findElement(By.xpath(xpath))).selectByValue(language);
 	 }
 	
-	
-	
-	
 	public static void KpiTitleTitle()
 	{
 		tempList.clear();
@@ -88,6 +85,32 @@ public class FleetExpense extends BaseClass
 		VerifyTextXpathWithCount(tempList, intArr);
 	}
 	
+	public static void TopSelectors()
+	{
+		List<WebElement> eleList = driver.findElements(By.xpath("(//div[@class='tdb-card'])[2]/div[1]/div"));
+		ShowWebElementListText(eleList);
+	}
+	
+	
+	public static void BottomSelectors()
+	{
+		List<WebElement> eleList = driver.findElements(By.cssSelector(".tdb-card>div:nth-of-type(3)"));
+		ShowWebElementListText(eleList);
+	}
+	
+	
+	// verify language text titles and 'Display' text.
+	public static void VerifySomeTextInSettingsPanel() throws Exception
+	{
+		WaitForElementVisible(By.cssSelector(".tdb-slideout__body>div:nth-of-type(2)>div:nth-of-type(1)"), TenTimeout);
+		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(2)>div:nth-of-type(1)")).getText(), "Language:", "");
+		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(3)>div:nth-of-type(1)")).getText(), "Currency:", "");
+		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(4)")).getText(), "Display", "");
+	}	
+	
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 												Helpers
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public static void VerifyTextXpath(List<String> listIn)
 	{
 		for(String str : listIn)
@@ -127,12 +150,5 @@ public class FleetExpense extends BaseClass
 		return countr;			
 	}
 	
-	// verify language text titles and 'Display' text.
-	public static void VerifySomeTextInSettingsPanel() throws Exception
-	{
-		WaitForElementVisible(By.cssSelector(".tdb-slideout__body>div:nth-of-type(2)>div:nth-of-type(1)"), TenTimeout);
-		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(2)>div:nth-of-type(1)")).getText(), "Language:", "");
-		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(3)>div:nth-of-type(1)")).getText(), "Currency:", "");
-		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(4)")).getText(), "Display", "");
-	}
+
 }

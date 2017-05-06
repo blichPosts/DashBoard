@@ -50,7 +50,14 @@ public class TestExpense extends BaseClass
 		//FleetExpense.KpiTileThreeMonth();
 		//FleetExpense.KpiTileSixMonth();
 		//FleetExpense.TwoMainTitles();
-		FleetExpense.SubTitles();
+		//FleetExpense.SubTitles();
+		
+		// (//div[@class='tdb-card'])[2]/div[1] // top
+		// .tdb-card>div:nth-of-type(3) // bottom
+		
+		FleetExpense.TopSelectors();
+		FleetExpense.BottomSelectors();
+		
 		Pause("");
 		
 		
