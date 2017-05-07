@@ -140,7 +140,10 @@ public class CountOfServiceNumbersTrend extends BaseClass
 			}
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(2000);
-			webEleListLegends.get(x).click();
+			//webEleListLegends.get(x).click();
+			
+			ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);
+			
 			Thread.sleep(1500);
 		}
 	}
