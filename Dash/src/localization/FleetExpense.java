@@ -10,6 +10,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
 import Dash.BaseClass;
+import expenseHierarchy.HierarchyNumbersDependents;
+import helperObjects.CommonTestStepActions;
+import helperObjects.HierarchyHelper;
+import helperObjects.UsageHelper;
+
 import org.testng.Assert;
 
 public class FleetExpense extends BaseClass 
@@ -17,7 +22,9 @@ public class FleetExpense extends BaseClass
 
 	// public static String kpiOneTitle = "";	
 	public static List<String> tempList = new ArrayList<String>();
+	public static String chartId = "";
 	public static String startsWith = "[es]";
+	public static List<WebElement> eleList;
 	
 	public static void selectLanguage(String language) throws Exception 
 	{
@@ -89,15 +96,90 @@ public class FleetExpense extends BaseClass
 	{
 		List<WebElement> eleList = driver.findElements(By.xpath("(//div[@class='tdb-card'])[2]/div[1]/div"));
 		ShowWebElementListText(eleList);
+		
+		//VerifyListOfElementsStartsWith(eleList);
 	}
-	
 	
 	public static void BottomSelectors()
 	{
 		List<WebElement> eleList = driver.findElements(By.cssSelector(".tdb-card>div:nth-of-type(3)"));
-		ShowWebElementListText(eleList);
+		//ShowWebElementListText(eleList);
+		//VerifyListOfElementsStartsWith(eleList);
 	}
 	
+	public static void VendorSpendLegends()
+	{
+		chartId = UsageHelper.getChartId(1);
+		ClearEleList();
+		eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
+		
+		ShowWebElementListText(eleList);
+		//VerifyListOfElementsStartsWith(eleList);
+	}
+	
+	public static void PieLegends()
+	{
+		chartId = UsageHelper.getChartId(0);
+		ClearEleList();
+		eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
+		
+		ShowWebElementListText(eleList);
+		//VerifyListOfElementsStartsWith(eleList);
+	}
+	
+	public static void AllTrendLegends()
+	{
+		chartId = UsageHelper.getChartId(2); // expense ----------------------------------------------------------------------------
+		ClearEleList();
+		eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
+		
+		ShowText("Expense side tag " + driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-axis.highcharts-yaxis")).getText());
+		
+		// text on side of trend
+		Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-axis.highcharts-yaxis")).getText().startsWith(startsWith));
+		
+		ShowWebElementListText(eleList);  
+		//VerifyListOfElementsStartsWith(eleList);
+		
+		chartId = UsageHelper.getChartId(3); // cost per service numbers ----------------------------------------------------------------------------
+		ClearEleList();
+		eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
+		
+		//ShowWebElementListText(eleList);
+		//VerifyListOfElementsStartsWith(eleList);
+		
+		ShowText("Expense side tag " + driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-axis.highcharts-yaxis")).getText());
+		
+		
+		chartId = UsageHelper.getChartId(4); // count of service numbers ---------------------------------------------------------------------------- 
+		ClearEleList();
+		eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
+		
+		// text on side of trend
+		Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-axis.highcharts-yaxis")).getText().startsWith(startsWith));		
+		
+		ShowWebElementListText(eleList);
+		//VerifyListOfElementsStartsWith(eleList);
+	}
+	
+	public static void OddsAndEnds()
+	{
+		// 'view by hierarchy link'
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).getText().startsWith(startsWith));
+		
+		// countries
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-pov__heading")).getText().startsWith(startsWith));
+		
+		// none text
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-povGroup__toggle>a")).getText().startsWith(startsWith));
+
+		// vendor view
+		Assert.assertTrue(driver.findElement(By.cssSelector("#md-tab-label-1-0>span")).getText().startsWith(startsWith));
+
+		// country view
+		Assert.assertTrue(driver.findElement(By.cssSelector("#md-tab-label-1-1>span")).getText().startsWith(startsWith));
+		
+	}
 	
 	// verify language text titles and 'Display' text.
 	public static void VerifySomeTextInSettingsPanel() throws Exception
@@ -109,7 +191,9 @@ public class FleetExpense extends BaseClass
 	}	
 	
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 												Helpers
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 												Helpers 
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public static void VerifyTextXpath(List<String> listIn)
 	{
@@ -136,6 +220,16 @@ public class FleetExpense extends BaseClass
 		}
 	}
 	
+	// this verifies list of web elements text sent in start with variable 'startsWith'.
+	public static void VerifyListOfElementsStartsWith(List<WebElement> listIn)
+	{
+		for(WebElement ele : eleList)
+		{
+			Assert.assertTrue(ele.getText().startsWith(startsWith));
+		}
+	
+	}
+	
 	// http://stackoverflow.com/questions/24288809/stringutils-countmatches-words-starting-with-a-string
 	public static int GetNumberOf(String strIn) // common methods.
 	{
@@ -150,5 +244,55 @@ public class FleetExpense extends BaseClass
 		return countr;			
 	}
 	
+	public static void ClearEleList() 
+	{
+		if(eleList != null)
+		{
+			eleList.clear();
+		}
+	}
+	
+	
+	public static void LoopThroughMonths() throws InterruptedException
+	{
+		CommonTestStepActions.initializeMonthSelector();
+		
+		for(WebElement ele : CommonTestStepActions.webListPulldown)
+		{
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
+			ShowText("Selected Month is " + ele.getText());
+			
+			Thread.sleep(3000);
 
+			if(Integer.parseInt(driver.findElement(By.xpath("(//div[@class='tdb-kpi__footerItem'])[1]/span[1]")).getText()) > 0)
+			{
+				RunExpenseLocalizationTagTests();		
+			}
+			else
+			{
+				ShowText("Month " + ele.getText() + " is skipped.");
+			}
+			
+			ShowText("Month Complete.");
+		}
+		
+	}
+	
+	public static void RunExpenseLocalizationTagTests()
+	{
+		// TITLE !!!!! ACCOUNTS LOADED ----- Currency: USD (United States Dollar) 
+		//FleetExpense.KpiTitleTitle();
+		//FleetExpense.KpiTileRolling();
+		//FleetExpense.KpiTileThreeMonth();
+		//FleetExpense.KpiTileSixMonth();
+		//FleetExpense.TwoMainTitles();
+		// FleetExpense.SubTitles();
+		// Above are complete.
+		
+		//FleetExpense.TopSelectors();
+		//FleetExpense.BottomSelectors();
+		//FleetExpense.PieLegends();
+		// FleetExpense.VendorSpendLegends();
+		FleetExpense.AllTrendLegends();
+	}
 }
