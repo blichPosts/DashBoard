@@ -25,6 +25,21 @@ public class FleetExpense extends BaseClass
 	public static String chartId = "";
 	public static String startsWith = "[es]";
 	public static List<WebElement> eleList;
+	public static viewType vType;
+	
+	
+	
+	public static enum viewType
+	{
+		country,
+		vendor
+	}
+	
+	public static void SetViewType (viewType vtyp)
+	{
+		vType = vtyp;
+	}
+	
 	
 	public static void selectLanguage(String language) throws Exception 
 	{
@@ -162,32 +177,46 @@ public class FleetExpense extends BaseClass
 		//VerifyListOfElementsStartsWith(eleList);
 	}
 	
-	public static void OddsAndEnds()
+	public static void OddsAndEnds() throws Exception
 	{
 		// 'view by hierarchy link'
-		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).getText().startsWith(startsWith));
+		//Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).getText().startsWith(startsWith));
 		
 		// countries
-		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-pov__heading")).getText().startsWith(startsWith));
+		//Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-pov__heading")).getText().startsWith(startsWith));
 		
 		// none text
-		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-povGroup__toggle>a")).getText().startsWith(startsWith));
+		//Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-povGroup__toggle>a")).getText().startsWith(startsWith));
+		
+		// month selector
+		//Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-pov__monthLabel")).getText().startsWith(startsWith));
+		
+ // .tdb-pov__monthLabel
+		
 
-		// vendor view
-		Assert.assertTrue(driver.findElement(By.cssSelector("#md-tab-label-1-0>span")).getText().startsWith(startsWith));
+		
+			// below gets the text for vendor and country view strings.
+			//String [] strArray = driver.findElement(By.cssSelector(".md-tab-header")).getText().split("\n");
+			//ShowArray(strArray);
+			
 
-		// country view
-		Assert.assertTrue(driver.findElement(By.cssSelector("#md-tab-label-1-1>span")).getText().startsWith(startsWith));
+		
+
 		
 	}
+	
+
+
 	
 	// verify language text titles and 'Display' text.
 	public static void VerifySomeTextInSettingsPanel() throws Exception
 	{
-		WaitForElementVisible(By.cssSelector(".tdb-slideout__body>div:nth-of-type(2)>div:nth-of-type(1)"), TenTimeout);
-		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(2)>div:nth-of-type(1)")).getText(), "Language:", "");
-		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(3)>div:nth-of-type(1)")).getText(), "Currency:", "");
-		Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(4)")).getText(), "Display", "");
+		DebugTimeout(5, "Wait 5 in error spot");
+		
+		//WaitForElementVisible(By.cssSelector(".tdb-slideout__body>div:nth-of-type(2)>div:nth-of-type(1)"), TenTimeout);
+		//Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(2)>div:nth-of-type(1)")).getText(), "Language:", "");
+		//Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(3)>div:nth-of-type(1)")).getText(), "Currency:", "");
+		//Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-slideout__body>div:nth-of-type(4)")).getText(), "Display", "");
 	}	
 	
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +282,7 @@ public class FleetExpense extends BaseClass
 	}
 	
 	
-	public static void LoopThroughMonths() throws InterruptedException
+	public static void LoopThroughMonths() throws Exception
 	{
 		CommonTestStepActions.initializeMonthSelector();
 		
@@ -278,7 +307,7 @@ public class FleetExpense extends BaseClass
 		
 	}
 	
-	public static void RunExpenseLocalizationTagTests()
+	public static void RunExpenseLocalizationTagTests() throws Exception
 	{
 		// TITLE !!!!! ACCOUNTS LOADED ----- Currency: USD (United States Dollar) 
 		//FleetExpense.KpiTitleTitle();
@@ -293,6 +322,7 @@ public class FleetExpense extends BaseClass
 		//FleetExpense.BottomSelectors();
 		//FleetExpense.PieLegends();
 		// FleetExpense.VendorSpendLegends();
-		FleetExpense.AllTrendLegends();
+		//FleetExpense.AllTrendLegends();
+		FleetExpense.OddsAndEnds();
 	}
 }

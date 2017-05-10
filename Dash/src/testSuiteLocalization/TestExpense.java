@@ -1,5 +1,6 @@
 package testSuiteLocalization;
 
+import org.junit.experimental.theories.suppliers.TestedOn;
 import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -12,6 +13,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.expenseFilters;
 import localization.FleetExpense;
+import localization.FleetExpense.viewType;
 
 public class TestExpense extends BaseClass 
 {
@@ -41,7 +43,7 @@ public class TestExpense extends BaseClass
 
 		FleetExpense.VerifySomeTextInSettingsPanel();
 
-		FleetExpense.selectLanguage("es-ES");
+		// FleetExpense.selectLanguage("es-ES");
 
 		CommonTestStepActions.CloseSettingsPanel();
 		
@@ -59,7 +61,11 @@ public class TestExpense extends BaseClass
 		//FleetExpense.VendorSpendLegends();
 		// FleetExpense.AllTrendLegends();
 		
+		FleetExpense.SetViewType(viewType.vendor);
+		
 		FleetExpense.LoopThroughMonths();
+		
+		Pause("");
 		
 		ExpenseHelper.SetupForCountryPageWait();
 		
@@ -68,6 +74,7 @@ public class TestExpense extends BaseClass
 		
 		ExpenseHelper.WaitForCountryPageLoad();
 
+		FleetExpense.SetViewType(viewType.country);
 		
 		FleetExpense.LoopThroughMonths();
 		
