@@ -25,21 +25,27 @@ public class FleetExpense extends BaseClass
 	public static String chartId = "";
 	public static String startsWith = "[es]";
 	public static List<WebElement> eleList;
-	public static viewType vType;
+	public static boolean rollingAverageVisible = false;
+	public static boolean sixMonthVisible = false;
+	public static boolean threeMonthVisible = false;
+	
+	// public static viewType vType;
 	
 	
-	
+	/*
 	public static enum viewType
 	{
 		country,
 		vendor
 	}
+	*/
 	
+	/*
 	public static void SetViewType (viewType vtyp)
 	{
 		vType = vtyp;
 	}
-	
+	*/
 	
 	public static void selectLanguage(String language) throws Exception 
 	{
@@ -59,15 +65,29 @@ public class FleetExpense extends BaseClass
 	
 	public static void KpiTileRolling()
 	{
+		if(!rollingAverageVisible)
+		{
+			return;
+		}
+		ShowText("Run Rolling");
 		tempList.clear();
 		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4");
-		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4");
-		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4");
+		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[2]/h4");
+		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[3]/h4");
 		VerifyTextXpath(tempList);
 	}
 	
 	public static void KpiTileThreeMonth()
 	{
+		if(!rollingAverageVisible)
+		{
+			return;
+		}
+		if(!threeMonthVisible)
+		{
+			return;
+		}
+		ShowText("Run three month");
 		tempList.clear();
 		tempList.add("(//div[@class='tdb-inlineBlock'])[1]");
 		tempList.add("(//div[@class='tdb-inlineBlock'])[3]");
@@ -77,6 +97,15 @@ public class FleetExpense extends BaseClass
 	
 	public static void KpiTileSixMonth()
 	{
+		if(!rollingAverageVisible)
+		{
+			return;
+		}
+		if(!sixMonthVisible)
+		{
+			return;
+		}
+		ShowText("Run six month");
 		tempList.clear();
 		tempList.add("(//div[@class='tdb-inlineBlock'])[2]");
 		tempList.add("(//div[@class='tdb-inlineBlock'])[4]");
@@ -286,6 +315,8 @@ public class FleetExpense extends BaseClass
 	{
 		CommonTestStepActions.initializeMonthSelector();
 		
+		ShowInt(CommonTestStepActions.webListPulldown.size());
+		
 		for(WebElement ele : CommonTestStepActions.webListPulldown)
 		{
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
@@ -293,6 +324,11 @@ public class FleetExpense extends BaseClass
 			
 			Thread.sleep(3000);
 
+			InitVisibilityTileMapAverages(); // find what is showing in the KPI tiles and set booleans.
+			
+			Pause("");
+			
+			
 			if(Integer.parseInt(driver.findElement(By.xpath("(//div[@class='tdb-kpi__footerItem'])[1]/span[1]")).getText()) > 0)
 			{
 				RunExpenseLocalizationTagTests();		
@@ -307,8 +343,60 @@ public class FleetExpense extends BaseClass
 		
 	}
 	
+	public static void InitVisibilityTileMapAverages() throws Exception
+	{
+		rollingAverageVisible = false;
+		threeMonthVisible = false;
+		sixMonthVisible = false;
+		
+		rollingAverageVisible = WaitForElementPresentNoThrow(By.xpath("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4"), MiniTimeout);
+		
+		if(!rollingAverageVisible)
+		{
+			System.out.println(rollingAverageVisible);
+			System.out.println(threeMonthVisible);
+			System.out.println(sixMonthVisible);
+			return;
+		}
+		
+		if(driver.findElements(By.xpath("(//div[@class='tdb-inlineBlock'])")).size() == 6)
+		{
+			threeMonthVisible = true;
+			sixMonthVisible = true;
+			System.out.println(rollingAverageVisible);
+			System.out.println(threeMonthVisible);
+			System.out.println(sixMonthVisible);
+			return;
+		}
+		
+		if(driver.findElements(By.xpath("(//div[@class='tdb-inlineBlock'])")).size() == 3)
+		{
+			threeMonthVisible = true;
+			System.out.println(rollingAverageVisible);
+			System.out.println(threeMonthVisible);
+			System.out.println(sixMonthVisible);
+			return;
+		}
+
+		//threeMonthVisible = WaitForElementPresentNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[1]"), MiniTimeout);
+		//sixMonthVisible = WaitForElementPresentNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[2]"), MiniTimeout);
+		//rollingAverageVisible = WaitForElementVisibleNoThrow(By.xpath("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4"), MiniTimeout);
+		//threeMonthVisible = WaitForElementVisibleNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[1]"), MiniTimeout);
+		// sixMonthVisible = WaitForElementVisibleNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[2]"), MiniTimeout);
+		//sixMonthVisible = WaitForElementVisibleNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[2]/div[1]"), MiniTimeout);
+		//((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[2]/div[1]
+	}
+	
+	public static void FindWhatsShowing() throws Exception
+	{
+		rollingAverageVisible = WaitForElementPresentNoThrow(By.xpath("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4"), MiniTimeout);
+	}
+	
 	public static void RunExpenseLocalizationTagTests() throws Exception
 	{
+
+		
+		
 		// TITLE !!!!! ACCOUNTS LOADED ----- Currency: USD (United States Dollar) 
 		//FleetExpense.KpiTitleTitle();
 		//FleetExpense.KpiTileRolling();
@@ -323,6 +411,29 @@ public class FleetExpense extends BaseClass
 		//FleetExpense.PieLegends();
 		// FleetExpense.VendorSpendLegends();
 		//FleetExpense.AllTrendLegends();
-		FleetExpense.OddsAndEnds();
+		//FleetExpense.OddsAndEnds();
 	}
+	
+	public static void RunExpenseLocalizationNoDataTagTests() throws Exception
+	{
+
+		
+		
+		// TITLE !!!!! ACCOUNTS LOADED ----- Currency: USD (United States Dollar) 
+		//FleetExpense.KpiTitleTitle();
+		//FleetExpense.KpiTileRolling();
+		//FleetExpense.KpiTileThreeMonth();
+		//FleetExpense.KpiTileSixMonth();
+		//FleetExpense.TwoMainTitles();
+		// FleetExpense.SubTitles();
+		// Above are complete.
+		
+		//FleetExpense.TopSelectors();
+		//FleetExpense.BottomSelectors();
+		//FleetExpense.PieLegends(); // NO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// FleetExpense.VendorSpendLegends();
+		//FleetExpense.AllTrendLegends();
+		//FleetExpense.OddsAndEnds();
+	}
+	
 }

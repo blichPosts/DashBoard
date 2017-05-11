@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import helperObjects.UsageHelper;
 
 public class Hierarchy extends BaseClass 
 {
@@ -113,16 +114,54 @@ public class Hierarchy extends BaseClass
 		
 	}	
 	
-	public static void TileMapText()
+	public static void TileMapText() throws Exception
 	{
-	
-		ShowText(driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div>div>h2:nth-of-type(1)")).getText());
-		ShowText(driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div>div>h2:nth-of-type(2)")).getText());
+		// view line details report
+		//ShowText(driver.findElement(By.xpath("(//div/a[contains(@class,'tdb-button--flat')])[2]")).getText());
+		Assert.assertTrue(driver.findElement(By.xpath("(//div/a[contains(@class,'tdb-button--flat')])[2]")).getText().startsWith(startsWith));
 		
+		// main titles tile map and expense trend
+		//ShowText(driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div>div>h2:nth-of-type(1)")).getText());
+		//ShowText(driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div>div>h2:nth-of-type(2)")).getText());
+		
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div>div>h2:nth-of-type(1)")).getText().startsWith(startsWith));
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div>div>h2:nth-of-type(2)")).getText().startsWith(startsWith));
 	
-	
-	
+		// sub title expense trend
+		//ShowText(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[2]/span[1]")).getText());
+		Assert.assertTrue(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[2]/span[2]")).getText().startsWith(startsWith));
+		
+		// text above tile map
+		// ShowText(driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>h3>span:nth-of-type(1)")).getText());
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>h3>span:nth-of-type(1)")).getText().startsWith(startsWith));
+
+		// max displayed above tile map
+		//ShowText(driver.findElement(By.xpath("//span[@class='tdb-text--lighter']")).getText());
+		Assert.assertTrue(driver.findElement(By.xpath("//span[@class='tdb-text--lighter']")).getText().startsWith(startsWith));
+		
+		// selectors above tile map
+		Assert.assertTrue(driver.findElement(By.xpath("(//div[@class='tdb-card']/div)[1]/div[1]")).getText().startsWith(startsWith));
+		Assert.assertTrue(driver.findElement(By.xpath("(//div[@class='tdb-card']/div)[1]/div[2]")).getText().startsWith(startsWith));
+		Assert.assertTrue(driver.findElement(By.xpath("(//div[@class='tdb-card']/div)[1]/div[3]")).getText().startsWith(startsWith));
+		
+		// selectors below tile map
+		Assert.assertTrue(driver.findElement(By.xpath("(//div[@class='tdb-card']/div)[3]/div[1]")).getText().startsWith(startsWith));
+		Assert.assertTrue(driver.findElement(By.xpath("(//div[@class='tdb-card']/div)[3]/div[2]")).getText().startsWith(startsWith));
+		Assert.assertTrue(driver.findElement(By.xpath("(//div[@class='tdb-card']/div)[3]/div[3]")).getText().startsWith(startsWith));
 	}
+	
+	public static void ExpenseTrendingLegends()
+	{
+		chartId = UsageHelper.getChartId(1);
+
+		//ShowText(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(1)>text>tspan")).getText());
+		//ShowText(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(2)>text>tspan")).getText());
+		
+		Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(1)>text>tspan")).getText().startsWith(startsWith));
+		Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(2)>text>tspan")).getText().startsWith(startsWith));
+	}
+	
+	
 	
 	
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +186,9 @@ public class Hierarchy extends BaseClass
 		//KpiTileSixMonth();
 		//KpiTileAllocation();
 		//OddsAndEnds();
-		TileMapText();
+		//TileMapText();
+		//ExpenseTrendingLegends();
+		
 		// miss step.
 	}	
 	

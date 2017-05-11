@@ -35,13 +35,13 @@ public class TestHierarchy extends BaseClass
 		
 		HierarchyHelper.SelectAndWaitForPageLoad();
 		
-		CommonTestStepActions.OpenSettingsPanel();
+		//CommonTestStepActions.OpenSettingsPanel();
 
 		//FleetExpense.VerifySomeTextInSettingsPanel();
 
 		//FleetExpense.selectLanguage("es-ES");
 
-		CommonTestStepActions.CloseSettingsPanel();
+		//CommonTestStepActions.CloseSettingsPanel();
 
 		Hierarchy.RunExpenseLocalizationTagTests();
 		

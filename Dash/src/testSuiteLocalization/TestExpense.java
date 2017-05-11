@@ -13,7 +13,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.expenseFilters;
 import localization.FleetExpense;
-import localization.FleetExpense.viewType;
+// import localization.FleetExpense.viewType;
 
 public class TestExpense extends BaseClass 
 {
@@ -33,39 +33,29 @@ public class TestExpense extends BaseClass
 		
 		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
 		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
-		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
+		// CommonTestStepActions.selectMonthYearPulldown("April 2016");  
 		
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
 		
-		CommonTestStepActions.OpenSettingsPanel();
+		
+		//FleetExpense.InitVisibilityTileMapAverages(); // find what is showing in the KPI tiles.
+		
+		//Pause("");
+		
+		//CommonTestStepActions.OpenSettingsPanel();
 		
 		// NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MAIN TITLE at top.
 
-		FleetExpense.VerifySomeTextInSettingsPanel();
+		// FleetExpense.VerifySomeTextInSettingsPanel(); // gone
 
 		// FleetExpense.selectLanguage("es-ES");
 
-		CommonTestStepActions.CloseSettingsPanel();
+		//CommonTestStepActions.CloseSettingsPanel();
 		
-		//FleetExpense.KpiTitleTitle();
-		//FleetExpense.KpiTileRolling();
-		//FleetExpense.KpiTileThreeMonth();
-		//FleetExpense.KpiTileSixMonth();
-		//FleetExpense.TwoMainTitles();
-		// FleetExpense.SubTitles();
-		// Above are complete.
 		
-		//FleetExpense.TopSelectors();
-		//FleetExpense.BottomSelectors();
-		//FleetExpense.PieLegends();
-		//FleetExpense.VendorSpendLegends();
-		// FleetExpense.AllTrendLegends();
-		
-		FleetExpense.SetViewType(viewType.vendor);
+		// FleetExpense.SetViewType(viewType.vendor); // don't need.
 		
 		FleetExpense.LoopThroughMonths();
-		
-		Pause("");
 		
 		ExpenseHelper.SetupForCountryPageWait();
 		
@@ -74,7 +64,7 @@ public class TestExpense extends BaseClass
 		
 		ExpenseHelper.WaitForCountryPageLoad();
 
-		FleetExpense.SetViewType(viewType.country);
+		// FleetExpense.SetViewType(viewType.country); // don't need
 		
 		FleetExpense.LoopThroughMonths();
 		
