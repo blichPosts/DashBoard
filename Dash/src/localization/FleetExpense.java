@@ -23,11 +23,13 @@ public class FleetExpense extends BaseClass
 	// public static String kpiOneTitle = "";	
 	public static List<String> tempList = new ArrayList<String>();
 	public static String chartId = "";
-	public static String startsWith = "[es]";
+	public static String startsWith = "";
+	public static String insideLanguageTag = "";
 	public static List<WebElement> eleList;
 	public static boolean rollingAverageVisible = false;
 	public static boolean sixMonthVisible = false;
 	public static boolean threeMonthVisible = false;
+	public static String expectedCurrency = ""; 
 	
 	// public static viewType vType;
 	
@@ -47,12 +49,21 @@ public class FleetExpense extends BaseClass
 	}
 	*/
 	
-	public static void selectLanguage(String language) throws Exception 
+	public static void SetupLanguageTag(String languageTag) throws Exception 
 	{
-		  String xpath = "//div[contains(text(),'Language')]/following-sibling::div/select";
-		  WaitForElementPresent(By.xpath(xpath), ShortTimeout);
-		  new Select(driver.findElement(By.xpath(xpath))).selectByValue(language);
-	 }
+		startsWith = languageTag;
+	}
+	
+	public static void SetupInsideTag(String insideTag) throws Exception 
+	{
+		insideLanguageTag = insideTag;
+	}
+	
+	
+	public static void SetCurrency(String currencyString) throws Exception 
+	{
+		expectedCurrency = currencyString;
+	}
 	
 	public static void KpiTitleTitle()
 	{
@@ -87,12 +98,26 @@ public class FleetExpense extends BaseClass
 		{
 			return;
 		}
-		ShowText("Run three month");
-		tempList.clear();
-		tempList.add("(//div[@class='tdb-inlineBlock'])[1]");
-		tempList.add("(//div[@class='tdb-inlineBlock'])[3]");
-		tempList.add("(//div[@class='tdb-inlineBlock'])[5]");
-		VerifyTextXpath(tempList);
+
+		if(sixMonthVisible)
+		{
+			ShowText("Run three month");
+			tempList.clear();
+			tempList.add("(//div[@class='tdb-inlineBlock'])[1]");
+			tempList.add("(//div[@class='tdb-inlineBlock'])[3]");
+			tempList.add("(//div[@class='tdb-inlineBlock'])[5]");
+			VerifyTextXpath(tempList);
+		}
+		else
+		{
+			ShowText("Run three month");
+			tempList.clear();
+			tempList.add("(//div[@class='tdb-inlineBlock'])[1]");
+			tempList.add("(//div[@class='tdb-inlineBlock'])[2]");
+			tempList.add("(//div[@class='tdb-inlineBlock'])[3]");
+			VerifyTextXpath(tempList);
+			
+		}
 	}
 	
 	public static void KpiTileSixMonth()
@@ -116,9 +141,14 @@ public class FleetExpense extends BaseClass
 	public static void TwoMainTitles()
 	{
 		tempList.clear();
-		tempList.add("(//h2[@class='tdb-h2'])[1]");
+		//tempList.add("(//h2[@class='tdb-h2'])[1]");
 		tempList.add("(//h2[@class='tdb-h2'])[2]");
 		VerifyTextXpath(tempList);
+	
+		String []  strData = driver.findElement(By.xpath("//h2[@class='tdb-h2']")).getText().split(" ");
+		Assert.assertTrue(strData[1].startsWith(startsWith));
+	
+	
 	}
 
 	
@@ -139,16 +169,16 @@ public class FleetExpense extends BaseClass
 	public static void TopSelectors()
 	{
 		List<WebElement> eleList = driver.findElements(By.xpath("(//div[@class='tdb-card'])[2]/div[1]/div"));
-		ShowWebElementListText(eleList);
+		// ShowWebElementListText(eleList);
 		
-		//VerifyListOfElementsStartsWith(eleList);
+		VerifyListOfElementsStartsWith(eleList);
 	}
 	
 	public static void BottomSelectors()
 	{
 		List<WebElement> eleList = driver.findElements(By.cssSelector(".tdb-card>div:nth-of-type(3)"));
 		//ShowWebElementListText(eleList);
-		//VerifyListOfElementsStartsWith(eleList);
+		VerifyListOfElementsStartsWith(eleList);
 	}
 	
 	public static void VendorSpendLegends()
@@ -157,8 +187,8 @@ public class FleetExpense extends BaseClass
 		ClearEleList();
 		eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
 		
-		ShowWebElementListText(eleList);
-		//VerifyListOfElementsStartsWith(eleList);
+		//ShowWebElementListText(eleList);
+		VerifyListOfElementsStartsWith(eleList);
 	}
 	
 	public static void PieLegends()
@@ -167,8 +197,8 @@ public class FleetExpense extends BaseClass
 		ClearEleList();
 		eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
 		
-		ShowWebElementListText(eleList);
-		//VerifyListOfElementsStartsWith(eleList);
+		//ShowWebElementListText(eleList);
+		VerifyListOfElementsStartsWith(eleList);
 	}
 	
 	public static void AllTrendLegends()
@@ -182,15 +212,15 @@ public class FleetExpense extends BaseClass
 		// text on side of trend
 		Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-axis.highcharts-yaxis")).getText().startsWith(startsWith));
 		
-		ShowWebElementListText(eleList);  
-		//VerifyListOfElementsStartsWith(eleList);
+		// ShowWebElementListText(eleList);  
+		VerifyListOfElementsStartsWith(eleList);
 		
 		chartId = UsageHelper.getChartId(3); // cost per service numbers ----------------------------------------------------------------------------
 		ClearEleList();
 		eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
 		
 		//ShowWebElementListText(eleList);
-		//VerifyListOfElementsStartsWith(eleList);
+		VerifyListOfElementsStartsWith(eleList);
 		
 		ShowText("Expense side tag " + driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-axis.highcharts-yaxis")).getText());
 		
@@ -202,25 +232,41 @@ public class FleetExpense extends BaseClass
 		// text on side of trend
 		Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-axis.highcharts-yaxis")).getText().startsWith(startsWith));		
 		
-		ShowWebElementListText(eleList);
-		//VerifyListOfElementsStartsWith(eleList);
+		// ShowWebElementListText(eleList);
+		VerifyListOfElementsStartsWith(eleList);
 	}
 	
 	public static void OddsAndEnds() throws Exception
 	{
-		// 'view by hierarchy link'
+		
+		// 'view by hierarchy link' - this is already converted.
 		//Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).getText().startsWith(startsWith));
+		ShowText("-- " + driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).getText());
 		
+		//ShowText("-- " + driver.findElement(By.cssSelector(".tdb-pov__heading")).getText());		
 		// countries
-		//Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-pov__heading")).getText().startsWith(startsWith));
-		
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-pov__heading")).getText().startsWith(startsWith));
+
+
 		// none text
-		//Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-povGroup__toggle>a")).getText().startsWith(startsWith));
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-povGroup__toggle>a")).getText().startsWith(startsWith.toUpperCase()));
+		//ShowText("-- " + driver.findElement(By.cssSelector(".tdb-povGroup__toggle>a")).getText());
 		
 		// month selector
-		//Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-pov__monthLabel")).getText().startsWith(startsWith));
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-pov__monthLabel")).getText().startsWith(startsWith));
+		//ShowText("-- " + driver.findElement(By.cssSelector(".tdb-pov__monthLabel")).getText());
+
+		// below gets the text for vendor and country view strings.
+		String [] strArray = driver.findElement(By.cssSelector(".md-tab-header")).getText().split("\n");
 		
- // .tdb-pov__monthLabel
+		for(String str : strArray)
+		{
+			Assert.assertTrue(str.startsWith(startsWith.toUpperCase()));
+			// ShowText(str);
+		}
+		
+		
+		// .tdb-pov__monthLabel
 		
 
 		
@@ -229,7 +275,7 @@ public class FleetExpense extends BaseClass
 			//ShowArray(strArray);
 			
 
-		
+		//Pause("");
 
 		
 	}
@@ -257,7 +303,7 @@ public class FleetExpense extends BaseClass
 	{
 		for(String str : listIn)
 		{
-			ShowText(driver.findElement(By.xpath(str)).getText());
+			// ShowText(driver.findElement(By.xpath(str)).getText());
 			Assert.assertTrue(driver.findElement(By.xpath(str)).getText().startsWith(startsWith));
 		}
 	}
@@ -268,7 +314,7 @@ public class FleetExpense extends BaseClass
 		
 		for(String str : listIn)
 		{
-			ShowText(driver.findElement(By.xpath(str)).getText());
+			// ShowText(driver.findElement(By.xpath(str)).getText());
 			Assert.assertTrue(driver.findElement(By.xpath(str)).getText().startsWith(startsWith));
 			
 			GetNumberOf(driver.findElement(By.xpath(str)).getText());
@@ -281,7 +327,7 @@ public class FleetExpense extends BaseClass
 	// this verifies list of web elements text sent in start with variable 'startsWith'.
 	public static void VerifyListOfElementsStartsWith(List<WebElement> listIn)
 	{
-		for(WebElement ele : eleList)
+		for(WebElement ele : listIn)
 		{
 			Assert.assertTrue(ele.getText().startsWith(startsWith));
 		}
@@ -291,7 +337,7 @@ public class FleetExpense extends BaseClass
 	// http://stackoverflow.com/questions/24288809/stringutils-countmatches-words-starting-with-a-string
 	public static int GetNumberOf(String strIn) // common methods.
 	{
-		 Matcher matcher = Pattern.compile("\\[" + "es" + "\\]").matcher(strIn);
+		 Matcher matcher = Pattern.compile("\\[" + insideLanguageTag + "\\]").matcher(strIn);
 		
 		int countr = 0;
 		while (matcher.find()) 
@@ -320,27 +366,34 @@ public class FleetExpense extends BaseClass
 		for(WebElement ele : CommonTestStepActions.webListPulldown)
 		{
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
-			ShowText("Selected Month is " + ele.getText());
+			ShowText("Selected Month is " + ele.getText() + " ****************************************************");
 			
 			Thread.sleep(3000);
 
 			InitVisibilityTileMapAverages(); // find what is showing in the KPI tiles and set booleans.
 			
-			Pause("");
-			
-			
 			if(Integer.parseInt(driver.findElement(By.xpath("(//div[@class='tdb-kpi__footerItem'])[1]/span[1]")).getText()) > 0)
 			{
+				ShowText("Month " + ele.getText() + " - running test with data. ");
 				RunExpenseLocalizationTagTests();		
 			}
 			else
 			{
-				ShowText("Month " + ele.getText() + " is skipped.");
+				ShowText("Month " + ele.getText() + " - no data test being run. ");
+				RunExpenseLocalizationNoDataTagTests();
 			}
 			
 			ShowText("Month Complete.");
+			// Pause("Check Flags.");
 		}
 		
+	}
+	
+	public static void Currency() throws Exception
+	{
+		//(//span[@class='tdb-kpi__footerItem--value'])[2]
+		
+		Assert.assertEquals(driver.findElement(By.xpath("(//span[@class='tdb-kpi__footerItem--value'])[2]")).getText(), expectedCurrency,"");
 	}
 	
 	public static void InitVisibilityTileMapAverages() throws Exception
@@ -377,63 +430,53 @@ public class FleetExpense extends BaseClass
 			System.out.println(sixMonthVisible);
 			return;
 		}
-
-		//threeMonthVisible = WaitForElementPresentNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[1]"), MiniTimeout);
-		//sixMonthVisible = WaitForElementPresentNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[2]"), MiniTimeout);
-		//rollingAverageVisible = WaitForElementVisibleNoThrow(By.xpath("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4"), MiniTimeout);
-		//threeMonthVisible = WaitForElementVisibleNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[1]"), MiniTimeout);
-		// sixMonthVisible = WaitForElementVisibleNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[2]"), MiniTimeout);
-		//sixMonthVisible = WaitForElementVisibleNoThrow(By.xpath("((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[2]/div[1]"), MiniTimeout);
-		//((//div[@class='tdb-kpi__averagesTitle'])/following-sibling ::div)[2]/div[1]
 	}
 	
-	public static void FindWhatsShowing() throws Exception
+	public static void VerifyCurrency()
 	{
-		rollingAverageVisible = WaitForElementPresentNoThrow(By.xpath("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4"), MiniTimeout);
+
+		
+		
 	}
 	
 	public static void RunExpenseLocalizationTagTests() throws Exception
 	{
-
-		
-		
 		// TITLE !!!!! ACCOUNTS LOADED ----- Currency: USD (United States Dollar) 
-		//FleetExpense.KpiTitleTitle();
-		//FleetExpense.KpiTileRolling();
-		//FleetExpense.KpiTileThreeMonth();
-		//FleetExpense.KpiTileSixMonth();
-		//FleetExpense.TwoMainTitles();
-		// FleetExpense.SubTitles();
+		FleetExpense.KpiTitleTitle();
+		FleetExpense.KpiTileRolling();
+		FleetExpense.KpiTileThreeMonth();
+		FleetExpense.KpiTileSixMonth();
+		FleetExpense.TwoMainTitles();
+		FleetExpense.SubTitles();
 		// Above are complete.
 		
-		//FleetExpense.TopSelectors();
-		//FleetExpense.BottomSelectors();
+		FleetExpense.TopSelectors();
+		FleetExpense.BottomSelectors();
 		//FleetExpense.PieLegends();
 		// FleetExpense.VendorSpendLegends();
 		//FleetExpense.AllTrendLegends();
-		//FleetExpense.OddsAndEnds();
+		FleetExpense.OddsAndEnds();
+		Currency();
 	}
 	
+	// only test what's showing when no data is available.
 	public static void RunExpenseLocalizationNoDataTagTests() throws Exception
 	{
-
-		
-		
 		// TITLE !!!!! ACCOUNTS LOADED ----- Currency: USD (United States Dollar) 
-		//FleetExpense.KpiTitleTitle();
-		//FleetExpense.KpiTileRolling();
-		//FleetExpense.KpiTileThreeMonth();
-		//FleetExpense.KpiTileSixMonth();
-		//FleetExpense.TwoMainTitles();
-		// FleetExpense.SubTitles();
-		// Above are complete.
+		FleetExpense.KpiTitleTitle();
+		FleetExpense.KpiTileRolling();
+		FleetExpense.KpiTileThreeMonth();
+		FleetExpense.KpiTileSixMonth();
+		FleetExpense.TwoMainTitles();
+		FleetExpense.SubTitles();
+		Currency();
 		
-		//FleetExpense.TopSelectors();
-		//FleetExpense.BottomSelectors();
-		//FleetExpense.PieLegends(); // NO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// FleetExpense.VendorSpendLegends();
-		//FleetExpense.AllTrendLegends();
-		//FleetExpense.OddsAndEnds();
+		FleetExpense.TopSelectors();
+		FleetExpense.BottomSelectors();
+		//FleetExpense.PieLegends();  // --------------- comment
+		//FleetExpense.VendorSpendLegends();
+		//FleetExpense.AllTrendLegends(); // ------------ comment
+		FleetExpense.OddsAndEnds(); // -------------- comment
 	}
 	
 }

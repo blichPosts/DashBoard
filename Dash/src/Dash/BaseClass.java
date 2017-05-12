@@ -64,8 +64,8 @@ public class BaseClass
 	
 	
 
-	public static String commandUserName = "archana.trojic@tangoe.com phi";  // pwc done
-	public static String commandPassword = "traq06";
+	public static String commandUserName = "bob.phi";  // pwc done
+	public static String commandPassword = "tngo111";
 
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	

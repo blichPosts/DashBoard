@@ -1,5 +1,6 @@
 package testSuiteLocalization;
 
+import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -27,13 +28,20 @@ public class TestHierarchy extends BaseClass
 	public static void TestExpensesTest() throws Exception
 	{
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
-		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
+		//CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
+		DebugTimeout(4, "wait 4 for expense page load");
 		
-		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
+		// ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 
-		ExpenseHelper.ShowSelectedMonth();
+		//ExpenseHelper.ShowSelectedMonth();
 		
-		HierarchyHelper.SelectAndWaitForPageLoad();
+		// HierarchyHelper.SelectAndWaitForPageLoad();
+		
+		driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).click();
+		
+		// .tdb-button.tdb-button--flat
+		
+		DebugTimeout(4, "wait 4 for page load");
 		
 		//CommonTestStepActions.OpenSettingsPanel();
 

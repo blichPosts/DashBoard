@@ -30,13 +30,17 @@ public class TestExpense extends BaseClass
 	{
 		// #1
 
+
 		
 		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
 		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
 		// CommonTestStepActions.selectMonthYearPulldown("April 2016");  
 		
-		CommonTestStepActions.GoToExpensePageDetailedWait(); 
+		// CommonTestStepActions.GoToExpensePageDetailedWait(); // doen't work in foreign language.  ---------------- 
+
+		//Pause("Wait for Page Load.");
 		
+		DebugTimeout(4, "wait 4 for page load");
 		
 		//FleetExpense.InitVisibilityTileMapAverages(); // find what is showing in the KPI tiles.
 		
@@ -48,10 +52,13 @@ public class TestExpense extends BaseClass
 
 		// FleetExpense.VerifySomeTextInSettingsPanel(); // gone
 
-		// FleetExpense.selectLanguage("es-ES");
+		FleetExpense.SetupLanguageTag("[ja]");
+		
+		FleetExpense.SetupInsideTag("ja");
+		
+		FleetExpense.SetCurrency("USD");
 
 		//CommonTestStepActions.CloseSettingsPanel();
-		
 		
 		// FleetExpense.SetViewType(viewType.vendor); // don't need.
 		
@@ -69,9 +76,9 @@ public class TestExpense extends BaseClass
 		FleetExpense.LoopThroughMonths();
 		
 
-
+		ShowText("DONE ..... PASSED");
 		
-		Pause("");
+		Pause("Passed...");
 		
 		
 		// SIDEWAYS TEXT

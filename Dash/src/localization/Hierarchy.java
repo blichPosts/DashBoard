@@ -15,18 +15,38 @@ public class Hierarchy extends BaseClass
 {
 
 	// public static String kpiOneTitle = "";	
+	//public static List<String> tempList = new ArrayList<String>();
+	//public static String chartId = "";
+	//public static String startsWith = "[es]";
+	//public static List<WebElement> eleList;	
+	
+	// public static String kpiOneTitle = "";	
 	public static List<String> tempList = new ArrayList<String>();
 	public static String chartId = "";
-	public static String startsWith = "[es]";
-	public static List<WebElement> eleList;	
-	
-	public static void selectLanguage(String language) throws Exception 
+	public static String startsWith = "";
+	public static String insideLanguageTag = "";
+	public static List<WebElement> eleList;
+	public static boolean rollingAverageVisible = false;
+	public static boolean sixMonthVisible = false;
+	public static boolean threeMonthVisible = false;
+	public static String expectedCurrency = ""; 
+
+	public static void SetupLanguageTag(String languageTag) throws Exception 
 	{
-		  String xpath = "//div[contains(text(),'Language')]/following-sibling::div/select";
-		  WaitForElementPresent(By.xpath(xpath), ShortTimeout);
-		  new Select(driver.findElement(By.xpath(xpath))).selectByValue(language);
-	}	
+		startsWith = languageTag;
+	}
 	
+	public static void SetupInsideTag(String insideTag) throws Exception 
+	{
+		insideLanguageTag = insideTag;
+	}
+	
+	
+	public static void SetCurrency(String currencyString) throws Exception 
+	{
+		expectedCurrency = currencyString;
+	}
+
 	public static void KpiTitleTitleAndMainTitle()
 	{
 		tempList.clear();
@@ -42,13 +62,18 @@ public class Hierarchy extends BaseClass
 
 	public static void KpiTileRolling()
 	{
+		if(!rollingAverageVisible)
+		{
+			return;
+		}
+		ShowText("Run Rolling");
 		tempList.clear();
 		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4");
 		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[2]/h4");
 		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[3]/h4");
-		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[4]/h4");
 		VerifyTextXpath(tempList);
 	}
+
 	
 	public static void KpiTileThreeMonth()
 	{
@@ -162,7 +187,41 @@ public class Hierarchy extends BaseClass
 	}
 	
 	
-	
+	public static void InitVisibilityTileMapAverages() throws Exception
+	{
+		rollingAverageVisible = false;
+		threeMonthVisible = false;
+		sixMonthVisible = false;
+		
+		rollingAverageVisible = WaitForElementPresentNoThrow(By.xpath("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4"), MiniTimeout);
+		
+		if(!rollingAverageVisible)
+		{
+			System.out.println(rollingAverageVisible);
+			System.out.println(threeMonthVisible);
+			System.out.println(sixMonthVisible);
+			return;
+		}
+		
+		if(driver.findElements(By.xpath("(//div[@class='tdb-inlineBlock'])")).size() == 6)
+		{
+			threeMonthVisible = true;
+			sixMonthVisible = true;
+			System.out.println(rollingAverageVisible);
+			System.out.println(threeMonthVisible);
+			System.out.println(sixMonthVisible);
+			return;
+		}
+		
+		if(driver.findElements(By.xpath("(//div[@class='tdb-inlineBlock'])")).size() == 3)
+		{
+			threeMonthVisible = true;
+			System.out.println(rollingAverageVisible);
+			System.out.println(threeMonthVisible);
+			System.out.println(sixMonthVisible);
+			return;
+		}
+	}	
 	
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,8 +239,8 @@ public class Hierarchy extends BaseClass
 	
 	public static void RunExpenseLocalizationTagTests() throws Exception
 	{
-		// KpiTitleTitleAndMainTitle();
-		//KpiTileRolling();
+		KpiTitleTitleAndMainTitle();
+		KpiTileRolling();
 		//KpiTileThreeMonth();
 		//KpiTileSixMonth();
 		//KpiTileAllocation();
