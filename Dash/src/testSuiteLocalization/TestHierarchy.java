@@ -43,17 +43,17 @@ public class TestHierarchy extends BaseClass
 		
 		DebugTimeout(4, "wait 4 for page load");
 		
-		//CommonTestStepActions.OpenSettingsPanel();
-
-		//FleetExpense.VerifySomeTextInSettingsPanel();
-
-		//FleetExpense.selectLanguage("es-ES");
-
-		//CommonTestStepActions.CloseSettingsPanel();
-
-		Hierarchy.RunExpenseLocalizationTagTests();
+		FleetExpense.SetupLanguageTag("[ja]");
 		
-		Pause("");
+		FleetExpense.SetupInsideTag("ja");
+		
+		FleetExpense.SetCurrency("USD");
+		
+		// Hierarchy.LoopThroughMonths();
+		
+		Hierarchy.LoopThroughHierarchies();
+		
+		Pause("Test Passed.");
 		// miss step.
 		
 	
