@@ -49,6 +49,28 @@ public class FleetExpense extends BaseClass
 	}
 	*/
 	
+	
+	public static void ExpenseTrendingLegends()
+	{
+		chartId = UsageHelper.getChartId(1);
+
+		
+		// spend category.
+		
+		// #highcharts-gi9txod-58>svg>g.highcharts-legend>g>g>g
+		
+		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g")); 
+		
+		ShowWebElementListText(eleList);
+		
+		//ShowText(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(1)>text>tspan")).getText());
+		//ShowText(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(2)>text>tspan")).getText());
+		
+		//Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(1)>text>tspan")).getText().startsWith(startsWith));
+		//Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(2)>text>tspan")).getText().startsWith(startsWith));
+	}
+
+	
 	public static void SetupLanguageTag(String languageTag) throws Exception 
 	{
 		startsWith = languageTag;
@@ -141,14 +163,20 @@ public class FleetExpense extends BaseClass
 	public static void TwoMainTitles()
 	{
 		tempList.clear();
-		//tempList.add("(//h2[@class='tdb-h2'])[1]");
+		//tempList.add("");
 		tempList.add("(//h2[@class='tdb-h2'])[2]");
 		VerifyTextXpath(tempList);
 	
-		String []  strData = driver.findElement(By.xpath("//h2[@class='tdb-h2']")).getText().split(" ");
-		Assert.assertTrue(strData[1].startsWith(startsWith));
-	
-	
+		if(startsWith.equals("[ja]"))
+		{
+			String []  strData = driver.findElement(By.xpath("//h2[@class='tdb-h2']")).getText().split(" ");
+			Assert.assertTrue(strData[1].startsWith(startsWith));
+		}
+		else
+		{
+			////h2[@class='tdb-h2'])[2]
+			Assert.assertTrue(driver.findElement(By.xpath("(//h2[@class='tdb-h2'])[1]")).getText().startsWith(startsWith));
+		}
 	}
 
 	
@@ -181,7 +209,7 @@ public class FleetExpense extends BaseClass
 		VerifyListOfElementsStartsWith(eleList);
 	}
 	
-	public static void VendorSpendLegends()
+	public static void VendorSpendLegends() throws Exception
 	{
 		chartId = UsageHelper.getChartId(1);
 		ClearEleList();
@@ -189,6 +217,7 @@ public class FleetExpense extends BaseClass
 		
 		//ShowWebElementListText(eleList);
 		VerifyListOfElementsStartsWith(eleList);
+		// Pause("");
 	}
 	
 	public static void PieLegends()
@@ -240,8 +269,9 @@ public class FleetExpense extends BaseClass
 	{
 		
 		// 'view by hierarchy link' - this is already converted.
-		//Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).getText().startsWith(startsWith));
-		ShowText("-- " + driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).getText());
+		// ShowText("-- " + driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).getText());
+		Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-button.tdb-button--flat")).getText().startsWith(startsWith.toUpperCase()));
+
 		
 		//ShowText("-- " + driver.findElement(By.cssSelector(".tdb-pov__heading")).getText());		
 		// countries
@@ -303,7 +333,7 @@ public class FleetExpense extends BaseClass
 	{
 		for(String str : listIn)
 		{
-			// ShowText(driver.findElement(By.xpath(str)).getText());
+			ShowText(driver.findElement(By.xpath(str)).getText());
 			Assert.assertTrue(driver.findElement(By.xpath(str)).getText().startsWith(startsWith));
 		}
 	}
@@ -446,14 +476,14 @@ public class FleetExpense extends BaseClass
 		FleetExpense.KpiTileRolling();
 		FleetExpense.KpiTileThreeMonth();
 		FleetExpense.KpiTileSixMonth();
-		FleetExpense.TwoMainTitles();
+		FleetExpense.TwoMainTitles(); // bladdxx
 		FleetExpense.SubTitles();
 		// Above are complete.
 		
 		FleetExpense.TopSelectors();
 		FleetExpense.BottomSelectors();
 		//FleetExpense.PieLegends();
-		// FleetExpense.VendorSpendLegends();
+		FleetExpense.VendorSpendLegends();
 		//FleetExpense.AllTrendLegends();
 		FleetExpense.OddsAndEnds();
 		Currency();
@@ -467,14 +497,14 @@ public class FleetExpense extends BaseClass
 		FleetExpense.KpiTileRolling();
 		FleetExpense.KpiTileThreeMonth();
 		FleetExpense.KpiTileSixMonth();
-		FleetExpense.TwoMainTitles();
+		FleetExpense.TwoMainTitles(); //  bladdxx
 		FleetExpense.SubTitles();
 		Currency();
 		
 		FleetExpense.TopSelectors();
 		FleetExpense.BottomSelectors();
 		//FleetExpense.PieLegends();  // --------------- comment
-		//FleetExpense.VendorSpendLegends();
+		FleetExpense.VendorSpendLegends();
 		//FleetExpense.AllTrendLegends(); // ------------ comment
 		FleetExpense.OddsAndEnds(); // -------------- comment
 	}

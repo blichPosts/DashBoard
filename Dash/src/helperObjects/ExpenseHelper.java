@@ -960,7 +960,8 @@ public class ExpenseHelper extends BaseClass
 		{
 			if(ele.getText().contains(":"))
 			{
-				actualList.add(ele.getText().replace(":", ""));
+				// actualList.add(ele.getText().replace(":", ""));
+				actualList.add(ele.getText().replace(":", "").trim().split("  ")[0]); // bob updated for dash 1.2.7
 			}
 		}
 		

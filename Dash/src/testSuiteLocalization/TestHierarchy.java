@@ -1,5 +1,7 @@
 package testSuiteLocalization;
 
+import javax.swing.JOptionPane;
+
 import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -30,7 +32,7 @@ public class TestHierarchy extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		//CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		DebugTimeout(4, "wait 4 for expense page load");
-		
+	
 		// ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 
 		//ExpenseHelper.ShowSelectedMonth();
@@ -41,17 +43,22 @@ public class TestHierarchy extends BaseClass
 		
 		// .tdb-button.tdb-button--flat
 		
-		DebugTimeout(4, "wait 4 for page load");
+		DebugTimeout(6, "wait 6 for page load");
 		
-		FleetExpense.SetupLanguageTag("[ja]");
+		// German MDE
 		
-		FleetExpense.SetupInsideTag("ja");
+		Hierarchy.SetupLanguageTag("[MDE]");
 		
-		FleetExpense.SetCurrency("USD");
+		Hierarchy.SetupInsideTag("MDE");
+		
+		Hierarchy.SetCurrency("USD");
+		
+		Hierarchy.LoopThroughMonthsTwo();
 		
 		// Hierarchy.LoopThroughMonths();
 		
-		Hierarchy.LoopThroughHierarchies();
+		// Hierarchy.LoopThroughHierarchies(); // hierarchies to category selectors to maybe driil down 
+		
 		
 		Pause("Test Passed.");
 		// miss step.
@@ -62,8 +69,9 @@ public class TestHierarchy extends BaseClass
 	@AfterClass
 	public static void closeDriver() throws Exception
 	{
+
 		System.out.println("Close Browser.");		
-	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
+	    JOptionPane.showMessageDialog(frame, "At End Before Browser Close");
 		driver.close();
 		driver.quit();
 	}		

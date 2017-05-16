@@ -52,9 +52,11 @@ public class TestExpense extends BaseClass
 
 		// FleetExpense.VerifySomeTextInSettingsPanel(); // gone
 
-		FleetExpense.SetupLanguageTag("[ja]");
+		// German MDE
 		
-		FleetExpense.SetupInsideTag("ja");
+		FleetExpense.SetupLanguageTag("[MDE]");
+		
+		FleetExpense.SetupInsideTag("MDE");
 		
 		FleetExpense.SetCurrency("USD");
 
