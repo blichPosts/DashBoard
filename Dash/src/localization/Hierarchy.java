@@ -39,6 +39,13 @@ public class Hierarchy extends BaseClass
 	public static boolean threeMonthVisible = false;
 	public static String expectedCurrency = ""; 
 
+	public static enum PageStatus
+	{
+		hasDependents,
+		hasNoDependents
+	}
+	
+	
 	public static void SetupLanguageTag(String languageTag) throws Exception 
 	{
 		startsWith = languageTag;
@@ -55,6 +62,7 @@ public class Hierarchy extends BaseClass
 		expectedCurrency = currencyString;
 	}
 
+	// this is the small text  directly under the KPIs to the left.
 	public static void CurrencySection() throws Exception
 	{
 	
@@ -537,7 +545,9 @@ public class Hierarchy extends BaseClass
 
 			DebugTimeout(3, "Wait 3 before run actual test.");
 			
+			ShowText("*********** RUN ALL TESTS **********");
 			RunExpenseLocalizationTagTests();
+			// RunExpenseLocalizationTagTests();
 			
 			// bladdzzz
 			// wait for the new bread crumb to be added.
@@ -605,8 +615,6 @@ public class Hierarchy extends BaseClass
 		TileMapText();
 		//ExpenseTrendingLegends();
 		CurrencySection();		
-		
-		
 		VerifyDependentUnits();
 		
 		// miss step.

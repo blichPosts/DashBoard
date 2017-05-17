@@ -29,7 +29,8 @@ public class FleetExpense extends BaseClass
 	public static boolean rollingAverageVisible = false;
 	public static boolean sixMonthVisible = false;
 	public static boolean threeMonthVisible = false;
-	public static String expectedCurrency = ""; 
+	public static String expectedCurrency = "";
+	public static String[] currentmonthYearFormat;
 	
 	// public static viewType vType;
 	
@@ -338,6 +339,98 @@ public class FleetExpense extends BaseClass
 		}
 	}
 	
+	// send in the first month in the pull down list.
+	public static void GetCurrentMonthYear(String textInMonthPulldown) throws Exception
+	{
+		String temp = "";
+		
+		// store away month/year into an array.
+		if(textInMonthPulldown .contains("["))
+		{
+			temp = textInMonthPulldown.split("]")[1];
+			
+			currentmonthYearFormat = new String[]{temp.split(" ")[0],temp.split(" ")[1]};
+			//ShowText("array zero " + currentmonthYearFormat[0]);
+			//ShowText("array one " + currentmonthYearFormat[1]);
+		}
+		
+		if(startsWith.equals("[ja]"))
+		{
+			
+			
+
+		}
+		
+		if(startsWith.equals("[MDE]"))
+		{
+			// German has "mmm yyyy" format
+
+			// verify element 1 (year) is an integer
+			int tempInt= Integer.parseInt(currentmonthYearFormat[1]);
+
+
+			// verify element 0 (month) is a string.
+			try
+			{
+				tempInt = Integer.parseInt(currentmonthYearFormat[0]);
+			}
+			catch(Exception ex) // expected fail when try to convert string to integer.
+			{
+				if(!ex.getMessage().contains("For input string:"))
+				{
+					Assert.fail("It looks like the second item in 'currentmonthYearFormat' array is wrong type.");
+				}
+			}	
+		}
+		
+		VerifyMonthYearFormatInTitle();
+	}
+	
+	public static void VerifyMonthYearFormatInTitle() throws Exception
+	{
+		String temp = "";
+		String [] arr;
+		
+		if(driver.findElement(By.xpath("(//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div/div/h2)[1]")).getText().contains("]"))
+		{
+			temp = driver.findElement(By.xpath("(//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div/div/h2)[1]")).getText().split("]")[1];
+			
+			arr = new String[]{temp.split(" ")[0],temp.split(" ")[1]};	
+			
+			ShowText(arr[0]);
+			ShowText(arr[1]);
+			
+			if(startsWith.equals("ja"))
+			{
+				
+			}
+			
+			if(startsWith.equals("MDE"))
+			{
+				// German has "mmm yyyy" format
+
+				// verify element 1 (year) is an integer
+				int tempInt= Integer.parseInt(currentmonthYearFormat[1]);
+
+				// verify element 0 (month) is a string.
+				try
+				{
+					tempInt = Integer.parseInt(currentmonthYearFormat[0]);
+				}
+				catch(Exception ex) // expected fail when try to convert string to integer.
+				{
+					if(!ex.getMessage().contains("For input string:"))
+					{
+						Assert.fail("It looks like the second item in 'currentmonthYearFormat' array is wrong type.");
+					}
+				}				
+			}	
+		}
+		
+		Pause("");
+		
+	}
+	
 	public static void VerifyTextXpathWithCount(List<String> listIn, int[] arrIn)
 	{
 		int x = 0;
@@ -397,9 +490,13 @@ public class FleetExpense extends BaseClass
 		{
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
 			ShowText("Selected Month is " + ele.getText() + " ****************************************************");
+
+			HierarchyHelper.WaitForProgressBarInactive(ExtremeTimeout);
 			
 			Thread.sleep(3000);
 
+			GetCurrentMonthYear(ele.getText());
+			
 			InitVisibilityTileMapAverages(); // find what is showing in the KPI tiles and set booleans.
 			
 			if(Integer.parseInt(driver.findElement(By.xpath("(//div[@class='tdb-kpi__footerItem'])[1]/span[1]")).getText()) > 0)
@@ -417,6 +514,22 @@ public class FleetExpense extends BaseClass
 			// Pause("Check Flags.");
 		}
 		
+	}
+	
+	public static void CurrencySection() throws Exception
+	{
+		//ShowText(driver.findElement(By.xpath("(//div[@class='tdb-flexContainer']/div)[1]/div[1]/span[2]")).getText());
+		//ShowText(driver.findElement(By.xpath("(//div[@class='tdb-flexContainer']/div)[1]/div[2]/span[1]")).getText());
+		//ShowText(driver.findElement(By.xpath("(//div[@class='tdb-flexContainer']/div)[1]/div[2]/span[3]")).getText());		
+		
+		// accounts loaded
+		Assert.assertTrue(driver.findElement(By.xpath("(//div[@class='tdb-flexContainer']/div)[1]/div[1]/span[2]")).getText().startsWith(startsWith));
+		
+		// currency text.
+		Assert.assertTrue(driver.findElement(By.xpath("(//div[@class='tdb-flexContainer']/div)[1]/div[2]/span[1]")).getText().startsWith(startsWith));
+
+		// actual currency.
+		Assert.assertTrue(driver.findElement(By.xpath("(//div[@class='tdb-flexContainer']/div)[1]/div[2]/span[3]")).getText().startsWith(startsWith));
 	}
 	
 	public static void Currency() throws Exception
@@ -487,6 +600,7 @@ public class FleetExpense extends BaseClass
 		//FleetExpense.AllTrendLegends();
 		FleetExpense.OddsAndEnds();
 		Currency();
+		CurrencySection();
 	}
 	
 	// only test what's showing when no data is available.
@@ -500,6 +614,7 @@ public class FleetExpense extends BaseClass
 		FleetExpense.TwoMainTitles(); //  bladdxx
 		FleetExpense.SubTitles();
 		Currency();
+		CurrencySection();
 		
 		FleetExpense.TopSelectors();
 		FleetExpense.BottomSelectors();

@@ -62,8 +62,6 @@ public class BaseClass
 	//public static String commandUserName = "bob.lichtenfels@tangoe.com XX1";
 	//public static String commandPassword = "hop*ititmb9";	
 	
-	
-
 	public static String commandUserName = "bob.phi";  // pwc done
 	public static String commandPassword = "tngo111";
 
