@@ -126,28 +126,36 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			// 2 <vendor's name>
 			// 3 <amount shown for the vendor>
 			
+			// ** May 17 - Ana 
+			// Dash version 1.2.8 - tooltip's format has changed on DOM: the amount of items in the tooltip equals to the (amount of series * 2) + 1 
+			// 0 MM-YYYY -- month and year appears once -- stays the same
+			// 1 ? -- this is for the bullet -- stays the same
+			// 2 : <vendor's name> : <amount shown for the vendor>  -- unified in the same line 
+						
+			
 			List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
 			int amount = highchartSeries.size();
-			int expectedAmountItemsTooltip = (amount * 3) + 1;
+			int factor = 2;  // Ana added - May 17
+			int expectedAmountItemsTooltip = (amount * factor) + 1;  // Ana modif - May 17
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 			
 			
 			// For each vendor listed in the tooltip verify the label and the amount shown
 			for (int i = 1; i <= legends.size(); i++) {
 			
-				int index =  i * 3 - 1;
+				int index = i * factor;  // Ana modif - May 17 -- before modif --> int index =  i * 3 - 1;  
 				
 				// Get the label and remove colon at the end of its text
-				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+				String labelFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 17 -- before modif --> tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
 
 				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
-				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+				String valueFound = tooltip.get(index).getText().split(":")[2].trim(); // Ana modif - May 17 -- before modif --> tooltip.get(index+1).getText().trim().replace(" ", "");
 					
 				// Get the value expected
 				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
 				
 				System.out.println("Vendor: " + labelFound);
-				System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				

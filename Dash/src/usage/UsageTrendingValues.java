@@ -89,24 +89,24 @@ public class UsageTrendingValues extends BaseClass {
 			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
 			// 0 MM-YYYY -- month and year appears once
 			// 1 ? -- this is for the bullet
-			// 2 <vendor's name>
-			// 3 <amount shown for the vendor>
+			// 2 <vendor's name> : <amount shown for the vendor>
 			
 			int amountOfSeries = highchartSeries.size();
-			int expectedAmountItemsTooltip = (amountOfSeries * 3) + 1;
+			int factor = 2;  // Ana added - May 17
+			int expectedAmountItemsTooltip = (amountOfSeries * factor) + 1;  // Ana modif - May 18
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 			
 			
 			// For each vendor listed in the tooltip verify the amount shown
 			for(int i = 1; i <= legends.size(); i++) {
 			
-				int index =  i * 3 - 1;
+				int index =  i * factor;  // Ana modif - May 18 -- before modif --> int index =  i * 3 - 1;
 				
 				// Get the label and remove colon at the end of its text
-				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+				String labelFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 18 -- before modif --> tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
 
 				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: 15 256 985. Value needed is: 15256985
-				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+				String valueFound = tooltip.get(index).getText().split(":")[2].trim(); // Ana modif - May 18 -- before modif --> tooltip.get(index+1).getText().trim().replace(" ", "");
 							
 				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
 				

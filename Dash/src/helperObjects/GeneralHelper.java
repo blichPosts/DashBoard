@@ -224,30 +224,33 @@ public class GeneralHelper extends BaseClass {
 		
 		String numericValue = value;
 		
-		if (numericValue.startsWith("$"))
+//		if (numericValue.startsWith("$"))
 			numericValue = numericValue.replace("$", "");
 		
-		if (numericValue.endsWith(" directly allocated")) 
+//		if (numericValue.endsWith(" directly allocated")) 
 			numericValue = numericValue.replace(" directly allocated", "");  
 		
-		if (numericValue.endsWith(" service numbers"))
+//		if (numericValue.endsWith(" service numbers"))
 			numericValue = numericValue.replace(" service numbers", "");
 
-		if (numericValue.endsWith("B"))
+//		if (numericValue.endsWith("B"))
 			numericValue = numericValue.replace("B", "");
 		
-		if (numericValue.endsWith("K"))
+//		if (numericValue.endsWith("K"))
 			numericValue = numericValue.replace("K", "");
 			
-		if (numericValue.endsWith("M"))
+//		if (numericValue.endsWith("M"))
 			numericValue = numericValue.replace("M", "");
 		
-		if (numericValue.endsWith("G"))
+//		if (numericValue.endsWith("G"))
 			numericValue = numericValue.replace("G", "");
 		
-		if (numericValue.endsWith("T"))
+//		if (numericValue.endsWith("T"))
 			numericValue = numericValue.replace("T", "");
 				
+//		if (numericValue.contains(","))
+			numericValue = numericValue.replace(",", "");
+		
 		return numericValue.trim();
 		
 	}

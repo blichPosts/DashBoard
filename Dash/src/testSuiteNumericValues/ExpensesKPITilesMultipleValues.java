@@ -40,7 +40,11 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 		// Reload Fleet data
 		ReadFilesHelper.reloadFleetData();
 		Thread.sleep(2000);
-				
+		
+		// Wait for countries and vendors to be loaded on PoV section
+		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
+					
+		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -51,7 +55,7 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 //		String path = UsageHelper.path;
-		int amountOfVendors = 5;
+		int amountOfVendors = 3;
 		
 		// #1 Unselect all vendors
 		CommonTestStepActions.UnSelectAllVendors();

@@ -164,51 +164,109 @@ public class UsageHelper extends BaseClass{
 		
 		boolean previousMonthExisted = true;
 		UsageOneMonth currentMonth;
-		String month = "";
-		String year =  "";
+//		String month = "";
+//		String year =  "";
 		String monthYear = "";
 		String vendorName = valuesFromFileTmp.get(0).getVendorName();
 		int fileIndex = 0;
 		
-		for(int i = 0; i < 13; i++){
+		ShowText("valuesFromFileTmp.size: " + valuesFromFileTmp.size());
+		ShowText("vendorName: " + vendorName);
+		
+		
+		for (int i = 0; i < monthsList.size(); i++) {
 			
-			if(previousMonthExisted){
+			if (fileIndex < valuesFromFileTmp.size()) {
 				
 				currentMonth = valuesFromFileTmp.get(fileIndex);
-				month = currentMonth.getOrdinalMonth();
-				year =  currentMonth.getOrdinalYear();
+				String month = currentMonth.getOrdinalMonth();
+				String year =  currentMonth.getOrdinalYear();
 				monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
 				
-			} 
-			
-			if (!monthYear.equals(monthsList.get(i).getText())){
+				// ShowText(" monthYear dropdown: " + monthsList.get(i).getText() + ", monthYear From File: " + monthYear + " -- fileIndex: " + fileIndex);
+				
+				// If monthYear equal
+				if (monthYear.equals(monthsList.get(i).getText())) {
 
+					// ShowText("--> match");
+					
+					valuesFromFileNew.add(i, currentMonth);
+					fileIndex++;
+					
+				} else if (!monthYear.equals(monthsList.get(i).getText())){
+		
+					// ShowText("--> NO match");
+					
+					String[] monthYearParts = monthsList.get(i).getText().split(" "); 
+					String monthNew = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
+					String yearNew = monthYearParts[1];
+					
+					UsageOneMonth usageMonth = new UsageOneMonth(vendorName, yearNew, monthNew);
+					valuesFromFileNew.add(i, usageMonth);
+//					previousMonthExisted = false;
+						
+				} 
+				
+			} else if (fileIndex >= valuesFromFileTmp.size() && i < monthsList.size()) {
+				
+				// ShowText(" monthYear dropdown: " + monthsList.get(i).getText());
+				// ShowText("--> List from source end add missing previous months");
+				
 				String[] monthYearParts = monthsList.get(i).getText().split(" "); 
-				String monthNum = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
-				/*if(monthNum.length() == 1){
-					monthNum = "0" + monthNum;
-				}*/
+				String monthNew = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
+				String yearNew = monthYearParts[1];
 				
-				UsageOneMonth usageMonth = new UsageOneMonth(vendorName, monthYearParts[1], monthNum);
+				UsageOneMonth usageMonth = new UsageOneMonth(vendorName, yearNew, monthNew);
 				valuesFromFileNew.add(i, usageMonth);
-				previousMonthExisted = false;
 				
-			} else {
-				
-				String monthTmp = valuesFromFileTmp.get(fileIndex).getOrdinalMonth();
-				/*if(monthTmp.length() == 1){
-					monthTmp = "0" + monthTmp;
-				}*/
-				
-				UsageOneMonth usageMonthTmp = valuesFromFileTmp.get(fileIndex);
-				usageMonthTmp.setOrdinalMonth(monthTmp);
-				
-				valuesFromFileNew.add(i, usageMonthTmp);
-				previousMonthExisted = true;
-				fileIndex++;
 			}
 			
 		}
+		
+//		for(int i = 0; i < 13; i++){
+//			
+//			ShowText("fileIndex: " + fileIndex);
+//			
+//			if(previousMonthExisted){
+//				
+//				currentMonth = valuesFromFileTmp.get(fileIndex);
+//				month = currentMonth.getOrdinalMonth();
+//				year =  currentMonth.getOrdinalYear();
+//				monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
+//				
+//			} 
+//			
+//			if (!monthYear.equals(monthsList.get(i).getText())){
+//
+//				String[] monthYearParts = monthsList.get(i).getText().split(" "); 
+//				String monthNum = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
+//				/*if(monthNum.length() == 1){
+//					monthNum = "0" + monthNum;
+//				}*/
+//				
+//				UsageOneMonth usageMonth = new UsageOneMonth(vendorName, monthYearParts[1], monthNum);
+//				valuesFromFileNew.add(i, usageMonth);
+//				previousMonthExisted = false;
+//				
+//			} else {
+//				
+//				String monthTmp = valuesFromFileTmp.get(fileIndex).getOrdinalMonth();
+//				/*if(monthTmp.length() == 1){
+//					monthTmp = "0" + monthTmp;
+//				}*/
+//				
+//				UsageOneMonth usageMonthTmp = valuesFromFileTmp.get(fileIndex);
+//				usageMonthTmp.setOrdinalMonth(monthTmp);
+//				
+//				valuesFromFileNew.add(i, usageMonthTmp);
+//				previousMonthExisted = true;
+//				fileIndex++;
+//			}
+//			
+//		}
+		
+		
+		ShowText("valuesFromFileNew.size(): " + valuesFromFileNew.size());
 		
 		return valuesFromFileNew;
 		

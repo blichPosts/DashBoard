@@ -52,10 +52,10 @@ public class HierarchyHelper extends BaseClass {
 	
 	public static void waitForKPIsToLoad() throws Exception{
 		
-		WaitForElementVisible(By.xpath("//h3[text()='Total Expense']"), MainTimeout);		
+		WaitForElementVisible(By.xpath("//h3[contains(text(), 'Total Expense')]"), MainTimeout);		
 		WaitForElementVisible(By.xpath("//h3[contains(text(), 'Optimizable Expense')]"), MainTimeout);
-		WaitForElementVisible(By.xpath("//h3[text()='Roaming Expense']"), MainTimeout);
-		WaitForElementVisible(By.xpath("//h3[text()='Cost per Service Number']"), MainTimeout);
+		WaitForElementVisible(By.xpath("//h3[contains(text(), 'Roaming Expense')]"), MainTimeout);
+		WaitForElementVisible(By.xpath("//h3[contains(text(), 'Cost per Service Number')]"), MainTimeout);
 		
 	}
 

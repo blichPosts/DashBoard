@@ -64,8 +64,8 @@ public class BaseClass
 	
 	
 
-	public static String commandUserName = "archana.trojic@tangoe.com phi";  // pwc done
-	public static String commandPassword = "traq06";
+	public static String commandUserName = "ana.phi"; // "analaura.pace@tangoe.com phi";    
+	public static String commandPassword = "tngo111";
 
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
@@ -269,10 +269,13 @@ public class BaseClass
 	
 	
 	// Modified by Ana
-	public static void SelectUsageTab()throws Exception	
+	public static void SelectUsageTab()throws Exception	// modified by Ana - May 11
 	{
-		WaitForElementClickable(By.xpath("//a[text()='View Usage']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
-		driver.findElement(By.xpath("//a[text()='View Usage']")).click();
+		WaitForElementClickable(By.xpath("//div[@class='tdb-dashboardToggle']/div[2]"), MediumTimeout, "Failed Click in BaseClass.WaitForUsagePageLoad");
+		driver.findElement(By.xpath("//div[@class='tdb-dashboardToggle']/div[2]")).click();
+		
+//		WaitForElementClickable(By.xpath("//a[text()='View Usage']"), MediumTimeout, "Failed Click in  BaseClass.WaitForExpensePageLoad");
+//		driver.findElement(By.xpath("//a[text()='View Usage']")).click();
 	}
 	
 	

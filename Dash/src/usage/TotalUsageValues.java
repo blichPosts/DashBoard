@@ -119,13 +119,13 @@ public class TotalUsageValues extends BaseClass {
 				// Verify the label and the amount shown on the tooltip
 				for(int i = 1; i <= legends.size(); i++){
 				
-					int index =  i * 3 - 1;
+					int index = i * 2; // Ana modif - May 18 -- before modif --> i * 3 - 1;
 									
 					// Get the label and remove colon at the end of its text 
-					String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+					String labelFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 18 -- before modif --> tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
 	
 					// Get the value on tooltip and remove all blank spaces
-					String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+					String valueFound = tooltip.get(index).getText().split(":")[2].trim();  // Ana modif - May 18 -- before modif --> tooltip.get(index+1).getText().trim().replace(" ", "");
 
 					verifyValuesFound(labelFound, valueFound, vendorNameExpected, index);
 									
@@ -228,7 +228,7 @@ public class TotalUsageValues extends BaseClass {
 				
 				if (!vendorsInChartNames.contains(v)){
 					
-					ShowText("Vendor " + v + ", is not listed in chart");
+					//  ShowText("Vendor " + v + ", is not listed in chart");
 				
 					UsageOneMonth usage = (UsageOneMonth) vendorUsageMap.get(v);
 
@@ -336,12 +336,6 @@ public class TotalUsageValues extends BaseClass {
 		
 		y_offset += (int) GeneralHelper.getScrollPosition();
 		
-//		if (loginType.equals(LoginType.Command)) {
-//			
-//			y_offset = y_offset -50;  //  these coordinates work on CMD :) - Dash v.1.1.13 - March 1st
-//			
-//		}						
-
 		x = x + x_offset;
 		y = y + y_offset;
 		
@@ -380,7 +374,7 @@ public class TotalUsageValues extends BaseClass {
 				
 			}
 			
-			if (category == UsageHelper.categoryVoice && index == 5) {
+			if (index == 4 && category == UsageHelper.categoryVoice) {
 				
 				valueExpected = overageValues.get(vendorNameExpected);
 				labelExpected = "Domestic Overage";
