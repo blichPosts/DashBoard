@@ -192,7 +192,7 @@ public class ExpenseHelper extends BaseClass
 		// put the corresponding country values in tempList.
 		for(String str : totalExpenseLegendsList)
 		{
-			if(!str.equals("Other"))
+			if(!str.contains("Other"))
 			{
 				tempStringList.add(ExpenseHelper.GetCountryForVendor(str));				
 			}

@@ -29,46 +29,42 @@ public class FleetExpense extends BaseClass
 	public static boolean rollingAverageVisible = false;
 	public static boolean sixMonthVisible = false;
 	public static boolean threeMonthVisible = false;
+	public static boolean exceptionCaught = false;
 	public static String expectedCurrency = "";
 	public static String[] currentmonthYearFormat;
 	
-	// public static viewType vType;
-	
-	
-	/*
-	public static enum viewType
-	{
-		country,
-		vendor
-	}
-	*/
-	
-	/*
-	public static void SetViewType (viewType vtyp)
-	{
-		vType = vtyp;
-	}
-	*/
-	
-	
-	public static void ExpenseTrendingLegends()
-	{
-		chartId = UsageHelper.getChartId(1);
 
-		
-		// spend category.
-		
-		// #highcharts-gi9txod-58>svg>g.highcharts-legend>g>g>g
-		
-		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g")); 
-		
-		ShowWebElementListText(eleList);
-		
-		//ShowText(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(1)>text>tspan")).getText());
-		//ShowText(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(2)>text>tspan")).getText());
-		
-		//Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(1)>text>tspan")).getText().startsWith(startsWith));
-		//Assert.assertTrue(driver.findElement(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(2)>text>tspan")).getText().startsWith(startsWith));
+	
+	
+	public static void ExpenseTrendingLegendsDateTimeFormat()
+	{
+		for(int x = 2; x < 5; x++)
+		{
+			
+			System.out.println("Run month/date date//month format for chart ID# " + x + " ----------------------");
+			
+			chartId = UsageHelper.getChartId(x);
+			
+			List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan")); 
+			
+			// ShowWebElementListText(eleList);
+			
+			for(WebElement ele : eleList)
+			{
+				if(startsWith.equals("[MDE]")) // month/year
+				{
+					VerifyMonthYear(ele.getText());
+				}
+				
+				if(startsWith.equals("[ja]")) // year/month
+				{
+					VerifyYearMonth(ele.getText());
+				}
+			}
+			
+			ShowInt(eleList.size());
+			
+		}
 	}
 
 	
@@ -103,7 +99,7 @@ public class FleetExpense extends BaseClass
 		{
 			return;
 		}
-		ShowText("Run Rolling");
+		// ShowText("Run Rolling");
 		tempList.clear();
 		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[1]/h4");
 		tempList.add("(//div[@class='tdb-kpi__averagesTitle'])[2]/h4");
@@ -124,7 +120,7 @@ public class FleetExpense extends BaseClass
 
 		if(sixMonthVisible)
 		{
-			ShowText("Run three month");
+			// ShowText("Run six month");
 			tempList.clear();
 			tempList.add("(//div[@class='tdb-inlineBlock'])[1]");
 			tempList.add("(//div[@class='tdb-inlineBlock'])[3]");
@@ -133,13 +129,12 @@ public class FleetExpense extends BaseClass
 		}
 		else
 		{
-			ShowText("Run three month");
+			// ShowText("Run three month");
 			tempList.clear();
 			tempList.add("(//div[@class='tdb-inlineBlock'])[1]");
 			tempList.add("(//div[@class='tdb-inlineBlock'])[2]");
 			tempList.add("(//div[@class='tdb-inlineBlock'])[3]");
 			VerifyTextXpath(tempList);
-			
 		}
 	}
 	
@@ -221,14 +216,37 @@ public class FleetExpense extends BaseClass
 		// Pause("");
 	}
 	
-	public static void PieLegends()
+	public static void AllLegends()
 	{
-		chartId = UsageHelper.getChartId(0);
-		ClearEleList();
-		eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
+		for (int x = 2; x < 5; x++)
+		{
+			chartId = UsageHelper.getChartId(x);
+			ClearEleList();
+			eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
+			for(WebElement ele : eleList)
+			{
+				if(ele.getText().contains("Other"))
+				{
+					ShowText(ele.getText());
+					if(startsWith.equals("[MDE]"))
+					{
+						Assert.assertTrue(ele.getText().startsWith("[de]"));
+					}
+					if(startsWith.equals("[ja]"))
+					{
+						Assert.assertTrue(ele.getText().startsWith(startsWith));
+					}
+				}
+				else
+				{
+					Assert.assertTrue(!ele.getText().contains("[ja]"));
+					Assert.assertTrue(!ele.getText().contains("[de]"));
+				}
+			}
+		}
 		
 		//ShowWebElementListText(eleList);
-		VerifyListOfElementsStartsWith(eleList);
+		// VerifyListOfElementsStartsWith(eleList);
 	}
 	
 	public static void AllTrendLegends()
@@ -295,20 +313,6 @@ public class FleetExpense extends BaseClass
 			Assert.assertTrue(str.startsWith(startsWith.toUpperCase()));
 			// ShowText(str);
 		}
-		
-		
-		// .tdb-pov__monthLabel
-		
-
-		
-			// below gets the text for vendor and country view strings.
-			//String [] strArray = driver.findElement(By.cssSelector(".md-tab-header")).getText().split("\n");
-			//ShowArray(strArray);
-			
-
-		//Pause("");
-
-		
 	}
 	
 
@@ -330,35 +334,116 @@ public class FleetExpense extends BaseClass
 	// 												Helpers 
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public static void VerifyYearMonth(String yearMonth)
+	{
+		// year/month is separated by "-". 
+		String[] yearMonthArray = new String[]{yearMonth.split("-")[0],yearMonth.split("-")[1]}; 
+		
+		// year
+		Assert.assertTrue(yearMonthArray[0].length() == 4); // size should be 4
+		Assert.assertTrue(yearMonthArray[0].equals("2016") ||  yearMonthArray[0].equals("2017")); // should be 2016 or 2017 
+		Assert.assertTrue(Integer.valueOf(yearMonthArray[0]) == 2016 ||  Integer.valueOf(yearMonthArray[0]) == 2017); // should be 2016 or 201t as integer also.
+		
+		
+		// month
+		Assert.assertTrue(yearMonthArray[1].length() == 2); // size should be 2
+		Assert.assertTrue(Integer.valueOf(yearMonthArray[1]) < 13); // should be able to convert to an integer and 12 is the max month number.
+
+		
+	}
+
+	public static void VerifyMonthYear(String Monthyear)
+	{
+		// /month/year is separated by "-". 
+		String[] monthYearArray = new String[]{Monthyear.split("-")[0],Monthyear.split("-")[1]}; 
+
+		// month
+		Assert.assertTrue(monthYearArray[0].length() == 2); // size should be 2
+		Assert.assertTrue(Integer.valueOf(monthYearArray[0]) < 13); // should be able to convert to an integer and 12 is the max month number.
+
+		// year
+		Assert.assertTrue(monthYearArray[1].length() == 4); // size should be 4
+		Assert.assertTrue(monthYearArray[1].equals("2016") ||  monthYearArray[1].equals("2017")); // should be 2016 or 2017 
+		Assert.assertTrue(Integer.valueOf(monthYearArray[1]) == 2016 ||  Integer.valueOf(monthYearArray[1]) == 2017); // should be 2016 or 201t as integer also.
+	}
+
+	
+	
+	
 	public static void VerifyTextXpath(List<String> listIn)
 	{
 		for(String str : listIn)
 		{
-			ShowText(driver.findElement(By.xpath(str)).getText());
+			// ShowText(driver.findElement(By.xpath(str)).getText());
 			Assert.assertTrue(driver.findElement(By.xpath(str)).getText().startsWith(startsWith));
 		}
 	}
 	
-	// send in the first month in the pull down list.
-	public static void GetCurrentMonthYear(String textInMonthPulldown) throws Exception
-	{
+	// send in the current month in the pull down list.
+	// /////////////////////////////////////////////////////////////////////////////////////
+	// this verifies the month selector month/date format is correct per the language.
+	// it makes another call to verify the month/date format in the top chart.
+	// /////////////////////////////////////////////////////////////////////////////////////
+	public static void GetAndVerifyCurrentMonthYear(String textInMonthPulldown) throws Exception
+	{ 
 		String temp = "";
-		
-		// store away month/year into an array.
+		String[] tempArr;
+		exceptionCaught = false;		
+
+		// ///////////////////////////////////////////////////////////////
+		// get month/year or year/month stored away
+		// ///////////////////////////////////////////////////////////////
 		if(textInMonthPulldown .contains("["))
 		{
-			temp = textInMonthPulldown.split("]")[1];
+			if(startsWith.equals("[MDE]"))
+			{
+				temp = textInMonthPulldown.split("]")[1];
+				currentmonthYearFormat = new String[]{temp.split(" ")[0],temp.split(" ")[1]};
+				ShowText("array zero " + currentmonthYearFormat[0]);
+				ShowText("array one " + currentmonthYearFormat[1]);
+				
+			}
+			if(startsWith.equals("[ja]"))
+			{
+				//tempArr = new String[]{temp.split(startsWith)[0],temp.split(startsWith)[1]};
+				currentmonthYearFormat = new String[]{textInMonthPulldown.split("\\" + startsWith)[0].trim(),textInMonthPulldown.split("\\" + startsWith)[1].trim()};
+				ShowText("array zero " + currentmonthYearFormat[0]);
+				ShowText("array one " + currentmonthYearFormat[1]);
+				
+				//ShowText("zer " + fullFormat.split("\\" + startsWith)[0].trim());
+				//ShowText("one " + fullFormat.split("\\" + startsWith)[1].trim());
+				
+			}
 			
-			currentmonthYearFormat = new String[]{temp.split(" ")[0],temp.split(" ")[1]};
-			//ShowText("array zero " + currentmonthYearFormat[0]);
-			//ShowText("array one " + currentmonthYearFormat[1]);
+			//Pause("");
 		}
 		
 		if(startsWith.equals("[ja]"))
 		{
-			
-			
+			// Japan has "yyyy mmm" format
 
+			// verify element 0 (year) is an integer
+			int tempInt= Integer.parseInt(currentmonthYearFormat[0]);
+
+
+			// verify element 1 (month) is a string.
+			try
+			{
+				tempInt = Integer.parseInt(currentmonthYearFormat[1]);
+			}
+			catch(Exception ex) // expected fail when try to convert string to integer.
+			{
+				if(!ex.getMessage().contains("For input string:"))
+				{
+					Assert.fail("It looks like the second item in 'currentMonthYearFormat' array is wrong type.");
+				}
+				exceptionCaught = true;
+			}
+			
+			if(!exceptionCaught)
+			{
+				Assert.fail("It looks like the second item in 'currentmonthYearFormat' array is wrong type. Failed flag test.");			
+			}
 		}
 		
 		if(startsWith.equals("[MDE]"))
@@ -368,7 +453,6 @@ public class FleetExpense extends BaseClass
 			// verify element 1 (year) is an integer
 			int tempInt= Integer.parseInt(currentmonthYearFormat[1]);
 
-
 			// verify element 0 (month) is a string.
 			try
 			{
@@ -376,12 +460,20 @@ public class FleetExpense extends BaseClass
 			}
 			catch(Exception ex) // expected fail when try to convert string to integer.
 			{
+				exceptionCaught = true;
 				if(!ex.getMessage().contains("For input string:"))
 				{
 					Assert.fail("It looks like the second item in 'currentmonthYearFormat' array is wrong type.");
 				}
-			}	
+			}
+
+			if(!exceptionCaught)
+			{
+				Assert.fail("It looks like the second item in 'currentmonthYearFormat' array is wrong type. Failed flag test.");			
+			}
 		}
+
+
 		
 		VerifyMonthYearFormatInTitle();
 	}
@@ -389,20 +481,30 @@ public class FleetExpense extends BaseClass
 	public static void VerifyMonthYearFormatInTitle() throws Exception
 	{
 		String temp = "";
-		String [] arr;
+		String [] arr = {};
 		
+		// see if this is a localization tag test.
 		if(driver.findElement(By.xpath("(//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div/div/h2)[1]")).getText().contains("]"))
 		{
-			temp = driver.findElement(By.xpath("(//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div/div/h2)[1]")).getText().split("]")[1];
-			
-			arr = new String[]{temp.split(" ")[0],temp.split(" ")[1]};	
-			
-			ShowText(arr[0]);
-			ShowText(arr[1]);
+			// get month/date - date/month from title. 	// German has "mmm yyyy" format
+			if(startsWith.equals("[MDE]"))
+			{
+				temp = driver.findElement(By.xpath("(//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div/div/h2)[1]")).getText().split("]")[1];
+				arr = new String[]{temp.split(" ")[0],temp.split(" ")[1]};	
+				ShowText(arr[0]);
+				ShowText(arr[1]);
+			}
 			
 			if(startsWith.equals("ja"))
 			{
+				temp = driver.findElement(By.xpath("(//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div/div/h2)[1]")).getText();
+
+				temp.split("\\" + startsWith)[0].trim();
+				temp.split("\\" + startsWith)[1].trim();
 				
+				arr = new String[]{temp.split(" ")[0],temp.split(" ")[1]};	
+				ShowText(arr[0]);
+				ShowText(arr[1]);
 			}
 			
 			if(startsWith.equals("MDE"))
@@ -410,12 +512,12 @@ public class FleetExpense extends BaseClass
 				// German has "mmm yyyy" format
 
 				// verify element 1 (year) is an integer
-				int tempInt= Integer.parseInt(currentmonthYearFormat[1]);
+				int tempInt= Integer.parseInt(arr[1]);
 
 				// verify element 0 (month) is a string.
 				try
 				{
-					tempInt = Integer.parseInt(currentmonthYearFormat[0]);
+					tempInt = Integer.parseInt(arr[0]);
 				}
 				catch(Exception ex) // expected fail when try to convert string to integer.
 				{
@@ -425,10 +527,29 @@ public class FleetExpense extends BaseClass
 					}
 				}				
 			}	
+			
+			if(startsWith.equals("ja"))
+			{
+				// Japan has "yyyy mmm" format
+
+				// verify element 1 (year) is an integer
+				int tempInt= Integer.parseInt(arr[0]);
+
+				// verify element 0 (month) is a string.
+				try
+				{
+					tempInt = Integer.parseInt(arr[1]);
+				}
+				catch(Exception ex) // expected fail when try to convert string to integer.
+				{
+					if(!ex.getMessage().contains("For input string:"))
+					{
+						Assert.fail("It looks like the second item in 'currentmonthYearFormat' array is wrong type.");
+					}
+				}				
+			}	
+			
 		}
-		
-		Pause("");
-		
 	}
 	
 	public static void VerifyTextXpathWithCount(List<String> listIn, int[] arrIn)
@@ -484,7 +605,7 @@ public class FleetExpense extends BaseClass
 	{
 		CommonTestStepActions.initializeMonthSelector();
 		
-		ShowInt(CommonTestStepActions.webListPulldown.size());
+		// ShowInt(CommonTestStepActions.webListPulldown.size());
 		
 		for(WebElement ele : CommonTestStepActions.webListPulldown)
 		{
@@ -495,13 +616,16 @@ public class FleetExpense extends BaseClass
 			
 			Thread.sleep(3000);
 
-			GetCurrentMonthYear(ele.getText());
+			GetAndVerifyCurrentMonthYear(ele.getText());
+			
+			AllLegends();
 			
 			InitVisibilityTileMapAverages(); // find what is showing in the KPI tiles and set booleans.
 			
 			if(Integer.parseInt(driver.findElement(By.xpath("(//div[@class='tdb-kpi__footerItem'])[1]/span[1]")).getText()) > 0)
 			{
 				ShowText("Month " + ele.getText() + " - running test with data. ");
+				ExpenseTrendingLegendsDateTimeFormat(); // good
 				RunExpenseLocalizationTagTests();		
 			}
 			else
@@ -549,9 +673,9 @@ public class FleetExpense extends BaseClass
 		
 		if(!rollingAverageVisible)
 		{
-			System.out.println(rollingAverageVisible);
-			System.out.println(threeMonthVisible);
-			System.out.println(sixMonthVisible);
+			//System.out.println(rollingAverageVisible);
+			//System.out.println(threeMonthVisible);
+			//System.out.println(sixMonthVisible);
 			return;
 		}
 		
@@ -559,18 +683,18 @@ public class FleetExpense extends BaseClass
 		{
 			threeMonthVisible = true;
 			sixMonthVisible = true;
-			System.out.println(rollingAverageVisible);
-			System.out.println(threeMonthVisible);
-			System.out.println(sixMonthVisible);
+			//System.out.println(rollingAverageVisible);
+			//System.out.println(threeMonthVisible);
+			//System.out.println(sixMonthVisible);
 			return;
 		}
 		
 		if(driver.findElements(By.xpath("(//div[@class='tdb-inlineBlock'])")).size() == 3)
 		{
 			threeMonthVisible = true;
-			System.out.println(rollingAverageVisible);
-			System.out.println(threeMonthVisible);
-			System.out.println(sixMonthVisible);
+			//System.out.println(rollingAverageVisible);
+			//System.out.println(threeMonthVisible);
+			//System.out.println(sixMonthVisible);
 			return;
 		}
 	}

@@ -52,7 +52,8 @@ public class TestExpense extends BaseClass
 
 		// FleetExpense.VerifySomeTextInSettingsPanel(); // gone
 
-		// German MDE
+		// German [MDE] -- month/year
+		// Japan [ja] -- year/month
 		
 		FleetExpense.SetupLanguageTag("[MDE]");
 		

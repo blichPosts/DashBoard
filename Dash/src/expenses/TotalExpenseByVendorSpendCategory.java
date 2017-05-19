@@ -316,7 +316,8 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
 		// String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
 		
-		String referencePoint = "#" + chartId +  ">svg>g:nth-of-type(3)>text"; 
+		// String referencePoint = "#" + chartId +  ">svg>g:nth-of-type(3)>text"; 
+		String referencePoint = "#" + chartId +  ">svg>.highcharts-series-group>g:nth-of-type(7)";
 		
 		// 'bar' WebElement will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(referencePoint));
@@ -331,9 +332,11 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		int y_offset = (int) GeneralHelper.getScrollPosition();
 		y += y_offset + 60; 
 		
-		robot.mouseMove(x - 10, y); // bob addeed  these lines after. 
+		// below was -10, changed to -250   5/18/17  bob version 1.2.8
+		robot.mouseMove(x - 250, y); // bob added  these lines after. 
 		Thread.sleep(500);
 		
+		// Pause("look at pointer");
  
 		robot.mouseMove(x, y);
 		// System.out.println("coordinates - x: " + x + "  y: " + y);

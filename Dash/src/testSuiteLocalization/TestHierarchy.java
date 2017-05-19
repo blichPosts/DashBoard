@@ -47,15 +47,15 @@ public class TestHierarchy extends BaseClass
 		
 		// German MDE
 		
-		Hierarchy.SetupLanguageTag("[MDE]");
+		Hierarchy.SetupLanguageTag("[ja]");
 		
-		Hierarchy.SetupInsideTag("MDE");
+		Hierarchy.SetupInsideTag("ja");
 		
 		Hierarchy.SetCurrency("USD");
 		
-		Hierarchy.LoopThroughMonthsTwo();
+		//Hierarchy.LoopThroughMonthsTwo();
 		
-		//Hierarchy.LoopThroughMonths();
+		Hierarchy.LoopThroughMonths();
 		
 		// Hierarchy.LoopThroughHierarchies(); // hierarchies to category selectors to maybe driil down 
 		
