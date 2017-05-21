@@ -618,7 +618,7 @@ public class FleetExpense extends BaseClass
 
 			GetAndVerifyCurrentMonthYear(ele.getText());
 			
-			AllLegends();
+			AllLegends(); // this verifies the legends have no language tag except 'other'.
 			
 			InitVisibilityTileMapAverages(); // find what is showing in the KPI tiles and set booleans.
 			

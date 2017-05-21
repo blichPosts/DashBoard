@@ -48,6 +48,37 @@ public class Hierarchy extends BaseClass
 	}
 	
 	
+	public static void ExpenseTrendLegend()
+	{
+		//for (int x = 2; x < 5; x++)
+		//{
+			chartId = UsageHelper.getChartId(1);
+			List<WebElement> eleList = new ArrayList<>();
+			eleList = driver.findElements(By.cssSelector("#" + chartId +  ">svg>g.highcharts-legend>g>g>g"));
+			for(WebElement ele : eleList)
+			{
+				//if(ele.getText().contains("Other"))
+				//{
+					ShowText(ele.getText());
+					if(startsWith.equals("[MDE]"))
+					{
+						Assert.assertTrue(ele.getText().startsWith("[de]"));
+					}
+					if(startsWith.equals("[ja]"))
+					{
+						//Assert.assertTrue(ele.getText().startsWith(startsWith)); // BUG ??? don't test.
+					}
+
+				//}
+				//else
+				//{
+				//	Assert.assertTrue(!ele.getText().contains("[ja]"));
+				//	Assert.assertTrue(!ele.getText().contains("[de]"));
+				//}
+			}
+		//}
+	}
+	
 	public static void SetupLanguageTag(String languageTag) throws Exception 
 	{
 		startsWith = languageTag;
@@ -211,7 +242,7 @@ public class Hierarchy extends BaseClass
 	public static void TrendingDateTimeFormat()
 	{
 		
-		chartId = UsageHelper.getChartId(1); // bladd
+		chartId = UsageHelper.getChartId(1); 
 		
 		//for(int x = 2; x < 5; x++)
 		//{
@@ -387,6 +418,7 @@ public class Hierarchy extends BaseClass
 			{
 				ShowText("Month " + ele.getText() + " - running test with data. ");
 				TrendingDateTimeFormat();
+				ExpenseTrendLegend();
 				RunExpenseLocalizationTagTests();		
 			}
 			else
@@ -416,6 +448,8 @@ public class Hierarchy extends BaseClass
 
 			Thread.sleep(3000);
 			
+			GetAndVerifyCurrentMonthYear(ele.getText());
+			
 			InitVisibilityTileMapAverages(); // find what is showing in the KPI tiles and set booleans.
 			
 			if(driver.findElement(By.cssSelector(".tdb-h3>span:nth-of-type(1)")).getText().contains("Top"))
@@ -423,7 +457,7 @@ public class Hierarchy extends BaseClass
 			{
 				ShowText("Month " + ele.getText() + " - running test with data. ");
 				//RunExpenseLocalizationTagTests();
-				Hierarchy.DrillDownDependentUnitsTwo(3); // bladdzzz
+				Hierarchy.DrillDownDependentUnitsTwo(3); 
 			}
 			else
 			{
@@ -488,7 +522,6 @@ public class Hierarchy extends BaseClass
 	}
 	
 	
-	// bladdzzz
 	public static void DrillDownDependentUnitsTwo(int maxNumberOfLevels) throws Exception  
 	{
 		int dependentUnitToSelect;
@@ -539,17 +572,21 @@ public class Hierarchy extends BaseClass
 
 			DebugTimeout(3, "Wait 3 before run actual test.");
 			
-			ShowText("*********** RUN ALL TESTS **********");
+			ShowText("*********** RUN ALL TESTS IN DRILLDOWN **********");
 			RunExpenseLocalizationTagTests();
+			TrendingDateTimeFormat(); // bladdxxx
+			ExpenseTrendLegend(); // bladdxxx
+			
+			
 			// RunExpenseLocalizationTagTests();
 			
-			// bladdzzz
+
 			// wait for the new bread crumb to be added.
 			// Assert.assertTrue(HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
 			
 			ShowText("Checking to see if have hit end of drill down. HAVE RUN  TAG TEST ---------------------------------------."); 
 			
-			// bladdzzz
+
 			// if have hit a page with no dependents then break.
 			if(HierarchyNumbersDependents.WaitForNoDependentsInPage(cntr))
 			{
@@ -560,9 +597,9 @@ public class Hierarchy extends BaseClass
 		
 		ShowText("Have hit End Of Drill Down Loop. Remove breadcrumbs if they exist.");
 
-		if(WaitForElementPresentNoThrow(By.cssSelector(".breadcrumbs>span"), MediumTimeout)) // bladdxx
+		if(WaitForElementPresentNoThrow(By.cssSelector(".breadcrumbs>span"), MediumTimeout)) 
 		{
-			// bladdzz
+
 			WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
 			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + 1 + ")")).click();
 		}
