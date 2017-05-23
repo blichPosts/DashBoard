@@ -318,7 +318,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// make sure dependent unit from UI is not cost = $0.
 			if(!DependentUnitValueIsZero(currentDependentUnitInfo))
 			{
-				Assert.assertEquals(hoverInfo, currentDependentUnitInfo);				
+				Assert.assertEquals(hoverInfo.replace(":",""), currentDependentUnitInfo);				
 			}
 		}
 

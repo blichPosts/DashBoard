@@ -55,9 +55,9 @@ public class TestExpense extends BaseClass
 		// German [MDE] -- month/year
 		// Japan [ja] -- year/month
 		
-		FleetExpense.SetupLanguageTag("[MDE]");
+		FleetExpense.SetupLanguageTag("[ja]");
 		
-		FleetExpense.SetupInsideTag("MDE");
+		FleetExpense.SetupInsideTag("ja");
 		
 		FleetExpense.SetCurrency("USD");
 
