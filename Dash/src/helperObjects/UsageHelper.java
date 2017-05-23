@@ -157,25 +157,19 @@ public class UsageHelper extends BaseClass{
 	public static List<UsageOneMonth> addMissingMonthsForVendor(List<UsageOneMonth> valuesFromFileTmp) throws ParseException {
 		
 		List<UsageOneMonth> valuesFromFileNew = new ArrayList<>();
-		List<WebElement> monthsList;
 		
 		CommonTestStepActions.initializeMonthSelector();
-		monthsList = CommonTestStepActions.webListPulldown;
-		
-		boolean previousMonthExisted = true;
+		List<WebElement> monthsList = CommonTestStepActions.webListPulldown;
+
 		UsageOneMonth currentMonth;
-//		String month = "";
-//		String year =  "";
 		String monthYear = "";
 		String vendorName = valuesFromFileTmp.get(0).getVendorName();
 		int fileIndex = 0;
 		
-		ShowText("valuesFromFileTmp.size: " + valuesFromFileTmp.size());
-		ShowText("vendorName: " + vendorName);
-		
 		
 		for (int i = 0; i < monthsList.size(); i++) {
 			
+			// If there's still data on the source file 
 			if (fileIndex < valuesFromFileTmp.size()) {
 				
 				currentMonth = valuesFromFileTmp.get(fileIndex);
@@ -183,34 +177,26 @@ public class UsageHelper extends BaseClass{
 				String year =  currentMonth.getOrdinalYear();
 				monthYear = CommonTestStepActions.convertMonthNumberToName(month, year);
 				
-				// ShowText(" monthYear dropdown: " + monthsList.get(i).getText() + ", monthYear From File: " + monthYear + " -- fileIndex: " + fileIndex);
-				
-				// If monthYear equal
+				// If month-year from source equals month-year from dropdown, add the data to the new list
 				if (monthYear.equals(monthsList.get(i).getText())) {
-
-					// ShowText("--> match");
-					
+			
 					valuesFromFileNew.add(i, currentMonth);
 					fileIndex++;
 					
-				} else if (!monthYear.equals(monthsList.get(i).getText())){
+				} 
+				// Else create info for that month-year, with all values set to zero
+				else if (!monthYear.equals(monthsList.get(i).getText())){
 		
-					// ShowText("--> NO match");
-					
 					String[] monthYearParts = monthsList.get(i).getText().split(" "); 
 					String monthNew = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
 					String yearNew = monthYearParts[1];
 					
 					UsageOneMonth usageMonth = new UsageOneMonth(vendorName, yearNew, monthNew);
 					valuesFromFileNew.add(i, usageMonth);
-//					previousMonthExisted = false;
 						
 				} 
 				
 			} else if (fileIndex >= valuesFromFileTmp.size() && i < monthsList.size()) {
-				
-				// ShowText(" monthYear dropdown: " + monthsList.get(i).getText());
-				// ShowText("--> List from source end add missing previous months");
 				
 				String[] monthYearParts = monthsList.get(i).getText().split(" "); 
 				String monthNew = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);

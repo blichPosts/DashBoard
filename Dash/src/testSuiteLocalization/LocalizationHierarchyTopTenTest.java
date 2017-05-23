@@ -34,9 +34,7 @@ public class LocalizationHierarchyTopTenTest extends BaseClass {
 		HierarchyHelper.selectTopTenView(2);
 		Thread.sleep(2000);
 		
-		String languageTag = "[MDE]";  // <-- For German it used to be [de]
-//		String languageTag = "[ja]";
-//		String languageTag = "[es]";
+		String languageTag = LocalizationHelper.languageTag;
 		
 		String month = "January";
 		String year = "2017";

@@ -8,8 +8,6 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 
-import helperObjects.CommonTestStepActions;
-import helperObjects.HierarchyHelper;
 import helperObjects.LocalizationHelper;
 import localization.PointOfView;
 
@@ -28,10 +26,7 @@ public class LocalizationPoVSectionTest extends BaseClass {
 	@Test
 	public static void LocalizationPoVSection() throws Exception {
 
-		
-		String languageTag = "[MDE]";  // <-- For German it used to be [de]
-//		String languageTag = "[ja]";
-//		String languageTag = "[es]";
+		String languageTag = LocalizationHelper.languageTag;
 		
 		PointOfView.verifyLocalizationOnPoVSection(languageTag);
 		

@@ -26,13 +26,10 @@ public class LocalizationFleetTopTenTest extends BaseClass {
 	
 	@Test
 	public static void LocalizationFleetTopTen() throws Exception {
-
 		
 		HierarchyHelper.selectTopTenView(3);
-		
-		String languageTag = "[MDE]";  // <-- For German it used to be [de]
-//		String languageTag = "[ja]";
-//		String languageTag = "[es]";
+
+		String languageTag = LocalizationHelper.languageTag;
 		
 		String month = "January";
 		String year = "2017";

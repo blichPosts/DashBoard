@@ -48,8 +48,11 @@ public class TopTen extends BaseClass {
 			ShowText("expectedAxisLabelPartOne: " + expectedAxisLabelPartOne);
 			ShowText("expectedAxisLabelPartTwo: " + expectedAxisLabelPartTwo);
 			
-//			Assert.assertTrue(expectedAxisLabelPartOne.startsWith(languageTag));
-//			Assert.assertTrue(expectedAxisLabelPartTwo.startsWith(languageTag));
+			Assert.assertTrue(expectedAxisLabelPartOne.startsWith(languageTag));
+			
+			if (num > 1) {
+				Assert.assertTrue(expectedAxisLabelPartTwo.startsWith(languageTag));
+			}
 			
 			// Verify caption below chart
 			

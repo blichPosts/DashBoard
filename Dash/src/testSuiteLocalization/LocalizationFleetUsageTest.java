@@ -2,6 +2,8 @@ package testSuiteLocalization;
 
 import javax.swing.JOptionPane;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -9,7 +11,9 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.LocalizationHelper;
+import helperObjects.UsageHelper;
 import localization.FleetUsageLanguage;
+import usage.UsageTrendingValues;
 
 public class LocalizationFleetUsageTest extends BaseClass {
 
@@ -24,9 +28,7 @@ public class LocalizationFleetUsageTest extends BaseClass {
 	@Test
 	public static void LocalizationFleetUsage() throws Exception {
 
-		String languageTag = "[MDE]";  // <-- For German it used to be [de]
-//		String languageTag = "[ja]";
-//		String languageTag = "[es]";
+		String languageTag = LocalizationHelper.languageTag;
 		
 		String month = "September";
 		String year = "2016";
@@ -52,6 +54,49 @@ public class LocalizationFleetUsageTest extends BaseClass {
 		FleetUsageLanguage.verifyLocalizationOnTotalUsageWithTags(languageTag, monthYear);
 		
 		FleetUsageLanguage.verifyLocalizationOnUsageTrendingWithTags(languageTag);
+		
+		try {
+			
+			// Domestic chart
+			UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
+			
+			FleetUsageLanguage.verifyLocalizationOnUsageTrendingTooltipsWithTags(UsageHelper.usageTrendingDomesticChart, languageTag);
+			Thread.sleep(2000);
+			
+			UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
+			
+			FleetUsageLanguage.verifyLocalizationOnUsageTrendingTooltipsWithTags(UsageHelper.usageTrendingDomesticChart, languageTag);
+			Thread.sleep(2000);
+			
+			UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
+			
+			FleetUsageLanguage.verifyLocalizationOnUsageTrendingTooltipsWithTags(UsageHelper.usageTrendingDomesticChart, languageTag);
+			Thread.sleep(2000);
+			
+			// Roaming chart
+			UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
+			
+			FleetUsageLanguage.verifyLocalizationOnUsageTrendingTooltipsWithTags(UsageHelper.usageTrendingRoamingChart, languageTag);
+			Thread.sleep(2000);	
+			
+			UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
+			
+			FleetUsageLanguage.verifyLocalizationOnUsageTrendingTooltipsWithTags(UsageHelper.usageTrendingRoamingChart, languageTag);
+			Thread.sleep(2000);	
+			
+			UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
+			
+			FleetUsageLanguage.verifyLocalizationOnUsageTrendingTooltipsWithTags(UsageHelper.usageTrendingRoamingChart, languageTag);
+			Thread.sleep(2000);
+			
+			
+		} catch (NullPointerException e) {
+			
+			System.out.println("chart not found or value is null...");
+			
+		}
+		
+		
 		
 //		FleetUsageLanguage.verifyLocalizationOnUsageKpisSpanish(languageTag);
 //		FleetUsageLanguage.verifyLocalizationOnTotalUsageSpanish(languageTag, monthYear);

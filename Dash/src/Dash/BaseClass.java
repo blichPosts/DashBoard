@@ -44,8 +44,8 @@ public class BaseClass
 	
 	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx 
 	public static String Developer_Url = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense"; // bladdxx 
-	public static String ReferenceApp_Url = "http://dc1qaanalyticsapp01.corp.tangoe.com:4000/manage"; // bladdxx
-	
+//	public static String ReferenceApp_Url = "http://dc1qaanalyticsapp01.corp.tangoe.com:4000/manage"; // bladdxx
+	public static String ReferenceApp_Url = "http://dc1devmule1.prod.tangoe.com:4000/manage/home"; // <-- ana added, TO BE REMOVED AND UNCOMMENT LINE ABOVE 
 	
 	public static boolean testCaseStatus = false;
 	
@@ -64,7 +64,7 @@ public class BaseClass
 	
 	
 
-	public static String commandUserName = "ana.phi"; // "analaura.pace@tangoe.com phi";    
+	public static String commandUserName = "ana.phi";  // "analaura.pace@tangoe.com phi";   
 	public static String commandPassword = "tngo111";
 
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment

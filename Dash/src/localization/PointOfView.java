@@ -7,8 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import Dash.BaseClass;
-import helperObjects.CommonTestStepActions;
-import helperObjects.LocalizationHelper;
+
 
 public class PointOfView extends BaseClass{
 
@@ -27,7 +26,7 @@ public class PointOfView extends BaseClass{
 			
 			ShowText("month: " + m.getText());
 			
-			Assert.assertTrue(m.getText().startsWith(languageTag));
+			Assert.assertTrue(m.getText().contains(languageTag));
 			
 		}
 		
@@ -37,7 +36,7 @@ public class PointOfView extends BaseClass{
 		
 			ShowText("labelViewByHierarchy: " + labelViewByHierarchy);
 			
-			Assert.assertTrue(labelViewByHierarchy.startsWith(languageTag));
+			Assert.assertTrue(labelViewByHierarchy.startsWith(languageTag.toUpperCase()));
 			
 		}
 		
@@ -51,7 +50,7 @@ public class PointOfView extends BaseClass{
 		
 		ShowText("noneAllLabel: " + noneAllLabel);
 		
-		Assert.assertTrue(noneAllLabel.startsWith(languageTag));
+		Assert.assertTrue(noneAllLabel.startsWith(languageTag.toUpperCase()));
 		
 		
 		

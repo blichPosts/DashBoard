@@ -56,7 +56,7 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		String path = ExpenseHelperMultipleVendors.path;
-		int amountOfVendors = 15;
+		int amountOfVendors = 8;
 
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();
