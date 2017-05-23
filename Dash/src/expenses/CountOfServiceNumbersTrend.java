@@ -17,6 +17,7 @@ import org.testng.Assert;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 import helperObjects.UsageHelper;
 
 public class CountOfServiceNumbersTrend extends BaseClass 
@@ -103,7 +104,7 @@ public class CountOfServiceNumbersTrend extends BaseClass
 	}
 	
 	// this verifies removing vendors one at a time in the expense trending control. 
-	public static void VerifyRemovingLegends() throws Exception // bladdxx 
+	public static void VerifyRemovingLegends() throws Exception 
 	{
 		Thread.sleep(1000);
 		
@@ -191,13 +192,17 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		
 		ClearContainers(); 
 		
+		// bob had to add  - 5/23/17
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);		
+		
 		totalExpenseLegends = ExpenseHelper.GetTotalExpenseLegends();
 		
 		// now get the legends in the count of service numbers control and put into list
 		tempList = driver.findElements(By.xpath(".//*[@id='" + chartId +  "']" + ExpenseHelper.partialXpathToLegendsListInControls));
 		
-		// System.out.println(tempList.size());
-		// for(WebElement ele: tempList) {System.out.println(ele.getText());} // DEBUG
+		//System.out.println(tempList.size());
+		//for(WebElement ele: tempList) {System.out.println(ele.getText());} // DEBUG
 
 		for(WebElement ele : tempList)
 		{

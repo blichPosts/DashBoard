@@ -26,8 +26,8 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 	public static int numPieParts = 0;
 	public static int maxNumLegends = 6;	
 	public static String otherString = "Other";
-	public static String titleVendor = "Total Expense by Vendor";
-	public static String titlecountry = "Total Expense by Country";	
+	public static String titleVendor = "Total Expense by Vendor ($)";
+	public static String titlecountry = "Total Expense by Country ($)";	
 	public static String tmpString = "";
 	public static String expensePieDateLocator = "(//h2[@class='tdb-h2'])[1]";
 	public static String chartId = "";	
@@ -203,9 +203,13 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 		numPieParts = driver.findElements(By.xpath("//div[@id='" +  chartId + "']/*/*[@class='highcharts-series-group']/*/*")).size();		
 	}
 	
-	public static void VerifyLegendsTitleAndPieCount() throws InterruptedException
+	public static void VerifyLegendsTitleAndPieCount() throws Exception
 	{
 		String errMessage = "Failed checks in TotalExpenseByVendorCarrier.VerifyLegendsAndPieCount";
+
+		// bob had to add  - 5/23/17
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);
 		
 		SetAllLegendsAndPieCount();
 

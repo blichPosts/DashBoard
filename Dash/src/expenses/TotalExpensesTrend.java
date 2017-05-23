@@ -50,8 +50,8 @@ public class TotalExpensesTrend extends BaseClass
 	public static String [] strArray;
 	
 	public static String mainTitle = "Expense Trending"; 
-	public static String vendorTitle = "Expense by Vendor - All Categories";
-	public static String countryTitle = "Expense by Country - All Categories";	
+	public static String vendorTitle = "Expense by Vendor ($) - All Categories";
+	public static String countryTitle = "Expense by Country ($) - All Categories";	
 
 	// mouse clicks.
 	public static String cssBar = "";

@@ -36,8 +36,8 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	public static String chartId = "";
 	public static String tempString = "";
 	
-	public static String titleExpense = "Total Expense by Vendor and Spend Category";
-	public static String titleCountry = "Total Expense by Country and Spend Category";
+	public static String titleExpense = "Total Expense by Vendor and Spend Category ($)";
+	public static String titleCountry = "Total Expense by Country and Spend Category ($)";
 	static String errMessage = "";
 	
 	public static ViewType vType;
@@ -261,8 +261,13 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	}	
 	
 	// verify vendors listed match the vendors listed in the total expense control.
-	public static void VerifyVendors()
+	public static void VerifyVendors() throws Exception
 	{
+
+		// bob had to add  - 5/23/17
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);		
+		
 		// get vendors in total expense control.
 		vendorsListEexpected = ExpenseHelper.GetTotalExpenseLegends();
 		

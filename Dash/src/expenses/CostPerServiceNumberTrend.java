@@ -3,7 +3,7 @@ package expenses;
 // 
 // Revision history.
 //
-// 1/29/16 - updated VerifyRemovingLegends() to call click method in ExpenseValueHelper because it is more reliable. 
+// 1/29/16 - updated VerifyRemovingLegends() to call click method in ExpenseValueHelper because it is more reliable.
 
 
 import java.awt.Robot;
@@ -24,13 +24,14 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseValuesHelper;
 import helperObjects.UsageHelper;
+import helperObjects.ExpenseHelper.controlType;
 
 public class CostPerServiceNumberTrend extends  BaseClass
 {
 	
 	public static String chartId = "";
-	public static String vendorTitle = "Cost per Service Numbers by Vendor	($) - All Categories";
-	public static String countryTitle = "Cost per Service Numbers by Country - All Categories";	
+	public static String vendorTitle = "Cost per Service Numbers by Vendor ($) - All Categories";
+	public static String countryTitle = "Cost per Service Numbers by Country ($) - All Categories";	
 	
 	public static List<WebElement> webEleListLegends;
 	public static List<WebElement> webEleListBarGraphHoverValues;
@@ -188,6 +189,10 @@ public class CostPerServiceNumberTrend extends  BaseClass
 	public static void VerifyLegends() throws Exception
 	{
 		errMessage = "Failed test of legends in CostPerServiceNumberTrend.VerifyLegends"; 
+		
+		// bob had to add  - 5/23/17
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);
 		
 		totalExpenseLegends = ExpenseHelper.GetTotalExpenseLegends();
 		
