@@ -42,6 +42,9 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 		// Reload Fleet data
 		ReadFilesHelper.reloadFleetData();
 		Thread.sleep(2000);
+
+		// Wait for countries and vendors to be loaded on PoV section
+		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
 		
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();

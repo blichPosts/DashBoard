@@ -147,12 +147,12 @@ public class FleetTopTenValues extends BaseClass {
 			}
 					
 			
-			WebElement tooltip = driver.findElement(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"));
+			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"));
 			
 			// Verify the label and the amount shown in the tooltip 
 			
 			// Get the label and remove colon at the end of its text
-			String labelFoundTmp = tooltip.getText().split(":")[0].trim();
+			String labelFoundTmp = tooltip.get(1).getText().split(":")[0].trim();
 			
 			String labelFound = labelFoundTmp;
 			
@@ -165,7 +165,7 @@ public class FleetTopTenValues extends BaseClass {
 			// ShowText("labelFound:  " + labelFound);
 			
 			// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
-			String valueFound = tooltip.getText().split(":")[1].trim().replace(" ", "");
+			String valueFound = tooltip.get(1).getText().split(":")[1].trim().replace(" ", "");
 			
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);

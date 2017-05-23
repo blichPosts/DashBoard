@@ -1,3 +1,5 @@
+
+
 package testSuiteNumericValues;
 
 import java.util.ArrayList;
@@ -40,7 +42,10 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 		// Reload Fleet data
 		ReadFilesHelper.reloadFleetData();
 		Thread.sleep(2000);
-								
+				
+		// Wait for countries and vendors to be loaded on PoV section
+		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
+		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -52,7 +57,7 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 		
 		String path = ExpenseHelperMultipleVendors.path;
 		
-		int amountOfVendors = 5; //GeneralHelper.getAmountOfVendorsToSelect(vendors.size()); // If we don't want the prompt to show up, just replace the assignment with a numeric value. 
+		int amountOfVendors = 10; //GeneralHelper.getAmountOfVendorsToSelect(vendors.size()); // If we don't want the prompt to show up, just replace the assignment with a numeric value. 
 						
 		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
 		
@@ -200,7 +205,7 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 				
 			} catch (NullPointerException e) {
 				
-				System.out.println("chart not found");
+				System.out.println("chart not found or value found is null");
 				
 			}
 			

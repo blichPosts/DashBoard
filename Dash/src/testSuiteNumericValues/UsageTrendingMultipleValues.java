@@ -42,7 +42,10 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		// Reload Fleet data
 		ReadFilesHelper.reloadFleetData();
 		Thread.sleep(2000);
-						
+			
+		// Wait for countries and vendors to be loaded on PoV section
+		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
+		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -86,6 +89,7 @@ public class UsageTrendingMultipleValues extends BaseClass{
 			
 		}
 		
+		Thread.sleep(3000);
 		
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
 			

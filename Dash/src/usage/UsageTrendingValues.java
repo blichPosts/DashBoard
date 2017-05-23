@@ -29,22 +29,19 @@ public class UsageTrendingValues extends BaseClass {
 	private static List<WebElement> vendorsSelectedCheckBox;
 	private static List<WebElement> vendorsInChart;
 	private static List<String> vendorsInChartNames;
-	private static int chartNum;
 	private static int category;
 	
 	
 	// Verifies the content of the tooltips displayed on charts under Usage Trending Domestic and Roaming charts
 	// * It works for any number of selected vendors *
-	public static void verifyUsageTrendingChartTooltip(int barChartId, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector) throws ParseException, InterruptedException, AWTException {
+	public static void verifyUsageTrendingChartTooltip(int chartNum, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector) throws ParseException, InterruptedException, AWTException {
 		
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
-		String chartId = UsageHelper.getChartId(barChartId);
+		String chartId = UsageHelper.getChartId(chartNum);
 		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
 		
 		Thread.sleep(2000);
-		
-		chartNum = barChartId; 
 		
 		category = categorySelector;
 			
@@ -65,9 +62,9 @@ public class UsageTrendingValues extends BaseClass {
 		
 		vendorHasData = GeneralHelper.vendorHasDataForSelectedMonth(allValuesFromFile);
 		
-		getExpectedValues(allValuesFromFile);
+		getExpectedValues(allValuesFromFile, chartNum);
 		
-		calculateOtherExpectedValues(allValuesFromFile);
+		calculateOtherExpectedValues(allValuesFromFile, chartNum);
 		
 
 		// *******************************************************************
@@ -79,34 +76,37 @@ public class UsageTrendingValues extends BaseClass {
 		
 		int indexHighchart = 1;
 		int indexMonth = monthYearList.size()-1;
+		boolean firstBar = true;
 		
 		while (indexHighchart <= monthYearList.size()) {
 			
-			moveMouseToBar(chartId, indexHighchart);
+			GeneralHelper.moveMouseToBar(false, firstBar, chartNum, chartId, indexHighchart);
+			
+			firstBar = false;
 			
 			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
 			
 			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
 			// 0 MM-YYYY -- month and year appears once
 			// 1 ? -- this is for the bullet
-			// 2 <vendor's name>
-			// 3 <amount shown for the vendor>
+			// 2 <vendor's name> : <amount shown for the vendor>
 			
 			int amountOfSeries = highchartSeries.size();
-			int expectedAmountItemsTooltip = (amountOfSeries * 3) + 1;
+			int factor = 2;  // Ana added - May 17
+			int expectedAmountItemsTooltip = (amountOfSeries * factor) + 2;  // Ana modif - May 18
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 			
 			
 			// For each vendor listed in the tooltip verify the amount shown
 			for(int i = 1; i <= legends.size(); i++) {
 			
-				int index =  i * 3 - 1;
+				int index =  i * factor + 1;  // Ana modif - May 18 -- before modif --> int index =  i * 3 - 1;
 				
 				// Get the label and remove colon at the end of its text
-				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+				String labelFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 18 -- before modif --> tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
 
 				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: 15 256 985. Value needed is: 15256985
-				String valueFound = tooltip.get(index+1).getText().trim().replace(" ", "");
+				String valueFound = tooltip.get(index).getText().split(":")[2].trim(); // Ana modif - May 18 -- before modif --> tooltip.get(index+1).getText().trim().replace(" ", "");
 							
 				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
 				
@@ -121,7 +121,15 @@ public class UsageTrendingValues extends BaseClass {
 			String monthYearFound = tooltip.get(0).getText();
 			String monthYearExpected = monthYearList.get(indexMonth);
 				
-			Assert.assertEquals(monthYearFound, monthYearExpected); 
+			String chartName = "";
+			
+			if (chartNum == UsageHelper.usageTrendingDomesticChart) {
+				chartName = "Domestic";
+			} else if (chartNum == UsageHelper.usageTrendingRoamingChart) {
+				chartName = "Roaming";
+			}
+			
+			Assert.assertEquals(monthYearFound, monthYearExpected + ": " + chartName); 
 			// System.out.println("Month/Year Found: " + monthYearFound + ", Month/Year Expected: " + monthYearExpected);
 			
 			indexHighchart++;
@@ -133,7 +141,7 @@ public class UsageTrendingValues extends BaseClass {
 
 		
 	
-	private static void getExpectedValues(List<List<UsageOneMonth>> allValuesFromFile){
+	private static void getExpectedValues(List<List<UsageOneMonth>> allValuesFromFile, int chartNum){
 		
 		for(int indexMonthValues = 0; indexMonthValues < allValuesFromFile.size(); indexMonthValues++){
 			
@@ -193,7 +201,7 @@ public class UsageTrendingValues extends BaseClass {
 	}
 	
 	
-	private static void calculateOtherExpectedValues(List<List<UsageOneMonth>> allValuesFromFile) {
+	private static void calculateOtherExpectedValues(List<List<UsageOneMonth>> allValuesFromFile, int chartNum) {
 		
 		// The list contains one HashMap per month. Each HashMap contains the data for all the vendors.
 		List<HashMap<String, UsageOneMonth>> listUsageAllMonths = new ArrayList<>();
@@ -295,6 +303,7 @@ public class UsageTrendingValues extends BaseClass {
 	}
 	
 
+	// NOT USED - REPLACED BY THE METHOD ADDED IN GeneralHelper CLASS
 	private static void moveMouseToBar(String chartId, int indexHighchart) throws InterruptedException, AWTException{
 		
 		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
@@ -306,16 +315,15 @@ public class UsageTrendingValues extends BaseClass {
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
 		
-		int x = barCoordinates.getX();
-		int y = GeneralHelper.getYCoordinate(chartId);
-		
 		int y_offset = (int) GeneralHelper.getScrollPosition();
-		y += y_offset; 
 		
+		int x = barCoordinates.getX();
+		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;
 		
 		Robot robot = new Robot(); 
 		robot.mouseMove(x, y);
-		// System.out.println("coordinates - x: " + x + "  y: " + y);
+		
+		// ShowText("coordinates:  x: " + x + "  y: " + y);
 		
 		Thread.sleep(500);
 		

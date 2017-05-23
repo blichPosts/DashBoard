@@ -42,6 +42,9 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		ReadFilesHelper.reloadFleetData();
 		Thread.sleep(2000);
 		
+		// Wait for countries and vendors to be loaded on PoV section
+		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
+				
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
@@ -53,7 +56,7 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		String path = ExpenseHelperMultipleVendors.path;
-		int amountOfVendors = 12;
+		int amountOfVendors = 8;
 
 		if (amountOfVendors > vendorNames.size())
 			amountOfVendors = vendorNames.size();

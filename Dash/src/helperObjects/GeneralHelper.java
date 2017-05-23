@@ -1,5 +1,8 @@
 package helperObjects;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -220,34 +223,42 @@ public class GeneralHelper extends BaseClass {
 	}
 		
 
-	private static String getNumericValue(String value) {
+	public static String getNumericValue(String value) {
 		
 		String numericValue = value;
-		
-		if (numericValue.startsWith("$"))
-			numericValue = numericValue.replace("$", "");
-		
-		if (numericValue.endsWith(" directly allocated")) 
-			numericValue = numericValue.replace(" directly allocated", "");  
-		
-		if (numericValue.endsWith(" service numbers"))
-			numericValue = numericValue.replace(" service numbers", "");
 
-		if (numericValue.endsWith("B"))
-			numericValue = numericValue.replace("B", "");
+		numericValue = numericValue.replace("$", "");
+ 
+		numericValue = numericValue.replace("€", "");
 		
-		if (numericValue.endsWith("K"))
-			numericValue = numericValue.replace("K", "");
+		numericValue = numericValue.replace("£", "");
+		
+		numericValue = numericValue.replace("[es]", "");
+		
+		numericValue = numericValue.replace("[ja]", "");
+		
+		numericValue = numericValue.replace("[de]", "");
+		
+		numericValue = numericValue.replace(" directly allocated", "");  
+
+		numericValue = numericValue.replace(" service numbers", "");
+
+		numericValue = numericValue.replace("(GB)", "");
+		
+		numericValue = numericValue.replace("(min)", "");
+		
+		numericValue = numericValue.replace("B", "");
+
+		numericValue = numericValue.replace("K", "");
+
+		numericValue = numericValue.replace("M", "");
+
+		numericValue = numericValue.replace("G", "");
+
+		numericValue = numericValue.replace("T", "");
 			
-		if (numericValue.endsWith("M"))
-			numericValue = numericValue.replace("M", "");
+		numericValue = numericValue.replace(",", "");
 		
-		if (numericValue.endsWith("G"))
-			numericValue = numericValue.replace("G", "");
-		
-		if (numericValue.endsWith("T"))
-			numericValue = numericValue.replace("T", "");
-				
 		return numericValue.trim();
 		
 	}
@@ -321,6 +332,65 @@ public class GeneralHelper extends BaseClass {
 			amountOfVendors = totalVendorsAmount;
 		
 		return amountOfVendors;
+		
+	}
+	
+	
+	
+	public static void moveMouseToBar(boolean fleetExpense, boolean firstBar, int chartNum, String chartId, int indexHighchart) throws InterruptedException, AWTException {
+		
+		
+//		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+		
+		String cssBar = "";
+		
+		if (fleetExpense && chartNum == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
+			
+			cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
+
+			
+		} else {
+			
+			cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+			
+		}
+		
+		// WebElement 'bar' will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		
+		Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
+		
+		int x_offset = bar.getSize().getWidth() / 2;
+		int y_offset = (int) GeneralHelper.getScrollPosition();
+		
+		int x = coordinates.getX() + x_offset;
+		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;;
+		
+		Robot robot = new Robot();
+		
+		if (firstBar) {
+			robot.mouseMove(x - x_offset, y);
+			Thread.sleep(500);
+		}
+		
+		robot.mouseMove(x, y);
+		Thread.sleep(500);
+		
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+
+		
+		try {
+			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+			//System.out.println("Tooltip present");
+		} catch (Exception e) {
+			System.out.println("Tooltip NOT present");
+			e.printStackTrace();
+		}
+				
 		
 	}
 
