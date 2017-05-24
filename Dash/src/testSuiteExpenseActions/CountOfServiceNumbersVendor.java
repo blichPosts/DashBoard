@@ -9,6 +9,7 @@ import expenses.CostPerServiceNumberTrend;
 import expenses.CountOfServiceNumbersTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper.controlType;
 
 public class CountOfServiceNumbersVendor extends BaseClass 
@@ -27,9 +28,12 @@ public class CountOfServiceNumbersVendor extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
-		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers); // wait for a control to show up.
 		
 		Thread.sleep(2000); // without this web element with legends gets bad info.
+		
+		// need this to help the method calling 'VerifyTooltip' know which title will be in the hover title.
+		ExpenseHelper.expenseViewMode = ExpensesViewMode.vendor;
 		
 		CountOfServiceNumbersTrend.SetupChartId();
 		

@@ -21,6 +21,7 @@ import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseValuesHelper;
 import helperObjects.UsageHelper;
@@ -114,7 +115,16 @@ public class CostPerServiceNumberTrend extends  BaseClass
 					firstMonth = false; // <-- ana_add
 				}				
 				Thread.sleep(500);
-				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
+				
+				// need to see which view type is being tested. each view type will have a different expected hover title.   
+				if(ExpenseHelper.expenseViewMode == ExpensesViewMode.vendor)
+				{
+					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleCostPerServiceNumVendor);  // verify current hover value with vendor title					
+				}
+				else
+				{
+					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleCostPerServiceNumCountry);  // verify current hover value with country title. 
+				}
 			}
 
 			Thread.sleep(2000);

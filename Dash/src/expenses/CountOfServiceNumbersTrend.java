@@ -19,6 +19,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 import helperObjects.UsageHelper;
+import helperObjects.CommonTestStepActions.ExpensesViewMode;
 
 public class CountOfServiceNumbersTrend extends BaseClass 
 {
@@ -136,8 +137,18 @@ public class CountOfServiceNumbersTrend extends BaseClass
 				{
 					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
 					firstMonth = false; // <-- ana_add
+				}		
+				
+				// need to see which view type is being tested. each view type will have a different expected hover title.   
+				if(ExpenseHelper.expenseViewMode == ExpensesViewMode.vendor)
+				{
+					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleCountOfServiceNumbersVendor);  // verify current hover value with vendor title					
+				}
+				else
+				{
+					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleCountOfServiceNumbersCountry);  // verify current hover value with country title. 
 				}				
-				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
+				// ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), "");  // verify current hover value
 			}
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(2000);

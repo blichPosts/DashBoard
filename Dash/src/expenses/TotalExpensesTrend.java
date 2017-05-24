@@ -27,6 +27,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.expenseFilters;
 import helperObjects.UsageHelper;
+import helperObjects.CommonTestStepActions.ExpensesViewMode;
 
 
 public class TotalExpensesTrend extends BaseClass 
@@ -125,14 +126,24 @@ public class TotalExpensesTrend extends BaseClass
 				}
 				
 				Thread.sleep(500);
-				ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1));  // verify current hover value
+				
+				// need to see which view type is being tested. each view type will have a different expected hover title.   
+				if(ExpenseHelper.expenseViewMode == ExpensesViewMode.vendor)
+				{
+					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleExpenseVendor);  // verify current hover value with vendor title					
+				}
+				else
+				{
+					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleExpenseCountry);  // verify current hover value with country title. 
+				}
+				// ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), "");  // verify current hover value
 			}
 
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(2000);
 			// webEleListLegends.get(x).click();
 			
-			ExpenseHelper.SelectLegendWithPointer(chartId, x + 1); // jnupp
+			ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);
 			
 			Thread.sleep(1500);
 		}

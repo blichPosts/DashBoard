@@ -18,6 +18,7 @@ import org.openqa.selenium.Point;
 
 import Dash.BaseClass;
 import expenses.TotalExpensesValues;
+import helperObjects.CommonTestStepActions.ExpensesViewMode;
 
 public class ExpenseHelper extends BaseClass
 {
@@ -31,8 +32,17 @@ public class ExpenseHelper extends BaseClass
 	public static String tempLocator = "";
 	public static String tempUrl = "";
 	public static String hierarchyPullDownUrl = ".tdb-space--half--top>select";
+	public static String expectedHoverTitleCostPerServiceNumCountry = "Cost per Service Numbers by Country - All Categories";
+	public static String expectedHoverTitleCostPerServiceNumVendor = "Cost per Service Numbers by Vendor - All Categories";
+	public static String expectedHoverTitleExpenseVendor = "Expense by Vendor - All Categories";
+	public static String expectedHoverTitleExpenseCountry = "Expense by Country - All Categories";
+	public static String expectedHoverTitleCountOfServiceNumbersVendor = "Count of Service Numbers by Vendor";
+	public static String expectedHoverTitleCountOfServiceNumbersCountry = "Count of Service Numbers by Country";
+	
 	public static hierarchyTileMapTabSelection currentHierarchyCostFilter; // this keeps track of the cost filter selected in the hierarchy page. 
 	public static boolean failedtestNgTest = false;
+	
+
 	
 	
 	public static List<WebElement> webElementListLegends;	
@@ -59,6 +69,7 @@ public class ExpenseHelper extends BaseClass
 	public static HashMap<String, String> expenseControlHMap; // this holds a hash map list that holds the vendor/value for each visible slice in the 'total expense' control. 
 
 	public static expenseFilters currentExpenseFilter; // this is used to indicate which expense filter is being tested. 
+	public static CommonTestStepActions.ExpensesViewMode expenseViewMode;
 
 	// this is for  distinguishing a control type in the expenses page. 
 	public static enum controlType
@@ -636,7 +647,10 @@ public class ExpenseHelper extends BaseClass
 				tmpCountry.AddToVendorList(vndrList.get(y).getText());
 				y++;
 			}
-		}		
+		}	
+		
+		// add 5/24 - seems to be empty when used later
+		Assert.assertTrue(countryList.size()  > 0, "Country list created in ExpenseHelper.SetupCountryAndVendorData is empty.");
 	}
 	
 	// this is a setup so a wait for the loading of the country page can be done.
@@ -933,7 +947,7 @@ public class ExpenseHelper extends BaseClass
 	}
 
 	// this receives expected and actual lists and verifies. 
-	public static void VerifyToolTipTwo(List<String> expectList, String expectedMonth) throws Exception 
+	public static void VerifyToolTipTwo(List<String> expectList, String expectedMonth, String expectedTitle) throws Exception 
 	{
 		List<String> actualList = new ArrayList<String>();
 		List<String> copy = new ArrayList<String>();
@@ -947,14 +961,13 @@ public class ExpenseHelper extends BaseClass
 		// get web list that holds the DOM section that holds the hover values.
 		webEleListBarGraphHoverValues = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
 		
-		//ShowWebElementListText(webEleListBarGraphHoverValues); // DEBUG
-		
 		//ShowText("Actual Month " + webEleListBarGraphHoverValues.get(0).getText()); // DEBUG
 		//ShowText("Expect Month " + expectedMonth); // DEBUG
 		//Pause("");
 		
-
 		Assert.assertEquals(webEleListBarGraphHoverValues.get(0).getText(), expectedMonth, errMessage + "month value in hover text."); // verify month at top of hover.
+		Assert.assertEquals(webEleListBarGraphHoverValues.get(1).getText(), expectedTitle, errMessage + "hover Title."); // verify month at top of hover.
+		// ShowText(webEleListBarGraphHoverValues.get(1).getText());
 		
 		for(WebElement ele : webEleListBarGraphHoverValues)
 		{

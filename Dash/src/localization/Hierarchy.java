@@ -60,15 +60,20 @@ public class Hierarchy extends BaseClass
 				//if(ele.getText().contains("Other"))
 				//{
 					ShowText(ele.getText());
-					if(startsWith.equals("[MDE]"))
+					if(startsWith.equals("[de]"))
 					{
 						Assert.assertTrue(ele.getText().startsWith("[de]"));
 					}
 					if(startsWith.equals("[ja]"))
 					{
-						//Assert.assertTrue(ele.getText().startsWith(startsWith)); // BUG ??? don't test.
+						Assert.assertTrue(ele.getText().startsWith(startsWith)); // BUG ??? don't test. -- fixed 5/24
 					}
-
+					if(startsWith.equals("[it]"))
+					{
+						Assert.assertTrue(ele.getText().startsWith(startsWith));
+					}
+					
+					
 				//}
 				//else
 				//{
@@ -266,6 +271,10 @@ public class Hierarchy extends BaseClass
 				{
 					FleetExpense.VerifyYearMonth(ele.getText());
 				}
+				if(startsWith.equals("[it]")) // year/month
+				{
+					FleetExpense.VerifyMonthYear(ele.getText());
+				}
 			}
 		//}
 	}
@@ -295,7 +304,9 @@ public class Hierarchy extends BaseClass
 		{
 			Assert.assertTrue(driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div>div>h2:nth-of-type(1)")).getText().split(" ")[1].startsWith(startsWith));			
 		}
-		else
+
+		
+		if(startsWith.equals("[de]"))
 		{
 			driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div>div>h2:nth-of-type(1)")).getText().startsWith(startsWith);
 		}
@@ -677,7 +688,7 @@ public class Hierarchy extends BaseClass
 			}
 		}
 		
-		if(startsWith.equals("[MDE]"))
+		if(startsWith.equals("[de]"))
 		{
 			// German has "mmm yyyy" format
 
@@ -717,7 +728,7 @@ public class Hierarchy extends BaseClass
 		if(driver.findElement(By.xpath("(//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div/div/h2)[1]")).getText().contains("]"))
 		{
 			// get month/date - date/month from title. 	// German has "mmm yyyy" format
-			if(startsWith.equals("[MDE]"))
+			if(startsWith.equals("[de]"))
 			{
 				temp = driver.findElement(By.xpath("(//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div/div/h2)[1]")).getText().split("]")[1];
 				arr = new String[]{temp.split(" ")[0],temp.split(" ")[1]};	
@@ -737,7 +748,7 @@ public class Hierarchy extends BaseClass
 				ShowText(arr[1]);
 			}
 			
-			if(startsWith.equals("MDE"))
+			if(startsWith.equals("de"))
 			{
 				// German has "mmm yyyy" format
 

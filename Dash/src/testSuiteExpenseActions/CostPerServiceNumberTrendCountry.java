@@ -11,6 +11,8 @@ import expenses.CostPerServiceNumberTrend;
 import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.CommonTestStepActions.ExpensesViewMode;
+import helperObjects.ExpenseHelper.controlType;
 
 public class CostPerServiceNumberTrendCountry extends BaseClass 
 {
@@ -28,10 +30,15 @@ public class CostPerServiceNumberTrendCountry extends BaseClass
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
+		
+		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber); // wait for a control to show up.
 
 		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
 		// this list is stored in the expense helper class.
 		ExpenseHelper.SetupForCountryPageWait();
+		
+		// need this to help the method calling 'VerifyTooltip' know which title will be in the hover title.
+		ExpenseHelper.expenseViewMode = ExpensesViewMode.country;
 		
 		// move to country view.
 		CommonTestStepActions.SelectCountryView();

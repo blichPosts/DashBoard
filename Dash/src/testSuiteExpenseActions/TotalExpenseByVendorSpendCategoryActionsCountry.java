@@ -10,6 +10,7 @@ import Dash.BaseClass;
 import expenses.TotalExpenseByVendorSpendCategory;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 
 public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass 
 {
@@ -28,7 +29,9 @@ public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 
-		// need to
+		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber); // wait for a control to show up.
+		
+		// need chartId in helper.
 		ExpenseHelper.SetChartId(1);
 		
 		// store vendor names currently shown in expense control. 
