@@ -1139,87 +1139,10 @@ public class ExpenseHelper extends BaseClass
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK); 
 	}
 
-	
-	
-	public static void SetupExpectedCostFilters()
-	{
-
-		expectedCostFilters.add("All Categories");
-		expectedCostFilters.add("Voice Charges");
-		expectedCostFilters.add("Data Charges");
-		expectedCostFilters.add("Messaging Charges");
-		expectedCostFilters.add("Roaming Charges");
-		expectedCostFilters.add("Equipment Charges");
-		expectedCostFilters.add("Taxes");
-		expectedCostFilters.add("Other Charges");
-		expectedCostFilters.add("Account Level Charges");
-	}
-
 	// this sets currentExpenseFilter to what expense filter is being used to click each selection.
 	public static void SetExpenseFilter(expenseFilters expFilter)
 	{
 		currentExpenseFilter = expFilter;
-	}
-
-	// this uses the 'currentExpenseFilter' value to decide which set of cost filters will be used to make the clicks across all the filters. 
-	// the 'ClickThroughFiltersAndVerify' method does the clicks and then calls the method that handles all the testing. 
-	public static void VerifySpendCateoryFilter() throws Exception 
-	{
-		switch(currentExpenseFilter)
-		{
-			case Expense:
-			{
-				ClickThroughFiltersAndVerify(expenseTrendFilters);
-				break;
-			}
-			case CostPerServiceNumber:
-			{
-				ClickThroughFiltersAndVerify(costPerServiceNumberFilters);
-				break;
-			}
-			case CountOfServiceNumbers:
-			{
-				//ClickThroughFiltersAndVerify(countofServiceNumberFilters); // this filter was removed.
-				break;
-			}
-			default:
-			{
-				Assert.fail("Bad case sent to sent to ExpenseHelper.VerifySpendCateoryFilter.");
-			}
-		}
-	}
-	
-	// this clicks through the category selectors and does the testing described below.
-	public static void ClickThroughFiltersAndVerify(String xPath) throws Exception
-	{
-		// get a list of the web elements that are related to the xPath passed in.
-		// the xPath is pointing to one of the category filters. 
-		List<WebElement> listToClickThrough = driver.findElements(By.xpath(xPath));
-		
-		Assert.assertTrue(listToClickThrough.size() != 0, "Found empty list in ClickThroughFiltersAndVerify.");
-		
-		int x = 0;
-		
-		// go through the each filter selection and select them one at a time.
-		for(WebElement ele : listToClickThrough)
-		{
-			ele.click();
-			
-			// these two waits verify the correct text is found in the tile for 'Expense Trending' and 'Cost Per Service Number'. 
-			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[1]"), MediumTimeout);  
-			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[2]"), MediumTimeout); 
-			
-			// this waits for the correct text in Cost per Service Number.
-			WaitForElementVisible(By.xpath("//span[text()='Cost per Service Numbers by Vendor']"), MediumTimeout);
-			
-			// //span[text()='Cost per Service Numbers by Vendor']
-			
-			VerifyCorrectSelection(listToClickThrough, x); // verify the correct enable/disable states for control xPath sent in to this method.
-			
-			// this verifies other two category selectors that are not being clicked through. 
-			VerifyRemainingCategorySelectors(x);
-			x++;
-		}
 	}
 	
 	// this is sent a web list of selectors to look through. one of them is selected and the rest aren't.

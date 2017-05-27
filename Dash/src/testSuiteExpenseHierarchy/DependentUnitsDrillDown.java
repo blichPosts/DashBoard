@@ -51,9 +51,11 @@ public class DependentUnitsDrillDown extends BaseClass
 		//HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.drillDown);
 
 		// this will do drill down tests by looping through each hierarchy and doing drill down tests in each hierarchy.  
-		//HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown();
+		// HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown();
 		
 		HierarchyNumbersDependents.LoopThroughMonthsDependentUnits();
+		
+		Pause("Passed");
 		
 	}
 	

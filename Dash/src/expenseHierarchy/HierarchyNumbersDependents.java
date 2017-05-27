@@ -912,14 +912,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		if(tempString.contains("."))
 		{
 			// x = tempString.length() - tempString.indexOf(".");
-			x = tempString.length() - tempString.lastIndexOf("."); // bladdd
+			x = tempString.length() - tempString.lastIndexOf("."); 
 			tempString = tempString.substring(0, tempString.length() - x);
 		}
 
 		return tempString;
 	}		
 	
-	public static boolean NeedsCorrected(String fullString) // bladdd
+	public static boolean NeedsCorrected(String fullString)
 	{
 		String rightOfDollarSign = ""; 
 		
@@ -1164,7 +1164,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		ShowText("Have hit End Of Drill Down Loop. Remove breadcrumbs if they exist.");
 
-		if(WaitForElementPresentNoThrow(By.cssSelector(".breadcrumbs>span"), MediumTimeout)) // bladdxx
+		if(WaitForElementPresentNoThrow(By.cssSelector(".breadcrumbs>span"), MediumTimeout)) 
 		{
 			// WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
 			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + 1 + ")")).click();
@@ -1397,7 +1397,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	
-	public static void LoopThroughMonthsDependentUnits() throws Exception // bladdzzz
+	public static void LoopThroughMonthsDependentUnits() throws Exception 
 	{
 		runningDependentsThroughMonths = false;
 		
@@ -1416,7 +1416,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			if(!LookForNoDependentsFound())
 			{
 				ShowText("Current Month: " + ele.getText());
-				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); // for ref app.
+				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); // for ref app.??
 			}
 
 			ShowText("Mobnth Complete - short pause.");
@@ -1657,7 +1657,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			System.out.println("Finished drill down testing to level " + level);
 			System.out.println("The last click found the 'No Dependents' message\n");
 			
-			String expectedTextInEmptyTileMap = "Top 0 (out of 0) dependent units of " +   currentDependentUnitClicked.split("\n")[0] + " - " +  currentCategorySelection + " " + "Expense  ";
+			//String expectedTextInEmptyTileMap = "Top 0 (out of 0) dependent units of " +   currentDependentUnitClicked.split("\n")[0] + " - " +  currentCategorySelection + " " + "Expense  ";
+			String expectedTextInEmptyTileMap = "No dependent units for " +   currentDependentUnitClicked.split("\n")[0] + " - " +  currentCategorySelection + " " + "Expense  ";
 			
 			//ShowText("UI :" + driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>h3")).getText().replace("\n",""));
 			//ShowText("Expect :" + expectedTextInEmptyTileMap);
