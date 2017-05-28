@@ -17,6 +17,7 @@ import Dash.BaseClass;
 import expenses.SpendCategories;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper.expenseFilters;
 import helperObjects.ExpenseValuesHelper.SpendCategory;
 
@@ -38,21 +39,22 @@ public class SpendCategoryFilters extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 
-		// this sets up 
+		// ///////////////////////////
+		// 	      vendor view
+		// ///////////////////////////
+		
+		SpendCategories.SetViewMode(ExpensesViewMode.vendor);
+		
+		
+		// this sets up names of cost filters.
 		SpendCategories.SetupExpectedCostFilters();
-
 		
 		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested. 
 		
-		//SpendCategories.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested.
-		
-		// verify selecting expense trending 
-		//ExpenseHelper.VerifySpendCateoryFilter(); 
-		SpendCategories.VerifySpendCateoryFilter();
+		// verify selecting expense trending selectors different ---- FINISH 
+		SpendCategories.VerifySpendCateoryFilter(); 
 
-		
-
-		ExpenseHelper.SetExpenseFilter(expenseFilters.CountOfServiceNumbers); // this indicates which expense filter is being tested.
+		// REMOVED in 17.1
 		//SpendCategories.SetExpenseFilter(expenseFilters.CountOfServiceNumbers); // this indicates which expense filter is being tested.
 		
 		// REMOVED in 17.1
@@ -61,11 +63,42 @@ public class SpendCategoryFilters extends BaseClass
 		//ExpenseHelper.VerifySpendCateoryFilter();
 
 		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
-		//SpendCategories.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
 		
-
 		// verify selecting cost per service trending 
+		SpendCategories.VerifySpendCateoryFilter();
+		
+		// ///////////////////////////
+		// 	      country view
+		// ///////////////////////////
+		
+		SpendCategories.SetViewMode(ExpensesViewMode.country);
+		
+		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+		// this list is stored in the expense helper class.
+		ExpenseHelper.SetupForCountryPageWait();
+		
+		// move to country view.
+		CommonTestStepActions.SelectCountryView();
+
+		// this sets up names of cost filters.
+		SpendCategories.SetupExpectedCostFilters();
+		
+		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested. 
+		
+		// verify selecting expense trending selectors different ---- FINISH 
+		SpendCategories.VerifySpendCateoryFilter(); 
+
+		// REMOVED in 17.1
+		//SpendCategories.SetExpenseFilter(expenseFilters.CountOfServiceNumbers); // this indicates which expense filter is being tested.
+		
+		// REMOVED in 17.1
+		// this filter was removed.
+		// verify selecting count of trending 
 		//ExpenseHelper.VerifySpendCateoryFilter();
+
+		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
+		
+		// verify selecting cost per service trending 
 		SpendCategories.VerifySpendCateoryFilter();
 		
 		Pause("Passeed");

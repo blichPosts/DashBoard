@@ -31,8 +31,12 @@ public class CostPerServiceNumberTrend extends  BaseClass
 {
 	
 	public static String chartId = "";
+	
 	public static String vendorTitle = "Cost per Service Numbers by Vendor ($) - All Categories";
+	public static String vendorTitleShort = "Cost per Service Numbers by Vendor ($)";
+	
 	public static String countryTitle = "Cost per Service Numbers by Country ($) - All Categories";	
+	public static String countryTitleShort = "Cost per Service Numbers by Country ($)";
 	
 	public static List<WebElement> webEleListLegends;
 	public static List<WebElement> webEleListBarGraphHoverValues;
