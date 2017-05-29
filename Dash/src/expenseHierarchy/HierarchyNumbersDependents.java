@@ -58,6 +58,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static String requestedTileMapsToTest = "";
 	
 	public static boolean runningDependentsThroughMonths = true;
+	public static boolean shouldInsertMinusSign = false;
 	
 	public static Stack<String> aboveTileStack = new Stack<String>();
 	public static Stack<String> aboveKpiStack = new Stack<String>();	
@@ -742,8 +743,21 @@ public class HierarchyNumbersDependents extends BaseClass
 		// verify the actual list of data from the UI is the same as the sorted (expected) list created from the json response.  
 		for(WebElement ele : eleList)  
 		{
-			// get the actual cost string for the current dependent unit web element being looped on. 
-			actualString = ele.getText().split("\n")[1].replace(GetCostFilterString(), "").replace(",","");
+			// ///////////////////////////////////////////////////////////////////////////////////////
+			// get the actual cost string for the current dependent unit web element being looped on.
+			// ///////////////////////////////////////////////////////////////////////////////////////
+			if(ele.getText().contains("-$")) // if the actual value has a negative sign 'GetCostFilterStringTwo()' is needed to filter out the cost filter text.
+			{
+				actualString = ele.getText().split("\n")[1].replace(GetCostFilterStringTwo(), "").replace(",","");
+				if(!actualString.equals("0"))
+				{
+					actualString = "-" + actualString;					
+				}
+			}
+			else // actual value has no negative sign 'GetCostFilterString()' is needed to filter out the cost filter text.
+			{
+				actualString = ele.getText().split("\n")[1].replace(GetCostFilterString(), "").replace(",","");
+			}
 			
 			// convert the actual cost string to a double and put into a variable  
 			double actualDouble = Double.parseDouble(actualString);
@@ -761,7 +775,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText("Odd Failure ====== " + err.getMessage());
 				System.out.println("Expect = " + childList.get(loopCntr).childName + "Cost = " +  expectedDouble);
 				System.out.println("Actual = " + ele.getText().split("\n")[0] + "Cost = " +  actualDouble);
-				//Pause("Look");
+				Pause("Look AT FAIL in compare of doubles.");
 				//ShowText("Expected List ***************************");
 				//ShowChildList();
 				//ShowText("UI/Actual list *******************************");
@@ -822,10 +836,34 @@ public class HierarchyNumbersDependents extends BaseClass
 					latestCost = childList.get(loopCntr).cost; 
 				}
 				
-				// this gets the string to be filtered out of the actual data in the UI.
-				String costSelectorString = HierarchyNumbersDependents.GetCostFilterString();  
+				// jnupp2 - below
+				String costSelectorString = "";
+				shouldInsertMinusSign = false;
+				
+				// this if/else gets the string to be filtered out of the actual data in the UI and decides whether to 
+				// insert a negative in front of the actual value after the cost selector info has been removed. 
+				if(ele.getText().contains("-$")) 
+				{
+					costSelectorString = HierarchyNumbersDependents.GetCostFilterStringTwo();
+					
+					if(!ele.getText().contains("-$0"))
+					{
+						shouldInsertMinusSign = true;
+					}
+				}
+				else
+				{
+					costSelectorString = HierarchyNumbersDependents.GetCostFilterString();
+				}
+				// jnupp2 - above
 				
 				String temp = ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " ") +".0";
+				
+				if(shouldInsertMinusSign)
+				{
+					temp = "-" + temp;
+				}
+				
 				// ShowText("Add to actual " + temp);
 				actualList.add(temp);
 				expectedList.add(childList.get(loopCntr).childName + " " +  String.valueOf(expectedDouble));
@@ -1166,7 +1204,7 @@ public class HierarchyNumbersDependents extends BaseClass
 
 		if(WaitForElementPresentNoThrow(By.cssSelector(".breadcrumbs>span"), MediumTimeout)) 
 		{
-			// WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
+			WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
 			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + 1 + ")")).click();
 		}
 	}
@@ -1416,7 +1454,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			if(!LookForNoDependentsFound())
 			{
 				ShowText("Current Month: " + ele.getText());
-				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); // for ref app.??
+				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); 
 			}
 
 			ShowText("Mobnth Complete - short pause.");
@@ -2223,4 +2261,31 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 		}
 	}
+	
+	public static String GetCostFilterStringTwo()
+	{
+		switch(ExpenseHelper.currentHierarchyCostFilter)
+		{
+			case Total:
+			{
+				return "Total:-$";
+			}
+			case Optimizable:
+			{
+				return "Optimizable:-$";
+			}
+			case Roaming:
+			{
+				return "Roaming:-$";
+			}
+			default:
+			{
+				Assert.fail("switch/case fail in HierarchyNumbersDependents.GetCostFilterString.");
+				return "";
+			}
+		}
+	}
+
+	
+	
 }
