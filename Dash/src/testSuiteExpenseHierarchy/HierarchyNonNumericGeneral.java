@@ -48,6 +48,8 @@ public class HierarchyNonNumericGeneral extends BaseClass
 		
 		ShowText("Verify maximum pulldowns.");
 		
+		Pause("Freeze");
+		
 		HierarchyGeneral.VerifyMaxDisplayedPullDowns();
 		
 		HierarchyGeneral.VerifySelectionsMatchUsingPovPullDown();
@@ -65,10 +67,6 @@ public class HierarchyNonNumericGeneral extends BaseClass
 		
 		HierarchyGeneral.SetExpenseFilter(expenseHierarchy.HierarchyGeneral.expenseFiltersLocation.ExpenseTrend); // click through selectors that are above the trend graph.
 		HierarchyGeneral.VerifySpendCateoryFilter(); // verify both selector tabs.
-		
-		// VisualPageLoad.VerifyInitialStatesAfterPageLoad();
-
-		// HierarchyGeneral.VerifyTest(); // NOTE: keep this for reference on hitting a precise target for hover.
 		
 		
 		// ///////////////////////////////////////////////////////////////////////////////

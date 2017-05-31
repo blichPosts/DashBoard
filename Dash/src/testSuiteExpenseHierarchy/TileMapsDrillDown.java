@@ -12,6 +12,7 @@ import expenseHierarchy.HierarchyNumbersDependents.TileMapTestType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.HierarchyHelper;
+import helperObjects.ReadFilesHelper;
 import helperObjects.ExpenseHelper.controlType;
 
 public class TileMapsDrillDown extends BaseClass 
@@ -27,22 +28,21 @@ public class TileMapsDrillDown extends BaseClass
 	@Test
 	public static void HierarchyNumbersTestDrillDown() throws Exception
 	{	
-		//CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth); // bladdzzz
+		//CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth); 
 		
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
-		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth); // bladdzzz
+		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth); 
 		
-		Pause("After month select.");
+		//Pause("After month select.");
 		
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
-
-		
-		
 		
 		HierarchyHelper.SelectAndWaitForPageLoad();
 
 		ExpenseHelper.ShowSelectedMonth();
+		
+		ReadFilesHelper.startCollectingData();
 		
 		HierarchyNumbersDependents.SetChartId();
 

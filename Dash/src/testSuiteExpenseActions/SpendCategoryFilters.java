@@ -43,7 +43,8 @@ public class SpendCategoryFilters extends BaseClass
 		// 	      vendor view
 		// ///////////////////////////
 		
-		SpendCategories.SetViewMode(ExpensesViewMode.vendor);
+		// set this so test methods know which variables to use for expected data.
+		SpendCategories.SetViewMode(ExpensesViewMode.vendor);  
 		
 		
 		// this sets up names of cost filters.
@@ -51,7 +52,7 @@ public class SpendCategoryFilters extends BaseClass
 		
 		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested. 
 		
-		// verify selecting expense trending selectors different ---- FINISH 
+		// verify when selecting expense trending selectors  
 		SpendCategories.VerifySpendCateoryFilter(); 
 
 		// REMOVED in 17.1
@@ -71,6 +72,7 @@ public class SpendCategoryFilters extends BaseClass
 		// 	      country view
 		// ///////////////////////////
 		
+		// set this so test methods know which variables to use for expected data.
 		SpendCategories.SetViewMode(ExpensesViewMode.country);
 		
 		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 

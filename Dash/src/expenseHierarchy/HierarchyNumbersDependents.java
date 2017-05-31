@@ -281,17 +281,22 @@ public class HierarchyNumbersDependents extends BaseClass
 		int loopCntr = 0;
 		
 		// get the number of tiles in the tile map and setup loop counter.
-		loopCntr = NumberOfTilesToTestTwo();
+		// loopCntr = NumberOfTilesToTestTwo(); // problems 5/30/17
 		
+		// if tileMapInteractive true, get number to test from the user. 
 		if(tileMapInteractive)
 		{
+			// 5/31/17 - work on method that uses height/width sizes to tell how many tiles to click. // bladdxx  
+			// #highcharts-s5ptd2i-41>svg>g.highcharts-series-group>g>g>rect
+			NumberOfTileMapsToSelect();
+			Pause("Freeze");
+			
 			loopCntr = UserNumberTileMapsToTest();
 			if(loopCntr == 0)
 			{
-				loopCntr = NumberOfTilesToTestTwo();
+				loopCntr = NumberOfTilesToTestTwo(); // problems 5/30/17 --- THIS FAILS ----
 			}
 		}
-
 		
 		System.out.println("loopCntr max = " + loopCntr);
 		
@@ -314,12 +319,15 @@ public class HierarchyNumbersDependents extends BaseClass
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
-			ShowText("hover text - " + hoverInfo + " text created from UI - " + currentDependentUnitInfo);
-			
 			// make sure dependent unit from UI is not cost = $0.
 			if(!DependentUnitValueIsZero(currentDependentUnitInfo))
 			{
-				Assert.assertEquals(hoverInfo.replace(":",""), currentDependentUnitInfo);				
+				// hoverInfo = hoverInfo.replace(":", "");
+				
+				hoverInfo = RemoveLastColon(hoverInfo);
+				
+				ShowText("hover text - " + hoverInfo + " text created from UI - " + currentDependentUnitInfo);
+				Assert.assertEquals(hoverInfo, currentDependentUnitInfo);				
 			}
 		}
 
@@ -773,17 +781,17 @@ public class HierarchyNumbersDependents extends BaseClass
 			catch(AssertionError err)
 			{
 				ShowText("Odd Failure ====== " + err.getMessage());
-				System.out.println("Expect = " + childList.get(loopCntr).childName + "Cost = " +  expectedDouble);
-				System.out.println("Actual = " + ele.getText().split("\n")[0] + "Cost = " +  actualDouble);
+				System.out.println("Expect = " + childList.get(loopCntr).childName + " Cost = " +  expectedDouble);
+				System.out.println("Actual = " + ele.getText().split("\n")[0] + " Cost = " +  actualDouble);
 				Pause("Look AT FAIL in compare of doubles.");
-				//ShowText("Expected List ***************************");
-				//ShowChildList();
-				//ShowText("UI/Actual list *******************************");
-				//for(WebElement eleNew : eleList)
-				//{
-				//	ShowText(eleNew.getText().replace("\n", ""));
-				//}
-				//Pause("Look at List - Stop Program !!!!!!!!!!!!!!!!!!!!");
+				ShowText("Expected List ***************************");
+				ShowChildList();
+				ShowText("UI/Actual list *******************************");
+				for(WebElement eleNew : eleList)
+				{
+					ShowText(eleNew.getText().replace("\n", ""));
+				}
+				Pause("Look at List - Stop Program !!!!!!!!!!!!!!!!!!!!");
 
 				if((expectedDouble - actualDouble) > 1.0)
 				{
@@ -1406,6 +1414,12 @@ public class HierarchyNumbersDependents extends BaseClass
 		// got through the available hierarchies one at a time. call 'LoopThroughCatergoriesDependentUnits()' on each loop.
 		for(WebElement ele : hierarchyList)
 		{
+				//ShowInt(hierarchyCntr); 
+				//if(hierarchyCntr != 2)   
+				//{
+				//	hierarchyCntr++;
+				//	continue;
+				//}
 				ShowText("Hierarchy Name: " + ele.getText());
 				ele.click();
 				HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
@@ -1416,6 +1430,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		}	
 	}
 	
+	/*// remove after 17.2 release.
 	public static void LoopThroughMonths() throws Exception
 	{
 		CommonTestStepActions.initializeMonthSelector();
@@ -1434,6 +1449,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 		}
 	}
+	*/
+	
 	
 	public static void LoopThroughMonthsDependentUnits() throws Exception 
 	{
@@ -1462,7 +1479,33 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}	
 	
-	
+	public static void LoopThroughMonthsDrillDownUp() throws Exception 
+	{
+		runningDependentsThroughMonths = false;
+		
+		CommonTestStepActions.initializeMonthSelector();
+
+		for(WebElement ele : CommonTestStepActions.webListPulldown)
+		{
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
+			
+			ShowText("Selected Month is " + ele.getText());
+			
+			HierarchyHelper.WaitForProgressBarInactive(TenTimeout);
+			
+			Thread.sleep(2000); 
+			
+			if(!LookForNoDependentsFound())
+			{
+				ShowText("Current Month: " + ele.getText());
+				// 					       
+				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrill_Down_Up(); 
+			}
+
+			ShowText("Mobnth Complete - short pause.");
+			Thread.sleep(1500);
+		}
+	}	
 	
 	public static void LoopThroughHierarchiesDependentUnits() throws Exception 
 	{
@@ -1612,6 +1655,67 @@ public class HierarchyNumbersDependents extends BaseClass
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public static int NumberOfTileMapsToSelect()
+	{
+		String chartId = UsageHelper.getChartId(0);
+		
+		
+		
+		// get the list of tile map sizes.
+		
+		
+		
+		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-series-group>g>g>rect"));
+		
+		ShowInt(eleList.size());
+		
+		for(WebElement ele : eleList)
+		{
+			ShowText(ele.getAttribute("width"));
+			ShowText(ele.getAttribute("height"));			
+		}
+		
+		
+		
+		// #highcharts-s5ptd2i-41>svg>g.highcharts-series-group>g>g>rect
+		
+		
+		
+		return 1;
+	}
+	
+	
+	
+	
+	// this removes the last colon in the string passed in.
+	public static String RemoveLastColon(String strIn)
+	{
+		String [] arr = strIn.split(":");
+		String finalString = "";
+		
+		Assert.assertTrue(arr.length > 1, "Length of arry in HierarchyNumbersDependents.RemoveLastColon is expected to be more than one.");
+		
+		if(arr.length == 2)
+		{
+			return strIn.replace(":", "");
+		}
+		
+		// System.out.println("Number array elements " + arr.length); // DEBUG
+		
+		int x = 0;
+		
+		// looks like there are more than one ":". keep all colons except the last one.
+		for(x = 0; x < arr.length - 2; x++)
+		{
+			finalString += arr[x] + ":";
+		}
+		
+		finalString += arr[x];
+		finalString += arr[x + 1];
+		
+		return finalString;
+	}
+	
 	public static void RoundValuesInChildList() throws InterruptedException
 	{
 		double tempDbl = 0.0;
@@ -1746,11 +1850,11 @@ public class HierarchyNumbersDependents extends BaseClass
 			Thread.sleep(1000);
 		}
 		
-		// wait for the bottom bread crumb to be clickable.
-		WaitForElementClickable(By.cssSelector(".tdb-breadcrumbs>app-hierarchy-breadcrumbs>div>span:nth-of-type(" + numCrumbs + ")"), ShortTimeout, "");
 		
 		if(haveFoundCorrectBreadCrumbCount)
 		{
+			// wait for the bottom bread crumb to be clickable.
+			WaitForElementClickable(By.cssSelector(".tdb-breadcrumbs>app-hierarchy-breadcrumbs>div>span:nth-of-type(" + numCrumbs + ")"), ShortTimeout, "");
 			return true;
 		}
 		else
@@ -2054,7 +2158,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 		
 		// wait for correct number of bread crumbs and also wait for the bottom bread crumb to be clickable.
-		Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");		
+		Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, MediumTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");		
 		
 		// Pause("Wait after drill down click."); // **********************************************************************************
 		

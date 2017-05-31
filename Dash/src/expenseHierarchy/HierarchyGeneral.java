@@ -41,8 +41,8 @@ public class HierarchyGeneral extends BaseClass
 	// locators
 	public static String tileMapExpenseSeletorCssLocator = ".tdb-card>div:nth-of-type(1)>div"; // this is selectors above tile map
 	public static String expenseTrendExpenseSeletorCssLocator = ".tdb-card>div:nth-of-type(3)>div"; // this is selectors above expense trend.
-	public static String maxPullDownPOVxpath = "(//option/..)[3]"; // this is max pulldown in POV.
-	public static String maxPullDownTileMapxpath = "(//option/..)[4]"; // this is max pulldown above tile map.
+	public static String maxPullDownPOVxpath = "(//option/..)[4]"; // this is max pulldown in POV.
+	public static String maxPullDownTileMapxpath = "(//option/..)[5]"; // this is max pulldown above tile map.
 
 	
 	// this is for indicating which trend graph expense filter is being tested. 

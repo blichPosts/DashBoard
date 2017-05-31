@@ -25,7 +25,7 @@ public class ExpenseHelper extends BaseClass
 	public static String tmpStr = "";
 	public static String errMessage = "";	
 	// public static String desiredMonth = "May 2016";
-	public static String desiredMonth = "October 2016";
+	public static String desiredMonth = "November 2016";
 	public static String impericalDesiredMonth = ""; // this is found by going through the months and finding the month(s) with the most amount of vendors showing in the expense control. 
 	public static String chartId = "";
 	public static String otherText = "Other";
