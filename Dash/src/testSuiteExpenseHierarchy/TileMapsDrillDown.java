@@ -42,23 +42,27 @@ public class TileMapsDrillDown extends BaseClass
 
 		ExpenseHelper.ShowSelectedMonth();
 		
-		ReadFilesHelper.startCollectingData();
+		ReadFilesHelper.startCollectingData(); // call this so can look at json data when pop-up stops test.
 		
 		HierarchyNumbersDependents.SetChartId();
 
-		ExpenseHelper.failedtestNgTest = false;
+		// ExpenseHelper.failedtestNgTest = false; // useless ?
 
 		// set how many levels to drill down to.
 		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(7);
 
 		
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(1, 100);
+		// HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(1, 100);
+		ExpenseHelper.SetHierarchyMaxDisplayed(100);	
+		
 		
 		// set which tile map test should be run in the loop below. 
 		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.drillDownCommand);
 
 		HierarchyNumbersDependents.LoopThroughTileMapTests();
+		
+		Pause("Test Passed.");
 		
 		
 		/*
@@ -98,7 +102,7 @@ public class TileMapsDrillDown extends BaseClass
 	{
 		System.out.println("Close Browser.");	
 		ExpenseHelper.SetWaitDefault();
-	    JOptionPane.showMessageDialog(frame, "TestComplete.");
+	    JOptionPane.showMessageDialog(frame, "DONE.");
 		driver.close();
 		driver.quit();
 	}	

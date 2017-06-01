@@ -41,7 +41,9 @@ public class TileMapsTopLevel extends BaseClass
 
 		// this sets the number of tiles to test and the number of tiles to show.
 		// note: below only sets number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(0, 100);
+		// HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(0, 100);
+		
+		ExpenseHelper.SetHierarchyMaxDisplayed(100);	
 	
 		// HierarchyNumbersDependents.RunAllTilesInDash();
 
@@ -76,7 +78,7 @@ public class TileMapsTopLevel extends BaseClass
 		
 		/*
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(45, 50);
+		// HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(45, 50);
 		
 		Thread.sleep(3000);
 
@@ -102,7 +104,7 @@ public class TileMapsTopLevel extends BaseClass
 		// ////////////////////////////////////////////////////////////////////////
 
 		// this sets the number of tiles to test and the number of tiles to show.
-		HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(30, 50);
+		// HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(30, 50);
 		
 		ShowText("Have Set Cost Center Hierarchy Is Set *****");
 		ExpenseHelper.SelectHierarchy(hierarchyPulldownSelection.CostCenter);

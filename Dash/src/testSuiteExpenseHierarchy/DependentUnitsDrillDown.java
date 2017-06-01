@@ -44,7 +44,7 @@ public class DependentUnitsDrillDown extends BaseClass
 		// set how many levels to drill down to.
 		HierarchyNumbersDependents.SetMaxNumberOfLevelsToDrillDown(5);
 		
-		// this sets the number of tiles to test and the number of tiles to show. ???
+		// this sets the number of tiles to test and the number of tiles to show. useless ???
 		// HierarchyNumbersDependents.SetupNumberOfTilesToTestAndShow(2, 100);
 		
 		// set which tile map test should be run in the loop below. 

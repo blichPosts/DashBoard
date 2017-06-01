@@ -81,7 +81,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static TileMapTestType currentTileMapTestType;
 	public static DrillDownPageType drillDownPageType;
 	
-	public static boolean tileMapInteractive = true;
+	public static boolean tileMapInteractive = false;
 	
 	public static enum DrillDownPageType
 	{
@@ -286,19 +286,19 @@ public class HierarchyNumbersDependents extends BaseClass
 		// if tileMapInteractive true, get number to test from the user. 
 		if(tileMapInteractive)
 		{
-			// 5/31/17 - work on method that uses height/width sizes to tell how many tiles to click. // bladdxx  
-			// #highcharts-s5ptd2i-41>svg>g.highcharts-series-group>g>g>rect
-			NumberOfTileMapsToSelect();
-			Pause("Freeze");
-			
 			loopCntr = UserNumberTileMapsToTest();
 			if(loopCntr == 0)
 			{
-				loopCntr = NumberOfTilesToTestTwo(); // problems 5/30/17 --- THIS FAILS ----
+				loopCntr = NumberOfTilesToTestTwo(); // problems with NumberOfTilesToTestTwo() 5/30/17 --- FAILS ---- later should delete the method.
 			}
 		}
+		else
+		{
+			// 5/31/17 - this will return number of tile maps that are large enough to click. see method for necessary length and width.  
+			loopCntr = NumberOfTileMapsToSelect();
+		}
 		
-		System.out.println("loopCntr max = " + loopCntr);
+		System.out.println("NUMBER TO CLICK = " + loopCntr);
 		
 		// ////////////////////////////////////////////////////////////////////////////////////
 		// loop through tile maps.
@@ -320,22 +320,23 @@ public class HierarchyNumbersDependents extends BaseClass
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
 			// make sure dependent unit from UI is not cost = $0.
-			if(!DependentUnitValueIsZero(currentDependentUnitInfo))
+			if(!DependentUnitValueIsZeroOrNegative(currentDependentUnitInfo))
 			{
-				// hoverInfo = hoverInfo.replace(":", "");
-				
 				hoverInfo = RemoveLastColon(hoverInfo);
 				
-				ShowText("hover text - " + hoverInfo + " text created from UI - " + currentDependentUnitInfo);
-				Assert.assertEquals(hoverInfo, currentDependentUnitInfo);				
+				// ShowText("hover text - " + hoverInfo + " text created from UI - " + currentDependentUnitInfo);
+				try
+				{
+					Assert.assertEquals(hoverInfo, currentDependentUnitInfo);					
+				}
+				catch(AssertionError err)
+				{
+					Pause("Error "  + err.getMessage()  + " in tile map data compare.  Hover text = " + hoverInfo + " Text created from UI = " + currentDependentUnitInfo);
+					Assert.fail("Test Stopped.");
+				}
 			}
 		}
-
-		// Pause("loop through tile maps done.");
-        // System.out.println("Number of Tile maps tested = " + (x  - 1));
 	}	
-	
-	
 	
 	// this is called after a number of tiles to test has been setup, a month has been selected, and a tile level has been setup (unless the top level is being tested).
 	public static void RunAllTilesThree() throws Exception
@@ -1042,6 +1043,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	// * each time a level is drilled down to some test are run that test the three cost filters.
 	public static void DrillDownAcrossCostFiltersTileMapCommand(int maxNumberOfLevels, int totalNumberOfTilesShown) throws Exception 
 	{
+		int numTilesToSelectFrom = 0;
 		int tileToSelect;
 		int cntr = 0;
 
@@ -1050,33 +1052,36 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		while (cntr != maxNumberOfLevels)
 		{
+			numTilesToSelectFrom = NumberOfTileMapsToSelect();
 
-			System.out.println("Current number of dependents (tile maps) to select from = " + numberOfDependentUnits  );
+			System.out.println("Number of tiles that can be drilled down into = " + numTilesToSelectFrom);
 			
-			tileToSelect = rand.nextInt(numberOfDependentUnits);
-			
+			// hopefully won't need this.
 			// hack because of tile sizes extreme variance, this should find a tile number that can be selected.
-			tileToSelect = AdjustTileMapSelection(tileToSelect + 1);
+			// tileToSelect = AdjustTileMapSelection(tileToSelect + 1);
 			
-			System.out.println("\n** Selecting tile number " + tileToSelect + " **\n");
+			tileToSelect = rand.nextInt(numTilesToSelectFrom);
 			
+			// Pause("Selecting tile number " + (tileToSelect + 1)); // DEBUG
+			
+			System.out.println("\n** Selecting tile number " + (tileToSelect + 1) + " for drilldown selection **\n");
 
-			// tile maps with zero cost value are not shown in the tile map. it's possible an attempt to click a tile map that's not there 
-			// because of zero value could happen, or, the tile map is too small to click. to get around this a try/catch catches this condition and 
+			// tile maps with zero cost or negative value are not shown in the tile map. it's possible an attempt to click a tile map that's not there 
+			// because of zero/negative value could happen, or, the tile map is too small to click. to get around this a try/catch catches this condition and 
 			// tile map #1 is clicked, if it also doesn't have a zero value.
 			try
 			{
-				driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + tileToSelect + ")")).click();				
+				driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + (tileToSelect + 1) + ")")).click();				
 			}
 			catch (Exception ex)
 			{
-				ShowText("Tile to select is too small or has a zero value - trying to select tile one if it exists.");
+				ShowText("WEIRD ERROR -- Tile to select is too small or has a zero value - trying to select tile one if it exists.");
 
 				// get string value for dependent unit 1. 
 				String firstTileMap =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).get(0).getText(); 
 				
-				// see if dependent unit 1 doesn't have a zero cost. if it does, drilling down is stopped.
-				if(DependentUnitValueIsZero(firstTileMap)) 
+				// see if dependent unit 1 doesn't have a zero/negative cost. if it does, drilling down is stopped.
+				if(DependentUnitValueIsZeroOrNegative(firstTileMap)) 
 				{
 					break;
 				}
@@ -1085,13 +1090,11 @@ public class HierarchyNumbersDependents extends BaseClass
 					driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + 1 + ")")).click();
 				}
 				
-				driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + 1 + ")")).click();
+				// driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + 1 + ")")).click(); 6/1/17 - is this needed??
 			}
 			
 			HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
-			Thread.sleep(2000); // give time for tile map to load.
-			
-			// Pause("Freeze After Clicking Tile");
+			Thread.sleep(1000); // give time for tile map to load.
 			
 			// wait for the new bread crumb to be added.
 			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrumb count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
@@ -1104,8 +1107,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			HierarchyNumbersDependents.LoopThroughCatergoriesForTileMapCommand();
 			
-			// get dependent numbers size after drilling down. this will be used to  
-			numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size();
+			// get dependent numbers size after drilling down.  
+			// numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); // don't need this? 6/1/17
 			cntr++;
 		}
 	}
@@ -1414,7 +1417,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		// got through the available hierarchies one at a time. call 'LoopThroughCatergoriesDependentUnits()' on each loop.
 		for(WebElement ele : hierarchyList)
 		{
-				//ShowInt(hierarchyCntr); 
+				//ShowInt(hierarchyCntr);  // use commented section to run only one hierarchy.
 				//if(hierarchyCntr != 2)   
 				//{
 				//	hierarchyCntr++;
@@ -1423,7 +1426,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText("Hierarchy Name: " + ele.getText());
 				ele.click();
 				HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
-				// Thread.sleep(1000);
+				Thread.sleep(1000);
 				RunTileMapTest(currentTileMapTestType); // run test.
 				//LoopThroughCatergoriyDrillDownsForTileMapCommand();  
 				hierarchyCntr++;
@@ -1462,6 +1465,11 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
 			
+			if(ele.getText().contains("February"))
+			{
+				continue;
+			}
+			
 			ShowText("Selected Month is " + ele.getText());
 			
 			HierarchyHelper.WaitForProgressBarInactive(TenTimeout);
@@ -1488,6 +1496,11 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(WebElement ele : CommonTestStepActions.webListPulldown)
 		{
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
+			
+			if(ele.getText().contains("February"))
+			{
+				continue;
+			}
 			
 			ShowText("Selected Month is " + ele.getText());
 			
@@ -1655,37 +1668,27 @@ public class HierarchyNumbersDependents extends BaseClass
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// this finds out how many of the displayed tile maps are certain length and width and returns the count.
+	// this lets the caller know how many of the tile maps, starting from the first one, can be safely clicked.
 	public static int NumberOfTileMapsToSelect()
 	{
 		String chartId = UsageHelper.getChartId(0);
 		
-		
-		
-		// get the list of tile map sizes.
-		
-		
-		
 		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-series-group>g>g>rect"));
 		
-		ShowInt(eleList.size());
+		int numTilesThatCanBeChecked = 0;
 		
+		// Length and width >= 28.
 		for(WebElement ele : eleList)
 		{
-			ShowText(ele.getAttribute("width"));
-			ShowText(ele.getAttribute("height"));			
+			if(Integer.valueOf(ele.getAttribute("width")) >= 28 && Integer.valueOf(ele.getAttribute("height")) >= 28)
+			{
+				numTilesThatCanBeChecked++;
+			}
 		}
 		
-		
-		
-		// #highcharts-s5ptd2i-41>svg>g.highcharts-series-group>g>g>rect
-		
-		
-		
-		return 1;
+		return numTilesThatCanBeChecked;
 	}
-	
-	
-	
 	
 	// this removes the last colon in the string passed in.
 	public static String RemoveLastColon(String strIn)
@@ -1747,11 +1750,17 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	
 	// this checks to see if the current dependent unit to be selected in the tile map is zero.
-	public static boolean DependentUnitValueIsZero(String dependentUnit)
+	public static boolean DependentUnitValueIsZeroOrNegative(String dependentUnit)
 	{
 		if(dependentUnit.split("\\$")[1].equals("0"))
 		{
 			ShowText("found zero value.");
+			return true;
+		}
+		
+		if(dependentUnit.contains("-$"))
+		{
+			ShowText("found negative value.");
 			return true;
 		}
 		
@@ -1829,7 +1838,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	
-	// this is used to wait  
+	// this is used to wait for expected number of bread crumbs.  
 	public static boolean WaitForCorrectBreadCrumbCount(int numCrumbs, int waitTimeInSeconds) throws Exception
 	{
 		// System.out.println("Current number of crumbs in  'WaitForCorrectBreadCrumbCount' = "  + numCrumbs); 
@@ -1864,6 +1873,7 @@ public class HierarchyNumbersDependents extends BaseClass
 
 	}
 	
+	// bladdxx  --------------- NOTE - remove this soon...
 	// this gets the number of tiles shown in the tile map and determines how many to hover test.
 	public static int NumberOfTilesToTestTwo() throws Exception
 	{
