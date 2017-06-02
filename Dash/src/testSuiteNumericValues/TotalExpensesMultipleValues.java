@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -14,7 +13,8 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenses.TotalExpensesValues;
 import helperObjects.CommonTestStepActions;
-import helperObjects.ExpenseHelperMultipleVendors;
+import helperObjects.FleetHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -44,7 +44,9 @@ public class TotalExpensesMultipleValues extends BaseClass{
 		Thread.sleep(2000);
 
 		// Wait for countries and vendors to be loaded on PoV section
-		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
+		FleetHelper.waitForPoVSectionToBeLoaded(); 
+		
+		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
@@ -54,9 +56,6 @@ public class TotalExpensesMultipleValues extends BaseClass{
 			vendorNames.add(vendor.getText());
 		}
 		
-		CommonTestStepActions.GoToExpensePageDetailedWait();
-		
-		String path = ExpenseHelperMultipleVendors.path;
 
 		// ** In many cases some of the sections of the pie chart are too small and the coordinates used to locate the mouse sometimes are not accurate.
 		// ** So, it's better to set the amountOfVendorsToSelect to 2 or 3 at a time...
@@ -89,12 +88,7 @@ public class TotalExpensesMultipleValues extends BaseClass{
 			for (i = offsetVendorsAmount; i < totalAmountVendors; i++) {
 				
 				String vendor = vendorNames.get(i);
-				String vendorSelected = vendorNames.get(i);
-				String vendorFileName = UsageHelper.removePunctuationCharacters(vendorSelected);
-				
-				String file = vendorFileName + ".txt";
-				String completePath = path + file;
-				
+								
 				// #2 Read data from file
 				List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
 				listVendorsSelectedData.add(valuesFromFileOneVendor);
@@ -104,7 +98,7 @@ public class TotalExpensesMultipleValues extends BaseClass{
 				
 			}
 			
-			String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
+			String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
 			String monthYearToSelect = "";
 						
 			int indexMonth = 0;
@@ -147,10 +141,10 @@ public class TotalExpensesMultipleValues extends BaseClass{
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
 				
-				TotalExpensesValues.verifyTotalExpensesPieChartTooltip(ExpenseHelperMultipleVendors.expenseTotalExpensePieChart, listOneMonthData);
+				TotalExpensesValues.verifyTotalExpensesPieChartTooltip(FleetHelper.expenseTotalExpensePieChart, listOneMonthData);
 				Thread.sleep(1000);
 				
-				TotalExpensesValues.verifyTotalExpensesBarChartTooltip(ExpenseHelperMultipleVendors.expenseTotalExpenseBarChart, listOneMonthData);
+				TotalExpensesValues.verifyTotalExpensesBarChartTooltip(FleetHelper.expenseTotalExpenseBarChart, listOneMonthData);
 				Thread.sleep(1000);
 				
 				indexMonth++;

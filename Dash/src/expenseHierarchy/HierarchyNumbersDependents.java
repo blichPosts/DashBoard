@@ -318,7 +318,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// make sure dependent unit from UI is not cost = $0.
 			if(!DependentUnitValueIsZero(currentDependentUnitInfo))
 			{
-				Assert.assertEquals(hoverInfo.replace(":",""), currentDependentUnitInfo);				
+				Assert.assertEquals(hoverInfo.replace(":",""), currentDependentUnitInfo);
 			}
 		}
 
@@ -1741,7 +1741,8 @@ public class HierarchyNumbersDependents extends BaseClass
 		// go through dependents list and put cost values onto double list.
 		for(String str : tempStrList)
 		{
-			dblList.add(Double.parseDouble(str.split("\\$")[1]));
+			ShowText("value to be added to list: " + str.split("\\$")[1].replace(",", ""));  // <-- ana add May 24
+			dblList.add(Double.parseDouble(str.split("\\$")[1].replace(",", "")));  // <-- ana add May 24   -- .replace(",", "")
 		}
 		
 		// total up all the costs.

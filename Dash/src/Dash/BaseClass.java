@@ -43,9 +43,10 @@ public class BaseClass
 	// https://qa3.traq.com/manage/login/login.trq
 	
 	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx 
+//	public static String CMD_baseUrl = "https://commcareqa.tangoe.com/manage/login/login.trq";
 	public static String Developer_Url = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense"; // bladdxx 
-//	public static String ReferenceApp_Url = "http://dc1qaanalyticsapp01.corp.tangoe.com:4000/manage"; // bladdxx
-	public static String ReferenceApp_Url = "http://dc1devmule1.prod.tangoe.com:4000/manage/home"; // <-- ana added, TO BE REMOVED AND UNCOMMENT LINE ABOVE 
+	public static String ReferenceApp_Url = "http://dc1qaanalyticsapp01.corp.tangoe.com:4000/manage"; // bladdxx
+	
 	
 	public static boolean testCaseStatus = false;
 	
@@ -288,9 +289,9 @@ public class BaseClass
 
 	public static void WaitForExpensePageDetailedLoad() throws Exception 
     {
-           WaitForElementVisible(By.xpath("//span[text()='Countries']"), MediumTimeout);
-           WaitForElementVisible(By.xpath("//h3[text()='Count of Service Numbers']"), MediumTimeout);            
-           WaitForElementVisible(By.xpath("//div/h3[text()='Count of Service Numbers']"), MediumTimeout);            
+           WaitForElementVisible(By.xpath("//span[contains(text(),'Countries')]"), MediumTimeout);
+           WaitForElementVisible(By.xpath("//h3[contains(text(),'Count of Service Numbers')]"), MediumTimeout);            
+           WaitForElementVisible(By.xpath("//div/h3[contains(text(),'Count of Service Numbers')]"), MediumTimeout);            
            
            String chartId = UsageHelper.getChartId(4);
            WaitForElementPresent(By.xpath(".//*[@id='" + chartId + "']"), MediumTimeout);

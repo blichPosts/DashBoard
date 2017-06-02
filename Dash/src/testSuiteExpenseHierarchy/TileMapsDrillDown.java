@@ -33,7 +33,7 @@ public class TileMapsDrillDown extends BaseClass
 		
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth); // bladdzzz
 		
-		Pause("After month select.");
+		// Pause("After month select.");
 		
 		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber);
 

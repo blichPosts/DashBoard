@@ -344,64 +344,67 @@ public class UsageTrendingValues extends BaseClass {
 	
 	
 	
-	public static List<List<UsageOneMonth>> getListWithData(List<List<UsageOneMonth>> data) throws ParseException {
-		
-		
-		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
-		
-		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
-		
-		// Some vendors might not have information for all last 13 months; in that case the value displayed on the Usage Trending chart is zero
-		// So to have a valid value to compare with, the info for those missing months (on source file) is created and values are set to zero.  
-		for (List<UsageOneMonth> list: data) {
-			
-			List<UsageOneMonth> valuesFromFileOneVendor = UsageHelper.addMissingMonthsForVendor(list);
-			listVendorsSelectedData.add(valuesFromFileOneVendor);
-		
-		}
-		
-
-		int indexMonth = 0;
 	
-		List<List<UsageOneMonth>> dataForUsageTrending = new ArrayList<>();
-		
-		do {
-		
-			// listOneMonthData will have the data for a specific month, for all the vendors previously selected
-			List<UsageOneMonth> listOneMonthData = new ArrayList<>();
-			
-			// values has the 13 months for one vendor
-			for (List<UsageOneMonth> values: listVendorsSelectedData){
-				
-				int indexMonthForVendorSelected = 0;
-				boolean dataFoundForMonth = false;
-				
-				while (indexMonthForVendorSelected < values.size() && !dataFoundForMonth){
-					
-					String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
-					
-					if (monthsToSelect.get(indexMonth).equals(monthYear)) {
- 
-						listOneMonthData.add(values.get(indexMonthForVendorSelected));
-						dataFoundForMonth = true;
-						
-					}
-						
-					indexMonthForVendorSelected++;
-				}
-					
-			}
-
-			dataForUsageTrending.add(listOneMonthData);
-			
-			indexMonth++;
-			
-		} while (indexMonth < monthsToSelect.size());
-		
-		
-		return dataForUsageTrending;
-		
-	}
-		
+	// *** TO BE REMOVED --- replaced by 2 methods in new class FleetHelper- 
+	
+//	public static List<List<UsageOneMonth>> getListWithData(List<List<UsageOneMonth>> data) throws ParseException {
+//		
+//		
+//		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
+//		
+//		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
+//		
+//		// Some vendors might not have information for all last 13 months; in that case the value displayed on the Usage Trending chart is zero
+//		// So to have a valid value to compare with, the info for those missing months (on source file) is created and values are set to zero.  
+//		for (List<UsageOneMonth> list: data) {
+//			
+//			List<UsageOneMonth> valuesFromFileOneVendor = UsageHelper.addMissingMonthsForVendor(list);
+//			listVendorsSelectedData.add(valuesFromFileOneVendor);
+//		
+//		}
+//		
+//
+//		int indexMonth = 0;
+//	
+//		List<List<UsageOneMonth>> dataForUsageTrending = new ArrayList<>();
+//		
+//		do {
+//		
+//			// listOneMonthData will have the data for a specific month, for all the vendors previously selected
+//			List<UsageOneMonth> listOneMonthData = new ArrayList<>();
+//			
+//			// values has the 13 months for one vendor
+//			for (List<UsageOneMonth> values: listVendorsSelectedData){
+//				
+//				int indexMonthForVendorSelected = 0;
+//				boolean dataFoundForMonth = false;
+//				
+//				while (indexMonthForVendorSelected < values.size() && !dataFoundForMonth){
+//					
+//					String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
+//					
+//					if (monthsToSelect.get(indexMonth).equals(monthYear)) {
+// 
+//						listOneMonthData.add(values.get(indexMonthForVendorSelected));
+//						dataFoundForMonth = true;
+//						
+//					}
+//						
+//					indexMonthForVendorSelected++;
+//				}
+//					
+//			}
+//
+//			dataForUsageTrending.add(listOneMonthData);
+//			
+//			indexMonth++;
+//			
+//		} while (indexMonth < monthsToSelect.size());
+//		
+//		
+//		return dataForUsageTrending;
+//		
+//	}
+//		
 	
 }

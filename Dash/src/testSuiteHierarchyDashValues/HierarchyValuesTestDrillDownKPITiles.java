@@ -54,6 +54,8 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 		
 //			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
 			
+			GeneralHelper.selectFirstMonth();
+			
 			String hierarchyValue = HierarchyHelper.getHierarchyValue(i);
 			
 			List<WebElement> dependentUnits = HierarchyHelper.getDependentUnitsPoV();
@@ -70,13 +72,14 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 			
 			
 			int j = 1;
-			int levelsToDrillDown = 5;  // Drill down up to 5 levels
+			int levelsToDrillDown = 3;  // Drill down up to 5 levels
 			int monthIndex = 0;
 			
 			
 			while (j <= levelsToDrillDown) {
 			
-				System.out.println(" **** Drilling down Level #" + j);
+				ShowText(" **** Drilling down Level #" + j);
+				ShowText(" **** Month year selected: " + CommonTestStepActions.GetPulldownTextSelected());
 				
 				List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown();
 				int indexMonth = 0;
@@ -88,7 +91,7 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 					indexMonth = monthIndex;
 					CommonTestStepActions.selectMonthYearPulldown(monthYear);
 					monthIndex++;
-					System.out.println(" **** Month Year: " + monthYear);
+					ShowText(" **** Month Year: " + monthYear);
 					
 					GeneralHelper.waitForDataToBeLoaded();
 					
@@ -101,7 +104,7 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 					
 					// Wait for 5 seconds to give time to the KPI tile to load data after the drilling down action
 					Thread.sleep(5000);
-					
+								
 					// #3 Get data from JSON
 					List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyValue);
 				
@@ -109,6 +112,8 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 					// Get the data for the month indicated by "indexMonth"
 					HierarchyTrendData trendData = valuesFromAjaxCall.get(indexMonth);
 										
+					ShowText("month/year: " + trendData.getOrdinalMonth() + "/" + trendData.getOrdinalYear());
+					
 					String totalExpense = trendData.getTotalExpense();
 					String optimizableExpense = trendData.getOptimizableExpense();
 					String roamingExpense = trendData.getRoamingExpense();
@@ -185,7 +190,7 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 	@AfterClass
 	public static void closeDriver() throws Exception
 	{
-		System.out.println("Close Browser.");		
+		ShowText("Close Browser.");		
 	    JOptionPane.showMessageDialog(frame, "Test for Hierarchy KPI Tiles Drill Down values finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();

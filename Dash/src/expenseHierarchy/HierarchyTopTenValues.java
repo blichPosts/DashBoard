@@ -58,6 +58,7 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		for (int i = 0; i < chartElementNames.size(); i++) {
 			chartLabelsFound.add(chartElementNames.get(i).getText());
+			ShowText(chartElementNames.get(i).getText());
 		}
 		
 		
@@ -99,25 +100,7 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 		while (indexHighchart <= barsAmount) {
 			
-			int[] coordinates = getCoordinates(chartId, indexHighchart, barsAmount);
-			
-			int x = coordinates[0];
-			int y = coordinates[1];
-			
-			Robot robot = new Robot();
-			robot.mouseMove(x, y);
-			Thread.sleep(500);
-			// robot.mouseMove(x + 10, y);  // <-- If needed, uncomment it. It replaces the mouse press and release, since in this chart the mouse click on the bar should redirect to a different page in CMD.
-			
-			
-			try {
-				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"), MainTimeout);
-				// System.out.println("Tooltip present");
-			} catch (Exception e) {
-				System.out.println("Tooltip NOT present");
-				e.printStackTrace();
-			}
-					
+			GeneralHelper.moveMouseToBar(chartId, indexHighchart, true);
 			
 			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"));
 			
@@ -153,32 +136,6 @@ public class HierarchyTopTenValues extends BaseClass{
 		
 	}
 
-
-	// Get the x and y coordinates of the bar 
-	private static int[] getCoordinates(String chartId, int index, int barsAmount) throws InterruptedException {
-
-		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + index + ")";
-				
-		// WebElement 'bar' will be used to set the position of the mouse on the chart
-		WebElement bar = driver.findElement(By.cssSelector(cssBar));
-		
-		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-		Point point = GeneralHelper.getAbsoluteLocation(bar);
-		
-		int x_offset = (int) (bar.getSize().width * 0.5);
-		int y_offset = (int) (bar.getSize().height);
-		
-		y_offset += (int) GeneralHelper.getScrollPosition();
-				
-		int x = point.getX() + x_offset + 2;
-		int y = point.getY() + y_offset;
-		
-		int[] coordinates = {x, y};
-				
-		return coordinates;
-		
-	}
 
 
 

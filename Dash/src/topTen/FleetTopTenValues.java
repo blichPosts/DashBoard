@@ -88,13 +88,13 @@ public class FleetTopTenValues extends BaseClass {
 			
 		}
 			
-		// ShowText("expected labels:");
+		 ShowText("expected labels:");
 		// Set up lists with expected values and labels		
 		for (FleetTopTenData data: topTenValues) {
 			
 			String label = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
 	    	expectedLabels.add(label);
-	    	// ShowText("label:  " + label);
+	    	 ShowText("label:  " + label);
 	    	
 	    	String value = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
 	    	expectedValuesList.add(value);
@@ -103,8 +103,8 @@ public class FleetTopTenValues extends BaseClass {
 		}
 
 		
-		// Verify that there are 10 elements listed on the chart: the Top Ten Service Numbers
-//		Assert.assertTrue(chartElementNames.size() == 10);
+		// Verify that there are up to 10 elements listed on the chart: the Top Ten Service Numbers
+		Assert.assertTrue(chartElementNames.size() <= 10);
 		
 		// Verify that the values are sorted in descendant order by "value"
 //		FleetTopTenHelper.verifyValuesSortedDescendantOrder(expectedValuesList); 
@@ -114,38 +114,9 @@ public class FleetTopTenValues extends BaseClass {
 		int indexHighchart = 1;
 		
 		while (indexHighchart <= chartElementNames.size()) {
-			
-			String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-						
-			// WebElement 'bar' will be used to set the position of the mouse on the chart
-			WebElement bar = driver.findElement(By.cssSelector(cssBar));
-
-			// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-			// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-			Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
-			
-			int x_offset = (int) (bar.getSize().width * 0.5);
-			int y_offset = (int) (bar.getSize().height * 0.7);
-			
-			y_offset += (int) GeneralHelper.getScrollPosition();
-			
-			int x = coordinates.getX() + x_offset;
-			int y = coordinates.getY() + y_offset;
-
-			Robot robot = new Robot();
-			robot.mouseMove(x, y);
-			Thread.sleep(500);
-			// robot.mouseMove(x + 10, y);  // <-- If needed, uncomment it. It replaces the mouse press and release, since in this chart the mouse click on the bar should redirect to a different page in CMD.
-			
-			
-			try {
-				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"), MainTimeout);
-				// System.out.println("Tooltip present");
-			} catch (Exception e) {
-				System.out.println("Tooltip NOT present");
-				e.printStackTrace();
-			}
-					
+	
+			GeneralHelper.moveMouseToBar(chartId, indexHighchart, true);
+	
 			
 			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"));
 			
@@ -170,8 +141,8 @@ public class FleetTopTenValues extends BaseClass {
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-			// ShowText("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-			// ShowText("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+			 ShowText("labelFound: " + labelFound); 
+			 ShowText("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
 			// They cannot be verified by order, since if there are 2 elements that have the same value (expenses value) the order in which they'll be listed cannot be known

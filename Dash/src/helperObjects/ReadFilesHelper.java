@@ -107,7 +107,7 @@ public class ReadFilesHelper extends BaseClass {
 	    	    	
 	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.rows')");
 	   
-	    // ShowText(trendData);
+	     ShowText(trendData);
 		   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(trendData); 

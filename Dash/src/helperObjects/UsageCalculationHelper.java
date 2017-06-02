@@ -9,7 +9,7 @@ public class UsageCalculationHelper extends BaseClass{
 
 	
 	// Used to convert *Data* units
-	// E.g.: Given a value for Data of 20236954 bytes or Kb??? , the shortened and rounded value 
+	// E.g.: Given a value for Data of 20236954 Kb, the shortened and rounded value 
 	// that fits the format to be displayed on the KPI tile will be "19"
 	public static String convertDataUnits(double amount) {
 		
@@ -18,32 +18,57 @@ public class UsageCalculationHelper extends BaseClass{
 		double tmpAmount = 0.0;
 		String amountConvertedTmp = ""; 
 		
-		//System.out.println("Original amount: " + amount);
+		// System.out.println("Original amount: " + amount);
 			
-		if (amount < 1000.0) {
+		if (amount < 1024.0) {
 			
 			tmpAmount = amount;
 		}
-		else if (amount > 1000.0 && amount < 1000000.0) {
+		else if (amount > 1024.0 && amount < 1048576.0) {
 			
 			tmpAmount = amount / 1024;
 			
 		}
-		else if (amount > 1000000.0 && amount < 1000000000.0) {
+		else if (amount > 1048576.0 && amount < 1073741824.0) {
 			
 			tmpAmount = amount / Math.pow(1024, 2);
 			
 		}
-		else if (amount > 1000000000.0 && amount < 1000000000000.0) {
+		else if (amount > 1073741824.0 && amount < 1099511627776.0) {
 			
 			tmpAmount = amount / Math.pow(1024, 3);
 			
 		}
-		else if (amount > 1000000000000.0) {
+		else if (amount > 1099511627776.0) {
 			
 			tmpAmount = amount / Math.pow(1024, 4);
 			
 		}
+		
+//		if (amount < 1000.0) {
+//			
+//			tmpAmount = amount;
+//		}
+//		else if (amount > 1000.0 && amount < 1000000.0) {
+//			
+//			tmpAmount = amount / 1024;
+//			
+//		}
+//		else if (amount > 1000000.0 && amount < 1000000000.0) {
+//			
+//			tmpAmount = amount / Math.pow(1024, 2);
+//			
+//		}
+//		else if (amount > 1000000000.0 && amount < 1000000000000.0) {
+//			
+//			tmpAmount = amount / Math.pow(1024, 3);
+//			
+//		}
+//		else if (amount > 1000000000000.0) {
+//			
+//			tmpAmount = amount / Math.pow(1024, 4);
+//			
+//		}
 		
 		//System.out.println("Temp amount: " + tmpAmount);
 		
@@ -69,7 +94,7 @@ public class UsageCalculationHelper extends BaseClass{
 						
 		}
 		
-		//System.out.println("Value rounded for KPI: " + amountConverted);
+		// System.out.println("Value rounded for KPI: " + amountConverted);
 		
 		return amountConverted;
 		

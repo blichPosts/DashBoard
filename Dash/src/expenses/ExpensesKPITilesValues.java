@@ -27,18 +27,21 @@ public class ExpensesKPITilesValues extends BaseClass{
 		String totalChargeKPIFromDash = kpiTileValues.get(0).getText();
 		
 		System.out.println("KPI Tile Total Expense Actual: " + totalChargeKPIFromDash + ",  KPI Tile Total Expense Expected: " + totalChargeKPICalculated); 
-		GeneralHelper.verifyExpectedAndActualValues(totalChargeKPIFromDash, totalChargeKPICalculated);
+		
 		
 		String countServNumKPICalculated = UsageCalculationHelper.convertUnits(numberLines);
 		String countServNumKPIFromDash = kpiTileValues.get(1).getText();
 		
 		System.out.println("KPI Tile Cost per Service Number Actual: " + countServNumKPIFromDash + ",  KPI Tile Cost per Service Number Expected: " + countServNumKPICalculated); 
-		GeneralHelper.verifyExpectedAndActualValues(countServNumKPIFromDash, countServNumKPICalculated);
+
 		
 		String costServNumKPICalculated = UsageCalculationHelper.convertUnitsExpense(costPerServiceNumber);
 		String costServNumKPIFromDash = kpiTileValues.get(2).getText();
 		
 		System.out.println("KPI Tile Count of Service Numbers Actual: " + costServNumKPIFromDash + ",  KPI Tile Count of Service Numbers Expected: " + costServNumKPICalculated); 
+		
+		GeneralHelper.verifyExpectedAndActualValues(totalChargeKPIFromDash, totalChargeKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(countServNumKPIFromDash, countServNumKPICalculated);
 		GeneralHelper.verifyExpectedAndActualValues(costServNumKPIFromDash, costServNumKPICalculated);
 		
 	}

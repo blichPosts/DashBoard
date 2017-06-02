@@ -17,6 +17,7 @@ import org.testng.Assert;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelperMultipleVendors;
+import helperObjects.FleetHelper;
 import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
 import helperObjects.UsageHelper;
@@ -138,12 +139,12 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		
 		String cssBar = "";
 		
-		if (barChartId == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
+		if (barChartId == FleetHelper.costPerServiceNumberChart) {
 			
 			cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
 
 			
-		} else if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart || barChartId == ExpenseHelperMultipleVendors.countServiceNumbersChart) {
+		} else if (barChartId == FleetHelper.expenseByVendorChart || barChartId == FleetHelper.countServiceNumbersChart) {
 			
 			cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
 			
@@ -202,47 +203,47 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				
 				if (vendorHasData.get(keyVendor)) {
 	
-					if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart) {
+					if (barChartId == FleetHelper.expenseByVendorChart) {
 					
-						if (categorySelector == ExpenseHelperMultipleVendors.categoryAll){
+						if (categorySelector == FleetHelper.expenseCategoryAll){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getTotalCharge()), true));
 							
-						} else if (categorySelector == ExpenseHelperMultipleVendors.categoryVoice){
+						} else if (categorySelector == FleetHelper.expenseCategoryVoice){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getVoiceCharges()), true));
 							
-						} else if (categorySelector == ExpenseHelperMultipleVendors.categoryData){
+						} else if (categorySelector == FleetHelper.expenseCategoryData){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getDataCharges()), true));
 							
-						} else if (categorySelector == ExpenseHelperMultipleVendors.categoryMessages){
+						} else if (categorySelector == FleetHelper.expenseCategoryMessages){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getMessagesCharges()), true));
 							
-						} else if (categorySelector == ExpenseHelperMultipleVendors.categoryRoaming){
+						} else if (categorySelector == FleetHelper.expenseCategoryRoaming){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getRoamingCharges()), true));
 							
-						} else if (categorySelector == ExpenseHelperMultipleVendors.categoryEquipment){
+						} else if (categorySelector == FleetHelper.expenseCategoryEquipment){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getEquipmentCharges()), true));
 							
-						} else if (categorySelector == ExpenseHelperMultipleVendors.categoryTaxes){
+						} else if (categorySelector == FleetHelper.expenseCategoryTaxes){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getTaxCharges()), true));
 							
-						} else if (categorySelector == ExpenseHelperMultipleVendors.categoryOther){
+						} else if (categorySelector == FleetHelper.expenseCategoryOther){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getOtherCharges()), true));
 							
-						} else if (categorySelector == ExpenseHelperMultipleVendors.categoryAccount){
+						} else if (categorySelector == FleetHelper.expenseCategoryAccount){
 
 							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getTotalAccountLevelCharges()), true));
 							
 						}						
 						
-					} else if (barChartId == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
+					} else if (barChartId == FleetHelper.costPerServiceNumberChart) {
 						
 						String costPerServiceNumber = "$0";
 						int numberOfLines = Integer.parseInt(usageOneMonth.getNumberOfLines());
@@ -253,39 +254,39 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 							
 							double costTmp = 0;
 							
-							if (categorySelector == ExpenseHelperMultipleVendors.categoryAll){
+							if (categorySelector == FleetHelper.expenseCategoryAll){
 								
 								costTmp = Double.parseDouble(usageOneMonth.getTotalCharge()) / numberOfLines;
 																
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryVoice){
+							} else if (categorySelector == FleetHelper.expenseCategoryVoice){
 
 								costTmp = Double.parseDouble(usageOneMonth.getVoiceCharges()) / numberOfLines;
 																
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryData){
+							} else if (categorySelector == FleetHelper.expenseCategoryData){
 
 								costTmp = Double.parseDouble(usageOneMonth.getDataCharges()) / numberOfLines;
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryMessages){
+							} else if (categorySelector == FleetHelper.expenseCategoryMessages){
 
 								costTmp = Double.parseDouble(usageOneMonth.getMessagesCharges()) / numberOfLines;
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryRoaming){
+							} else if (categorySelector == FleetHelper.expenseCategoryRoaming){
 
 								costTmp = Double.parseDouble(usageOneMonth.getRoamingCharges()) / numberOfLines;
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryEquipment){
+							} else if (categorySelector == FleetHelper.expenseCategoryEquipment){
 
 								costTmp = Double.parseDouble(usageOneMonth.getEquipmentCharges()) / numberOfLines;
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryTaxes){
+							} else if (categorySelector == FleetHelper.expenseCategoryTaxes){
 
 								costTmp = Double.parseDouble(usageOneMonth.getTaxCharges()) / numberOfLines;
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryOther){
+							} else if (categorySelector == FleetHelper.expenseCategoryOther){
 
 								costTmp = Double.parseDouble(usageOneMonth.getOtherCharges()) / numberOfLines;
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryAccount){
+							} else if (categorySelector == FleetHelper.expenseCategoryAccount){
 
 								costTmp = Double.parseDouble(usageOneMonth.getTotalAccountLevelCharges()) / numberOfLines;
 							}	
@@ -297,7 +298,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 						map.put(usageOneMonth.getVendorName(), costPerServiceNumber);
 						
 						
-					} else if (barChartId == ExpenseHelperMultipleVendors.countServiceNumbersChart) {
+					} else if (barChartId == FleetHelper.countServiceNumbersChart) {
 						
 						map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getNumberOfLines()), false));
 												
@@ -379,41 +380,41 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 					
 						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(v);
 							
-						if (barChartId == ExpenseHelperMultipleVendors.expenseByVendorChart) {
+						if (barChartId == FleetHelper.expenseByVendorChart) {
 							
-							if (categorySelector == ExpenseHelperMultipleVendors.categoryAll){
+							if (categorySelector == FleetHelper.expenseCategoryAll){
 										
 								otherTmpSum += (Double.parseDouble(usage.getTotalCharge()));
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryVoice){
+							} else if (categorySelector == FleetHelper.expenseCategoryVoice){
 								
 								otherTmpSum += (Double.parseDouble(usage.getVoiceCharges()));
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryData){
+							} else if (categorySelector == FleetHelper.expenseCategoryData){
 								
 								otherTmpSum += (Double.parseDouble(usage.getDataCharges()));
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryMessages){
+							} else if (categorySelector == FleetHelper.expenseCategoryMessages){
 								
 								otherTmpSum += (Double.parseDouble(usage.getMessagesCharges()));
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryRoaming){
+							} else if (categorySelector == FleetHelper.expenseCategoryRoaming){
 								
 								otherTmpSum += (Double.parseDouble(usage.getRoamingCharges()));
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryEquipment){
+							} else if (categorySelector == FleetHelper.expenseCategoryEquipment){
 								
 								otherTmpSum += (Double.parseDouble(usage.getEquipmentCharges()));
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryTaxes){
+							} else if (categorySelector == FleetHelper.expenseCategoryTaxes){
 								
 								otherTmpSum += (Double.parseDouble(usage.getTaxCharges()));
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryOther){
+							} else if (categorySelector == FleetHelper.expenseCategoryOther){
 								
 								otherTmpSum += (Double.parseDouble(usage.getOtherCharges()));
 								
-							} else if (categorySelector == ExpenseHelperMultipleVendors.categoryAccount){
+							} else if (categorySelector == FleetHelper.expenseCategoryAccount){
 								
 								otherTmpSum += (Double.parseDouble(usage.getTotalAccountLevelCharges()));
 								
@@ -423,7 +424,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 							expectedValues.get(indexMonthValues).put(otherVendors, expensesOther); 
 							
 							
-						} else if (barChartId == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
+						} else if (barChartId == FleetHelper.costPerServiceNumberChart) {
 							
 							int numberOfLines = Integer.parseInt(usage.getNumberOfLines());
 							
@@ -431,39 +432,39 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 							// This is to avoid the error generated by a division by zero.
 							if (numberOfLines != 0) { 
 								
-								if (categorySelector == ExpenseHelperMultipleVendors.categoryAll){
+								if (categorySelector == FleetHelper.expenseCategoryAll){
 									
 									otherTmpSum += Double.parseDouble(usage.getTotalCharge());
 																										
-								} else if (categorySelector == ExpenseHelperMultipleVendors.categoryVoice){
+								} else if (categorySelector == FleetHelper.expenseCategoryVoice){
 
 									otherTmpSum += Double.parseDouble(usage.getVoiceCharges());
 																	
-								} else if (categorySelector == ExpenseHelperMultipleVendors.categoryData){
+								} else if (categorySelector == FleetHelper.expenseCategoryData){
 
 									otherTmpSum += Double.parseDouble(usage.getDataCharges());
 									
-								} else if (categorySelector == ExpenseHelperMultipleVendors.categoryMessages){
+								} else if (categorySelector == FleetHelper.expenseCategoryMessages){
 
 									otherTmpSum += Double.parseDouble(usage.getMessagesCharges());
 									
-								} else if (categorySelector == ExpenseHelperMultipleVendors.categoryRoaming){
+								} else if (categorySelector == FleetHelper.expenseCategoryRoaming){
 
 									otherTmpSum += Double.parseDouble(usage.getRoamingCharges());
 									
-								} else if (categorySelector == ExpenseHelperMultipleVendors.categoryEquipment){
+								} else if (categorySelector == FleetHelper.expenseCategoryEquipment){
 
 									otherTmpSum += Double.parseDouble(usage.getEquipmentCharges());
 									
-								} else if (categorySelector == ExpenseHelperMultipleVendors.categoryTaxes){
+								} else if (categorySelector == FleetHelper.expenseCategoryTaxes){
 
 									otherTmpSum += Double.parseDouble(usage.getTaxCharges());
 									
-								} else if (categorySelector == ExpenseHelperMultipleVendors.categoryOther){
+								} else if (categorySelector == FleetHelper.expenseCategoryOther){
 
 									otherTmpSum += Double.parseDouble(usage.getOtherCharges());
 									
-								} else if (categorySelector == ExpenseHelperMultipleVendors.categoryAccount){
+								} else if (categorySelector == FleetHelper.expenseCategoryAccount){
 
 									otherTmpSum += Double.parseDouble(usage.getTotalAccountLevelCharges());
 									
@@ -481,7 +482,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 							}
 							
 							
-						} else if (barChartId == ExpenseHelperMultipleVendors.countServiceNumbersChart) {
+						} else if (barChartId == FleetHelper.countServiceNumbersChart) {
 							
 							otherTmpSum += Double.parseDouble(usage.getNumberOfLines());				
 							countOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);

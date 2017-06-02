@@ -80,6 +80,7 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 			// #3 Select only one vendor
 			CommonTestStepActions.UnSelectAllVendors();
 			CommonTestStepActions.selectOneVendor(vendor);
+			ShowText("Vendor selected: " + vendor);
 			
 			String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 			
@@ -99,26 +100,29 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 			
 				oneMonthData = valuesOneVendorAllMonths.get(indexMonth);   
 				
-				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
-				month = monthYear[0];
-				year = monthYear[1];
+//				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
+//				month = monthYear[0];
+//				year = monthYear[1];
+//				
+//				boolean monthYearNull = false; 
+//				
+//				try {
+//					
+//					if (!(month.equals(null) && year.equals(null))) {
+//						monthYearNull = false;
+//					}
+//							
+//				} catch (NullPointerException e) {
+//					monthYearNull = true;
+//				}
+//					
+//				// If month and year aren't null, then verify the values for the current month and vendor selected
+//				// 'month' and 'year' null, means there's no data for the current month and vendor selected
+//				if (!monthYearNull) {
+					
+				month = oneMonthData.getOrdinalMonth();
+				year = oneMonthData.getOrdinalYear();
 				
-				boolean monthYearNull = false; 
-				
-				try {
-					
-					if (!(month.equals(null) && year.equals(null))) {
-						monthYearNull = false;
-					}
-							
-				} catch (NullPointerException e) {
-					monthYearNull = true;
-				}
-					
-				// If month and year aren't null, then verify the values for the current month and vendor selected
-				// 'month' and 'year' null, means there's no data for the current month and vendor selected
-				if (!monthYearNull) {
-					
 					monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
 					System.out.println("Month Year: " + monthYearToSelect);
 					
@@ -182,7 +186,7 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 						
 					}
 					
-				}
+//				}
 				
 				indexMonth++;
 				

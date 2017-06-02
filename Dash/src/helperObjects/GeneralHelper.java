@@ -4,6 +4,7 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeoutException;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
@@ -227,16 +229,14 @@ public class GeneralHelper extends BaseClass {
 		
 		String numericValue = value;
 
+		// Get rid of currency symbols
 		numericValue = numericValue.replace("$", "");
- 
-		numericValue = numericValue.replace("€", "");
-		
+ 		numericValue = numericValue.replace("€", "");
 		numericValue = numericValue.replace("£", "");
 		
+		// Get rid of language tags
 		numericValue = numericValue.replace("[es]", "");
-		
 		numericValue = numericValue.replace("[ja]", "");
-		
 		numericValue = numericValue.replace("[de]", "");
 		
 		numericValue = numericValue.replace(" directly allocated", "");  
@@ -337,17 +337,14 @@ public class GeneralHelper extends BaseClass {
 	
 	
 	
+	// Used in Trending chart tests
 	public static void moveMouseToBar(boolean fleetExpense, boolean firstBar, int chartNum, String chartId, int indexHighchart) throws InterruptedException, AWTException {
-		
-		
-//		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
 		
 		String cssBar = "";
 		
-		if (fleetExpense && chartNum == ExpenseHelperMultipleVendors.costPerServiceNumberChart) {
+		if (fleetExpense && chartNum == FleetHelper.costPerServiceNumberChart) {
 			
 			cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
-
 			
 		} else {
 			
@@ -390,9 +387,79 @@ public class GeneralHelper extends BaseClass {
 			System.out.println("Tooltip NOT present");
 			e.printStackTrace();
 		}
-				
 		
 	}
+	
+	
+	
+	// Used in Top Ten chart tests
+	public static void moveMouseToBar(String chartId, int indexHighchart, boolean isTopTenChart) throws InterruptedException, AWTException {
+		
+		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+		
+		// WebElement 'bar' will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
+		
+		int height = bar.getSize().getHeight();
+		int width = bar.getSize().getWidth();
+		
+		double factor = 1;
+		if (!isTopTenChart) factor = 0.5; 
+		
+		int x_offset = (int) (width * 0.5);
+		int y_offset = (int) (height * factor) + (int) GeneralHelper.getScrollPosition();
+		
+		int x = coordinates.getX() + x_offset + 2;
+		int y = coordinates.getY() + y_offset;
+
+		Robot robot = new Robot();
+		robot.mouseMove(x, y);
+		
+		if (!isTopTenChart) {
+			
+			Thread.sleep(500);
+			robot.mouseMove(x + 5, y + 5);
+			
+			if (width > 10.0) {
+				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
+			}
+			
+			if (width < 10.0) {
+				robot.mousePress(InputEvent.BUTTON1_MASK);
+				robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			}
+						
+		}
+		
+		Thread.sleep(500);
+		// robot.mouseMove(x + 10, y);  // <-- If needed, uncomment it. It replaces the mouse press and release, since in this chart the mouse click on the bar should redirect to a different page in CMD.
+		
+		
+		try {
+			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"), MainTimeout);
+			// System.out.println("Tooltip present");
+		} catch (Exception e) {
+			System.out.println("Tooltip NOT present");
+			e.printStackTrace();
+		}
+		
+	}
+
+
+	public static String getLastMonthFromSelector() {
+
+		return driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
+		
+	}
+
+
+	
+	
+	
 
 	
 }
