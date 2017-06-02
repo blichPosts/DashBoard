@@ -1111,7 +1111,7 @@ public class ExpenseHelper extends BaseClass
 	}
 	
 	// this is for clicking legends under a trend chart using x/y locator. 
-	public static void SelectLegendWithPointer(String chartId, int indexHighchart) throws InterruptedException, AWTException // jnupp
+	public static void SelectLegendWithPointer(String chartId, int indexHighchart) throws InterruptedException, AWTException
 	{
 		// this is css for legend.
 		String cssBar = "#" + chartId + ">svg>g.highcharts-legend>g>g>g:nth-of-type(" + indexHighchart +  ")";

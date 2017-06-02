@@ -87,7 +87,7 @@ public class SpendCategoryFilters extends BaseClass
 		
 		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested. 
 		
-		// verify selecting expense trending selectors different ---- FINISH 
+		// verify selecting expense trending selectors and how selecting one affects the other selectors and trend titles.
 		SpendCategories.VerifySpendCateoryFilter(); 
 
 		// REMOVED in 17.1
@@ -100,7 +100,7 @@ public class SpendCategoryFilters extends BaseClass
 
 		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
 		
-		// verify selecting cost per service trending 
+		// verify selecting expense trending selectors and how selecting one affects the other selectors and trend titles. 
 		SpendCategories.VerifySpendCateoryFilter();
 		
 		Pause("Passeed");

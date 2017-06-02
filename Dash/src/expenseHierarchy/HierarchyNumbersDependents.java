@@ -2,6 +2,7 @@ package expenseHierarchy;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,6 +60,8 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	public static boolean runningDependentsThroughMonths = true;
 	public static boolean shouldInsertMinusSign = false;
+	public static boolean tempBoolean = false;
+	
 	
 	public static Stack<String> aboveTileStack = new Stack<String>();
 	public static Stack<String> aboveKpiStack = new Stack<String>();	
@@ -274,14 +277,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 
-	// this is called after a number of tiles to test has been setup, a month has been selected, and a tile level has been setup (unless the top level is being tested).
+	// this is called after a cost filter has been switched to.
 	public static void RunTilesInCommand() throws Exception 
 	{
 		int x = 0;
 		int loopCntr = 0;
 		
 		// get the number of tiles in the tile map and setup loop counter.
-		// loopCntr = NumberOfTilesToTestTwo(); // problems 5/30/17
+		// loopCntr = NumberOfTilesToTestTwo(); // problems 5/30/17 -- get rid of this ????
 		
 		// if tileMapInteractive true, get number to test from the user. 
 		if(tileMapInteractive)
@@ -298,7 +301,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			loopCntr = NumberOfTileMapsToSelect();
 		}
 		
-		System.out.println("NUMBER TO CLICK = " + loopCntr);
+		System.out.println("NUMBER TO CLICK FOR HOVER = " + loopCntr);
 		
 		// ////////////////////////////////////////////////////////////////////////////////////
 		// loop through tile maps.
@@ -306,7 +309,12 @@ public class HierarchyNumbersDependents extends BaseClass
         for(int y = 1; y <= loopCntr; y++) 
 		{ 
         	hoverInfo = GetTooltipText(y);
-			// ShowText("hover info back: " + hoverInfo);
+			if(hoverInfo.equals(""))
+			{
+				MoveCursorBeforeClick(y);
+				Thread.sleep(1000);
+	        	hoverInfo = GetTooltipText(y);
+			}
 			
         	// get the cost type string to be filtered out for creating 'numericValue' string below. 
 			filterString = BuildStringForFilteringText();
@@ -319,7 +327,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// put name, id, and cost together.
 			currentDependentUnitInfo = nameAndIds + " " + numericValue; 
 			
-			// make sure dependent unit from UI is not cost = $0.
+			// make sure dependent unit from UI is not cost = $0 or cost =  negative number..
 			if(!DependentUnitValueIsZeroOrNegative(currentDependentUnitInfo))
 			{
 				hoverInfo = RemoveLastColon(hoverInfo);
@@ -442,6 +450,38 @@ public class HierarchyNumbersDependents extends BaseClass
         // this removes the leading numbering (i.e. "1. " before the name and cost);
         return retString.substring(retString.indexOf(".") + 1, retString.length()).trim();
 	}
+	
+	// written by Ana:
+	// this will return the string value for the tile map number hovered hovered in the tile map. 
+	public static void MoveCursorBeforeClick(int index) throws AWTException, InterruptedException
+	{
+		WebElement tileNumber = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + index + ")")); // select tile map number
+        
+        Point p = getAbsoluteLocationTileMap(tileNumber); 
+        
+        //Point p = GeneralHelper.getAbsoluteLocation(tileNumber);
+        
+        int x_offset = tileNumber.getSize().getHeight() / 2;
+        int y_offset = tileNumber.getSize().getWidth() / 2;
+        
+        x_offset = x_offset + 12;
+        
+        int a = p.getX() + x_offset;
+        int b = p.getY() + y_offset;
+        
+        Robot robot = new Robot();
+        robot.mouseMove(a, b);
+        
+		//robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		//robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        
+        Thread.sleep(2000); // orig
+        //Thread.sleep(1000); 
+        
+        ShowText("Offset moved.");
+	}
+
+	
 	
 	// this builds the json request string for getting the json rows of dependent unit values. 
 	public static String BuildJsonRequestPath()
@@ -845,7 +885,6 @@ public class HierarchyNumbersDependents extends BaseClass
 					latestCost = childList.get(loopCntr).cost; 
 				}
 				
-				// jnupp2 - below
 				String costSelectorString = "";
 				shouldInsertMinusSign = false;
 				
@@ -864,7 +903,6 @@ public class HierarchyNumbersDependents extends BaseClass
 				{
 					costSelectorString = HierarchyNumbersDependents.GetCostFilterString();
 				}
-				// jnupp2 - above
 				
 				String temp = ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " ") +".0";
 				
@@ -1047,22 +1085,24 @@ public class HierarchyNumbersDependents extends BaseClass
 		int tileToSelect;
 		int cntr = 0;
 
-		int numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); 
+		// int numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); 
 		Random rand = new Random();
 		
 		while (cntr != maxNumberOfLevels)
 		{
 			numTilesToSelectFrom = NumberOfTileMapsToSelect();
-
-			System.out.println("Number of tiles that can be drilled down into = " + numTilesToSelectFrom);
-			
-			// hopefully won't need this.
-			// hack because of tile sizes extreme variance, this should find a tile number that can be selected.
-			// tileToSelect = AdjustTileMapSelection(tileToSelect + 1);
 			
 			tileToSelect = rand.nextInt(numTilesToSelectFrom);
 			
 			// Pause("Selecting tile number " + (tileToSelect + 1)); // DEBUG
+			
+			// jnupp
+			if(!tempBoolean)
+			{
+				tileToSelect = 5;
+				tempBoolean = true;
+			}
+
 			
 			System.out.println("\n** Selecting tile number " + (tileToSelect + 1) + " for drilldown selection **\n");
 
@@ -1075,8 +1115,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			}
 			catch (Exception ex)
 			{
-				ShowText("WEIRD ERROR -- Tile to select is too small or has a zero value - trying to select tile one if it exists.");
-
+				Pause("WEIRD ERROR -- Tile to select is too small or has a zero value - trying to select tile one if it exists.");
+				/*
 				// get string value for dependent unit 1. 
 				String firstTileMap =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).get(0).getText(); 
 				
@@ -1089,12 +1129,12 @@ public class HierarchyNumbersDependents extends BaseClass
 				{
 					driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + 1 + ")")).click();
 				}
-				
-				// driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + 1 + ")")).click(); 6/1/17 - is this needed??
+				*/
+
 			}
 			
 			HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
-			Thread.sleep(1000); // give time for tile map to load.
+			Thread.sleep(2000); // give time for tile map to load.
 			
 			// wait for the new bread crumb to be added.
 			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrumb count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
@@ -1107,10 +1147,12 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			HierarchyNumbersDependents.LoopThroughCatergoriesForTileMapCommand();
 			
-			// get dependent numbers size after drilling down.  
-			// numberOfDependentUnits =  driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)).size(); // don't need this? 6/1/17
 			cntr++;
 		}
+
+		ShowText("Removing bread crumbs if they exist.");
+		
+		ClearBreadCrumbs();
 	}
 	
 	// 					------------ this does the drill down test for COMMAND tile map------------ 
@@ -1213,11 +1255,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		ShowText("Have hit End Of Drill Down Loop. Remove breadcrumbs if they exist.");
 
-		if(WaitForElementPresentNoThrow(By.cssSelector(".breadcrumbs>span"), MediumTimeout)) 
-		{
-			WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
-			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + 1 + ")")).click();
-		}
+		ClearBreadCrumbs();
 	}
 	
 	public static void ShowChildList()
@@ -1426,7 +1464,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				ShowText("Hierarchy Name: " + ele.getText());
 				ele.click();
 				HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				RunTileMapTest(currentTileMapTestType); // run test.
 				//LoopThroughCatergoriyDrillDownsForTileMapCommand();  
 				hierarchyCntr++;
@@ -1482,10 +1520,45 @@ public class HierarchyNumbersDependents extends BaseClass
 				HierarchyNumbersDependents.LoopThroughHierarchiesDependentUnitsDrillDown(); 
 			}
 
-			ShowText("Mobnth Complete - short pause.");
+			ShowText("Month Complete - short pause.");
 			Thread.sleep(1500);
 		}
 	}	
+	
+	public static void LoopThroughMonthsTileMaps() throws Exception 
+	{
+		runningDependentsThroughMonths = false;
+		
+		CommonTestStepActions.initializeMonthSelector();
+
+		for(WebElement ele : CommonTestStepActions.webListPulldown)
+		{
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
+			
+			if(ele.getText().contains("February"))
+			{
+				continue;
+			}
+			
+			ShowText("Selected Month is " + ele.getText());
+			
+			HierarchyHelper.WaitForProgressBarInactive(TenTimeout);
+			
+			Thread.sleep(2000); 
+			
+			if(!LookForNoDependentsFound())
+			{
+				ShowText("Current Month: " + ele.getText());
+				HierarchyNumbersDependents.LoopThroughTileMapTests();
+			}
+
+			ShowText("Month Complete - short pause.");
+			Thread.sleep(1500);
+		}
+	}		
+	
+	
+	
 	
 	public static void LoopThroughMonthsDrillDownUp() throws Exception 
 	{
@@ -1668,6 +1741,18 @@ public class HierarchyNumbersDependents extends BaseClass
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// clear any bread crumbs that are showing.   
+	public static void ClearBreadCrumbs() throws Exception
+	{
+		if(WaitForElementPresentNoThrow(By.cssSelector(".breadcrumbs>span"), MediumTimeout)) 
+		{
+			WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
+			driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + 1 + ")")).click();
+		}		
+	}
+	
+	
+	
 	// this finds out how many of the displayed tile maps are certain length and width and returns the count.
 	// this lets the caller know how many of the tile maps, starting from the first one, can be safely clicked.
 	public static int NumberOfTileMapsToSelect()
@@ -1691,12 +1776,21 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	// this removes the last colon in the string passed in.
-	public static String RemoveLastColon(String strIn)
+	public static String RemoveLastColon(String strIn) throws Exception
 	{
 		String [] arr = strIn.split(":");
 		String finalString = "";
 		
-		Assert.assertTrue(arr.length > 1, "Length of arry in HierarchyNumbersDependents.RemoveLastColon is expected to be more than one.");
+		try
+		{
+			Assert.assertTrue(arr.length > 1, "Length of arry in HierarchyNumbersDependents.RemoveLastColon is expected to be more than one.");			
+		}
+		catch(AssertionError err)
+		{
+			ShowText("Error message is: " + err.getMessage() );
+			ShowText("Error in LastColon Method. String passed in is " + strIn);
+			Pause("Error in LastColon Method. String passed in is " + strIn); 
+		}
 		
 		if(arr.length == 2)
 		{

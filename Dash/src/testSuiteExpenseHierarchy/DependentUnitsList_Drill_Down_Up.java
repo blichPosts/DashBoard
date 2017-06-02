@@ -54,7 +54,7 @@ public class DependentUnitsList_Drill_Down_Up extends BaseClass
 		
 		//HierarchyNumbersDependents.LoopThroughCatergoriesFor_Lists_Up_Down(); 
 		
-		HierarchyNumbersDependents.LoopThroughMonthsDrillDownUp();
+		HierarchyNumbersDependents.LoopThroughMonthsTileMaps();
 		
 		ShowText("Test Passed.");
 		Pause("Test Passed.");

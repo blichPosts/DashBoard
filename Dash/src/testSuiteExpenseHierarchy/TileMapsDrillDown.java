@@ -60,7 +60,10 @@ public class TileMapsDrillDown extends BaseClass
 		// set which tile map test should be run in the loop below. 
 		HierarchyNumbersDependents.SetCurrrentTileMapTestType(TileMapTestType.drillDownCommand);
 
-		HierarchyNumbersDependents.LoopThroughTileMapTests();
+		// HierarchyNumbersDependents.LoopThroughTileMapTests(); // this is for one month.
+		
+		HierarchyNumbersDependents.LoopThroughMonthsTileMaps();
+		
 		
 		Pause("Test Passed.");
 		

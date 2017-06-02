@@ -1,5 +1,6 @@
 package expenses;
 
+import java.awt.AWTException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import Dash.BaseClass;
 import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.expenseFilters;
+import helperObjects.UsageHelper;
 
 public class SpendCategories extends BaseClass 
 {
@@ -19,6 +21,7 @@ public class SpendCategories extends BaseClass
 	public static List<String> expectedCostFilters = new ArrayList<>();
 	public static expenseFilters currentExpenseFilter; // this is used to indicate which expense filter is being tested.
 	public static ExpensesViewMode viewMode;
+	public static String chartId = "";
 	
 	public static void SetupExpectedCostFilters()
 	{
@@ -75,6 +78,10 @@ public class SpendCategories extends BaseClass
 	// this clicks through the category selectors and does the testing described below.
 	public static void ClickThroughFiltersAndVerify(String xPath) throws Exception
 	{
+
+		List<WebElement> webEleListBarGraphHoverValues = new ArrayList<WebElement>();
+		
+		
 		// get a list of the web elements that are related to the xPath passed in.
 		// the xPath is pointing to one of the category filters tabs.
 		List<WebElement> listToClickThrough = driver.findElements(By.xpath(xPath));
@@ -83,10 +90,14 @@ public class SpendCategories extends BaseClass
 		String expected  = "";
 		
 		Assert.assertTrue(listToClickThrough.size() != 0, "Found empty list in ClickThroughFiltersAndVerify.");
+
+		// get to section where hover tests can be done.
+		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));  
+		new Actions(driver).moveToElement(expenseTrending).perform();
 		
 		int x = 0;
 		
-		// go through the each filter selection and select them one at a time.
+		// go through the each filter (category) selection in xpath sent in and select them one at a time.
 		for(WebElement ele : listToClickThrough)
 		{
 			ele.click();
@@ -95,28 +106,34 @@ public class SpendCategories extends BaseClass
 			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[1]"), MediumTimeout);  
 			WaitForElementVisible(By.xpath("(//span[text()='" + expectedCostFilters.get(x) + "'])[2]"), MediumTimeout); 
 			
-			
 			// ///////////////////////////////////////////////////////////////////////////////////
 			// now verify complete titles for'Expense Trending' and 'Cost Per Service Number'. 
+			// the titles will vary, depending which cost category is selected.
 			// ///////////////////////////////////////////////////////////////////////////////////
-
 			
-			if(viewMode == ExpensesViewMode.vendor)
+			if(viewMode == ExpensesViewMode.vendor) // this is for vendor view.
 			{
 				// expense trending
 				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(1)")).getText();
 				expected = TotalExpensesTrend.vendorTitleShort + " - " + expectedCostFilters.get(x);
 				Assert.assertEquals(actual, expected, "");
 				
+				VerifyHoverTitles(UsageHelper.getChartId(2), expected.replace(" ($)", ""));
+				
 				// cost per service number.
 				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(2)")).getText();
 				expected = CostPerServiceNumberTrend.vendorTitleShort + " - " + expectedCostFilters.get(x);
 				Assert.assertEquals(actual, expected, "");
 				
+				VerifyHoverTitles(UsageHelper.getChartId(3), expected.replace(" ($)", ""));
+				
 				// verify text in Cost per Service Number by waiting for its text to be visible. 
 				WaitForElementVisible(By.xpath("//span[text()='Cost per Service Numbers by Vendor']"), MediumTimeout);
+				
+				VerifyHoverTitles(UsageHelper.getChartId(4), "");
+				
 			}
-			else
+			else // this is for expense view.
 			{
 				// expense trending
 				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(1)")).getText();
@@ -132,12 +149,10 @@ public class SpendCategories extends BaseClass
 				WaitForElementVisible(By.xpath("//span[text()='Cost per Service Numbers by Country']"), MediumTimeout);
 			}
 			
-			// //span[text()='Cost per Service Numbers by Vendor']
-			
 			VerifyCorrectSelection(listToClickThrough, x); // verify the correct enable/disable states for control xPath sent in to this method.
 			
-			// this verifies other two category selectors that are not being clicked through. 
-			VerifyRemainingCategorySelectors(x);
+			// this verifies the enabled/disabled states of other category selector that is not being clicked through.  
+			VerifyOtherCategorySelector(x);
 			x++;
 		}
 	}
@@ -164,41 +179,36 @@ public class SpendCategories extends BaseClass
 		}
 	}
 	
-	// this verifies the remaining category selectors. This selector was not clicked on. 
-	public static void VerifyRemainingCategorySelectors(int x) 
+	// this verifies the remaining category selectors. This selectors that weren't clicked on. 
+	public static void VerifyOtherCategorySelector(int x) 
 	{
-
 		List<WebElement> tempListOne;
-		List<WebElement> tempListTwo;
 
 		switch(ExpenseHelper.currentExpenseFilter)
 		{
-			case Expense: // expense trend is being clicked, verify other two category selectors.
+			case Expense: // expense trend is being clicked, verify other category selector.
 			{
 				tempListOne = driver.findElements(By.xpath(ExpenseHelper.costPerServiceNumberFilters));  
 				VerifyCorrectSelection(tempListOne, x);
-				//tempListTwo  = driver.findElements(By.xpath(countofServiceNumberFilters));
-				//VerifyCorrectSelection(tempListTwo, x);
 				break;
 				
 			}
-			case CostPerServiceNumber: // cost per service number trend is being clicked, verify other two category selectors.
+			case CostPerServiceNumber: // cost per service number trend is being clicked, verify the other two category selectors.
 			{
 				tempListOne = driver.findElements(By.xpath(ExpenseHelper.expenseTrendFilters));
 				VerifyCorrectSelection(tempListOne, x);
-				//tempListTwo  = driver.findElements(By.xpath(countofServiceNumberFilters));
-				//VerifyCorrectSelection(tempListTwo, x);
 				break;
 				
 			}
-			case CountOfServiceNumbers:// count of service number trend is being clicked, verify other two category selectors. // REMOVED in 17.1.
-			{
+			// CountOfServiceNumbers has no associated category selectors - REMOVED in 17.1.
+			//case CountOfServiceNumbers:// count of service number trend is being clicked, verify other two category selectors. // REMOVED in 17.1.
+			//{
 			//	tempListOne = driver.findElements(By.xpath(expenseTrendFilters));
 			//	VerifyCorrectSelection(tempListOne, x);
 			//	tempListTwo  = driver.findElements(By.xpath(costPerServiceNumberFilters));
 			//	VerifyCorrectSelection(tempListTwo, x);
-				break;
-			}
+			//	break;
+			//}
 			default:
 			{
 				Assert.fail("Bad case parameter in ExpenseHelper.VerifyRemainingCostSelectors.");
@@ -207,5 +217,23 @@ public class SpendCategories extends BaseClass
 	}	
 	
 	
-	
+	// NOTE - this code is taken from "ExpenseHelper.MoveMouseToBarExpenseActions" method.
+	// this hovers across the chatId trend graph and verifies each hover title is correct per 'expectedText' passed in.  
+	public static void VerifyHoverTitles(String chartId, String expectedText) throws InterruptedException, AWTException
+	{
+		boolean firstMonth = true;
+
+		String errMess = "Failed verification of title found in hover in method SpendCategories.VerifyHoverTitles";  
+		
+		for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
+		{
+			ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
+			
+			String actual = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo)).get(1).getText();
+			
+			Assert.assertEquals(actual, expectedText, errMess);
+			
+			firstMonth = false; // <-- ana_add
+		}		
+	}
 }
