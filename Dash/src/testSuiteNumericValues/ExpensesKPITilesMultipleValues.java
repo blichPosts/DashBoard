@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -14,9 +12,12 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenses.ExpensesKPITilesValues;
 import helperObjects.CommonTestStepActions;
+import helperObjects.FleetHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
+
 
 public class ExpensesKPITilesMultipleValues extends BaseClass{
 
@@ -42,65 +43,31 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 		Thread.sleep(2000);
 		
 		// Wait for countries and vendors to be loaded on PoV section
-		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
+		FleetHelper.waitForPoVSectionToBeLoaded(); 
 					
-		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
-		List<String> vendorNames = new ArrayList<>();
-		
-		for (WebElement vendor: vendors) {
-			vendorNames.add(vendor.getText());
-		}
-	
 		CommonTestStepActions.GoToExpensePageDetailedWait();
+
 		
-//		String path = UsageHelper.path;
-		int amountOfVendors = 3;
-		
-		// #1 Unselect all vendors
+		// #1 Select Vendor View and Unselect all vendors  
+		CommonTestStepActions.SelectVendorView();
 		CommonTestStepActions.UnSelectAllVendors();
-		
-		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
-		
-		// Run the test for each vendor 
-		for (int i = 0; i < amountOfVendors; i++) {
-			
-			String vendor = vendorNames.get(i);
-//			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);
-			
-//			String file = vendorFileName + ".txt";
-//			String completePath = path + file;
-			
-			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
-			listVendorsSelectedData.add(valuesFromFileOneVendor);
-				
-			// #3 Select one vendor
-			CommonTestStepActions.selectOneVendor(vendor);
-			
-		}
-		
-			
-		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
-		
-		UsageOneMonth oneMonthData;
-		String year = "";
-		String month = "";
-		String monthYearToSelect = "";
-		String totalCharge;
-		String numberOfLines;
-		
-		int indexMonth = 0;
-		
+					
+						
+		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataForTest();
 		List<UsageOneMonth> valuesSummarizedVendors = UsageHelper.summarizeDataExpensesVendorsSelected(listVendorsSelectedData);
+		
+		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector();
+		String monthYearToSelect = "";
+
+		int indexMonth = 0;
 		
 		do {
 		
-			oneMonthData = valuesSummarizedVendors.get(indexMonth);
+			UsageOneMonth oneMonthData = valuesSummarizedVendors.get(indexMonth);
 			 
 			String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
-			month = monthYear[0];
-			year = monthYear[1];
+			String month = monthYear[0];
+			String year = monthYear[1];
 			
 			monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
 			System.out.println("Month Year: " + monthYearToSelect);
@@ -110,8 +77,8 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 			
 			Thread.sleep(2000);
 			
-			totalCharge = oneMonthData.getTotalCharge();
-			numberOfLines = oneMonthData.getNumberOfLines();
+			String totalCharge = oneMonthData.getTotalCharge();
+			String numberOfLines = oneMonthData.getNumberOfLines();
 							
 			// #5 Compare the values displayed on the KPIs to the values from spreadsheet
 			ExpensesKPITilesValues.verifyKPItileValues(totalCharge, numberOfLines);
@@ -178,6 +145,7 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 	    JOptionPane.showMessageDialog(frame, "Test for KPI tiles values finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
+		
 	}
 
 }

@@ -77,7 +77,8 @@ public class TotalUsageValues extends BaseClass {
 			// then run the test. Else, move to the next vendor
 			if (vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()) || vendorsInChartNames.get(indexVendorInChart).equals("Other")){
 				
-				moveMouseToBar(chartId, indexHighchart);
+//				moveMouseToBar(chartId, indexHighchart);
+				GeneralHelper.moveMouseToBar(chartId, indexHighchart, false);
 				
 				try {
 					WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);

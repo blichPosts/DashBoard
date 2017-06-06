@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -13,6 +12,8 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.FleetHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -45,8 +46,15 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 		Thread.sleep(2000);
 
 		// Wait for countries and vendors to be loaded on PoV section
-		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
+		FleetHelper.waitForPoVSectionToBeLoaded();
 				
+		CommonTestStepActions.GoToUsagePageDetailedWait();
+		
+		
+		// #1 Select Vendor View and Unselect all vendors  
+		UsageHelper.selectVendorView();
+		CommonTestStepActions.UnSelectAllVendors();
+		
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
@@ -57,36 +65,21 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 			vendorNames.add(vendor.getText());
 		}
 		
-		
-		String path = UsageHelper.path;
-
+	
 		// Run the test for each vendor 
-		for (String vendorSelected: vendorNames) {
+		for (String vendor: vendorNames) {
 			
-			String vendor = vendorSelected;
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendor);
-			
-			String file = vendorFileName + ".txt";
-			String completePath = path + file;
-						
-			CommonTestStepActions.GoToUsagePageDetailedWait();
-				
-			// #1 Select Vendor View 
-			UsageHelper.selectVendorView();
-			
-			
-			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFile = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
+			// #2 Read data from the ajax call response
+			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
 			
 				
 			// #3 Select only one vendor
-			CommonTestStepActions.UnSelectAllVendors();
 			CommonTestStepActions.selectOneVendor(vendor);
 			
-			String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
+			String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector();
 			
 			UsageOneMonth oneMonthData;
-			String year =  "";
+			String year = "";
 			String month = "";
 			String monthYearToSelect = "";
 						
@@ -95,7 +88,7 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 			do {
 			
 				// Get the data for the selected vendor and the month indicated by indexMonth
-				oneMonthData = valuesFromFile.get(indexMonth);   
+				oneMonthData = valuesFromAjaxCall.get(indexMonth);   
 				
 				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
 				month = monthYear[0];

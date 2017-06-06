@@ -1,19 +1,17 @@
 package testSuiteNumericValues;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.FleetHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -44,65 +42,37 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		Thread.sleep(2000);
 			
 		// Wait for countries and vendors to be loaded on PoV section
-		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
-		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
-		List<String> vendorNames = new ArrayList<>();
-		
-		for(WebElement vendor: vendors){
-			vendorNames.add(vendor.getText());
-		}
+		FleetHelper.waitForPoVSectionToBeLoaded(); 
 
 		CommonTestStepActions.GoToUsagePageDetailedWait();
-		
-		String path = UsageHelper.path;
-		int amountOfVendors = 10;
-
-		if (amountOfVendors > vendorNames.size())
-			amountOfVendors = vendorNames.size();
-		
-		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
 		
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		UsageHelper.selectVendorView();
 		CommonTestStepActions.UnSelectAllVendors();
-		
-		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = new ArrayList<>();
-		
-		// Run the test for each vendor 
-		for(int i = 0; i < amountOfVendors; i++){
 			
-			String vendor = vendorNames.get(i);
-			String vendorSelected = vendorNames.get(i);
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendorSelected);
-			
-			String file = vendorFileName + ".txt";
-			String completePath = path + file;
-						
-			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getJsonDataExpenseUsage(vendor);		
-			listSelectedDataForMonthListUnified.add(valuesFromFileTmp);
-				
-			// #3 Select one vendor
-			CommonTestStepActions.selectOneVendor(vendor);
-			
-		}
+		// #2 Get the data for each of the selected vendors for all months.
+		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = FleetHelper.getExpenseUsageDataForTest();
 		
-		Thread.sleep(3000);
 		
+		// #3 Some vendors might not have information for all last 13 months; in that case the value displayed on the Trending chart is zero
+		//    So to have a valid value to compare with, the info for those missing months (on source file) is created and values are set to zero.  
+		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataAllMonths(listSelectedDataForMonthListUnified);
+		
+		
+		// #4 Each list in dataForExpenseTrending will have the data for a specific month, for all the vendors previously selected
+		List<List<UsageOneMonth>> dataForUsageTrending = FleetHelper.getListsWithDataPerMonth(listVendorsSelectedData);
+		
+			
+		// Get months listed on the dropdown list
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
-			
-		List<List<UsageOneMonth>> dataForUsageTrending = UsageTrendingValues.getListWithData(listSelectedDataForMonthListUnified);
-		
+						
+		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
 		int indexMonthToSelect = 0;
 		String monthYearToSelect = "";
-		
-		// Add to a list the months that have data for at least one vendor. 
-		// Months that have no data won't be selected on the month selector, since no data is displayed on the Dashboard.
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
-		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 		
+									
 		do {
 					
 			monthYearToSelect = monthsWithDataToSelectPulldown.get(indexMonthToSelect);  
@@ -147,12 +117,10 @@ public class UsageTrendingMultipleValues extends BaseClass{
 				
 				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
-				
-				new Actions(driver).moveToElement(driver.findElement(By.cssSelector(".tdb-pov__month"))).perform();
-				
+								
 			} catch(NullPointerException e) {
 				
-				System.out.println("chart not found");
+				System.out.println("chart not found or value found is null");
 				
 			}
 			

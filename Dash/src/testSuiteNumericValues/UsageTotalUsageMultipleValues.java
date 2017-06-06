@@ -5,14 +5,14 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.FleetHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -44,55 +44,20 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 		Thread.sleep(2000);
 
 		// Wait for countries and vendors to be loaded on PoV section
-		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
-		
-		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
-		List<String> vendorNames = new ArrayList<>();
-		
-		for(WebElement vendor: vendors){
-			vendorNames.add(vendor.getText());
-		}
+		FleetHelper.waitForPoVSectionToBeLoaded(); 
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
-			
-		String path = UsageHelper.path;
-		int amountOfVendors = 10;
+		
 
-		if (amountOfVendors > vendorNames.size()) {
-			amountOfVendors = vendorNames.size();
-		}
-		
-		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
-		
 		// #1 Select Vendor View and Unselect all vendors  
 		UsageHelper.selectVendorView();
 		CommonTestStepActions.UnSelectAllVendors();
 		
-		Thread.sleep(2000);
-		
-		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
-		
-		// Run the test for each vendor 
-		for(int i = 0; i < amountOfVendors; i++){
-			
-			String vendor = vendorNames.get(i);
-			String vendorSelected = vendorNames.get(i);
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendorSelected);
-			
-			String file = vendorFileName + ".txt";
-			String completePath = path + file;
-						
-			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // getDataFromSpreadsheet(completePath);
-			listVendorsSelectedData.add(valuesFromFileOneVendor);
+		// #2 Get the data for each of the selected vendors for all months.
+		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataForTest();
 				
-			// #3 Select one vendor
-			CommonTestStepActions.selectOneVendor(vendor);
-			
-		}
-		
-		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
+				
+		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector();
 		String monthYearToSelect = "";
 					
 		int indexMonth = 0;
@@ -109,7 +74,7 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 				int indexMonthForVendorSelected = 0;
 				boolean dataFoundForMonth = false;
 				
-				while(indexMonthForVendorSelected < values.size() && !dataFoundForMonth){
+				while(indexMonthForVendorSelected < values.size()) { // && !dataFoundForMonth){
 					
 					String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
 					

@@ -3,31 +3,13 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="testSuiteLocalization.LocalizationFleetTopTenTest">
+      <class name="testSuiteNumericValues.UsageKPITilesMultipleValues">
         <methods>
-          <include name="closeDriver"/>
-          <include name="LocalizationFleetTopTen"/>
-          <include name="setUp"/>
-        </methods>
-      </class> <!-- testSuiteLocalization.LocalizationFleetTopTenTest -->
-      <class name="testSuiteLocalization.LocalizationPoVSectionTest">
-        <methods>
+          <include name="UsageKPITilesMultipleValuesTest"/>
           <include name="setUp"/>
           <include name="closeDriver"/>
         </methods>
-      </class> <!-- testSuiteLocalization.LocalizationPoVSectionTest -->
-      <class name="testSuiteLocalization.LocalizationHierarchyTopTenTest">
-        <methods>
-          <include name="setUp"/>
-          <include name="closeDriver"/>
-        </methods>
-      </class> <!-- testSuiteLocalization.LocalizationHierarchyTopTenTest -->
-      <class name="testSuiteLocalization.LocalizationFleetUsageTest">
-        <methods>
-          <include name="setUp"/>
-          <include name="closeDriver"/>
-        </methods>
-      </class> <!-- testSuiteLocalization.LocalizationFleetUsageTest -->
+      </class> <!-- testSuiteNumericValues.UsageKPITilesMultipleValues -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

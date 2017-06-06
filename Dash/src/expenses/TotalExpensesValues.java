@@ -79,8 +79,9 @@ public class TotalExpensesValues extends BaseClass {
 			if (vendorsInChartNames.contains(vendorsSelectedCheckBox.get(indexVendorSelected).getText()) || vendorsInChartNames.get(indexVendorInChart).equals("Other")) {
 				
 				// Move the mouse pointer to the desired bar
-				moveMouseToBar(chartId, indexHighchart);
-		
+//				moveMouseToBar(chartId, indexHighchart);
+				GeneralHelper.moveMouseToBar(chartId, indexHighchart, false);
+				
 				try {
 					
 					WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);

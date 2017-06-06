@@ -28,31 +28,34 @@ public class UsageKPITilesActions extends BaseClass{
 		String voiceAmountKPIFromDash = kpiTileValues.get(0).getText();
 		
 		System.out.println("KPI Tile Voice Actual: " + voiceAmountKPIFromDash + ",  KPI Tile Voice Expected: " + voiceAmountKPICalculated); 
-		GeneralHelper.verifyExpectedAndActualValues(voiceAmountKPIFromDash, voiceAmountKPICalculated);
+
 		
 		String dataAmountKPICalculated = UsageCalculationHelper.convertDataUnits(domesticData);
 		String dataAmountKPIFromDash = kpiTileValues.get(1).getText();
 		
 		System.out.println("KPI Tile Data Actual: " + dataAmountKPIFromDash + ",  KPI Tile Data Expected: " + dataAmountKPICalculated); 
-		GeneralHelper.verifyExpectedAndActualValues(dataAmountKPIFromDash, dataAmountKPICalculated);
+
 		
 		String msgAmountKPICalculated = UsageCalculationHelper.convertUnits(domesticMessages);
 		String msgAmountKPIFromDash = kpiTileValues.get(2).getText();
 		
-		System.out.println("KPI Tile Mesages Actual: " + msgAmountKPIFromDash + ",  KPI Tile Messages Expected: " + msgAmountKPICalculated); 
-		GeneralHelper.verifyExpectedAndActualValues(msgAmountKPIFromDash, msgAmountKPICalculated);
+		System.out.println("KPI Tile Messages Actual: " + msgAmountKPIFromDash + ",  KPI Tile Messages Expected: " + msgAmountKPICalculated); 
+
 		
 		String roamingDataAmountKPICalculated = UsageCalculationHelper.convertDataUnits(roamingData);
 		String roamingDataAmountKPIFromDash = kpiTileValues.get(3).getText();
 		
 		System.out.println("KPI Tile Roaming Data Actual: " + roamingDataAmountKPIFromDash + ",  KPI Tile Roaming Data Expected: " + roamingDataAmountKPICalculated); 
+
+		
+		GeneralHelper.verifyExpectedAndActualValues(voiceAmountKPIFromDash, voiceAmountKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(dataAmountKPIFromDash, dataAmountKPICalculated);
+		GeneralHelper.verifyExpectedAndActualValues(msgAmountKPIFromDash, msgAmountKPICalculated);
 		GeneralHelper.verifyExpectedAndActualValues(roamingDataAmountKPIFromDash, roamingDataAmountKPICalculated);
 		
 		
 	}
 
-	
-	
 	
 	public static void verifyThreeMonthRollingAverageAndTrendingValues(List<UsageOneMonth> valuesForRollingAvg) {
 	
@@ -77,7 +80,9 @@ public class UsageKPITilesActions extends BaseClass{
 		
 				
 		// Round up rolling averages for Voice and Messages, since they cannot have decimal points (minutes and messages units must be integers) 
+		// ** IS THIS REALLY NEEDED?? ** 
 		long avgTmpVoice = Math.round(rollingAvgVoice); 
+//		ShowText("Voice rolling avg after Math.round: " + avgTmpVoice);
 		long avgTmpMsg = Math.round(rollingAvgMsg); 
 		
 		
@@ -114,6 +119,7 @@ public class UsageKPITilesActions extends BaseClass{
 						// Amount of minutes must be an integer. This rounding is needed in case the amount of minutes is < 10, 
 						// since the rolling average most likely will have a decimal point if it's < 10, and this is incorrect. 
 						threeMonthAvgExpected = UsageCalculationHelper.convertUnits(avgTmpVoice);
+//						ShowText("Voice rolling average after units converted: " + threeMonthAvgExpected);
 						rollingAverage = rollingAvgVoice;
 						kpiValue = Double.parseDouble(valuesForRollingAvg.get(0).getDomesticVoice()) + Double.parseDouble(valuesForRollingAvg.get(0).getDomesticOverageVoice());
 						break;
@@ -262,11 +268,14 @@ public class UsageKPITilesActions extends BaseClass{
 		
 		double sum = 0;
 		
+//		ShowText("Values for rolling average: ");
 		for(String v: values){
+//			ShowText(v);
 			sum += Double.parseDouble(v);
 		}
 		
 		double average = sum / values.size();
+//		ShowText("Average calculated: " + average);
 		return average;
 		
 	}

@@ -330,6 +330,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			// make sure dependent unit from UI is not cost = $0 or cost =  negative number..
 			if(!DependentUnitValueIsZeroOrNegative(currentDependentUnitInfo))
 			{
+
 				hoverInfo = RemoveLastColon(hoverInfo);
 				
 				// ShowText("hover text - " + hoverInfo + " text created from UI - " + currentDependentUnitInfo);
@@ -342,6 +343,7 @@ public class HierarchyNumbersDependents extends BaseClass
 					Pause("Error "  + err.getMessage()  + " in tile map data compare.  Hover text = " + hoverInfo + " Text created from UI = " + currentDependentUnitInfo);
 					Assert.fail("Test Stopped.");
 				}
+
 			}
 		}
 	}	
@@ -1993,7 +1995,8 @@ public class HierarchyNumbersDependents extends BaseClass
 		// go through dependents list and put cost values onto double list.
 		for(String str : tempStrList)
 		{
-			dblList.add(Double.parseDouble(str.split("\\$")[1]));
+			ShowText("value to be added to list: " + str.split("\\$")[1].replace(",", ""));  // <-- ana add May 24
+			dblList.add(Double.parseDouble(str.split("\\$")[1].replace(",", "")));  // <-- ana add May 24   -- .replace(",", "")
 		}
 		
 		// total up all the costs.

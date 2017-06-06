@@ -1,14 +1,9 @@
-
-
 package testSuiteNumericValues;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,10 +11,12 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenses.ExpenseTrendingMultipleValues;
 import helperObjects.CommonTestStepActions;
-import helperObjects.ExpenseHelperMultipleVendors;
+import helperObjects.FleetHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
+
 
 public class CostPerServiceNumberMultipleValues extends BaseClass{
 
@@ -44,106 +41,37 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 		Thread.sleep(2000);
 				
 		// Wait for countries and vendors to be loaded on PoV section
-		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
-		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
-		List<String> vendorNames = new ArrayList<>();
-		
-		for(WebElement vendor: vendors){
-			vendorNames.add(vendor.getText());
-		}
-
-		CommonTestStepActions.GoToExpensePageDetailedWait();
-		
-		String path = ExpenseHelperMultipleVendors.path;
-		
-		int amountOfVendors = 10; //GeneralHelper.getAmountOfVendorsToSelect(vendors.size()); // If we don't want the prompt to show up, just replace the assignment with a numeric value. 
-						
-		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
+		FleetHelper.waitForPoVSectionToBeLoaded(); 
+			
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectVendorView();
 		CommonTestStepActions.UnSelectAllVendors();
 		
-		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
-		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = new ArrayList<>();
+		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
-		// Run the test for each vendor 
-		for(int i = 0; i < amountOfVendors; i++){
-			
-			String vendor = vendorNames.get(i);
-			String vendorSelected = vendorNames.get(i);
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendorSelected);
-			
-			String file = vendorFileName + ".txt";
-			String completePath = path + file;
-			
-			// #2 Read data from file
-			List<UsageOneMonth> valuesFromFileTmp = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);			
-			listSelectedDataForMonthListUnified.add(valuesFromFileTmp);
-				
-			// #3 Select one vendor
-			CommonTestStepActions.selectOneVendor(vendor);
-			
-		}
+		// #2 Get the data for each of the selected vendors for all months.
+		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = FleetHelper.getExpenseUsageDataForTest();
 		
 		
+		// #3 Some vendors might not have information for all last 13 months; in that case the value displayed on the Trending chart is zero
+		//    So to have a valid value to compare with, the info for those missing months (on source file) is created and values are set to zero.  
+		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataAllMonths(listSelectedDataForMonthListUnified);
+		
+			
+		// Get months listed on the dropdown list
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
 		
-		
-		// Some vendors might not have information for all last 13 months; in that case the value displayed on the Usage Trending chart is zero
-		// So to have a valid value to compare with, the info for those missing months (on source file) is created and values are set to zero.  
-		for (List<UsageOneMonth> list: listSelectedDataForMonthListUnified) {
-			
-			List<UsageOneMonth> valuesFromFileOneVendor = UsageHelper.addMissingMonthsForVendor(list);
-			listVendorsSelectedData.add(valuesFromFileOneVendor);
-		
-		}
-		
-		
-		String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 					
-		int indexMonth = 0;
-	
-		List<List<UsageOneMonth>> dataForExpenseTrending = new ArrayList<>();
+		// #4 Each list in dataForExpenseTrending will have the data for a specific month, for all the vendors previously selected
+		List<List<UsageOneMonth>> dataForExpenseTrending = FleetHelper.getListsWithDataPerMonth(listVendorsSelectedData);
 		
-		do {
-		
-			// listOneMonthData will have the data for a specific month, for all the vendors previously selected
-			List<UsageOneMonth> listOneMonthData = new ArrayList<>();
 			
-			// values has the 13 months for one vendor
-			for (List<UsageOneMonth> values: listVendorsSelectedData){
-				
-				int indexMonthForVendorSelected = 0;
-				boolean dataFoundForMonth = false;
-				
-				while (indexMonthForVendorSelected < values.size() && !dataFoundForMonth){
-					
-					String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
-					
-					if (monthsToSelect.get(indexMonth).equals(monthYear)) {
- 
-						listOneMonthData.add(values.get(indexMonthForVendorSelected));
-						dataFoundForMonth = true;
-						
-					}
-						
-					indexMonthForVendorSelected++;
-				}
-					
-			}
-
-			dataForExpenseTrending.add(listOneMonthData);
-			
-			indexMonth++;
-			
-		} while (indexMonth < monthsToSelect.size());
-			
-				
+		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
 		int indexMonthToSelect = 0;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
+		
 		
 		do {
 					
@@ -157,49 +85,49 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 			
 			try {
 				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryAll);
+				FleetHelper.selectCategory(FleetHelper.expenseCategoryAll);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryAll);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryAll);
 				Thread.sleep(2000);
 				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryVoice);
+				FleetHelper.selectCategory(FleetHelper.expenseCategoryVoice);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryVoice);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryVoice);
 				Thread.sleep(2000);
 				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryData);
+				FleetHelper.selectCategory(FleetHelper.expenseCategoryData);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryData);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryData);
 				Thread.sleep(2000);
 				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryMessages);
+				FleetHelper.selectCategory(FleetHelper.expenseCategoryMessages);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryMessages);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryMessages);
 				Thread.sleep(2000);
 				
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryRoaming);
+				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryRoaming);
-				Thread.sleep(2000);
-				 
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryEquipment);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryEquipment);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryRoaming);
 				Thread.sleep(2000);
 				 
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryTaxes);
+				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryTaxes);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryEquipment);
+				Thread.sleep(2000);
+				 
+				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryTaxes);
 				Thread.sleep(2000);
 			 
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryOther);
+				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryOther);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryOther);
 				Thread.sleep(2000);
 				 
-				ExpenseHelperMultipleVendors.selectCategory(ExpenseHelperMultipleVendors.categoryAccount);
+				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(ExpenseHelperMultipleVendors.costPerServiceNumberChart, dataForExpenseTrending, ExpenseHelperMultipleVendors.categoryAccount);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryAccount);
 				Thread.sleep(2000);
 				
 				

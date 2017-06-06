@@ -19,6 +19,7 @@ public class UsageTrendingByCountryActions extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	
@@ -29,7 +30,7 @@ public class UsageTrendingByCountryActions extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 			
 		// Set month selector value
-		CommonTestStepActions.selectMonthYearPulldown("August 2016");
+		CommonTestStepActions.selectMonthYearPulldown("April 2017");
 				
 		Thread.sleep(2000);
 		

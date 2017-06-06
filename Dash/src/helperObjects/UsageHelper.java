@@ -183,6 +183,8 @@ public class UsageHelper extends BaseClass{
 					valuesFromFileNew.add(i, currentMonth);
 					fileIndex++;
 					
+					//ShowText("month year: " + monthYear);
+					
 				} 
 				// Else create info for that month-year, with all values set to zero
 				else if (!monthYear.equals(monthsList.get(i).getText())){
@@ -193,7 +195,8 @@ public class UsageHelper extends BaseClass{
 					
 					UsageOneMonth usageMonth = new UsageOneMonth(vendorName, yearNew, monthNew);
 					valuesFromFileNew.add(i, usageMonth);
-						
+				
+					//ShowText("month year new: " + monthNew + " " + yearNew);
 				} 
 				
 			} else if (fileIndex >= valuesFromFileTmp.size() && i < monthsList.size()) {
@@ -204,6 +207,8 @@ public class UsageHelper extends BaseClass{
 				
 				UsageOneMonth usageMonth = new UsageOneMonth(vendorName, yearNew, monthNew);
 				valuesFromFileNew.add(i, usageMonth);
+			
+				//ShowText("month year new: " + monthNew + " " + yearNew);
 				
 			}
 			
@@ -252,7 +257,7 @@ public class UsageHelper extends BaseClass{
 //		}
 		
 		
-		ShowText("valuesFromFileNew.size(): " + valuesFromFileNew.size());
+		//ShowText("valuesFromFileNew.size(): " + valuesFromFileNew.size());
 		
 		return valuesFromFileNew;
 		
