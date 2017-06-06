@@ -128,7 +128,6 @@ public class SpendCategories extends BaseClass
 				VerifyHoverTitles(UsageHelper.getChartId(3), expected.replace(" ($)", ""));
 				
 				
-				// bladd 
 				// count of service numbers.
 				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(3)")).getText();
 				expected = CountOfServiceNumbersTrend.vendorTitle;
@@ -149,7 +148,6 @@ public class SpendCategories extends BaseClass
 				expected = CostPerServiceNumberTrend.countryTitleShort + " - " + expectedCostFilters.get(x);
 				Assert.assertEquals(actual, expected, "");
 				
-				// bladd 
 				// count of service numbers.
 				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(3)")).getText();
 				expected = CountOfServiceNumbersTrend.countryTitle;

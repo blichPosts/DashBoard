@@ -70,14 +70,14 @@ public class PointOfViewActions extends BaseClass
 		
 		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
 		// this list is stored in the expense helper class.
-		ExpenseHelper.SetupForCountryPageWait(); // bladdxx
+		ExpenseHelper.SetupForCountryPageWait(); 
 
 		// switch to the country view, un-select all vendors, and wait for all controls to be empty.  
 		CommonTestStepActions.SelectCountryView();
 		
 		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
 		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
-		ExpenseHelper.WaitForCountryPageLoad(); // bladdxx
+		ExpenseHelper.WaitForCountryPageLoad(); 
 		
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();

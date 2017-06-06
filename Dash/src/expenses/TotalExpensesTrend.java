@@ -121,7 +121,7 @@ public class TotalExpensesTrend extends BaseClass
             
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
-				if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
+				if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
 				{
 					clickBarIndex(y);
 				}
@@ -159,8 +159,14 @@ public class TotalExpensesTrend extends BaseClass
 		cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + barIndex + ")";
 		// cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)";
 		
-		cssLine = "#" + chartId + ">svg>g:nth-of-type(3)";
-
+		if(loginType.equals(LoginType.MatrixPortal)) // matrix ------------------------------------- !!!!
+		{
+			cssLine = "#" + chartId + "svg>g:nth-of-type(8)";
+		}
+		else
+		{
+			cssLine = "#" + chartId + ">svg>g:nth-of-type(3)";			
+		}
 		
 		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -187,6 +193,9 @@ public class TotalExpensesTrend extends BaseClass
 		
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		
+		Pause("In total expense trend - clickBarIndex");
+		
 	}
 	
 	// --------------------- FAILURE - keeping here for reference -----------------

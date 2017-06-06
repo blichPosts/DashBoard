@@ -50,7 +50,7 @@ public class SpendCategoryFilters extends BaseClass
 		// this sets up names of cost filters.
 		SpendCategories.SetupExpectedCostFilters();
 		
-		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested. 
+		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being clicked through. 
 		
 		// verify when selecting expense trending selectors  
 		SpendCategories.VerifySpendCateoryFilter(); 
@@ -63,10 +63,10 @@ public class SpendCategoryFilters extends BaseClass
 		// verify selecting count of trending 
 		//ExpenseHelper.VerifySpendCateoryFilter();
 
-		//ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
+		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being clicked through.
 		
 		// verify selecting cost per service trending 
-		//SpendCategories.VerifySpendCateoryFilter();
+		SpendCategories.VerifySpendCateoryFilter();
 		
 		// ///////////////////////////
 		// 	      country view
@@ -85,7 +85,7 @@ public class SpendCategoryFilters extends BaseClass
 		// this sets up names of cost filters.
 		SpendCategories.SetupExpectedCostFilters();
 		
-		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested. 
+		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being clicked through. 
 		
 		// verify selecting expense trending selectors and how selecting one affects the other selectors and trend titles.
 		SpendCategories.VerifySpendCateoryFilter(); 
@@ -98,7 +98,7 @@ public class SpendCategoryFilters extends BaseClass
 		// verify selecting count of trending 
 		//ExpenseHelper.VerifySpendCateoryFilter();
 
-		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
+		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being clicked through.
 		
 		// verify selecting expense trending selectors and how selecting one affects the other selectors and trend titles. 
 		SpendCategories.VerifySpendCateoryFilter();

@@ -1,5 +1,7 @@
 package testSuiteExpenseVisual;
 
+import java.awt.LinearGradientPaint;
+
 //1/14/16 - update country view wait and verify no "visibility" attributes when testing legends/control sections.
 
 import javax.swing.JOptionPane;
@@ -9,6 +11,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
+import Dash.BaseClass.LoginType;
 import expenses.TotalExpenseByVendorCarrier;
 import expenses.TotalExpenseByVendorSpendCategory;
 import helperObjects.CommonTestStepActions;
@@ -36,7 +39,7 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		
 		// #1
 		// Select all the vendors in the Point of View and select all of the vendor legends.
-		CommonTestStepActions.SelectAllVendors();
+		// CommonTestStepActions.SelectAllVendors(); // MATRIX -----------------------------------------  !!!!!
 		
 		// set chart id for this test case's corresponding class 'TotalExpenseByVendorSpendCategory'.
 		TotalExpenseByVendorSpendCategory.SetupChartId();
@@ -66,17 +69,26 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		TotalExpenseByVendorSpendCategory.VerifyLegendsTitleAndbarGraphCount(ViewType.vendor);
 		TotalExpenseByVendorSpendCategory.VerifyVendorsCountries();
 
-		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
-		// this list is stored in the expense helper class.
-		ExpenseHelper.SetupForCountryPageWait();
+		if(loginType.equals(LoginType.MatrixPortal))
+		{
+			CommonTestStepActions.SelectCountryView();
+			Pause("Wait for country page to load.");
+		}
+		else
+		{
+			// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+			// this list is stored in the expense helper class.
+			ExpenseHelper.SetupForCountryPageWait();
+			
+			// #2
+			// In the 'Country/Vendor View Selector' component, select Country.
+			CommonTestStepActions.SelectCountryView();
+			
+			// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+			// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+			ExpenseHelper.WaitForCountryPageLoad();
+		}
 		
-		// #2
-		// In the 'Country/Vendor View Selector' component, select Country.
-		CommonTestStepActions.SelectCountryView();
-		
-		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
-		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
-		ExpenseHelper.WaitForCountryPageLoad();
 		
 	    // All of the countries are listed next to the horizontal bar graph in the same fashion as they are listed in the 'Total Expense' control.
 	    // The hover behavior matches the behavior in step one.

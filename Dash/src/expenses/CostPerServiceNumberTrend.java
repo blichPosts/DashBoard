@@ -58,7 +58,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 	public static Point lineCoordinates;
 
 	
-	public static void Setup() // bladdxx
+	public static void Setup()
 	{
 		if(totalExpenseLegendsList != null)
 		{
@@ -78,7 +78,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 	}	
 	
 	// this verifies removing vendors one at a time in the expense trending control. 
-	public static void VerifyRemovingLegends() throws Exception // bladdxx 
+	public static void VerifyRemovingLegends() throws Exception
 	{
 		Thread.sleep(1000);
 		

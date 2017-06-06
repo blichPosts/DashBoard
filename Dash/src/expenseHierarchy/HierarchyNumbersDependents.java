@@ -1316,8 +1316,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			// this is needed if the last of the dependent list has users with common cost values.
 			HierarchyNumbersDependents.FinishFinalTest();
 			childList.clear();
-			actualList.clear(); // bladdd
-			expectedList.clear(); // bladdd
+			actualList.clear(); 
+			expectedList.clear(); 
 
 			// Pause("one pass through test if dependents list."); // DEBUG
 			

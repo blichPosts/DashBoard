@@ -26,7 +26,7 @@ public class KPITilesVisual extends BaseClass
 		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
 		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
-		
+
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// prereq - select all of the vendors. - this is already done in dev instance 
@@ -74,6 +74,7 @@ public class KPITilesVisual extends BaseClass
 		
 		// There is a section that says 'Rolling Averages'. It lists the 3 and 6 month rolling averages for the expenses per service number.
 		// ExpenseHelper.VerifyRollingAverageCostPerServiceNumber(); // not always - tested in KPI numbers.		
+		
 	}
 	
 	@AfterClass
