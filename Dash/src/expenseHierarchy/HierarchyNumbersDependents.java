@@ -1092,20 +1092,25 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			numTilesToSelectFrom = NumberOfTileMapsToSelect();
 			
+			// if this is true, either all the tiles are too tiny to select or the dependents list has all zeros and/or negative numbers.
+			// break from drill down when this happens.
+			if(numTilesToSelectFrom == 0)  
+			{
+				break;
+			}
+			
 			tileToSelect = rand.nextInt(numTilesToSelectFrom);
 			
-			// Pause("Selecting tile number " + (tileToSelect + 1)); // DEBUG
-			
-			// jnupp
-			if(!tempBoolean)
-			{
-				tileToSelect = 5;
-				tempBoolean = true;
-			}
+			//if(!tempBoolean) // use this to select a particular tile on first pass.
+			//{
+			//	tileToSelect = 5;
+			//	tempBoolean = true;
+			//}
 
 			
 			System.out.println("\n** Selecting tile number " + (tileToSelect + 1) + " for drilldown selection **\n");
 
+			// 6/4/17 - below description should not happen anymore - show a pop-up if it does.
 			// tile maps with zero cost or negative value are not shown in the tile map. it's possible an attempt to click a tile map that's not there 
 			// because of zero/negative value could happen, or, the tile map is too small to click. to get around this a try/catch catches this condition and 
 			// tile map #1 is clicked, if it also doesn't have a zero value.

@@ -63,10 +63,10 @@ public class SpendCategoryFilters extends BaseClass
 		// verify selecting count of trending 
 		//ExpenseHelper.VerifySpendCateoryFilter();
 
-		ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
+		//ExpenseHelper.SetExpenseFilter(expenseFilters.CostPerServiceNumber); // this indicates which expense filter is being tested.
 		
 		// verify selecting cost per service trending 
-		SpendCategories.VerifySpendCateoryFilter();
+		//SpendCategories.VerifySpendCateoryFilter();
 		
 		// ///////////////////////////
 		// 	      country view

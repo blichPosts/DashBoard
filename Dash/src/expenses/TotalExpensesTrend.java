@@ -25,6 +25,7 @@ import Dash.BaseClass;
 import expenseHierarchy.HierarchyNumbersDependents;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.expenseFilters;
 import helperObjects.UsageHelper;
 import helperObjects.CommonTestStepActions.ExpensesViewMode;
@@ -352,8 +353,9 @@ public class TotalExpensesTrend extends BaseClass
 	}
 	
 	// this verifies the months in the control are the same months that are in the months pulldown - need to send xpath to the method. 	
-	public static void VerifyMonths() throws ParseException 
+	public static void VerifyMonths() throws Exception 
 	{
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense); // make sure expense pie is loaded.
 		ExpenseHelper.VerifyMonths(".//*[@id='" + chartId + "']" + ExpenseHelper.partialXpathToMonthListInControls);
 	}
 	

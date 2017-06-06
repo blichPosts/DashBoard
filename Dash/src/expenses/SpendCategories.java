@@ -127,10 +127,14 @@ public class SpendCategories extends BaseClass
 				
 				VerifyHoverTitles(UsageHelper.getChartId(3), expected.replace(" ($)", ""));
 				
-				// verify text in Cost per Service Number by waiting for its text to be visible. 
-				WaitForElementVisible(By.xpath("//span[text()='Cost per Service Numbers by Vendor']"), MediumTimeout);
 				
-				VerifyHoverTitles(UsageHelper.getChartId(4), "");
+				// bladd 
+				// count of service numbers.
+				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(3)")).getText();
+				expected = CountOfServiceNumbersTrend.vendorTitle;
+				Assert.assertEquals(actual, expected, "");
+				
+				VerifyHoverTitles(UsageHelper.getChartId(4), expected);
 				
 			}
 			else // this is for expense view.
@@ -145,8 +149,13 @@ public class SpendCategories extends BaseClass
 				expected = CostPerServiceNumberTrend.countryTitleShort + " - " + expectedCostFilters.get(x);
 				Assert.assertEquals(actual, expected, "");
 				
-				// verify text in Cost per Service Number by waiting for its text to be visible. 
-				WaitForElementVisible(By.xpath("//span[text()='Cost per Service Numbers by Country']"), MediumTimeout);
+				// bladd 
+				// count of service numbers.
+				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(3)")).getText();
+				expected = CountOfServiceNumbersTrend.countryTitle;
+				Assert.assertEquals(actual, expected, "");
+				
+				VerifyHoverTitles(UsageHelper.getChartId(4), expected);
 			}
 			
 			VerifyCorrectSelection(listToClickThrough, x); // verify the correct enable/disable states for control xPath sent in to this method.
