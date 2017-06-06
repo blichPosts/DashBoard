@@ -248,7 +248,7 @@ public class UsageCalculationHelper extends BaseClass{
 			tmpAmount = amount;
 			unit = "B";
 		}
-		else if (amount < 1000.0) {
+		else if (amount > 0 && amount < 1000.0) {
 			tmpAmount = amount;
 			unit = "KB";
 		}

@@ -455,13 +455,16 @@ public class CommonTestStepActions extends BaseClass
 	// It returns a list with all the vendor names listed on the Point of View section
 	public static List<WebElement> getAllVendorNames(){
 		
+		String xpath = ".//span[@class='md-checkbox-label']";
+//		String xpath = ".//span[@class='mat-checkbox-label']";
+		
 		try {
-			WaitForElementPresentNoThrow(By.xpath(".//span[@class='md-checkbox-label']"), MainTimeout);
+			WaitForElementPresentNoThrow(By.xpath(xpath), MainTimeout);
 		} catch (Exception e) {
 			ShowText("No checkboxes listed.");
 		}
 		
-		return driver.findElements(By.xpath(".//span[@class='md-checkbox-label']"));
+		return driver.findElements(By.xpath(xpath));
 		
 	}
 	

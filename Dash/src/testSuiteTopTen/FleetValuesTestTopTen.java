@@ -47,7 +47,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 		String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);
 		String monthYearToSelect = "";
 		
-		int indexMonth = 3;
+		int indexMonth = 0;
 		
 		do {
 

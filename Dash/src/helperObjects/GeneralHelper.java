@@ -4,7 +4,6 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -12,7 +11,6 @@ import java.util.concurrent.TimeoutException;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
@@ -337,7 +335,7 @@ public class GeneralHelper extends BaseClass {
 	
 	
 	
-	// Used in Trending chart tests
+	// Used in TRENDING chart tests
 	public static void moveMouseToBar(boolean fleetExpense, boolean firstBar, int chartNum, String chartId, int indexHighchart) throws InterruptedException, AWTException {
 		
 		String cssBar = "";
@@ -392,7 +390,7 @@ public class GeneralHelper extends BaseClass {
 	
 	
 	
-	// Used in Top Ten chart tests
+	// Used in TOP TEN chart tests
 	public static void moveMouseToBar(String chartId, int indexHighchart, boolean isTopTenChart) throws InterruptedException, AWTException {
 		
 		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
@@ -450,16 +448,12 @@ public class GeneralHelper extends BaseClass {
 	}
 
 
+	// Get the last month listed in month-year selector
 	public static String getLastMonthFromSelector() {
 
 		return driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 		
 	}
-
-
-	
-	
-	
 
 	
 }

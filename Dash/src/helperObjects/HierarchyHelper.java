@@ -58,7 +58,7 @@ public class HierarchyHelper extends BaseClass {
 		WaitForElementVisible(By.xpath("//h3[contains(text(), 'Cost per Service Number')]"), MainTimeout);
 		
 	}
-
+	
 	
 	// Select the "VIEW TOP TEN" button
 	public static void selectTopTenView(int toggleNum) throws Exception {
@@ -224,7 +224,7 @@ public class HierarchyHelper extends BaseClass {
 
 		driver.findElement(By.cssSelector(".breadcrumbs>span>a:nth-of-type(" + breadcrumbNum + ")")).click();
 		WaitForElementPresent(By.cssSelector("li.tdb-pov__item:nth-child(1)"), MainTimeout);
-		
+		waitForKPIsToLoad();
 	}
 	
 	

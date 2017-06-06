@@ -18,8 +18,7 @@ public class TotalUsageByVendorActions extends BaseClass {
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
-		//login();
-		//CommonTestStepActions.switchToContentFrame();
+		MainLogin();
 	}
 	
 	
@@ -38,7 +37,7 @@ public class TotalUsageByVendorActions extends BaseClass {
 		// # for Voice, Data and Messages
 		
 		// Set month selector value
-		CommonTestStepActions.selectMonthYearPulldown("August 2016");
+		CommonTestStepActions.selectMonthYearPulldown("April 2017");
 		
 		Thread.sleep(2000);
 		

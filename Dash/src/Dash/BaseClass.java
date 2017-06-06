@@ -42,7 +42,9 @@ public class BaseClass
 	//public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:4000/manage/login";
 	// https://qa3.traq.com/manage/login/login.trq
 	
-	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx 
+//	public static String CMD_baseUrl = "https://qa5cmd.tangoe.com/manage/login/login.trq"; // bladdxx
+	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx
+	public static String MatrixPortal_baseUrl = "http://dc1devmatsbl01.prod.tangoe.com/matrixPortalUI/"; // anaadd - June 5 - Matrix Portal
 //	public static String CMD_baseUrl = "https://commcareqa.tangoe.com/manage/login/login.trq";
 	public static String Developer_Url = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense"; // bladdxx 
 	public static String ReferenceApp_Url = "http://dc1qaanalyticsapp01.corp.tangoe.com:4000/manage"; // bladdxx
@@ -104,6 +106,7 @@ public class BaseClass
 	
 	public enum LoginType // the specify login type. // bladdxx new
 	{
+		MatrixPortal,
 		Command,
 		ReferenceApp,
 		DeveloperInstance
@@ -217,6 +220,12 @@ public class BaseClass
 		
 		switch(loginType)
 		{
+			case MatrixPortal:
+			{
+				baseUrl = MatrixPortal_baseUrl;
+				break;
+			}
+		
 			case Command:
 			{
 				baseUrl = CMD_baseUrl;
@@ -244,18 +253,18 @@ public class BaseClass
 	}
 	
 	
-	
-	public static void loginAsAdmin()throws Exception
-	{
-		// wait for login button.
-		WaitForElementClickable(By.xpath("//input[@name='Login']"), MainTimeout, "Error waiting for Login Button element on login page.");
-		
-		driver.findElement(By.xpath("//input[@name='userName']")).clear();
-	    driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(commandUserName);	    
-	    driver.findElement(By.xpath("//input[@name='password']")).clear();
-	    driver.findElement(By.xpath("//input[@name='password']")).sendKeys(commandPassword);	    
-	    driver.findElement(By.xpath("//input[@name='Login']")).click();	    
-	}
+	// METHOD --> NOT USED - TO BE REMOVED 
+//	public static void loginAsAdmin()throws Exception
+//	{
+//		// wait for login button.
+//		WaitForElementClickable(By.xpath("//input[@name='Login']"), MainTimeout, "Error waiting for Login Button element on login page.");
+//		
+//		driver.findElement(By.xpath("//input[@name='userName']")).clear();
+//	    driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(commandUserName);	    
+//	    driver.findElement(By.xpath("//input[@name='password']")).clear();
+//	    driver.findElement(By.xpath("//input[@name='password']")).sendKeys(commandPassword);	    
+//	    driver.findElement(By.xpath("//input[@name='Login']")).click();	    
+//	}
 	
 	public static void SelectExpenseTab()throws Exception	
 	{
@@ -409,302 +418,332 @@ public class BaseClass
 		Thread.sleep(TimeOut * 1000);
 	}	
 		
-		public static void WaitForElementClickable(By by, int waitTime, String message)
-		{
-		    try
-		    {
-		    	WebDriverWait wait = new WebDriverWait(driver, waitTime);
-		    	wait.until(ExpectedConditions.elementToBeClickable(by));
-		    }
-		    catch (WebDriverException e)
-		    {
-		        throw new WebDriverException(message);
-		    }
-		}	
+	public static void WaitForElementClickable(By by, int waitTime, String message)
+	{
+	    try
+	    {
+	    	WebDriverWait wait = new WebDriverWait(driver, waitTime);
+	    	wait.until(ExpectedConditions.elementToBeClickable(by));
+	    }
+	    catch (WebDriverException e)
+	    {
+	        throw new WebDriverException(message);
+	    }
+	}	
+    
+	public static boolean WaitForElementNotClickableNoThrow(By by, int waitTime, String message)
+	{
+	    try
+	    {
+	    	WebDriverWait wait = new WebDriverWait(driver, waitTime);
+	    	ExpectedConditions.not(ExpectedConditions.elementToBeClickable(by)).apply(driver);
+	    }
+	    catch (WebDriverException e)
+	    {
+	    	return false;
+	    }
+	    return true;
+	}	
+	
+	public static boolean WaitForElementVisible(By by, int timeOut) throws Exception 
+	{
+	    try
+	    {
+			WebDriverWait wait = new WebDriverWait(driver, timeOut);
+		    wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+	    }
+        catch (Exception e)
+        {
+	        //System.out.println(e.toString());
+	        throw new Exception(e.toString());
+        }	    
+	    return true;
+	}
+	
+	public static boolean WaitForElementVisibleNoThrow(By by, int timeOut) throws Exception 
+	{
+	    try
+	    {
+			WebDriverWait wait = new WebDriverWait(driver, timeOut);
+		    wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+	    }
+        catch (Exception e)
+        {
+        	return false;
+        }	    
+	    return true;
+	}		
+	
+	public static boolean WaitForElementNotVisibleNoThrow(By by, int timeOut) throws Exception 
+	{
+	    try
+	    {
+			WebDriverWait wait = new WebDriverWait(driver, timeOut);
+		    wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
+	    }
+        catch (Exception e)
+        {
+        	return false;
+        }	    
+	    return true;
+	}				
+	
+	public static boolean WaitForElementPresent(By by, int timeOut) throws Exception 
+	{
+	    try
+	    {
+			WebDriverWait wait = new WebDriverWait(driver, timeOut);
+		    wait.until(ExpectedConditions.presenceOfElementLocated(by));
+	    }
+        catch (Exception e)
+        {
+	        //System.out.println(e.toString());
+	        throw new Exception(e.toString());
+        }	    
+	    return true;
+	}		
+
+	public static boolean WaitForElementPresentNoThrow(By by, int timeOut) throws Exception 
+	{
+	    try
+	    {
+			WebDriverWait wait = new WebDriverWait(driver, timeOut);
+		    wait.until(ExpectedConditions.presenceOfElementLocated(by));
+	    }
+        catch (Exception e)
+        {
+	        //System.out.println(e.toString());
+	        // throw new Exception(e.toString());
+        	return false;
+        }	    
+	    return true;
+	}		
+	
+	public static boolean WaitForElementNotPresentNoThrow(By by, int timeOut) throws Exception 
+	{
+	    try
+	    {
+			WebDriverWait wait = new WebDriverWait(driver, timeOut);
+		    wait.until(ExpectedConditions.presenceOfElementLocated(by));
+		    ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(by)).apply(driver);			    
+	    }
+        catch (Exception e)
+        {
+	        return false;
+        	//System.out.println(e.toString());
+	        //throw new Exception(e.toString());
+        }	    
+	    return true;
+	}
+	
+	
+	public static void loginRefApp() throws Exception{
+		
+		driver.findElement(By.name("username")).sendKeys("admin.vis");
+		driver.findElement(By.name("password")).sendKeys("tangoe");
+		driver.findElement(By.name("submit")).click();
+		
+		GeneralHelper.setUpiFrame();
+	    driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
 	    
-		public static boolean WaitForElementNotClickableNoThrow(By by, int waitTime, String message)
-		{
-		    try
-		    {
-		    	WebDriverWait wait = new WebDriverWait(driver, waitTime);
-		    	ExpectedConditions.not(ExpectedConditions.elementToBeClickable(by)).apply(driver);
-		    }
-		    catch (WebDriverException e)
-		    {
-		    	return false;
-		    }
-		    return true;
-		}	
-		
-		public static boolean WaitForElementVisible(By by, int timeOut) throws Exception 
-		{
-		    try
-		    {
-				WebDriverWait wait = new WebDriverWait(driver, timeOut);
-			    wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-		    }
-	        catch (Exception e)
-	        {
-		        //System.out.println(e.toString());
-		        throw new Exception(e.toString());
-	        }	    
-		    return true;
-		}
-		
-		public static boolean WaitForElementVisibleNoThrow(By by, int timeOut) throws Exception 
-		{
-		    try
-		    {
-				WebDriverWait wait = new WebDriverWait(driver, timeOut);
-			    wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-		    }
-	        catch (Exception e)
-	        {
-	        	return false;
-	        }	    
-		    return true;
-		}		
-		
-		
-		public static boolean WaitForElementNotVisibleNoThrow(By by, int timeOut) throws Exception 
-		{
-		    try
-		    {
-				WebDriverWait wait = new WebDriverWait(driver, timeOut);
-			    wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
-		    }
-	        catch (Exception e)
-	        {
-	        	return false;
-	        }	    
-		    return true;
-		}				
-		
-		public static boolean WaitForElementPresent(By by, int timeOut) throws Exception 
-		{
-		    try
-		    {
-				WebDriverWait wait = new WebDriverWait(driver, timeOut);
-			    wait.until(ExpectedConditions.presenceOfElementLocated(by));
-		    }
-	        catch (Exception e)
-	        {
-		        //System.out.println(e.toString());
-		        throw new Exception(e.toString());
-	        }	    
-		    return true;
-		}		
+	    Thread.sleep(1000);
+	}
 
-		public static boolean WaitForElementPresentNoThrow(By by, int timeOut) throws Exception 
+	public static void ShowText(String str) 
+	{
+		System.out.println(str);
+	}
+	
+	public static void ShowInt(int intIn) 
+	{
+		System.out.println(intIn);
+	}
+	
+	public static void ShowListOfStrings(List<String> strList) 
+	{
+		for(String str : strList)
 		{
-		    try
-		    {
-				WebDriverWait wait = new WebDriverWait(driver, timeOut);
-			    wait.until(ExpectedConditions.presenceOfElementLocated(by));
-		    }
-	        catch (Exception e)
-	        {
-		        //System.out.println(e.toString());
-		        // throw new Exception(e.toString());
-	        	return false;
-	        }	    
-		    return true;
-		}		
-		
-		
-		public static boolean WaitForElementNotPresentNoThrow(By by, int timeOut) throws Exception 
-		{
-		    try
-		    {
-				WebDriverWait wait = new WebDriverWait(driver, timeOut);
-			    wait.until(ExpectedConditions.presenceOfElementLocated(by));
-			    ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(by)).apply(driver);			    
-		    }
-	        catch (Exception e)
-	        {
-		        return false;
-	        	//System.out.println(e.toString());
-		        //throw new Exception(e.toString());
-	        }	    
-		    return true;
+			ShowText(str);
 		}
+	}	
+	
+	// /////////////////////////////////////////////////////////// // bladdxx
+	//  these are new for logging into different instances.
+	// ///////////////////////////////////////////////////////////
+	
+	// bladdxx - new
+	public static void loginCommand()throws Exception
+	{
+		String errMessage = "Error waiting for items in login page.";
 		
+		// wait for login button login and password text boxes 
+		WaitForElementClickable(By.xpath("//input[@name='userName']"), MainTimeout, errMessage);
+		WaitForElementClickable(By.xpath("//input[@name='password']"), MainTimeout, errMessage);
+		WaitForElementClickable(By.cssSelector(".cmd-button.login-button"), MainTimeout, errMessage);		
 		
+		driver.findElement(By.xpath("//input[@name='userName']")).clear();
+	    driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(commandUserName);	    
+	    driver.findElement(By.xpath("//input[@name='password']")).clear();
+	    driver.findElement(By.xpath("//input[@name='password']")).sendKeys(commandPassword);	    
+	    driver.findElement(By.cssSelector(".cmd-button.login-button")).click();	    
+	    
+	    WaitForElementVisible(By.cssSelector("#tngoMainFooter"), MainTimeout); // this waits for the copyright box at the bottom of the landing page.
+	    
+	    GoToDashboard();
+	    // GoToDashboardBackUp();
+	}
+	
+	// bladdxx
+	public static void GoToDashboard() throws Exception
+	{
+		// get to the dash page
+	
+		WaitForElementClickable(By.cssSelector("#menuMainReporting"), MainTimeout, "Failed wait in GoToDashboard"); 
 		
-		// added by Ana - to be able to use http://dc1devmule1.prod.tangoe.com:4000, since it seems to be updated
+		Thread.sleep(2000); // bob added this. was getting click conflicts in getting dash in pull down. i have this fix this problem in other cases.  
 		
-		public static void login() throws Exception{
-			
-			driver.findElement(By.name("username")).sendKeys("admin.vis");
-			driver.findElement(By.name("password")).sendKeys("tangoe");
-			driver.findElement(By.name("submit")).click();
-			GeneralHelper.setUpiFrame();  // anaaddxx
-		    driver.switchTo().frame(driver.findElement(By.id("CONTENT"))); // bladdxx
-		    Thread.sleep(1000); // bladdxx
-		}
+		driver.findElement(By.cssSelector("#menuMainReporting")).click();
 
-		public static void ShowText(String str) 
-		{
-			System.out.println(str);
-		}
+	    WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"), MainTimeout, "Failed wait in GoToDashboard");
 		
-		public static void ShowInt(int intIn) 
-		{
-			System.out.println(intIn);
-		}
+		driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();
 		
-		public static void ShowListOfStrings(List<String> strList) 
-		{
-			for(String str : strList)
-			{
-				ShowText(str);
-			}
-		}	
+		GeneralHelper.setUpiFrame();
 		
-		// /////////////////////////////////////////////////////////// // bladdxx
-		//  these are new for logging into different instances.
-		// ///////////////////////////////////////////////////////////
+		GeneralHelper.switchToContentFrame();
 		
-		// bladdxx - new
-		public static void loginCommand()throws Exception
-		{
-			String errMessage = "Error waiting for items in login page.";
-			
-			// wait for login button login and password text boxes 
-			WaitForElementClickable(By.xpath("//input[@name='userName']"), MainTimeout, errMessage);
-			WaitForElementClickable(By.xpath("//input[@name='password']"), MainTimeout, errMessage);
-			WaitForElementClickable(By.cssSelector(".cmd-button.login-button"), MainTimeout, errMessage);		
-			
-			driver.findElement(By.xpath("//input[@name='userName']")).clear();
-		    driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(commandUserName);	    
-		    driver.findElement(By.xpath("//input[@name='password']")).clear();
-		    driver.findElement(By.xpath("//input[@name='password']")).sendKeys(commandPassword);	    
-		    driver.findElement(By.cssSelector(".cmd-button.login-button")).click();	    
-		    
-		    WaitForElementVisible(By.cssSelector("#tngoMainFooter"), MainTimeout); // this waits for the copyright box at the bottom of the landing page.
-		    
-		    GoToDashboard();
-		    // GoToDashboardBackUp();
-		}
+	}
+	
+	// alternative to the GoToDashboard method. It uses the coordinates to locate the menu to click ok.
+	public static void GoToDashboardBackUp() throws Exception {
 		
-		// bladdxx
+		// get to the dash page
+		WaitForElementClickable(By.cssSelector("#menuMainReporting"),MainTimeout, "Failed wait in GoToDashboard");
+		DebugTimeout(1, ""); // this is needed to avoid the error with frames and clicking the wrong thing.
 		
-		public static void GoToDashboard() throws Exception
-		{
-			// get to the dash page
+		WebElement pageHeader = driver.findElement(By.cssSelector("div.page-header"));
+		WebElement menuSummarize = driver.findElement(By.cssSelector("#menuMainReporting"));
 		
-			WaitForElementClickable(By.cssSelector("#menuMainReporting"), MainTimeout, "Failed wait in GoToDashboard"); 
-			
-			Thread.sleep(2000); // bob added this. was getting click conflicts in getting dash in pull down. i have this fix this problem in other cases.  
-			
-			driver.findElement(By.cssSelector("#menuMainReporting")).click();
-
-		    WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"), MainTimeout, "Failed wait in GoToDashboard");
-			
-			driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();
-			
-			GeneralHelper.setUpiFrame();
-			
-			GeneralHelper.switchToContentFrame();
-			
-		}
+		Dimension dimensionHeader = pageHeader.getSize();
+		int headerHeight = dimensionHeader.getHeight();
 		
-		// alternative to the GoToDashboard method. It uses the coordinates to locate the menu to click ok.
-		public static void GoToDashboardBackUp() throws Exception {
-			
-			// get to the dash page
-			WaitForElementClickable(By.cssSelector("#menuMainReporting"),MainTimeout, "Failed wait in GoToDashboard");
-			DebugTimeout(1, ""); // this is needed to avoid the error with frames and clicking the wrong thing.
-			
-			WebElement pageHeader = driver.findElement(By.cssSelector("div.page-header"));
-			WebElement menuSummarize = driver.findElement(By.cssSelector("#menuMainReporting"));
-			
-			Dimension dimensionHeader = pageHeader.getSize();
-			int headerHeight = dimensionHeader.getHeight();
-			
-			// These coordinates will be used to put the mouse pointer over the button
-			int menuHeight = menuSummarize.getSize().getHeight();
-			int menuWidth = menuSummarize.getSize().getWidth();
-			
-			Point coordinates = menuSummarize.getLocation();
-			
-			int x = coordinates.getX() + menuWidth/2;
-			int y = coordinates.getY() - menuHeight/2 + headerHeight;
-			
-			Robot robot = new Robot(); 
-			robot.mouseMove(x, y);
-			robot.mouseMove(x+5, y);
-			
-			Thread.sleep(1000);
-			
-			WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"), MainTimeout, "Failed wait in GoToDashboard"); 
-			
-			WebElement menuDashboard = driver.findElement(By.cssSelector("#menuMainReporting_Dashboard"));
-			
-			int menuDashboardHeight = menuDashboard.getSize().getHeight();
-			int menuDashboardWidth = menuDashboard.getSize().getWidth();
-			
-			Point coordinatesDashMenu = menuDashboard.getLocation();
-			
-			x = coordinatesDashMenu.getX() + menuDashboardWidth/2;
-			y = coordinatesDashMenu.getY() - menuDashboardHeight/2 + headerHeight;
-			
-			robot.mouseMove(x, y);
-			// ShowText(" #menuMainReporting_Dashboard coordinates x: " + x + ", y: " + y);
-			
-			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-			
-			GeneralHelper.setUpiFrame();
-			
-			GeneralHelper.switchToContentFrame();
-					
-		}
+		// These coordinates will be used to put the mouse pointer over the button
+		int menuHeight = menuSummarize.getSize().getHeight();
+		int menuWidth = menuSummarize.getSize().getWidth();
 		
+		Point coordinates = menuSummarize.getLocation();
 		
+		int x = coordinates.getX() + menuWidth/2;
+		int y = coordinates.getY() - menuHeight/2 + headerHeight;
 		
-		// bladdxx - new
-		public static void MainLogin() throws Exception
-		{
-			switch(loginType)
-			{
-				case Command:
-				{
-					loginCommand();
-					break;
-				}
-
-				case ReferenceApp:
-				{
-					login();
-					break;
-				}
+		Robot robot = new Robot(); 
+		robot.mouseMove(x, y);
+		robot.mouseMove(x+5, y);
+		
+		Thread.sleep(1000);
+		
+		WaitForElementClickable(By.cssSelector("#menuMainReporting_Dashboard"), MainTimeout, "Failed wait in GoToDashboard"); 
+		
+		WebElement menuDashboard = driver.findElement(By.cssSelector("#menuMainReporting_Dashboard"));
+		
+		int menuDashboardHeight = menuDashboard.getSize().getHeight();
+		int menuDashboardWidth = menuDashboard.getSize().getWidth();
+		
+		Point coordinatesDashMenu = menuDashboard.getLocation();
+		
+		x = coordinatesDashMenu.getX() + menuDashboardWidth/2;
+		y = coordinatesDashMenu.getY() - menuDashboardHeight/2 + headerHeight;
+		
+		robot.mouseMove(x, y);
+		// ShowText(" #menuMainReporting_Dashboard coordinates x: " + x + ", y: " + y);
+		
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		
+		GeneralHelper.setUpiFrame();
+		
+		GeneralHelper.switchToContentFrame();
 				
-				case DeveloperInstance:
-				{
-					break;
-				}
-				
-				default:
-				{
-					Assert.fail("Failure: Method BaseClass.MainLogin has been passed an incorrect enum.");
-					break;
-				}
-			}
-		}		
-		
-		// This shows a pop-up  message with added text passed in.  
-		public static void Pause(String moreInfo) throws Exception
+	}
+	
+	
+	
+	// bladdxx - new
+	public static void MainLogin() throws Exception
+	{
+		switch(loginType)
 		{
-		    JOptionPane.showMessageDialog(frame, "PAUSE: " + moreInfo);
-		}
-		
-		// this shows the text for each element in the web element list passed in. 
-		public static void ShowWebElementListText(List<WebElement> eleList)
-		{
-			for(WebElement ele: eleList)
+			case MatrixPortal:
 			{
-				ShowText(ele.getText());
+				loginMatrixPortal();
+				break;
+			}
+			case Command:
+			{
+				loginCommand();
+				break;
+			}
+
+			case ReferenceApp:
+			{
+				loginRefApp();
+				break;
+			}
+			
+			case DeveloperInstance:
+			{
+				break;
+			}
+			
+			default:
+			{
+				Assert.fail("Failure: Method BaseClass.MainLogin has been passed an incorrect enum.");
+				break;
 			}
 		}
+	}
+	
+	
+	// This shows a pop-up  message with added text passed in.  
+	public static void Pause(String moreInfo) throws Exception
+	{
+	    JOptionPane.showMessageDialog(frame, "PAUSE: " + moreInfo);
+	}
+	
+	// this shows the text for each element in the web element list passed in. 
+	public static void ShowWebElementListText(List<WebElement> eleList)
+	{
+		for(WebElement ele: eleList)
+		{
+			ShowText(ele.getText());
+		}
+	}
+
+	
+	// Used to login to Matrix Portal - anaadd - June 5
+	public static void loginMatrixPortal() throws Exception {
+			
+		String errMessage = "Error waiting for items in login page.";
+		
+		// wait for login button, user and password text boxes 
+		WaitForElementClickable(By.id("userName"), MainTimeout, errMessage);
+		WaitForElementClickable(By.id("password"), MainTimeout, errMessage);
+		WaitForElementClickable(By.id("login"), MainTimeout, errMessage);
+		
+		driver.findElement(By.id("userName")).clear();
+	    driver.findElement(By.id("userName")).sendKeys("portal.admin@tangoe.com");	    
+	    driver.findElement(By.id("password")).clear();
+	    driver.findElement(By.id("password")).sendKeys("password");	    
+	    driver.findElement(By.id("login")).click();
+		
+	    WaitForElementPresent(By.id("userName"), MediumTimeout);
+	    
+	    driver.switchTo().frame(driver.findElement(By.id("iframe_MATRIX_ANALYTIC_DASHBOARDS")));
+	    
+	    WaitForElementPresent(By.cssSelector("h1"), ExtremeTimeout);
+	    
+	}
+
+
+
 }

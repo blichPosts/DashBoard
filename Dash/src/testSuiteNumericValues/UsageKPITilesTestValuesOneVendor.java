@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -13,6 +12,8 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.FleetHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -44,9 +45,13 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 		Thread.sleep(2000);
 
 		// Wait for countries and vendors to be loaded on PoV section
-		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
+		FleetHelper.waitForPoVSectionToBeLoaded(); 
 						
-				
+		CommonTestStepActions.GoToUsagePageDetailedWait();		
+		
+		// #1 Select Vendor View 
+		UsageHelper.selectVendorView();
+					
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
@@ -54,26 +59,12 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 			vendorNames.add(vendor.getText());
 		}
 		
-		String path = UsageHelper.path;
-
+		
 		// Run the test for each vendor 
-		for(String vendorSelected: vendorNames){
-			
-			String vendor = vendorSelected;
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendorSelected);
-			
-			String file = vendorFileName + ".txt";
-			String completePath = path + file;
-			
-			CommonTestStepActions.GoToUsagePageDetailedWait();
-				
-			// #1 Select Vendor View 
-			UsageHelper.selectVendorView();
-			
-			
-			// #2 Read data from file
-			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
-			
+		for(String vendor: vendorNames){
+							
+			// #2 Read data from ajax call
+			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
 			List<UsageOneMonth> valuesOneVendorAllMonths = UsageHelper.addMissingMonthsForVendor(valuesFromAjaxCall);
 			
 				
@@ -82,23 +73,15 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 			CommonTestStepActions.selectOneVendor(vendor);
 			ShowText("Vendor selected: " + vendor);
 			
-			String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
+			String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector();
 			
-			UsageOneMonth oneMonthData;
-			String year =  "";
-			String month = "";
 			String monthYearToSelect = "";
-			String domesticVoiceUsage;
-			String domesticVoiceOverageUsage;
-			String domesticMessagesUsage;
-			String domesticDataUsage;
-			String roamingDataUsage;
 			
 			int indexMonth = 0;
 			
 			do {
 			
-				oneMonthData = valuesOneVendorAllMonths.get(indexMonth);   
+				UsageOneMonth oneMonthData = valuesOneVendorAllMonths.get(indexMonth);   
 				
 //				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
 //				month = monthYear[0];
@@ -120,8 +103,8 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 //				// 'month' and 'year' null, means there's no data for the current month and vendor selected
 //				if (!monthYearNull) {
 					
-				month = oneMonthData.getOrdinalMonth();
-				year = oneMonthData.getOrdinalYear();
+				String month = oneMonthData.getOrdinalMonth();
+				String year = oneMonthData.getOrdinalYear();
 				
 					monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
 					System.out.println("Month Year: " + monthYearToSelect);
@@ -131,11 +114,11 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 					
 					Thread.sleep(2000);
 					
-					domesticVoiceUsage = oneMonthData.getDomesticVoice();
-					domesticVoiceOverageUsage = oneMonthData.getDomesticOverageVoice();
-					domesticMessagesUsage = oneMonthData.getDomesticMessages();
-					domesticDataUsage = oneMonthData.getDomesticDataUsageKb();
-					roamingDataUsage = oneMonthData.getRoamingDataUsageKb();
+					String domesticVoiceUsage = oneMonthData.getDomesticVoice();
+					String domesticVoiceOverageUsage = oneMonthData.getDomesticOverageVoice();
+					String domesticMessagesUsage = oneMonthData.getDomesticMessages();
+					String domesticDataUsage = oneMonthData.getDomesticDataUsageKb();
+					String roamingDataUsage = oneMonthData.getRoamingDataUsageKb();
 									
 					// #5 Compare the values displayed on the KPIs to the values from spreadsheet
 					UsageKPITilesActions.verifyKPItileValues(domesticVoiceUsage, domesticVoiceOverageUsage, domesticMessagesUsage, domesticDataUsage, roamingDataUsage);
@@ -189,15 +172,13 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 //				}
 				
 				indexMonth++;
-				
 					
 			} while (!monthYearToSelect.equals(lastMonthListedMonthSelector));
 			
 			Thread.sleep(2000);
 			
 		}
-		
-		
+
 	}
 	
 	

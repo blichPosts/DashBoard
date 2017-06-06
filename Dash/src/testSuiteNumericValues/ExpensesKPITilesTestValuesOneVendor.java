@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -14,6 +13,8 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenses.ExpensesKPITilesValues;
 import helperObjects.CommonTestStepActions;
+import helperObjects.FleetHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -42,33 +43,27 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 		Thread.sleep(2000);
 
 		// Wait for countries and vendors to be loaded on PoV section
-		WaitForElementPresent(By.cssSelector(".tdb-povGroup>.tdb-povGroup"), ExtremeTimeout);
+		FleetHelper.waitForPoVSectionToBeLoaded(); 
 		
+		CommonTestStepActions.GoToExpensePageDetailedWait();
+		
+		// #1 Select Vendor View 
+		CommonTestStepActions.SelectVendorView();
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
 		for(WebElement vendor: vendors){
 			vendorNames.add(vendor.getText());
-			System.out.println(vendor.getText());
+			ShowText(vendor.getText());
 		}
 		
-		String path = UsageHelper.path;
 
 		// Run the test for each vendor 
-		for(String vendorSelected: vendorNames){
-			
-			String vendor = vendorSelected;
-			String vendorFileName = UsageHelper.removePunctuationCharacters(vendorSelected);
-			
-			String file = vendorFileName + ".txt";
-			String completePath = path + file;
-					
-			CommonTestStepActions.GoToExpensePageDetailedWait();
-				
-			// #1 Read data from file
-			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
+		for(String vendor: vendorNames){
 							
+			// #1 Read data from ajax call
+			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
 			List<UsageOneMonth> valuesOneVendorAllMonths = UsageHelper.addMissingMonthsForVendor(valuesFromAjaxCall);
 			
 			// #2 Select only one vendor
@@ -76,24 +71,18 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 			CommonTestStepActions.selectOneVendor(vendor);
 			ShowText("Vendor selected: " + vendor);
 			
-			String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
-			
-			UsageOneMonth oneMonthData;
-			String year =  "";
-			String month = "";
+			String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector();
 			String monthYearToSelect = "";
-			String totalChargeExpenses; 
-			String numberOfLinesExpenses;
-			
+						
 			int indexMonth = 0;
 			
 			do {
 			
-				oneMonthData = valuesOneVendorAllMonths.get(indexMonth);   
+				UsageOneMonth oneMonthData = valuesOneVendorAllMonths.get(indexMonth);   
 								
 				String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
-				month = monthYear[0];
-				year = monthYear[1];
+				String month = monthYear[0];
+				String year = monthYear[1];
 								
 				boolean monthYearNull = false; 
 				
@@ -121,8 +110,8 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 					
 					Thread.sleep(2000);
 					
-					totalChargeExpenses = oneMonthData.getTotalCharge();
-					numberOfLinesExpenses = oneMonthData.getNumberOfLines();
+					String totalChargeExpenses = oneMonthData.getTotalCharge();
+					String numberOfLinesExpenses = oneMonthData.getNumberOfLines();
 									
 					// #4 Compare the values displayed on the KPIs to the values from spreadsheet
 					ExpensesKPITilesValues.verifyKPItileValues(totalChargeExpenses, numberOfLinesExpenses);

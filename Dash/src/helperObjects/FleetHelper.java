@@ -48,8 +48,11 @@ public class FleetHelper extends BaseClass {
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
 		List<String> vendorNames = new ArrayList<>();
 		
+		ShowText("vendors.size(): " + vendors.size());
+		
 		for(WebElement vendor: vendors){
 			vendorNames.add(vendor.getText());
+			ShowText(vendor.getText());
 		}
 
 			

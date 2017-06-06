@@ -1,7 +1,5 @@
 package helperObjects;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import Dash.BaseClass;
 

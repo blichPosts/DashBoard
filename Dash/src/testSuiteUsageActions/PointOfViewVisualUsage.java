@@ -18,6 +18,8 @@ public class PointOfViewVisualUsage extends BaseClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
+		
 	}
 	
 	
@@ -27,11 +29,9 @@ public class PointOfViewVisualUsage extends BaseClass
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
-		
 		// #1 Select different months and verify that the month labels get updated according to selection. 
 		
 		PointOfViewActions.verifyMonthLabel();
-		
 		
 		Thread.sleep(2000);
 		

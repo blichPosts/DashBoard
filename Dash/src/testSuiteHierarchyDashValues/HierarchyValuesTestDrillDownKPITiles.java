@@ -66,7 +66,7 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 			if (dependentUnits.isEmpty() && !breadcrumbs.isEmpty()) {
 				
 				HierarchyHelper.clickOnBreadcrumb(1);
-				Thread.sleep(2000);
+				Thread.sleep(5000);
 				
 			}
 			

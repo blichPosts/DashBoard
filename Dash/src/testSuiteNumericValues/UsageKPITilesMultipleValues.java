@@ -148,9 +148,9 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-//	    JOptionPane.showMessageDialog(frame, "Test for KPI tiles values finished. Select OK to close browser.");
-//		driver.close();
-//		driver.quit();
+	    JOptionPane.showMessageDialog(frame, "Test for KPI tiles values finished. Select OK to close browser.");
+		driver.close();
+		driver.quit();
 		
 	}
 
