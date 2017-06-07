@@ -39,7 +39,7 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		
 		// #1
 		// Select all the vendors in the Point of View and select all of the vendor legends.
-		// CommonTestStepActions.SelectAllVendors(); // MATRIX -----------------------------------------  !!!!!
+		CommonTestStepActions.SelectAllVendors(); // MATRIX -----------------------------------------  !!!!!
 		
 		// set chart id for this test case's corresponding class 'TotalExpenseByVendorSpendCategory'.
 		TotalExpenseByVendorSpendCategory.SetupChartId();

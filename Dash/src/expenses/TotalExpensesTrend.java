@@ -112,7 +112,7 @@ public class TotalExpensesTrend extends BaseClass
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
 		Collections.reverse(expectedMonthYear);
 		
-		ShowText(expectedMonthYear.get(0));
+		// ShowText(expectedMonthYear.get(0)); 
 		
 		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
 		for(int x = 0; x < webEleListLegends.size(); x++)
@@ -122,6 +122,11 @@ public class TotalExpensesTrend extends BaseClass
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
 				if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
+				{
+					clickBarIndexMatrixPortal(y, firstMonth);
+					
+				}
+				else if(loginType.equals(LoginType.ReferenceApp))
 				{
 					clickBarIndex(y);
 				}
@@ -146,10 +151,15 @@ public class TotalExpensesTrend extends BaseClass
 
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(2000);
-			// webEleListLegends.get(x).click();
 			
-			ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);
-			
+			if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
+			{
+				webEleListLegends.get(x).click(); // this is web element click.
+			}
+			else
+			{
+				ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);	 // this click needs x/y click.			
+			}
 			Thread.sleep(1500);
 		}
 	}
@@ -159,14 +169,8 @@ public class TotalExpensesTrend extends BaseClass
 		cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + barIndex + ")";
 		// cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)";
 		
-		if(loginType.equals(LoginType.MatrixPortal)) // matrix ------------------------------------- !!!!
-		{
-			cssLine = "#" + chartId + "svg>g:nth-of-type(8)";
-		}
-		else
-		{
-			cssLine = "#" + chartId + ">svg>g:nth-of-type(3)";			
-		}
+		cssLine = "#" + chartId + ">svg>g:nth-of-type(3)";			
+
 		
 		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -193,10 +197,60 @@ public class TotalExpensesTrend extends BaseClass
 		
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+	}
+	
+	// matrix
+	public static void clickBarIndexMatrixPortal(int barIndex, boolean firstMonth) throws Exception
+	{
+		// this is OK
+		cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + barIndex + ")";
+		// cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)";
 		
-		Pause("In total expense trend - clickBarIndex");
+		
+		// .tdb-h3>span:nth-of-type(1)
+		
+		// cssLine = "#" + chartId + ">svg>g:nth-of-type(3)";	// orig	 	
+		// cssLine = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(5)";
+		
+		cssLine = ".tdb-h3>span:nth-of-type(1)";
+		
+		
+		// #highcharts-n8m4osk-4>svg>g.highcharts-axis-labels.highcharts-xaxis-labels 
+		
+		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+		WebElement line = driver.findElement(By.cssSelector(cssLine));
+		
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// Get the location of the second line of the chart -> to get the "y" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		barCoordinates = bar.getLocation();
+		lineCoordinates = line.getLocation();
+		
+		Robot robot = new Robot(); 
+		
+		int x = barCoordinates.getX() + 30;
+		int y = lineCoordinates.getY() - 500;
+
+		if (firstMonth) 
+		{ // <-- ana_add 
+			robot.mouseMove(x -30, y);
+			Thread.sleep(500);
+		}
+		
+		robot.mouseMove(x, y);
+		//System.out.println("coordinates - x: " + x + "  y: " + y);
+		
+		Thread.sleep(500);
+		
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		
+		// DebugTimeout(9999, "9999");
 		
 	}
+	
+	
 	
 	// --------------------- FAILURE - keeping here for reference -----------------
 	public static void TestOneVendor(String addedVendor) throws Exception

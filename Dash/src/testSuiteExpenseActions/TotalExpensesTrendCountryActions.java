@@ -7,6 +7,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
+import Dash.BaseClass.LoginType;
 import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
@@ -33,17 +34,28 @@ public class TotalExpensesTrendCountryActions extends BaseClass
 		
 		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
 		// this list is stored in the expense helper class.
-		ExpenseHelper.SetupForCountryPageWait();
+		// ExpenseHelper.SetupForCountryPageWait();
 		
 		// need this to help the method calling 'VerifyTooltip' know which title will be in the hover title.
 		ExpenseHelper.expenseViewMode = ExpensesViewMode.country;
 		
-		// move to country view.
-		CommonTestStepActions.SelectCountryView();
-		
-		// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
-		// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
-		ExpenseHelper.WaitForCountryPageLoad();
+		if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!!
+		{
+			Pause("Wait for country page to load");
+		}
+		else
+		{
+			// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+			// this list is stored in the expense helper class.
+			ExpenseHelper.SetupForCountryPageWait();
+			
+			// move to country view.
+			CommonTestStepActions.SelectCountryView();
+			
+			// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+			// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+			ExpenseHelper.WaitForCountryPageLoad();
+		}
 		
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		
