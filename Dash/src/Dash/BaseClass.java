@@ -117,7 +117,7 @@ public class BaseClass
 	{
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
-		loginType = LoginType.MatrixPortal; // bladdxx  
+		loginType = LoginType.Command; // bladdxx  
 
 	}
 	
