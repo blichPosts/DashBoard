@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.openqa.selenium.By;
 import org.testng.Assert;
 
 import Dash.BaseClass;
@@ -194,6 +195,19 @@ public class GeneralTopTenHelper extends BaseClass {
 		}
 		
 		return zeroValues;
+		
+	}
+
+
+	public static boolean isDataForSelectedMonthPresent() throws Exception {
+		
+		boolean messageNoData = WaitForElementVisibleNoThrow(By.cssSelector(".tdb-charts__contentMessage"), TenTimeout);
+				
+		if (messageNoData) {
+			return false;
+		} else {
+			return true;
+		}
 		
 	}
 	

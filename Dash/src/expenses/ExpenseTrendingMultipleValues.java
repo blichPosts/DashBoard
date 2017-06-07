@@ -1,22 +1,18 @@
 package expenses;
 
 import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.InputEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
-import helperObjects.ExpenseHelperMultipleVendors;
 import helperObjects.FleetHelper;
 import helperObjects.GeneralHelper;
 import helperObjects.UsageCalculationHelper;
@@ -135,56 +131,56 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 
 
 	// NOT USED - REPLACED BY THE METHOD ADDED IN GeneralHelper CLASS
-	private static void moveMouseToBar(int barChartId, int indexHighchart) throws InterruptedException, AWTException {
-		
-		String cssBar = "";
-		
-		if (barChartId == FleetHelper.costPerServiceNumberChart) {
-			
-			cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
-
-			
-		} else if (barChartId == FleetHelper.expenseByVendorChart || barChartId == FleetHelper.countServiceNumbersChart) {
-			
-			cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-			
-		}
-		
-		
-		// 'bar' WebElement will be used to set the position of the mouse on the chart
-		WebElement bar = driver.findElement(By.cssSelector(cssBar));
-					
-		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-		
-		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
-		
-		int y_offset = (int) GeneralHelper.getScrollPosition();
-					
-		int x = barCoordinates.getX();
-		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;
-		
-		Robot robot = new Robot();
-		robot.mouseMove(x, y);
-		
-		// ShowText("coordinates:  x: " + x + "  y: " + y);
-		
-		Thread.sleep(500);
-		
-		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-		
-		
-		try {
-			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
-			//System.out.println("Tooltip present");
-		} catch (Exception e) {
-			System.out.println("Tooltip NOT present");
-			e.printStackTrace();
-		}
-				
-		
-	}
+//	private static void moveMouseToBar(int barChartId, int indexHighchart) throws InterruptedException, AWTException {
+//		
+//		String cssBar = "";
+//		
+//		if (barChartId == FleetHelper.costPerServiceNumberChart) {
+//			
+//			cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
+//
+//			
+//		} else if (barChartId == FleetHelper.expenseByVendorChart || barChartId == FleetHelper.countServiceNumbersChart) {
+//			
+//			cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+//			
+//		}
+//		
+//		
+//		// 'bar' WebElement will be used to set the position of the mouse on the chart
+//		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+//					
+//		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+//		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+//		
+//		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
+//		
+//		int y_offset = (int) GeneralHelper.getScrollPosition();
+//					
+//		int x = barCoordinates.getX();
+//		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;
+//		
+//		Robot robot = new Robot();
+//		robot.mouseMove(x, y);
+//		
+//		// ShowText("coordinates:  x: " + x + "  y: " + y);
+//		
+//		Thread.sleep(500);
+//		
+//		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+//		
+//		
+//		try {
+//			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+//			//System.out.println("Tooltip present");
+//		} catch (Exception e) {
+//			System.out.println("Tooltip NOT present");
+//			e.printStackTrace();
+//		}
+//				
+//		
+//	}
 
 
 

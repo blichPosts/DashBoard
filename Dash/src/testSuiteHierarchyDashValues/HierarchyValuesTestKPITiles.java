@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -61,33 +60,20 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 					
 					
 			// #4 Get the last month listed on month selector 
-			String lastMonthListedMonthSelector = driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
+			String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
 			
-			HierarchyTrendData trendData;
-			String year = "";
-			String month = "";
 			String monthYearToSelect = "";
-			
-			String totalExpense;
-			String optimizableExpense;
-			String roamingExpense;
-			String totalExpenseRollup;
-			String optimizableExpenseRollup;
-			String roamingExpenseRollup;
-			String numberOfLinesRollUp;
-			
-			
 			int indexMonth = 0;
 			
 			do {
 						
 				// Get the data for the month indicated by "indexMonth"
-				trendData = valuesFromAjaxCall.get(indexMonth);
+				HierarchyTrendData trendData = valuesFromAjaxCall.get(indexMonth);
 				
 				if (!monthSelected) {
 					
-					month = trendData.getOrdinalMonth();
-					year = trendData.getOrdinalYear();
+					String month = trendData.getOrdinalMonth();
+					String year = trendData.getOrdinalYear();
 					
 					monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
 					System.out.println("Month Year: " + monthYearToSelect);
@@ -102,13 +88,13 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 					
 				}
 				
-				totalExpense = trendData.getTotalExpense();
-				optimizableExpense = trendData.getOptimizableExpense();
-				roamingExpense = trendData.getRoamingExpense();
-				totalExpenseRollup = trendData.getTotalExpenseRollup();
-				optimizableExpenseRollup = trendData.getOptimizableExpenseRollup();
-				roamingExpenseRollup = trendData.getRoamingExpenseRollup();
-				numberOfLinesRollUp = trendData.getNumberOfLinesRollup();
+				String totalExpense = trendData.getTotalExpense();
+				String optimizableExpense = trendData.getOptimizableExpense();
+				String roamingExpense = trendData.getRoamingExpense();
+				String totalExpenseRollup = trendData.getTotalExpenseRollup();
+				String optimizableExpenseRollup = trendData.getOptimizableExpenseRollup();
+				String roamingExpenseRollup = trendData.getRoamingExpenseRollup();
+				String numberOfLinesRollUp = trendData.getNumberOfLinesRollup();
 			
 				
 				// #6 Compare the values displayed on the KPIs to the values from spreadsheet

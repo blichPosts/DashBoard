@@ -4,7 +4,6 @@ package testSuiteExpenseVisual;
 
 import java.util.List;
 
-import org.eclipse.jetty.servlets.WelcomeFilter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;

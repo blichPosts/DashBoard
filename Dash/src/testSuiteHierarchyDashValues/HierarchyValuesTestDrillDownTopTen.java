@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -104,7 +103,7 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 					HierarchyHelper.drillDownOnDependentUnitPoV(dependentUnitToDrillDown);
 					
 					// Wait for chart to be reloaded after the drilling down action
-					WaitForElementPresent(By.cssSelector("chart>div"), MediumTimeout);
+					GeneralHelper.waitForChartToLoad(MediumTimeout);
 							
 					// #5 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
 					
@@ -119,10 +118,9 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 						// Run test for "Expense" chart and category "Roaming"
 						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyValue, HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
 						
+					} catch (NullPointerException e) {
 						
-					} catch(NullPointerException e) {
-						
-						System.out.println("chart not found");
+						System.out.println("chart not found or value found is null");
 						
 					}
 				
@@ -131,7 +129,6 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 				j++;
 		
 			}	
-			
 				
 		}
 			

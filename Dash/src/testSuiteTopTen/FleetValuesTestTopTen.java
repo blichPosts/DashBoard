@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.GeneralTopTenHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
@@ -44,7 +45,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 		// #2 Get the last month listed on month selector
 		List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown(); 
 
-		String lastMonthListedMonthSelector = monthsInDropdown.get(monthsInDropdown.size()-1);
+		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
 		String monthYearToSelect = "";
 		
 		int indexMonth = 0;

@@ -129,8 +129,28 @@ public class HierarchyHelper extends BaseClass {
 	
 	public static boolean waitForChartToLoad(int chartId) throws Exception {
 		
-		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g.highcharts-series>rect";
-		return WaitForElementPresentNoThrow(By.cssSelector(cssSelector), ShortTimeout);
+		try {
+			
+			String chartCss = "#" + UsageHelper.getChartId(chartId) + ">svg>g>g.highcharts-series>rect";
+			WaitForElementPresentNoThrow(By.cssSelector(chartCss), MediumTimeout);
+			
+		} catch (NoSuchElementException e) {
+			
+			try {
+				
+				String messageCss = ".tdb-charts__contentMessage";
+				WaitForElementPresent(By.cssSelector(messageCss), ShortTimeout);
+				ShowText("No dependent units.");
+				return false;
+				
+			} catch (NoSuchElementException e2) {
+				
+				ShowText("Chart not displayed. 'No dependent units' message not displayed either.");
+				
+			}
+		}
+		
+		return true;
 		
 	}
 	

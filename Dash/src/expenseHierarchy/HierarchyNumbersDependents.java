@@ -2,7 +2,6 @@ package expenseHierarchy;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,12 +9,9 @@ import java.util.Random;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
-import javax.xml.transform.Templates;
 
-import org.apache.commons.el.VariableResolverImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.openqa.jetty.servlet.Debug;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;

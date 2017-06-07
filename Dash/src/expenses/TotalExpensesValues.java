@@ -289,45 +289,45 @@ public class TotalExpensesValues extends BaseClass {
 
 
 	
-	private static void moveMouseToBar(String chartId, int indexHighchart) throws AWTException, InterruptedException {
-		
-		String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-		
-		// The 'bar' WebElement will be used to set the position of the mouse on the chart
-		WebElement bar = driver.findElement(By.cssSelector(cssSelector));
-
-		// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
-		Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
-		
-		int x = coordinates.getX();
-		int y = coordinates.getY();
-		
-		Dimension d = bar.getSize();
-		int height = d.getHeight();
-		int width = d.getWidth();
-	
-		int x_BarOffset = (int) (width * 0.5);
-		int y_BarOffset = (int) (height * 0.5);
-		
-		int y_offset = (int) GeneralHelper.getScrollPosition();		
-
-		x = x + x_BarOffset;
-		y = y + y_BarOffset + y_offset;
-		
-		Robot robot = new Robot();
-		robot.mouseMove(x, y); 
-		
-		if (width > 10.0) {
-			bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-		}
-		
-		if (width < 10.0) {
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		}
-		
-		
-	}
+//	private static void moveMouseToBar(String chartId, int indexHighchart) throws AWTException, InterruptedException {
+//		
+//		String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+//		
+//		// The 'bar' WebElement will be used to set the position of the mouse on the chart
+//		WebElement bar = driver.findElement(By.cssSelector(cssSelector));
+//
+//		// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
+//		Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
+//		
+//		int x = coordinates.getX();
+//		int y = coordinates.getY();
+//		
+//		Dimension d = bar.getSize();
+//		int height = d.getHeight();
+//		int width = d.getWidth();
+//	
+//		int x_BarOffset = (int) (width * 0.5);
+//		int y_BarOffset = (int) (height * 0.5);
+//		
+//		int y_offset = (int) GeneralHelper.getScrollPosition();		
+//
+//		x = x + x_BarOffset;
+//		y = y + y_BarOffset + y_offset;
+//		
+//		Robot robot = new Robot();
+//		robot.mouseMove(x, y); 
+//		
+//		if (width > 10.0) {
+//			bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
+//		}
+//		
+//		if (width < 10.0) {
+//			robot.mousePress(InputEvent.BUTTON1_MASK);
+//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//		}
+//		
+//		
+//	}
 
 
 
@@ -531,16 +531,15 @@ public class TotalExpensesValues extends BaseClass {
 				Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 				
 				// Verify the label and the amount shown on the tooltip
-				int index = 1;  // Ana modif - May 17 -- before modif --> 2
+				int index = 1;
 		
 				// Verify country/vendor shown on the tooltip
-				String vendorNameFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 17 -- before modif --> tooltip.get(0).getText();
+				String vendorNameFound = tooltip.get(index).getText().split(":")[1].trim();
 				tmpListVendorFound.add(vendorNameFound);
-				System.out.println("vendorNameFound: " + vendorNameFound);
 				
-				// Get the label and remove colon at the end of its text 
-				String labelFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 17 -- before modif --> tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
-
+				ShowText("vendorNameFound: " + vendorNameFound);
+				
+				
 				// Get the value on tooltip and remove all blank spaces
 				String valueFound = tooltip.get(index).getText().split(":")[2].trim(); // Ana modif - May 17 -- before modif --> ttooltip.get(index+1).getText().trim().replace(" ", "");
 				
@@ -549,13 +548,10 @@ public class TotalExpensesValues extends BaseClass {
 				// Since in some cases the pie chart has very narrow sections it's not possible to ensure that the mouse hover will obtain the value for those tiny parts 
 				// In the cases where the mouse hover won't get the value for the intended vendor, the test would fail. 
 				String valueExpected = totalExpensesValues.get(vendorNameFound);
-				String labelExpected = "Expense";
-								
-//				Assert.assertEquals(labelFound, labelExpected);  // Ana modif - May 17 -- commented out 
+
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				
-				// ShowText("  labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-				// ShowText("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+				ShowText("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
 				
 				indexVendorInChart++;
 				

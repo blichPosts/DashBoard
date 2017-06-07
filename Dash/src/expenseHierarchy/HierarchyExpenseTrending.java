@@ -1,15 +1,12 @@
 package expenseHierarchy;
 
 import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.InputEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
@@ -80,7 +77,7 @@ public class HierarchyExpenseTrending extends BaseClass {
 			// 2 <vendor's name>
 			// 3 <amount shown for the vendor>
 						
-			int factor = 2;  // Ana added - May 19
+			int factor = 2;
 			int expectedAmountItemsTooltip = (amount * factor) + 1;
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 			
@@ -131,50 +128,50 @@ public class HierarchyExpenseTrending extends BaseClass {
 
 	
 	// NOT USED - REPLACED BY THE METHOD ADDED IN GeneralHelper CLASS
-	private static void moveMouseToBar(boolean firstBar, String chartId, int indexHighchart) throws InterruptedException, AWTException {
-		
-		
-		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-		
-		// WebElement 'bar' will be used to set the position of the mouse on the chart
-		WebElement bar = driver.findElement(By.cssSelector(cssBar));
-
-		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-		
-		Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
-		
-		int x_offset = bar.getSize().getWidth() / 2;
-		int y_offset = (int) GeneralHelper.getScrollPosition();
-		
-		int x = coordinates.getX() + x_offset;
-		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;;
-		
-		Robot robot = new Robot();
-		
-		if (firstBar) {
-			robot.mouseMove(x - x_offset, y);
-			Thread.sleep(500);
-		}
-		
-		robot.mouseMove(x, y);
-		Thread.sleep(500);
-		
-		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-			
-//		firstBar = false;
-		
-		try {
-			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
-			//System.out.println("Tooltip present");
-		} catch (Exception e) {
-			System.out.println("Tooltip NOT present");
-			e.printStackTrace();
-		}
-				
-		
-	}
+//	private static void moveMouseToBar(boolean firstBar, String chartId, int indexHighchart) throws InterruptedException, AWTException {
+//		
+//		
+//		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
+//		
+//		// WebElement 'bar' will be used to set the position of the mouse on the chart
+//		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+//
+//		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+//		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+//		
+//		Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
+//		
+//		int x_offset = bar.getSize().getWidth() / 2;
+//		int y_offset = (int) GeneralHelper.getScrollPosition();
+//		
+//		int x = coordinates.getX() + x_offset;
+//		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;;
+//		
+//		Robot robot = new Robot();
+//		
+//		if (firstBar) {
+//			robot.mouseMove(x - x_offset, y);
+//			Thread.sleep(500);
+//		}
+//		
+//		robot.mouseMove(x, y);
+//		Thread.sleep(500);
+//		
+//		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+//			
+////		firstBar = false;
+//		
+//		try {
+//			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+//			//System.out.println("Tooltip present");
+//		} catch (Exception e) {
+//			System.out.println("Tooltip NOT present");
+//			e.printStackTrace();
+//		}
+//				
+//		
+//	}
 
 
 

@@ -1,14 +1,12 @@
 package expenseHierarchy;
 
 import java.awt.AWTException;
-import java.awt.Robot;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
@@ -31,19 +29,21 @@ public class HierarchyTopTenValues extends BaseClass{
 		HierarchyHelper.selectCategoryTopTen(barChartId, category);
 		
 		// Wait for the data to be updated on chart
-		HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart);
-		Thread.sleep(2000);
-	
-		// Get data from JSON
-		List<HierarchyTopTenData> valuesExpected = ReadFilesHelper.getJsonDataTopTen(category, hierarchyId); 
-		
-		// Verify values on the selected Top Ten chart and for the selected category
-		if (!GeneralTopTenHelper.allValuesAreZeroHierarchy(valuesExpected)) {
-		
-			verifyTooltipTopTenChart(valuesExpected, barChartId, category);
+		if (HierarchyHelper.waitForChartToLoad(HierarchyHelper.topTenChart)) {
 			
-		}
+			Thread.sleep(2000);
+			
+			// Get data from JSON
+			List<HierarchyTopTenData> valuesExpected = ReadFilesHelper.getJsonDataTopTen(category, hierarchyId); 
+			
+			// Verify values on the selected Top Ten chart and for the selected category
+			if (!GeneralTopTenHelper.allValuesAreZeroHierarchy(valuesExpected)) {
+			
+				verifyTooltipTopTenChart(valuesExpected, barChartId, category);
+				
+			}
 		
+		}
 		
 	}
 	
