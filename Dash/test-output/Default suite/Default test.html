@@ -57,9 +57,9 @@ function toggleAllBoxes() {
 <tr>
 <td>Tests passed/Failed/Skipped:</td><td>0/1/0</td>
 </tr><tr>
-<td>Started on:</td><td>Tue Jun 06 13:30:54 ART 2017</td>
+<td>Started on:</td><td>Wed Jun 07 13:01:14 EDT 2017</td>
 </tr>
-<tr><td>Total time:</td><td>554 seconds (554851 ms)</td>
+<tr><td>Total time:</td><td>18 seconds (18558 ms)</td>
 </tr><tr>
 <td>Included groups:</td><td></td>
 </tr><tr>
@@ -75,15 +75,13 @@ function toggleAllBoxes() {
 <td><b>Instance</b></td>
 </tr>
 <tr>
-<td title='testSuiteNumericValues.UsageKPITilesMultipleValues.UsageKPITilesMultipleValuesTest()'><b>UsageKPITilesMultipleValuesTest</b><br>Test class: testSuiteNumericValues.UsageKPITilesMultipleValues</td>
-<td><div><pre>java.lang.AssertionError: expected [true] but found [false]
-	at org.testng.Assert.fail(Assert.java:94)
-	at org.testng.Assert.failNotEquals(Assert.java:496)
-	at org.testng.Assert.assertTrue(Assert.java:42)
-	at org.testng.Assert.assertTrue(Assert.java:52)
-	at helperObjects.GeneralHelper.verifyExpectedAndActualValues(GeneralHelper.java:221)
-	at usage.UsageKPITilesActions.verifySixMonthRollingAverage(UsageKPITilesActions.java:255)
-	at testSuiteNumericValues.UsageKPITilesMultipleValues.UsageKPITilesMultipleValuesTest(UsageKPITilesMultipleValues.java:134)
+<td title='testSuiteExpenseActions.TotalExpensesTrendCountryActions.TotalExpensesTrendVendorActionsTest()'><b>TotalExpensesTrendVendorActionsTest</b><br>Test class: testSuiteExpenseActions.TotalExpensesTrendCountryActions</td>
+<td><div><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at helperObjects.ExpenseHelper.SetupCountryAndVendorData(ExpenseHelper.java:647)
+	at helperObjects.ExpenseHelper.SetupForCountryPageWait(ExpenseHelper.java:660)
+	at testSuiteExpenseActions.TotalExpensesTrendCountryActions.TotalExpensesTrendVendorActionsTest(TotalExpensesTrendCountryActions.java:37)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -108,15 +106,13 @@ function toggleAllBoxes() {
 	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:132)
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:230)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:76)
-</pre></div><a href='#' onClick='toggleBox("stack-trace1323434987", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
-<div class='stack-trace' id='stack-trace1323434987'><pre>java.lang.AssertionError: expected [true] but found [false]
-	at org.testng.Assert.fail(Assert.java:94)
-	at org.testng.Assert.failNotEquals(Assert.java:496)
-	at org.testng.Assert.assertTrue(Assert.java:42)
-	at org.testng.Assert.assertTrue(Assert.java:52)
-	at helperObjects.GeneralHelper.verifyExpectedAndActualValues(GeneralHelper.java:221)
-	at usage.UsageKPITilesActions.verifySixMonthRollingAverage(UsageKPITilesActions.java:255)
-	at testSuiteNumericValues.UsageKPITilesMultipleValues.UsageKPITilesMultipleValuesTest(UsageKPITilesMultipleValues.java:134)
+</pre></div><a href='#' onClick='toggleBox("stack-trace686989583", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace686989583'><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at helperObjects.ExpenseHelper.SetupCountryAndVendorData(ExpenseHelper.java:647)
+	at helperObjects.ExpenseHelper.SetupForCountryPageWait(ExpenseHelper.java:660)
+	at testSuiteExpenseActions.TotalExpensesTrendCountryActions.TotalExpensesTrendVendorActionsTest(TotalExpensesTrendCountryActions.java:37)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -142,8 +138,8 @@ function toggleAllBoxes() {
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:230)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:76)
 </pre></div></td>
-<td>44</td>
-<td>testSuiteNumericValues.UsageKPITilesMultipleValues@6d78f375</td></tr>
+<td>3</td>
+<td>testSuiteExpenseActions.TotalExpensesTrendCountryActions@50c87b21</td></tr>
 </table><p>
 </body>
 </html>

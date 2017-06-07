@@ -3,13 +3,13 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="testSuiteNumericValues.UsageKPITilesMultipleValues">
+      <class name="testSuiteExpenseActions.TotalExpensesTrendCountryActions">
         <methods>
-          <include name="UsageKPITilesMultipleValuesTest"/>
-          <include name="setUp"/>
           <include name="closeDriver"/>
+          <include name="TotalExpensesTrendVendorActionsTest"/>
+          <include name="setUp"/>
         </methods>
-      </class> <!-- testSuiteNumericValues.UsageKPITilesMultipleValues -->
+      </class> <!-- testSuiteExpenseActions.TotalExpensesTrendCountryActions -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

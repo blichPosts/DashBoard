@@ -48,7 +48,7 @@
               <ul>
                 <li>
                   <a href="#" class="navigator-link " panel-name="test-xml-Default_suite">
-                    <span>C:\Users\apace\AppData\Local\Temp\testng-eclipse-51392937\testng-customsuite.xml</span>
+                    <span>C:\Users\bob.lichtenfels\AppData\Local\Temp\testng-eclipse-2134239382\testng-customsuite.xml</span>
                   </a> <!-- navigator-link  -->
                 </li>
                 <li>
@@ -101,7 +101,7 @@
                     <div class="method-list-content failed suite-Default_suite">
                       <span>
                         <img width="3%" src="failed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Default_suite" title="testSuiteNumericValues.UsageKPITilesMultipleValues" hash-for-method="UsageKPITilesMultipleValuesTest">UsageKPITilesMultipleValuesTest</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Default_suite" title="testSuiteExpenseActions.TotalExpensesTrendCountryActions" hash-for-method="TotalExpensesTrendVendorActionsTest">TotalExpensesTrendVendorActionsTest</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                     </div> <!-- method-list-content failed suite-Default_suite -->
@@ -119,22 +119,20 @@
           <div class="suite-Default_suite-class-failed">
             <div class="main-panel-header rounded-window-top">
               <img src="failed.png"/>
-              <span class="class-name">testSuiteNumericValues.UsageKPITilesMultipleValues</span>
+              <span class="class-name">testSuiteExpenseActions.TotalExpensesTrendCountryActions</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="UsageKPITilesMultipleValuesTest">
-                  </a> <!-- UsageKPITilesMultipleValuesTest -->
-                  <span class="method-name">UsageKPITilesMultipleValuesTest</span>
-                  <div class="stack-trace">java.lang.AssertionError: expected [true] but found [false]
-	at org.testng.Assert.fail(Assert.java:94)
-	at org.testng.Assert.failNotEquals(Assert.java:496)
-	at org.testng.Assert.assertTrue(Assert.java:42)
-	at org.testng.Assert.assertTrue(Assert.java:52)
-	at helperObjects.GeneralHelper.verifyExpectedAndActualValues(GeneralHelper.java:221)
-	at usage.UsageKPITilesActions.verifySixMonthRollingAverage(UsageKPITilesActions.java:255)
-	at testSuiteNumericValues.UsageKPITilesMultipleValues.UsageKPITilesMultipleValuesTest(UsageKPITilesMultipleValues.java:134)
+                  <a name="TotalExpensesTrendVendorActionsTest">
+                  </a> <!-- TotalExpensesTrendVendorActionsTest -->
+                  <span class="method-name">TotalExpensesTrendVendorActionsTest</span>
+                  <div class="stack-trace">java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at helperObjects.ExpenseHelper.SetupCountryAndVendorData(ExpenseHelper.java:647)
+	at helperObjects.ExpenseHelper.SetupForCountryPageWait(ExpenseHelper.java:660)
+	at testSuiteExpenseActions.TotalExpensesTrendCountryActions.TotalExpensesTrendVendorActionsTest(TotalExpensesTrendCountryActions.java:37)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -168,7 +166,7 @@
         </div> <!-- panel Default_suite -->
         <div panel-name="test-xml-Default_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">C:\Users\apace\AppData\Local\Temp\testng-eclipse-51392937\testng-customsuite.xml</span>
+            <span class="header-content">C:\Users\bob.lichtenfels\AppData\Local\Temp\testng-eclipse-2134239382\testng-customsuite.xml</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <pre>
@@ -177,7 +175,7 @@
 &lt;suite guice-stage=&quot;DEVELOPMENT&quot; name=&quot;Default suite&quot;&gt;
   &lt;test verbose=&quot;2&quot; name=&quot;Default test&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;testSuiteNumericValues.UsageKPITilesMultipleValues&quot;/&gt;
+      &lt;class name=&quot;testSuiteExpenseActions.TotalExpensesTrendCountryActions&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- Default test --&gt;
 &lt;/suite&gt; &lt;!-- Default suite --&gt;
@@ -219,14 +217,14 @@ data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
 data.addRows(1);
 data.setCell(0, 0, 0)
-data.setCell(0, 1, 'UsageKPITilesMultipleValuesTest')
-data.setCell(0, 2, 'testSuiteNumericValues.UsageKPITilesMultipleValues')
-data.setCell(0, 3, 44439);
+data.setCell(0, 1, 'TotalExpensesTrendVendorActionsTest')
+data.setCell(0, 2, 'testSuiteExpenseActions.TotalExpensesTrendCountryActions')
+data.setCell(0, 3, 3282);
 window.suiteTableData['Default_suite']= { tableData: data, tableDiv: 'times-div-Default_suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 44 seconds</span>
+              <span class="suite-total-time">Total running time: 3 seconds</span>
               <div id="times-div-Default_suite">
               </div> <!-- times-div-Default_suite -->
             </div> <!-- times-div -->
@@ -252,7 +250,7 @@ return data;
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <div class="chronological-class">
-              <div class="chronological-class-name">testSuiteNumericValues.UsageKPITilesMultipleValues</div> <!-- chronological-class-name -->
+              <div class="chronological-class-name">testSuiteExpenseActions.TotalExpensesTrendCountryActions</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">setUp</span>
                 <span class="method-start">0 ms</span>
@@ -260,12 +258,12 @@ return data;
               <div class="test-method">
                 <img src="failed.png">
                 </img>
-                <span class="method-name">UsageKPITilesMultipleValuesTest</span>
-                <span class="method-start">61727 ms</span>
+                <span class="method-name">TotalExpensesTrendVendorActionsTest</span>
+                <span class="method-start">14348 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">closeDriver</span>
-                <span class="method-start">106183 ms</span>
+                <span class="method-start">17633 ms</span>
               </div> <!-- configuration-class after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->

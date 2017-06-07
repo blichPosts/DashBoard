@@ -12,10 +12,8 @@ import java.util.Stack;
 import javax.swing.JOptionPane;
 import javax.xml.transform.Templates;
 
-import org.apache.commons.el.VariableResolverImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.openqa.jetty.servlet.Debug;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;

@@ -2,29 +2,27 @@
 <testng-results skipped="0" failed="1" total="1" passed="0">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="554851" started-at="2017-06-06T16:30:54Z" finished-at="2017-06-06T16:40:09Z">
+  <suite name="Default suite" duration-ms="18558" started-at="2017-06-07T17:01:14Z" finished-at="2017-06-07T17:01:32Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="554851" started-at="2017-06-06T16:30:54Z" finished-at="2017-06-06T16:40:09Z">
-      <class name="testSuiteNumericValues.UsageKPITilesMultipleValues">
-        <test-method status="PASS" signature="setUp()[pri:0, instance:testSuiteNumericValues.UsageKPITilesMultipleValues@6d78f375]" name="setUp" is-config="true" duration-ms="61722" started-at="2017-06-06T13:30:54Z" finished-at="2017-06-06T13:31:56Z">
+    <test name="Default test" duration-ms="18558" started-at="2017-06-07T17:01:14Z" finished-at="2017-06-07T17:01:32Z">
+      <class name="testSuiteExpenseActions.TotalExpensesTrendCountryActions">
+        <test-method status="PASS" signature="setUp()[pri:0, instance:testSuiteExpenseActions.TotalExpensesTrendCountryActions@50c87b21]" name="setUp" is-config="true" duration-ms="14339" started-at="2017-06-07T13:01:14Z" finished-at="2017-06-07T13:01:28Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method status="FAIL" signature="UsageKPITilesMultipleValuesTest()[pri:0, instance:testSuiteNumericValues.UsageKPITilesMultipleValues@6d78f375]" name="UsageKPITilesMultipleValuesTest" duration-ms="44439" started-at="2017-06-06T13:31:56Z" finished-at="2017-06-06T13:32:40Z">
-          <exception class="java.lang.AssertionError">
+        <test-method status="FAIL" signature="TotalExpensesTrendVendorActionsTest()[pri:0, instance:testSuiteExpenseActions.TotalExpensesTrendCountryActions@50c87b21]" name="TotalExpensesTrendVendorActionsTest" duration-ms="3282" started-at="2017-06-07T13:01:28Z" finished-at="2017-06-07T13:01:31Z">
+          <exception class="java.lang.IndexOutOfBoundsException">
             <message>
-              <![CDATA[expected [true] but found [false]]]>
+              <![CDATA[Index: 0, Size: 0]]>
             </message>
             <full-stacktrace>
-              <![CDATA[java.lang.AssertionError: expected [true] but found [false]
-	at org.testng.Assert.fail(Assert.java:94)
-	at org.testng.Assert.failNotEquals(Assert.java:496)
-	at org.testng.Assert.assertTrue(Assert.java:42)
-	at org.testng.Assert.assertTrue(Assert.java:52)
-	at helperObjects.GeneralHelper.verifyExpectedAndActualValues(GeneralHelper.java:221)
-	at usage.UsageKPITilesActions.verifySixMonthRollingAverage(UsageKPITilesActions.java:255)
-	at testSuiteNumericValues.UsageKPITilesMultipleValues.UsageKPITilesMultipleValuesTest(UsageKPITilesMultipleValues.java:134)
+              <![CDATA[java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at helperObjects.ExpenseHelper.SetupCountryAndVendorData(ExpenseHelper.java:647)
+	at helperObjects.ExpenseHelper.SetupForCountryPageWait(ExpenseHelper.java:660)
+	at testSuiteExpenseActions.TotalExpensesTrendCountryActions.TotalExpensesTrendVendorActionsTest(TotalExpensesTrendCountryActions.java:37)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
@@ -51,15 +49,15 @@
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:76)
 ]]>
             </full-stacktrace>
-          </exception> <!-- java.lang.AssertionError -->
+          </exception> <!-- java.lang.IndexOutOfBoundsException -->
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- UsageKPITilesMultipleValuesTest -->
-        <test-method status="PASS" signature="closeDriver()[pri:0, instance:testSuiteNumericValues.UsageKPITilesMultipleValues@6d78f375]" name="closeDriver" is-config="true" duration-ms="448656" started-at="2017-06-06T13:32:40Z" finished-at="2017-06-06T13:40:09Z">
+        </test-method> <!-- TotalExpensesTrendVendorActionsTest -->
+        <test-method status="PASS" signature="closeDriver()[pri:0, instance:testSuiteExpenseActions.TotalExpensesTrendCountryActions@50c87b21]" name="closeDriver" is-config="true" duration-ms="919" started-at="2017-06-07T13:01:31Z" finished-at="2017-06-07T13:01:32Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- closeDriver -->
-      </class> <!-- testSuiteNumericValues.UsageKPITilesMultipleValues -->
+      </class> <!-- testSuiteExpenseActions.TotalExpensesTrendCountryActions -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>
