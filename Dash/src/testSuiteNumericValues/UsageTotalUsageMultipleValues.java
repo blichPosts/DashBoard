@@ -72,16 +72,14 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 			for(List<UsageOneMonth> values: listVendorsSelectedData){
 				
 				int indexMonthForVendorSelected = 0;
-				boolean dataFoundForMonth = false;
 				
-				while(indexMonthForVendorSelected < values.size()) { // && !dataFoundForMonth){
+				while(indexMonthForVendorSelected < values.size()) {
 					
 					String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
 					
 					if(monthsToSelect.get(indexMonth).equals(monthYear)){
  
 						listOneMonthData.add(values.get(indexMonthForVendorSelected));
-						dataFoundForMonth = true;
 						
 					}
 						

@@ -1,13 +1,11 @@
 package topTen;
 
 import java.awt.AWTException;
-import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;

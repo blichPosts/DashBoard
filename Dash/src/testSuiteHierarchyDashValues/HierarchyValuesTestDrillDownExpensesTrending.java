@@ -128,7 +128,7 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 											
 					} catch (NullPointerException e) {
 						
-						System.out.println("chart not found");
+						System.out.println("chart not found or value found is null");
 						
 					}
 					

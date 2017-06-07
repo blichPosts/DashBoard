@@ -1,17 +1,13 @@
 package testSuiteNumericValues;
 
-import javax.swing.JOptionPane;
-
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
-import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
-import helperObjects.ExpenseValuesHelper.SpendCategory;
 import helperObjects.ExpenseValuesHelper;
 
 public class SingleValuesAllControls extends BaseClass 

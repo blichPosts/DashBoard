@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -14,9 +12,9 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyTopTenValues;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralTopTenHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
-import helperObjects.UsageHelper;
 
 
 public class HierarchyValuesTestTopTen extends BaseClass {
@@ -70,10 +68,6 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 			String monthYearToSelect = "";
 			
 			int indexMonth = 0;
-			boolean dataForMonthSelected = true;
-			
-			String cssSelector = "#" + UsageHelper.getChartId(HierarchyHelper.topTenChart) + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-child(2)";
-			
 			
 			do {
 					
@@ -85,16 +79,9 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 				System.out.println("Month Year: " + monthYearToSelect);
 				
 				// #6 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
-				try {
 				
-					dataForMonthSelected = WaitForElementVisibleNoThrow(By.cssSelector(cssSelector), TenTimeout);
-					
-				} catch (NoSuchElementException e) {
-					
-					System.out.println("No data for the selected month");
-					
-				}
-				
+				boolean dataForMonthSelected = GeneralTopTenHelper.isDataForSelectedMonthPresent();
+
 				if (dataForMonthSelected) {
 					
 					try {
@@ -107,11 +94,10 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 						
 						// Run test for "Expense" chart and category "Roaming"
 						HierarchyTopTenValues.verifyTopTenChartValues(hierarchyValue, HierarchyHelper.topTenChart, HierarchyHelper.categoryRoaming);
-						
-						
+												
 					} catch (NullPointerException e) {
 						
-						System.out.println("chart not found");
+						System.out.println("chart not found or value found is null");
 						
 					}
 					

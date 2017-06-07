@@ -262,8 +262,7 @@ public class GeneralHelper extends BaseClass {
 	}
 
 	
-	public static boolean waitForKPIsToLoad(int timeOut) throws Exception 
-	{
+	public static boolean waitForKPIsToLoad(int timeOut) throws Exception {
 	    
 		By byMainKPIvalue = By.cssSelector(".tdb-kpi__statistic");
 		By bySecondaryValue = By.cssSelector(".tdb-kpi__statistic--secondary");
@@ -282,6 +281,14 @@ public class GeneralHelper extends BaseClass {
         }	    
 	    return true;
 	}		
+	
+	
+	public static void waitForChartToLoad(int timeOut) throws Exception {
+	    
+		WaitForElementPresent(By.cssSelector("chart>div"), timeOut);
+		
+	}	
+	
 	
 	
 

@@ -82,9 +82,9 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromAjaxCall, HierarchyHelper.categoryRoaming);
 				
 				
-			} catch(NullPointerException e) {
+			} catch (NullPointerException e) {
 				
-				System.out.println("chart not found");
+				System.out.println("chart not found or value found is null");
 				
 			}
 		
