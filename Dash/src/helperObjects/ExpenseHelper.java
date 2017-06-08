@@ -768,29 +768,60 @@ public class ExpenseHelper extends BaseClass
 		ExpenseHelper.SetWaitDefault(); // back to default.
 	}	
 	
+	// verify expense category legends are all unselected.
+	public static void VerifyExpenseCategoryLegendsDisabled() throws Exception
+	{
+		boolean expectedCondition = false;
+		String chartId =  UsageHelper.getChartId(1);
+		
+		String tempUrl = "";				
+		
+		for(int x = 1; x <= numOfLegendsInExpenseSpendCategory; x++)
+		{
+			tempUrl = "#" + chartId + ">svg>g>g>g>g:nth-of-type(" + x + ")";
+			long waitTime = 2;
+			long startTime = System.currentTimeMillis(); //fetch starting time
+			while((System.currentTimeMillis()-startTime) < waitTime *1000)
+			{
+				if(driver.findElement(By.cssSelector(tempUrl)).getAttribute("class").contains("highcharts-legend-item-hidden"))
+				{
+					expectedCondition = true;
+					break;
+				}
+			}
+			Assert.assertTrue(expectedCondition, "Error in waiting for Account legend in 'Expense Categories' control  to be disabled.");
+		}
+	}
+	
 	// this verifies one control is not visible by looking for the first legend in each control being not visible.
 	// NOTE --- needs finished.
 	public static void VerifyOneControlNotPresent(controlType cntrlType) throws Exception
 	{
+		
+		String methodName = "ExpenseHelper.VerifyOneControlNotPresent";
+		
 		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
-
+		
 		switch(cntrlType)
 		{
-			case totalExpenseSpendCatergory: // needs work -- 
+			case totalExpenseSpendCatergory: // NEEDS TO BE COMPLETED.
 			{
-				chartId =  UsageHelper.getChartId(1);  
-				ShowText(chartId);
-				// tempUrl = "#" + chartId + ">svg>.highcharts-yaxis-labels>text:nth-of-type(1)"; // css no work		
-				//tempUrl = ".//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group']/*/*[contains(@d,'M 0 0')]"; // latest attempt
+				boolean expectedCondition = false;
+				// String tempUrl = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text";
+				long waitTime = 3;
+				//List<WebElement> eleList; // = new ArrayList<WebElement>();
 				
-				// tempUrl  = "(.//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group ']/*/*)[1][@visibility='hidden']";
+				long startTime = System.currentTimeMillis(); //fetch starting time
+				while((System.currentTimeMillis()-startTime) < waitTime *1000)
+				{
+					if(driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text")).size() == 0)
+					{
+						expectedCondition = true;
+						break;
+					}
+				}
 				
-				//(.//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group ']/*/*)[1][@visibility='hidden']
-				// Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-				//WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // DEBUG
-				
-				//WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // always visible.
-				 
+				Assert.assertTrue(expectedCondition, "Error in waiting for no legends in 'Expense Categories' control in method " + methodName);
 				break;
 			}
 			case expenseTrending:
@@ -815,6 +846,11 @@ public class ExpenseHelper extends BaseClass
 				// ShowText(chartId);
 				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
 				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				break;
+			}
+			default:
+			{
+				Assert.fail("Incorrect value sent in " + methodName);
 				break;
 			}
 		}

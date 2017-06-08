@@ -8,6 +8,7 @@ import Dash.BaseClass;
 import expenses.TotalExpenseByVendorSpendCategory;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 
 public class TotalExpenseByVendorSpendCategoryActions extends BaseClass 
 {
@@ -29,21 +30,22 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		// need to set chartId for 'expense helper' because call below uses expense helper call.
 		ExpenseHelper.SetChartId(1);
 		
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		
 		// store vendor names currently shown in expense control. 
 		TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest(); 
 		
-		CommonTestStepActions.UnSelectAllVendors();
-		ExpenseHelper.VerifyControlsNotPresent();
-		
-		CommonTestStepActions.selectOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
+		if(!loginType.equals(LoginType.MatrixPortal))
+		{
+			CommonTestStepActions.UnSelectAllVendors();
+			ExpenseHelper.VerifyControlsNotPresent();
+			CommonTestStepActions.selectOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));			
+		}
 		
 		// need chartId for 'TotalExpenseByVendorSpendCategory'.
 		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
-		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
-		
-		// verify control is empty.
-		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category.
+		// TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
 	}
 	
 	@AfterClass
