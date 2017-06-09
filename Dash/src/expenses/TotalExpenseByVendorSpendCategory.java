@@ -78,6 +78,9 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		}
 		
 		totalExpenseExpectedLegendsList = ExpenseHelper.GetTotalExpenseLegends(); // this is needed in 'VerifyToolTipInfo' method.
+		
+		Assert.assertTrue(totalExpenseExpectedLegendsList.size() != 0, "Error in seeting upt list in TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest");
+		
 	}
 	
 	// PROTOTYPE
@@ -89,29 +92,30 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
 		
 		List<WebElement> tempList; // this holds hover info.
- 				
+		
+		if(!loginType.equals(LoginType.ReferenceApp))
+		{
+			// move to the spend category control.
+			WebElement temp = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)")); // jnupp
+			new Actions(driver).moveToElement(temp).perform();
+			Thread.sleep(500);
+		}
+		
 		// get web element  list of legends in expense spend category. this is for clicking legends. 
 		totalExpenseLegendsElementList =  ExpenseHelper.GetTotalExpenseCatergoryLegends();  
 		
+		// this waits for the vendor(s) in total expense spend control.
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+
+		Thread.sleep(500);
+
 		if(expenseControlSlicesElemntsList != null)
 		{
 			expenseControlSlicesElemntsList.clear();
 		}
 		
-		// this waits for the vendor(s) in total expense spend control.
-		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
-		
-		Thread.sleep(500);
-		
 		// store the web elements for the slices into a list. 
 		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections));  
-
-		if(!loginType.equals(LoginType.ReferenceApp))
-		{
-			// move to the spend category control.
-			WebElement expenseTrendingSection = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)"));
-			new Actions(driver).moveToElement(expenseTrendingSection).perform();
-		}
 
 		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
 		{
@@ -131,28 +135,23 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			}
 			else
 			{
-				Thread.sleep(500);
+				//Thread.sleep(500);
 				MoveMouseToSpendCategory();
 			}
 			
-			Thread.sleep(500);
-
+			Thread.sleep(2000);
+			
 			// store the info found in the hover.  
 			tempList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
 			
 			VerifyToolTipInfo(tempList, x);
 			
-			// ShowInt(tempList.size()); // DEBUG
-			
 			Thread.sleep(500);
 
-			//DebugTimeout(1, "Click legend");
-			totalExpenseLegendsElementList.get(x).click(); // click legend.
+			totalExpenseLegendsElementList.get(x).click(); // click legend. 
 		}
 		
 		ExpenseHelper.VerifyExpenseCategoryLegendsDisabled();
-		//ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category. 
-		
 	}
 	
 	public static void Setupdata()  
@@ -307,9 +306,6 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	{
 		Robot robot = new Robot();
 		
-		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-		// String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
-		
 		// String referencePoint = "#" + chartId +  ">svg>g:nth-of-type(3)>text"; 
 		String referencePoint = "#" + chartId +  ">svg>.highcharts-series-group>g:nth-of-type(7)";
 		
@@ -326,12 +322,10 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		int y_offset = (int) GeneralHelper.getScrollPosition();
 		y += y_offset + 60; 
 		
-		// below was -10, changed to -250   5/18/17  bob version 1.2.8
-		robot.mouseMove(x - 250, y); // bob added  these lines after. 
+		// below was -250, changed to -50   6/9/17  bob version 1.2.16
+		robot.mouseMove(x - 50, y); // bob added  these lines after. 
 		Thread.sleep(500);
 		
-		// Pause("look at pointer");
- 
 		robot.mouseMove(x, y);
 		// System.out.println("coordinates - x: " + x + "  y: " + y);
 		

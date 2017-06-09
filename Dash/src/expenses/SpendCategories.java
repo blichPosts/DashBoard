@@ -226,7 +226,7 @@ public class SpendCategories extends BaseClass
 	
 	// NOTE - this code is taken from "ExpenseHelper.MoveMouseToBarExpenseActions" method.
 	// this hovers across the chatId trend graph and verifies each hover title is correct per 'expectedText' passed in.  
-	public static void VerifyHoverTitles(String chartId, String expectedText) throws InterruptedException, AWTException
+	public static void VerifyHoverTitles(String chartId, String expectedText) throws Exception
 	{
 		boolean firstMonth = true;
 
@@ -234,7 +234,20 @@ public class SpendCategories extends BaseClass
 		
 		for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 		{
-			ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
+			if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
+			{
+				TotalExpensesTrend.clickBarIndexMatrixPortal(y, firstMonth, chartId);
+				firstMonth = false;
+			}
+			else
+			{
+				ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);				
+			}
+
+
+			
+			
+			
 			
 			String actual = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo)).get(1).getText();
 			

@@ -455,6 +455,8 @@ public class ExpenseHelper extends BaseClass
 		// store all legend names into web element list.
 		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
 		
+		Assert.assertTrue(webElementListLegends.size() > 0); // make sure list is not empty.
+		
 		return webElementListLegends;
 	}
 	
@@ -799,37 +801,27 @@ public class ExpenseHelper extends BaseClass
 	{
 		
 		String methodName = "ExpenseHelper.VerifyOneControlNotPresent";
+		String errMessage = "Failed waiting for no precense of ";
 		
 		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
 		
 		switch(cntrlType)
 		{
-			case totalExpenseSpendCatergory: // NEEDS TO BE COMPLETED.
+			case totalExpenseSpendCatergory:
 			{
-				boolean expectedCondition = false;
-				// String tempUrl = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text";
-				long waitTime = 3;
-				//List<WebElement> eleList; // = new ArrayList<WebElement>();
+				chartId = UsageHelper.getChartId(1);
 				
-				long startTime = System.currentTimeMillis(); //fetch starting time
-				while((System.currentTimeMillis()-startTime) < waitTime *1000)
-				{
-					if(driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text")).size() == 0)
-					{
-						expectedCondition = true;
-						break;
-					}
-				}
+				String tempUrl = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(1)";
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.cssSelector(tempUrl), MediumTimeout), errMessage + "totalExpenseSpendCatergory");
 				
-				Assert.assertTrue(expectedCondition, "Error in waiting for no legends in 'Expense Categories' control in method " + methodName);
 				break;
 			}
 			case expenseTrending:
 			{
 				chartId =  UsageHelper.getChartId(2);  
-				ShowText(chartId);
+				//ShowText(chartId);
 				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
-				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout), errMessage + "expenseTrending");
 				break;
 			}
 			case costPerServiceNumber:
@@ -837,7 +829,7 @@ public class ExpenseHelper extends BaseClass
 				chartId =  UsageHelper.getChartId(3);  
 				// ShowText(chartId);
 				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
-				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout), errMessage + "costPerServiceNumber");
 				break;
 			}
 			case countOfServiceNumbers:
@@ -845,7 +837,7 @@ public class ExpenseHelper extends BaseClass
 				chartId =  UsageHelper.getChartId(4);  
 				// ShowText(chartId);
 				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
-				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout), errMessage + "countOfServiceNumbers");
 				break;
 			}
 			default:

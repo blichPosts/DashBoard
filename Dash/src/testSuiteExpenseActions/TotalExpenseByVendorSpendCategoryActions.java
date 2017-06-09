@@ -26,7 +26,7 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
-
+		
 		// need to set chartId for 'expense helper' because call below uses expense helper call.
 		ExpenseHelper.SetChartId(1);
 		
@@ -45,7 +45,9 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		// need chartId for 'TotalExpenseByVendorSpendCategory'.
 		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
-		// TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
+		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
+		
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category.
 	}
 	
 	@AfterClass
