@@ -18,6 +18,7 @@ import expenses.SpendCategories;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.CommonTestStepActions.ExpensesViewMode;
+import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.expenseFilters;
 import helperObjects.ExpenseValuesHelper.SpendCategory;
 
@@ -38,6 +39,8 @@ public class SpendCategoryFilters extends BaseClass
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
+		
+		ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber); // wait for a control to show up.
 
 		// ///////////////////////////
 		// 	      vendor view
@@ -77,11 +80,33 @@ public class SpendCategoryFilters extends BaseClass
 		
 		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
 		// this list is stored in the expense helper class.
-		ExpenseHelper.SetupForCountryPageWait();
+		//ExpenseHelper.SetupForCountryPageWait();
 		
 		// move to country view.
-		CommonTestStepActions.SelectCountryView();
+		//CommonTestStepActions.SelectCountryView();
 
+		if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!!
+		{
+			// move to country view.
+			//Pause("Wait for country page to load");
+			ExpenseHelper.WaitForControlLegend(controlType.costPerServiceNumber); // wait for a control to show up.			
+			CommonTestStepActions.SelectCountryView();
+			Pause("Wait for country page to load");
+		}
+		else
+		{
+			// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+			// this list is stored in the expense helper class.
+			ExpenseHelper.SetupForCountryPageWait();
+			
+			// move to country view.
+			CommonTestStepActions.SelectCountryView();
+			
+			// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+			// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+			ExpenseHelper.WaitForCountryPageLoad();
+		}
+		
 		// this sets up names of cost filters.
 		SpendCategories.SetupExpectedCostFilters();
 		

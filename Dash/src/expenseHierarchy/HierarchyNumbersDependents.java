@@ -1139,9 +1139,20 @@ public class HierarchyNumbersDependents extends BaseClass
 			HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 			Thread.sleep(2000); // give time for tile map to load.
 			
+			// 6/14/17 -  commented and added new steps further below. // bladd jnupp
 			// wait for the new bread crumb to be added.
-			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrumb count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
+			//Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrumb count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
 
+			// this covers the rare case when there are no bread crumbs and the current page says there are no dependent units on the page.
+			// if there are no bread crumbs there should be a message saying there are no dependent units on the page. 
+			if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout))
+			{
+				Assert.assertTrue(WaitForNoDependentsInPage(cntr));
+				Pause("RARE CASE - no breadcrumbs and have hit bottom of drill downs.");
+				// ShowText("Have found spot with glitch ============================================================ .");
+				break;
+			}
+			
 			// if have hit a page with no dependents then break. 
 			if(WaitForNoDependentsInPage(cntr))
 			{
@@ -1240,8 +1251,18 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			HierarchyHelper.WaitForProgressBarInactive(MediumTimeout); 
 
+			// 6/14/17 -  commented and added new steps further below. // bladd jnupp
 			// wait for the new bread crumb to be added.
-			Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
+			// Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
+
+			// this covers the rare case when there are no bread crumbs and the current page says there are no dependent units on the page.
+			// if there are no bread crumbs there should be a message saying there are no dependent units on the page. 
+			if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout))
+			{
+				Assert.assertTrue(WaitForNoDependentsInPage(cntr));
+				Pause("RARE CASE - no breadcrumbs and have hit bottom of drill downs.");
+				break;
+			}
 			
 			ShowText("Checking to see if have hit end of drill down."); 
 			
@@ -1506,10 +1527,10 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
 			
-			if(ele.getText().contains("February"))
-			{
-				continue;
-			}
+			//if(ele.getText().contains("February")) // this should be OK now 6/14/17 - this has been compensated for in code.
+			//{
+			//	continue;
+			//}
 			
 			ShowText("Selected Month is " + ele.getText());
 			
@@ -1538,10 +1559,11 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
 			
-			if(ele.getText().contains("February"))
-			{
-				continue;
-			}
+			// the problem in this month should be fixed.
+			//if(ele.getText().contains("February"))
+			//{
+			//	continue;
+			//}
 			
 			ShowText("Selected Month is " + ele.getText());
 			
@@ -1873,6 +1895,7 @@ public class HierarchyNumbersDependents extends BaseClass
 				          "Failed to process wait for progress bar in WaitForProgressBarInactive() method.");
 	}
 	*/
+	
 	// this sees if there is a page with no dependent units on the current page. it has a hard coded two second wait to see if this is true.  
 	public static boolean WaitForNoDependentsInPage(int level) throws Exception
 	{
@@ -2273,7 +2296,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		// this waits to see if the bottom of the drill-downs has been found.
 		if(drillDownPageType == DrillDownPageType.expense)
 		{
-			// if have hit a page with no dependents then break (return from this method call).
+			// if have hit a page with no dependents then break (return from this method call). // bladd jnupp
 			if(WaitForNoDependentsInPage(cntr, dependentNameToDrillTo))
 			{
 				return false;

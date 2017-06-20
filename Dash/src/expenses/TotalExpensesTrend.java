@@ -102,6 +102,7 @@ public class TotalExpensesTrend extends BaseClass
 		
 		// get the 'expense trending' control visible by moving to it. 
 		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(1)"));
+
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));
 		
 		new Actions(driver).moveToElement(expenseTrending).perform();
