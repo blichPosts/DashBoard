@@ -9,8 +9,6 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import usage.UsageKPITiles;
-import usage.UsageKPITilesActions;
-
 
 
 public class KPITilesVisualUsage extends BaseClass
@@ -20,6 +18,7 @@ public class KPITilesVisualUsage extends BaseClass
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	
@@ -29,9 +28,12 @@ public class KPITilesVisualUsage extends BaseClass
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
+		CommonTestStepActions.selectMonthYearPulldown("April 2017");
+		Thread.sleep(2000);
+		
 		
 		// #1 Observe the labels above the KPI components - There are two sections, 'Domestic' and 'Roaming'
-		UsageKPITiles.verifyDomesticRoamingLabels();
+		UsageKPITiles.verifyLabelsAboveKPIs();
 		
 		
 		// #2 Observe the KPI components - There are three KPI tiles under Domestic: 'Voice', 'Data', 'Messages'; and one KPI tile under Roaming: 'Data'
@@ -48,9 +50,6 @@ public class KPITilesVisualUsage extends BaseClass
 		
 		// #5 Verify that the trending values have the '%' symbol, on all the KPI tiles -- icons cannot be verified
 				
-		CommonTestStepActions.selectMonthYearPulldown("August 2016");
-		//CommonTestStepActions.selectMonthYearPulldown("December 2015");
-		Thread.sleep(2000);
 		//UsageKPITilesActions.verifyTrendingValues();
 		
 		

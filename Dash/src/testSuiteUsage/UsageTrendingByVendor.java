@@ -18,6 +18,7 @@ public class UsageTrendingByVendor extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	
@@ -26,7 +27,11 @@ public class UsageTrendingByVendor extends BaseClass{
 	{
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
-			
+		
+		CommonTestStepActions.selectMonthYearPulldown("April 2017");
+		Thread.sleep(2000);
+		
+		
 		// #1 Select Vendor View 
 		UsageHelper.selectVendorView();
 		

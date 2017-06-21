@@ -59,6 +59,7 @@ public class ReadFilesHelper extends BaseClass {
 	    	if (jsonObj.getString("vendor_name").equals(vendor)) {
 	    		
 	    		usageOneMonth.setVendorName(jsonObj.getString("vendor_name"));
+	    		usageOneMonth.setCountry(jsonObj.getString("country"));
 	    		usageOneMonth.setInvoiceMonth(usageOneMonth.formatInvoiceMonth(jsonObj.getString("invoice_month")));
 				usageOneMonth.setOrdinalYear(Integer.toString(jsonObj.getInt("ordinal_year")));
 				usageOneMonth.setOrdinalMonth(Integer.toString(jsonObj.getInt("ordinal_month")));
@@ -107,7 +108,7 @@ public class ReadFilesHelper extends BaseClass {
 	    	    	
 	    String trendData = (String) js.executeScript("return __TANGOE__getCapturedTestDataAsJSON('hierarchy." + hierarchyId + ".trend.payload.rows')");
 	   
-	     ShowText(trendData);
+	    // ShowText(trendData);
 		   
 	    // Convert the String with data into a JSONArray
 	    JSONArray array = new JSONArray(trendData); 
@@ -416,7 +417,7 @@ public class ReadFilesHelper extends BaseClass {
 	}
 	
 	
-	
+	// ***********************************
 	// *** OLD - NOT USED ANYMORE ***
 	
 	// Reads the data needed for the "Fleet Manager Dashboard" tests

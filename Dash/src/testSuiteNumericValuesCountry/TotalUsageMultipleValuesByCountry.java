@@ -1,4 +1,4 @@
-package testSuiteNumericValues;
+package testSuiteNumericValuesCountry;
 
 import java.util.List;
 
@@ -18,8 +18,7 @@ import helperObjects.UsageOneMonth;
 import usage.TotalUsageValues;
 
 
-
-public class UsageTotalUsageMultipleValues extends BaseClass{
+public class TotalUsageMultipleValuesByCountry extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -31,7 +30,7 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 	
 	
 	@Test
-	public static void UsageTotalUsageMultipleValuesTest() throws Exception
+	public static void TotalUsageMultipleValuesByCountryTest() throws Exception
 	{
 		
 		// Enable Start collecting data
@@ -48,8 +47,8 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 
-		// #1 Select Vendor View and Unselect all vendors  
-		UsageHelper.selectVendorView();
+		// #1 Select Country View and Unselect all vendors  
+		UsageHelper.selectCountryView();
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		// #2 Get the data for each of the selected vendors for all months.
@@ -62,17 +61,20 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 		int indexMonth = 0;
 	
 		List<String> monthsToSelect = UsageHelper.getMonthListUnifiedForVendorsSelected(listVendorsSelectedData);
-
+		
 		
 		do {
 		
 			// List listOneMonthData will have the data for a specific month, for all the vendors previously selected
 			List<UsageOneMonth> listOneMonthData = FleetHelper.getDataForOneMonth(listVendorsSelectedData, indexMonth, monthsToSelect);
 			
+			// ** Summarize data by Country
+			List<UsageOneMonth> listOneMonthDataByCountry = FleetHelper.summarizeUsageValuesByCountry(listOneMonthData); 
+			
 			
 			// #4 Select month on month/year selector
 			CommonTestStepActions.selectMonthYearPulldown(monthsToSelect.get(indexMonth));
-			System.out.println("\n Month year: " + monthsToSelect.get(indexMonth)); 
+			ShowText("\n month year: " + monthsToSelect.get(indexMonth)); 
 			
 			Thread.sleep(2000);
 			
@@ -80,32 +82,34 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 			
 			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 			
-			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageDomesticChart, listOneMonthData, UsageHelper.categoryVoice);
+			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryVoice);
 			Thread.sleep(2000);
 			
-			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageRoamingChart, listOneMonthData, UsageHelper.categoryVoice);
+			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryVoice);
 			Thread.sleep(2000);				
 			
 			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
 			
-			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageDomesticChart, listOneMonthData, UsageHelper.categoryData);
+			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryData);
 			Thread.sleep(2000);
 			
-			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageRoamingChart, listOneMonthData, UsageHelper.categoryData);
+			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryData);
 			Thread.sleep(2000);				
 			
 			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
 			
-			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageDomesticChart, listOneMonthData, UsageHelper.categoryMessages);
+			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryMessages);
 			Thread.sleep(2000);
 			
-			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageRoamingChart, listOneMonthData, UsageHelper.categoryMessages);
+			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryMessages);
 			Thread.sleep(2000);
 						
 			indexMonth++;
 
+			
 		} while (!monthYearToSelect.equals(lastMonthListedMonthSelector) && indexMonth < monthsToSelect.size());
 		
+				
 	}
 	
 	
@@ -113,9 +117,10 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Test for values in Total Usage by Vendor finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "Test for values in Total Usage by Country finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}
 	
 }
+

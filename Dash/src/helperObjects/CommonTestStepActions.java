@@ -379,15 +379,18 @@ public class CommonTestStepActions extends BaseClass
 		List<String> listVendorsChecked = new ArrayList<String>();
 		
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = getAllVendorNames();   //driver.findElements(By.cssSelector(".md-checkbox-label"));
+		List<WebElement> listVendorsLabels = getAllVendorNames();
 		
 		
 		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
-		for(int i = 0; i < listVendorsLabels.size(); i++){
+		for (int i = 0; i < listVendorsLabels.size(); i++) {
 			
 			int num = i + 1;
-			String checkBoxXpath = ".//*[@id='input-md-checkbox-" + num + "']";
-			boolean isChecked = driver.findElement(By.xpath(checkBoxXpath)).isSelected();
+//			String checkBoxXpath = ".//*[@id='input-md-checkbox-" + num + "']";
+//			boolean isChecked = driver.findElement(By.xpath(checkBoxXpath)).isSelected();
+			
+			String id = "input-md-checkbox-" + num;
+			boolean isChecked = driver.findElement(By.id(id)).isSelected();
 			
 			// if the vendor's checkbox is checked then add the vendor's name to the list
 			if(isChecked){
@@ -423,8 +426,11 @@ public class CommonTestStepActions extends BaseClass
 			
 			int num = i + 1;
 			String checkBoxXpath = ".//*[@id='input-md-checkbox-" + num + "']";
-			boolean isChecked = driver.findElement(By.xpath(checkBoxXpath)).isSelected();
+//			boolean isChecked = driver.findElement(By.xpath(checkBoxXpath)).isSelected();
 			
+			String id = "input-md-checkbox-" + num;
+			boolean isChecked = driver.findElement(By.id(id)).isSelected();
+						
 			// if the vendor's checkbox is checked then get the country name and add it to the list
 			if(isChecked){
 				
@@ -432,7 +438,7 @@ public class CommonTestStepActions extends BaseClass
 				
 				String countryName = driver.findElement(By.xpath(countryLabelXpath)).getText();
 				listCountriesCheckedTemp.add(countryName);
-				//System.out.println("Is selected? : " + isChecked + "- Country Name: " + countryName);
+				// System.out.println("Is selected? : " + isChecked + "- Country Name: " + countryName);
 				
 			}
 			
@@ -454,9 +460,19 @@ public class CommonTestStepActions extends BaseClass
 	
 	// It returns a list with all the vendor names listed on the Point of View section
 	public static List<WebElement> getAllVendorNames(){
+		 
+		String xpath = "";
 		
-		String xpath = ".//span[@class='md-checkbox-label']";
-//		String xpath = ".//span[@class='mat-checkbox-label']";
+		if (loginType.equals(LoginType.Command)) {
+			
+			xpath = ".//span[@class='md-checkbox-label']";  // <-- For Dashboard in CMD
+			
+		} else if (loginType.equals(LoginType.MatrixPortal)) {
+			
+			xpath = ".//span[@class='mat-checkbox-label']";  // <-- For Dashboard in Matrix Portal
+			
+		} 
+		
 		
 		try {
 			WaitForElementPresentNoThrow(By.xpath(xpath), MainTimeout);

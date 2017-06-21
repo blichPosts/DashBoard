@@ -1,4 +1,4 @@
-package testSuiteNumericValues;
+package testSuiteNumericValuesCountry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
 
 
-public class TotalExpensesMultipleValues extends BaseClass{
+public class TotalExpensesMultipleValuesByCountry extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -59,7 +59,7 @@ public class TotalExpensesMultipleValues extends BaseClass{
 
 		// ** In many cases some of the sections of the pie chart are too small and the coordinates used to locate the mouse sometimes are not accurate.
 		// ** So, it's better to set the amountOfVendorsToSelect to 2 or 3 at a time...
-		int amountOfVendorsToSelect = 4;
+		int amountOfVendorsToSelect = 8;
 		
 		if (amountOfVendorsToSelect > vendorNames.size())
 			amountOfVendorsToSelect = vendorNames.size();
@@ -67,7 +67,7 @@ public class TotalExpensesMultipleValues extends BaseClass{
 		System.out.println("Amount Of Vendors To Select: " + amountOfVendorsToSelect);
 		
 		// #1 Select Vendor View and Unselect all vendors  
-		CommonTestStepActions.SelectVendorView();
+		CommonTestStepActions.SelectCountryView();
 		
 		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
 		
@@ -90,7 +90,7 @@ public class TotalExpensesMultipleValues extends BaseClass{
 				String vendor = vendorNames.get(i);
 								
 				// #2 Read data from file
-				List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getJsonDataExpenseUsage(vendor);  // ReadFilesHelper.getDataFromSpreadsheet(completePath);
+				List<UsageOneMonth> valuesFromFileOneVendor = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
 				listVendorsSelectedData.add(valuesFromFileOneVendor);
 					
 				// #3 Select one vendor
@@ -104,49 +104,30 @@ public class TotalExpensesMultipleValues extends BaseClass{
 			int indexMonth = 0;
 		
 			List<String> monthsToSelect = UsageHelper.getMonthListUnifiedForVendorsSelected(listVendorsSelectedData);
-
-			ViewType view = ViewType.vendor;
 			
+						
 			do {
 			
 				// List listOneMonthData will have the data for a specific month, for all the vendors previously selected
 				
-				List<UsageOneMonth> listOneMonthData = new ArrayList<>();
+				List<UsageOneMonth> listOneMonthData = FleetHelper.getDataForOneMonth(listVendorsSelectedData, indexMonth, monthsToSelect);
 				
-				for (List<UsageOneMonth> values: listVendorsSelectedData) {
-					
-					int indexMonthForVendorSelected = 0;
-					boolean dataFoundForMonth = false;
-					
-					while (indexMonthForVendorSelected < values.size() && !dataFoundForMonth) {
-						
-						String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
-						
-						if (monthsToSelect.get(indexMonth).equals(monthYear)) {
-							listOneMonthData.add(values.get(indexMonthForVendorSelected));
-							dataFoundForMonth = true;
-							
-						}
-							
-						indexMonthForVendorSelected++;
-					}
-						
-					
-				}
+				// ** Summarize data by Country
+				List<UsageOneMonth> listOneMonthDataByCountry = FleetHelper.summarizeExpensesValuesByCountry(listOneMonthData); 
 				
 				
 				// #4 Select month on month/year selector
 				CommonTestStepActions.selectMonthYearPulldown(monthsToSelect.get(indexMonth));
-				System.out.println("monthYear: " + monthsToSelect.get(indexMonth)); 
+				System.out.println("Month Year: " + monthsToSelect.get(indexMonth)); 
 				
 				Thread.sleep(2000);
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
 				
-				TotalExpensesValues.verifyTotalExpensesPieChartTooltipByVendor(FleetHelper.expenseTotalExpensePieChart, listOneMonthData);
+				TotalExpensesValues.verifyTotalExpensesPieChartTooltipByCountry(FleetHelper.expenseTotalExpensePieChart, listOneMonthDataByCountry);
 				Thread.sleep(1000);
 				
-				TotalExpensesValues.verifyTotalExpensesBarChartTooltipByVendor(FleetHelper.expenseTotalExpenseBarChart, listOneMonthData, view);
+				TotalExpensesValues.verifyTotalExpensesBarChartTooltipByCountry(FleetHelper.expenseTotalExpenseBarChart, listOneMonthDataByCountry);
 				Thread.sleep(1000);
 				
 				indexMonth++;
@@ -174,3 +155,6 @@ public class TotalExpensesMultipleValues extends BaseClass{
 	}
 	
 }
+	
+	
+

@@ -14,6 +14,7 @@ import org.openqa.selenium.WebElement;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.UsageHelper;
 
 
@@ -248,14 +249,9 @@ public class TotalUsageActions extends BaseClass{
 
 	// Verifies the content of the tooltips displayed on charts under Total Usage Domestic and Roaming charts
 	// It does not verify the amounts -- SEE following method
-	public static void verifyTotalUsageChartTooltip(int barChartId) throws ParseException, InterruptedException, AWTException {
+	public static void verifyTotalUsageChartTooltip(int barChartId, int category) throws ParseException, InterruptedException, AWTException {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
-		
-		// It gets the legends for "Domestic" and "Domestic Overage" or Roaming
-		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
-		
-		int indexHighchart = 1;
 		
 		List<WebElement> vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 		List<String> vendorsInChartList = new ArrayList<String>();
@@ -263,48 +259,22 @@ public class TotalUsageActions extends BaseClass{
 		for(int i = 0; i < vendorsInChart.size(); i++){
 			vendorsInChartList.add(vendorsInChart.get(i).getText());
 		}	
-				
-		boolean firstBar = true;
-				
-		Thread.sleep(2000);
+
+		
+		int indexHighchart = 1;
 		
 		// Verify the info contained on each of the tooltips for all the vendors listed in chart 		
 		while(indexHighchart <= vendorsInChartList.size()){
 			
-			String cssSelector = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-			//System.out.println("cssSelector: " + cssSelector);
-			
-			// The 'bar' WebElement will be used to set the position of the mouse on the chart
-			WebElement bar = driver.findElement(By.cssSelector(cssSelector));
-
-			// Get the location of the series located at the bottom of the chart, to simulate the mouse hover so the tooltip is displayed
-			Point coordinates = bar.getLocation();
-			Robot robot = new Robot(); 
-			robot.mouseMove((coordinates.getX() + 5), coordinates.getY() + 70); // these coordinates work :) 
-			
-			if(firstBar && !(bar.getAttribute("height").toString().equals("0"))){
-				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-				firstBar = false;
-			}
-				
-			
-			try {
-				WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
-				//System.out.println("Tooltip present");
-			} catch (Exception e) {
-				System.out.println("Tooltip NOT present");
-				e.printStackTrace();
-			}
+			GeneralHelper.moveMouseToBar(chartId, indexHighchart, barChartId, category);			
 			
 			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
 			
-			int expectedAmountItemsTooltip = 0;
+			int expectedAmountItemsTooltip = 4;
 			
-			if(barChartId == 0)
-				expectedAmountItemsTooltip = 7;
-			else if (barChartId == 1)
-				expectedAmountItemsTooltip = 4;
-			
+			if (barChartId == UsageHelper.totalUsageDomesticChart && category == UsageHelper.categoryVoice) 
+				expectedAmountItemsTooltip = 6;
+						
 			
 			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
 			
@@ -312,7 +282,7 @@ public class TotalUsageActions extends BaseClass{
 			// <vendor/country name>
 			// ? -- this is for the bullet
 			// Domestic
-			// <Amount for Domestic>
+			// <Amount for Domestic>  
 			// Domestic Overage
 			// <Amount for Domestic Overage>
 			
@@ -325,27 +295,66 @@ public class TotalUsageActions extends BaseClass{
 			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
 			
 			// Verify country/vendor shown on the tooltip
-			//System.out.println("Tooltip text: " + tooltip.get(0).getText());
+			ShowText("Vendor: " + tooltip.get(0).getText());
 			Assert.assertEquals(tooltip.get(0).getText(), vendorsInChartList.get(indexHighchart-1));
-						
+			
+			String categorySelected = UsageHelper.getNameCategorySelected(category);
+			
+			ShowText("Category: " + tooltip.get(1).getText());
+			Assert.assertTrue(tooltip.get(1).getText().startsWith(categorySelected));	
+			
+			// It gets the legends for "Domestic" and "Domestic Overage" or Roaming
+			List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
+			
 			
 			// Verify the vendor's name and the amount shown on the tooltip
-			for(int i = 1; i <= legends.size(); i++){
+			for (int i = 1; i <= legends.size(); i++) {
 			
-				int index =  i * 3 - 1;
-								
-				// Verify the vendor's name on tooltip
-				// Remove colon at the end of legend's name 
-				String labelFound = tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+				int index = i * 2 + 1;
 				
+				// Get the label and remove colon at the end of its text 
+				String labelFound = tooltip.get(index).getText().split(":")[1].trim();
+
 				Assert.assertEquals(labelFound, legends.get(i - 1).getText()); 
-				//System.out.println("Tooltip text: " + labelFound);
+				ShowText("Label: " + labelFound);
 
 			}
 			
 			indexHighchart++;
 			
 		}
+		
+	}
+
+
+
+	// *** CONTINUE HERE **** 
+	
+	// Verify that only one category is selected
+	public static void verifySelectedCategories(int chartNum, int categorySelected) {
+		
+		String categoryName = UsageHelper.getNameCategorySelected(categorySelected);
+		
+		for (int i = 1; i <= 3; i++) {
+			
+			WebElement selector = driver.findElement(By.xpath("//h2[not(contains(text(), 'Usage Trending'))]/following-sibling::div[1]/div[" + i + "]"));
+			
+			ShowText("Selector-attribute class: " + selector.getAttribute("class"));
+			
+			if (selector.getText().equals(categoryName)) {
+				
+				ShowText("Selector equals category selected - " + categoryName);
+				Assert.assertTrue(selector.getAttribute("class").endsWith("tdb-boxSelector__option--selected"));
+				
+			} else {
+				
+				ShowText("Selector does NOT equal category selected - " + categoryName);
+				Assert.assertTrue(!selector.getAttribute("class").endsWith("tdb-boxSelector__option--selected"));
+				
+			}
+			
+		}
+		
 		
 	}
 	

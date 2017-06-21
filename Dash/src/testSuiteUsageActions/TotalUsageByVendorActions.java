@@ -38,57 +38,92 @@ public class TotalUsageByVendorActions extends BaseClass {
 		
 		// Set month selector value
 		CommonTestStepActions.selectMonthYearPulldown("April 2017");
-		
 		Thread.sleep(2000);
 		
 		// #3 Verify the text shown on the tooltip when hovering the mouse over the bar charts.
-		// * Total Usage Domestic chart
-		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart);
 		
-		// * Total Usage Roaming chart
-		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart);
+//		UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
+//		
+//		// * Total Usage Domestic chart
+//		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryVoice);
+//		Thread.sleep(2000);
+//		
+//		// * Total Usage Roaming chart
+//		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryVoice);
+//		Thread.sleep(2000);
+//		
+//		UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
+//		
+//		// * Total Usage Domestic chart
+//		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryData);
+//		Thread.sleep(2000);
+//		
+//		// * Total Usage Roaming chart
+//		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryData);
+//		Thread.sleep(2000);
+//		
+//		UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
+//		
+//		// * Total Usage Domestic chart
+//		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryMessages);
+//		Thread.sleep(2000);
+//		
+//		// * Total Usage Roaming chart
+//		TotalUsageActions.verifyTotalUsageChartTooltip(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryMessages);
+//		Thread.sleep(2000);		
 		
 		
-		// #4 Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
+		// Select one category and verify that only one category is selected on selector  -- added June 13
+		UsageHelper.selectCategoryNew(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
+		TotalUsageActions.verifySelectedCategories(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 		
-		// Unselect all vendors
-		CommonTestStepActions.UnSelectAllVendors();
+		UsageHelper.selectCategoryNew(UsageHelper.totalUsageSection, UsageHelper.categoryData);
+		TotalUsageActions.verifySelectedCategories(UsageHelper.totalUsageSection, UsageHelper.categoryData);
 		
-		// Voice
-		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryVoice);
+		UsageHelper.selectCategoryNew(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
+		TotalUsageActions.verifySelectedCategories(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
 		
-		// Unselect all vendors
-		CommonTestStepActions.UnSelectAllVendors();
-				
-		// Data
-		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryData);
 		
-		// Unselect all vendors
-		CommonTestStepActions.UnSelectAllVendors();
-				
-		// Messages
-		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryMessages);
-			
-		
-		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
-		
-		// Unselect all vendors
-		CommonTestStepActions.UnSelectAllVendors();
-		
-		// Voice
-		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryVoice);
-		
-		// Unselect all vendors
-		CommonTestStepActions.UnSelectAllVendors();
-				
-		// Data
-		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryData);
-		
-		// Unselect all vendors
-		CommonTestStepActions.UnSelectAllVendors();
-				
-		// Messages
-		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryMessages);
+//		// #4 Verify that vendors selected are added to the Total Usage by Vendor chart - "Domestic Usage"
+//		
+//		// Unselect all vendors
+//		CommonTestStepActions.UnSelectAllVendors();
+//		
+//		// Voice
+//		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryVoice);
+//		
+//		// Unselect all vendors
+//		CommonTestStepActions.UnSelectAllVendors();
+//				
+//		// Data
+//		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryData);
+//		
+//		// Unselect all vendors
+//		CommonTestStepActions.UnSelectAllVendors();
+//				
+//		// Messages
+//		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryMessages);
+//			
+//		
+//		// Verify that vendors selected are added to the Total Usage by Vendor chart - "Roaming Usage"
+//		
+//		// Unselect all vendors
+//		CommonTestStepActions.UnSelectAllVendors();
+//		
+//		// Voice
+//		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryVoice);
+//		
+//		// Unselect all vendors
+//		CommonTestStepActions.UnSelectAllVendors();
+//				
+//		// Data
+//		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryData);
+//		
+//		// Unselect all vendors
+//		CommonTestStepActions.UnSelectAllVendors();
+//				
+//		// Messages
+//		TotalUsageActions.vendorsAddedToCharts(UsageHelper.totalUsageRoamingChart, UsageHelper.categoryMessages);
 		
 		
 		// # Unselect vendors from PoV - one by one - and verify that they are removed from graphs (tooltip) and legend,

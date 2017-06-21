@@ -1,4 +1,4 @@
-package testSuiteNumericValues;
+package testSuiteNumericValuesCountry;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
 import usage.UsageTrendingValues;
 
-public class UsageTrendingMultipleValues extends BaseClass{
+public class UsageTrendingMultipleValuesByCountry  extends BaseClass{
 
 	
 	@BeforeClass
@@ -48,7 +48,7 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		
 		
 		// #1 Select Vendor View and Unselect all vendors  
-		UsageHelper.selectVendorView();
+		UsageHelper.selectCountryView();
 		CommonTestStepActions.UnSelectAllVendors();
 			
 		// #2 Get the data for each of the selected vendors for all months.
@@ -56,19 +56,20 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		
 		
 		// #3 Some vendors might not have information for all last 13 months; in that case the value displayed on the Trending chart is zero
-		//    So to have a valid value to compare with, the info for those missing months (on source file) is created and values are set to zero.  
+		//    So to have a valid value to compare with, the info for those missing months (on source file) is created, and values are set to zero.  
 		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataAllMonths(listSelectedDataForMonthListUnified);
-		
 		
 		// #4 Each list in dataForExpenseTrending will have the data for a specific month, for all the vendors previously selected
 		List<List<UsageOneMonth>> dataForUsageTrending = FleetHelper.getListsWithDataPerMonth(listVendorsSelectedData);
 		
-			
+		
+		List<List<UsageOneMonth>> dataSummarizedForCountry = FleetHelper.getUsageTrendingDataSummarized(dataForUsageTrending);
+		
 		// Get months listed on the dropdown list
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
 						
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
-		int indexMonthToSelect = 0;
+		int indexMonthToSelect = 2;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 		
@@ -84,41 +85,41 @@ public class UsageTrendingMultipleValues extends BaseClass{
 			
 			// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
 			
-			try {
+			try { 
 				
 				// Domestic chart
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingDomesticChart, dataSummarizedForCountry, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingDomesticChart, dataSummarizedForCountry, UsageHelper.categoryData);
 				Thread.sleep(2000);
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingDomesticChart, dataSummarizedForCountry, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 				
 				// Roaming chart
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingRoamingChart, dataSummarizedForCountry, UsageHelper.categoryVoice);
 				Thread.sleep(2000);	
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingRoamingChart, dataSummarizedForCountry, UsageHelper.categoryData);
 				Thread.sleep(2000);	
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingRoamingChart, dataSummarizedForCountry, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 								
-			} catch(NullPointerException e) {
+			} catch (NullPointerException e) {
 				
 				System.out.println("chart not found or value found is null");
 				
@@ -141,5 +142,6 @@ public class UsageTrendingMultipleValues extends BaseClass{
 		driver.close();
 		driver.quit();
 	}
+
 
 }

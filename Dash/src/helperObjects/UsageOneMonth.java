@@ -3,6 +3,7 @@ package helperObjects;
 public class UsageOneMonth {
 
 	private String vendorName;
+	private String country;
 	private String ordinalYear;
 	private String ordinalMonth;
 	private String invoiceMonth;
@@ -35,9 +36,10 @@ public class UsageOneMonth {
 	
 	
 	// this constructor will be used to create and initialize the months that are missing on the file for the vendor selected 
-	public UsageOneMonth(String vendorName, String ordinalYear, String ordinalMonth){
+	public UsageOneMonth(String vendorName, String country, String ordinalYear, String ordinalMonth){
 		
 		this.vendorName = vendorName;
+		this.country = country;
 		this.ordinalYear = ordinalYear;
 		this.ordinalMonth = ordinalMonth;
 		this.invoiceMonth = "";
@@ -100,6 +102,12 @@ public class UsageOneMonth {
 	}
 	public void setVendorName(String vendorName) {
 		this.vendorName = vendorName;
+	}
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
 	}
 	public String getOrdinalYear() {
 		return ordinalYear;

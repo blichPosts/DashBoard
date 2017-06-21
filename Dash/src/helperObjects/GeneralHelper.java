@@ -51,35 +51,59 @@ public class GeneralHelper extends BaseClass {
 	// Switches to content frame
 	public static void switchToContentFrame() throws InterruptedException {
 		
-		driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
+		if (loginType.equals(LoginType.Command)) {
 	    
-	    // this timeout is here because when at frame id "CONTENT" there is no DOM element to wait for.    
-	    DebugTimeout(1, ""); 
-	    
-	    // this will get to dash board frame. at this pint the dash board test code will wait for the dash page to load. 
-	    if (loginType.equals(LoginType.Command)) {
+	    	driver.switchTo().frame(driver.findElement(By.id("CONTENT")));
+		    
+		    // this timeout is here because when at frame id "CONTENT" there is no DOM element to wait for.    
+		    DebugTimeout(1, ""); 
+		    
+		    // this will get to dashboard frame. At this point the dashboard test code will wait for the dash page to load. 
 	    	driver.switchTo().frame(driver.findElement(By.id("dashboard_iframe")));
+	    	
 	    }
 	    
-		
+		if (loginType.equals(LoginType.MatrixPortal)) {
+			
+			driver.switchTo().frame(driver.findElement(By.id("iframe_MATRIX_ANALYTIC_DASHBOARDS")));
+			
+		}
+	    
 	}
 	
 	
 	// Get the location of the element on the UI 
-	public static Point getAbsoluteLocation(WebElement element) {
+	public static Point getAbsoluteLocation(WebElement element) throws InterruptedException {
 		
 		int x = x_iFrame;
         int y = y_iFrame;
         
-        WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
-		int headerHeight = header.getSize().getHeight();
-        		
+        int headerHeight = 0;
+        
+        if (loginType.equals(LoginType.Command)) {
+        	
+        	WebElement header = driver.findElement(By.cssSelector("header.tdb-flexContainer"));
+        	headerHeight = header.getSize().getHeight();
+        	
+        } else if (loginType.equals(LoginType.MatrixPortal)) {
+        
+        	switchToTop();
+        	
+        	WebElement header = driver.findElement(By.id("headerPanel1"));
+        	WebElement menuBar = driver.findElement(By.id("menuPanel"));
+        	
+        	headerHeight = header.getSize().getHeight() + menuBar.getSize().getHeight()*3;
+        	
+        	switchToContentFrame();
+        }
+        
         Point elementLoc = element.getLocation();
-
+        
         x += elementLoc.getX();
         y += elementLoc.getY() + headerHeight;
         
         Point p = new Point(x, y);
+        
         return p; 
         
 	}
@@ -89,12 +113,25 @@ public class GeneralHelper extends BaseClass {
 	// -->  ** The secret of getting the exact coordinates was getting the "y" coordinate of the scroll bar **
 	public static long getScrollPosition() throws InterruptedException {
 		
-		switchToTop();
-		
 		JavascriptExecutor je = (JavascriptExecutor)driver;
 		long scrollHeight = (long) je.executeScript("return window.pageYOffset;");
-				
-		switchToContentFrame();
+		
+		// In Command the scroll bar is outside of the CONTENT frame, 
+		// so we need to switch to TOP frame to be able to get the scroll offset 
+		if (loginType.equals(LoginType.Command)) {
+		
+			switchToTop();
+			scrollHeight = (long) je.executeScript("return window.pageYOffset;");
+			switchToContentFrame();
+			
+		} 
+		// In Matrix Portal the scroll bar is inside of the CONTENT frame, 
+		// so there's no need to switch to TOP frame to be able to get the scroll offset		
+		else if (loginType.equals(LoginType.MatrixPortal)) {
+		
+			scrollHeight = (long) je.executeScript("return window.pageYOffset;");
+			
+		}
 		
 		return -scrollHeight;
 		
@@ -103,7 +140,7 @@ public class GeneralHelper extends BaseClass {
 
 	// It returns true if there's data for the vendor in the selected month. That means that the vendor will be displayed on the Usage Trending chart
 	// Else it returns false	
-	public static HashMap<String, Boolean> vendorHasDataForSelectedMonth(List<List<UsageOneMonth>> allValuesFromFile) throws ParseException {
+	public static HashMap<String, Boolean> isThereDataForSelectedMonth(List<List<UsageOneMonth>> allValuesFromFile, ViewType view) throws ParseException {
 		
 		String monthYearSelected = CommonTestStepActions.GetPulldownTextSelected();
 		
@@ -117,7 +154,16 @@ public class GeneralHelper extends BaseClass {
 		
 		// Initialize HashMap with all values set to false
 		for (UsageOneMonth u: allValuesFromFile.get(0)) {
-			vendorsToBeDisplayedMap.put(u.getVendorName(), false);
+		
+			if (view.equals(ViewType.country)) {
+				
+				vendorsToBeDisplayedMap.put(u.getCountry(), false);
+
+			} else if (view.equals(ViewType.vendor)) {
+					
+				vendorsToBeDisplayedMap.put(u.getVendorName(), false);
+			}
+			
 		}
 		
 //		System.out.println("Initial values: ");
@@ -136,7 +182,14 @@ public class GeneralHelper extends BaseClass {
 					
 					if (!usage.getInvoiceMonth().equals("")) {
 						
-						vendorsToBeDisplayedMap.replace(usage.getVendorName(), true);
+						if (view.equals(ViewType.country)) {
+							
+							vendorsToBeDisplayedMap.replace(usage.getCountry(), true);
+
+						} else if (view.equals(ViewType.vendor)) {
+								
+							vendorsToBeDisplayedMap.replace(usage.getVendorName(), true);
+						}
 											
 					}
 					
@@ -155,7 +208,6 @@ public class GeneralHelper extends BaseClass {
 		return vendorsToBeDisplayedMap;
 		
 	} 	
-	
 	
 	
 	
@@ -211,12 +263,12 @@ public class GeneralHelper extends BaseClass {
 	
 	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
 		
-//		 ShowText("Value actual: " + valueActual + "; Value expected: " + valueExpected);
+		// ShowText("Value actual: " + valueActual + "; Value expected: " + valueExpected);
 		
 		double numActual = Double.parseDouble(getNumericValue(valueActual));
 		double numExpected = Double.parseDouble(getNumericValue(valueExpected));
 		
-//		 ShowText("numActual: " + numActual + "; numExpected: " + numExpected);
+		// ShowText("numActual: " + numActual + "; numExpected: " + numExpected);
 		
 		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
 		
@@ -295,7 +347,7 @@ public class GeneralHelper extends BaseClass {
 	// NEW - this is working -- We need to obtain the "y" coordinate of the center of the chart. 
 	// This is to make sure that the mouse is not outside the chart, and therefore, tooltip gets displayed.
 	// In order to do this, we get the "y" coordinate of all the horizontal lines displayed across the chart, and calculate the average of their "y" coordinate 
-	public static int getYCoordinate(String chartId) {
+	public static int getYCoordinate(String chartId) throws InterruptedException {
 		
 		int y = 0;
 			
@@ -396,9 +448,9 @@ public class GeneralHelper extends BaseClass {
 	}
 	
 	
-	
 	// Used in TOP TEN chart tests
 	public static void moveMouseToBar(String chartId, int indexHighchart, boolean isTopTenChart) throws InterruptedException, AWTException {
+		
 		
 		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
 		
@@ -407,27 +459,33 @@ public class GeneralHelper extends BaseClass {
 
 		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-		Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
+		Point coordinates = getAbsoluteLocation(bar);
 		
 		int height = bar.getSize().getHeight();
 		int width = bar.getSize().getWidth();
+		
+		ShowText("height: " + height + ", " + "width: " + width);
 		
 		double factor = 1;
 		if (!isTopTenChart) factor = 0.5; 
 		
 		int x_offset = (int) (width * 0.5);
-		int y_offset = (int) (height * factor) + (int) GeneralHelper.getScrollPosition();
+		int y_offset = (int) (height * factor) + (int) getScrollPosition();
+		
+		ShowText("x_offset: " + x_offset + ", " + "y_offset: " + y_offset);
 		
 		int x = coordinates.getX() + x_offset + 2;
 		int y = coordinates.getY() + y_offset;
-
+		
+		ShowText("x: " + x + ", " + "y: " + y);
+		
 		Robot robot = new Robot();
 		robot.mouseMove(x, y);
 		
 		if (!isTopTenChart) {
 			
 			Thread.sleep(500);
-			robot.mouseMove(x + 5, y + 5);
+			robot.mouseMove(x + 5, y);
 			
 			if (width > 10.0) {
 				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
@@ -455,6 +513,65 @@ public class GeneralHelper extends BaseClass {
 	}
 
 
+	
+	// Used in TOTAL USAGE/EXPENSE chart tests -- New ****
+	public static void moveMouseToBar(String chartId, int indexHighchart, int chartNum, int category) throws InterruptedException, AWTException {
+		
+		int line = 0;
+		
+		if (loginType.equals(LoginType.MatrixPortal) && chartNum == UsageHelper.totalUsageDomesticChart && category == UsageHelper.categoryVoice) line = 1;
+		
+		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-" + line + ">rect:nth-of-type(" + indexHighchart + ")";
+		
+		// WebElement 'bar' will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		Point coordinates = getAbsoluteLocation(bar);
+		
+		int height = bar.getSize().getHeight();
+		int width = bar.getSize().getWidth();
+				
+		int x_offset = (int) (width * 0.5);
+		int y_offset = (int) height + (int) getScrollPosition();
+		
+		int x = coordinates.getX() + x_offset + 2;
+		int y = coordinates.getY() + y_offset;
+		
+		
+		Robot robot = new Robot();
+		robot.mouseMove(x, y);
+		
+		Thread.sleep(500);
+		robot.mouseMove(x + 5, y);
+		
+		if (width > 10.0) {
+			bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
+		}
+		
+		if (width < 10.0) {
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		
+		Thread.sleep(500);
+	
+		
+		try {
+			
+			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"), MainTimeout);
+			
+		} catch (Exception e) {
+			
+			ShowText("Tooltip NOT present");
+			e.printStackTrace();
+			
+		}
+		
+	}
+	
+	
 	// Get the last month listed in month-year selector
 	public static String getLastMonthFromSelector() {
 

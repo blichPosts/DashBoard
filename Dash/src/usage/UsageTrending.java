@@ -21,33 +21,32 @@ import helperObjects.UsageHelper;
 public class UsageTrending extends BaseClass {
 
 	
-	public static void verifyUsageTrendingTitle(String titleFirstPart){
+	public static void verifyUsageTrendingTitle(String titleFirstPart) throws InterruptedException{
 		
-		String totalUsageTitleExpected;
 		String categoryLabel;
-		String totalUsageTitleFound;
+		String titleFound;
 		
-		List<WebElement> categorySelectors = driver.findElements(By.cssSelector(".tdb-boxSelector.tdb-align--right:nth-child(even)>div"));
+		List<WebElement> categorySelectors = driver.findElements(By.cssSelector(".tdb-boxSelector.tdb-align--right:nth-child(odd)>div"));
 
 		
-		for(int i = 0; i < 3; i++){
+		for (int i = 0; i < 3; i++) {
 			
 			categorySelectors.get(i).click();
-			totalUsageTitleFound = driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[2]")).getText();
+			titleFound = driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[2]")).getText();
 			categoryLabel = categorySelectors.get(i).getText();
-			totalUsageTitleExpected = titleFirstPart + categoryLabel;
 			
-			//System.out.println("Title found:    " + totalUsageTitleFound);
+			System.out.println("Title found:    " + titleFound);
 			//System.out.println("Title expected: " + totalUsageTitleExpected);
 			
-			Assert.assertEquals(totalUsageTitleFound, totalUsageTitleExpected, "Title found is different from title expected.");
+			Assert.assertTrue(titleFound.startsWith(titleFirstPart), "Title found is different from title expected.");
+			Assert.assertTrue(titleFound.endsWith(categoryLabel), "Title found is different from title expected.");
+			Thread.sleep(2000);	
 			
 		}
-
+	
 	}
 		
-	
-	
+		
 	
 	public static void verifyBarChartTitlesUsageTrending(){
 		
@@ -62,26 +61,20 @@ public class UsageTrending extends BaseClass {
 			
 			categorySelectors.get(i).click(); 
 			domesticTitleFound = driver.findElement(By.cssSelector(".tdb-charts__label.tdb-text--italic>.tdb-text--bold")).getText(); 
-			roamingTitleFound = driver.findElement(By.cssSelector(".tdb-trendingCharts-USAGE>.tdb-flexUnit>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();  //.tdb-flexUnit--1.tdb-align--center>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();
+			roamingTitleFound = driver.findElement(By.cssSelector(".tdb-trendingCharts-USAGE>.tdb-flexUnit>.tdb-charts__label.tdb-text--italic.tdb-text--bold")).getText();
 			
 			System.out.println("usage trending - Domestic title: " + domesticTitleFound);
 			System.out.println("usage trending - Roaming title: " + roamingTitleFound);
 			
 			
 			if (i == 0){
+				
 				Assert.assertEquals(domesticTitleFound, UsageHelper.domesticTitleVoice);
 				Assert.assertEquals(roamingTitleFound, UsageHelper.roamingTitleVoice);
 				System.out.println("Voice...");
 				
 			} else if (i == 1){
 				
-				/*boolean domesticTitle = domesticTitleFound.equals(UsageHelper.domesticTitleDataGB) || domesticTitleFound.equals(UsageHelper.domesticTitleDataTB);  
-				Assert.assertTrue(domesticTitle);
-				
-				boolean roamingTitle = roamingTitleFound.equals(UsageHelper.roamingTitleDataGB) || roamingTitleFound.equals(UsageHelper.roamingTitleDataTB);  
-				Assert.assertTrue(roamingTitle);*/
-				
-				// In Usage Trending charts the data usage is always represented in GB
 				Assert.assertTrue(domesticTitleFound.equals(UsageHelper.domesticTitleDataGB));
 				Assert.assertTrue(roamingTitleFound.equals(UsageHelper.roamingTitleDataGB));
 				
@@ -142,8 +135,7 @@ public class UsageTrending extends BaseClass {
 		List<WebElement> itemsFoundInLegend = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text"));
 		
 		System.out.println("# Items: " + itemsFoundInLegend.size());
-		//System.out.println(" Chart: " + chartId);
-
+		
 			
 		for(WebElement label: itemsFoundInLegend){
 					
@@ -180,8 +172,7 @@ public class UsageTrending extends BaseClass {
 		// Get the months that are listed on the horizontal axis of the "Usage Trending" chart
 		List<WebElement> labelsHorizontalAxis = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 		
-		System.out.println("# Months: " + labelsHorizontalAxis.size());
-		System.out.println(" Chart: " + chartId);
+//		System.out.println("# Months: " + labelsHorizontalAxis.size());
 
 		int amountItemsSelected = labelsHorizontalAxis.size();
 		
@@ -337,6 +328,44 @@ public class UsageTrending extends BaseClass {
 			
 			indexHighchart++;
 			indexMonth--;
+			
+		}
+		
+	}
+
+
+
+	public static void verifySelectedCategories(int chartNum, int categorySelected) {
+			
+		String categoryName = UsageHelper.getNameCategorySelected(categorySelected);
+		
+		WebElement selector = null; 
+		
+		for (int i = 1; i <= 3; i++) {
+			
+			if (chartNum == UsageHelper.usageTrendingDomesticChart) {
+			
+				selector = driver.findElement(By.xpath("//h2[contains(text(), 'Usage Trending')]/following-sibling::div[1]/div[" + i + "]"));
+			
+			} else if (chartNum == UsageHelper.usageTrendingRoamingChart) {
+			
+				selector = driver.findElement(By.xpath("//h2[contains(text(), 'Usage Trending')]/following-sibling::div[3]/div[" + i + "]"));
+				
+			}
+			
+			ShowText("Selector-attribute class: " + selector.getAttribute("class"));
+			
+			if (selector.getText().equals(categoryName)) {
+				
+				ShowText("Selector equals category selected - " + categoryName);
+				Assert.assertTrue(selector.getAttribute("class").endsWith("tdb-boxSelector__option--selected"));
+				
+			} else {
+				
+				ShowText("Selector does NOT equal category selected - " + categoryName);
+				Assert.assertTrue(!selector.getAttribute("class").endsWith("tdb-boxSelector__option--selected"));
+				
+			}
 			
 		}
 		
