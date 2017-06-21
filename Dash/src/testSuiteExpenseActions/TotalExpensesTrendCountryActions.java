@@ -41,6 +41,8 @@ public class TotalExpensesTrendCountryActions extends BaseClass
 		
 		if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!!
 		{
+			// move to country view.
+			CommonTestStepActions.SelectCountryView();
 			Pause("Wait for country page to load");
 		}
 		else
