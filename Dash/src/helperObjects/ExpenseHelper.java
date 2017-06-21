@@ -455,6 +455,8 @@ public class ExpenseHelper extends BaseClass
 		// store all legend names into web element list.
 		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + partialXpathToLegendsListInControls));		
 		
+		Assert.assertTrue(webElementListLegends.size() > 0); // make sure list is not empty.
+		
 		return webElementListLegends;
 	}
 	
@@ -768,37 +770,58 @@ public class ExpenseHelper extends BaseClass
 		ExpenseHelper.SetWaitDefault(); // back to default.
 	}	
 	
+	// verify expense category legends are all unselected.
+	public static void VerifyExpenseCategoryLegendsDisabled() throws Exception
+	{
+		boolean expectedCondition = false;
+		String chartId =  UsageHelper.getChartId(1);
+		
+		String tempUrl = "";				
+		
+		for(int x = 1; x <= numOfLegendsInExpenseSpendCategory; x++)
+		{
+			tempUrl = "#" + chartId + ">svg>g>g>g>g:nth-of-type(" + x + ")";
+			long waitTime = 2;
+			long startTime = System.currentTimeMillis(); //fetch starting time
+			while((System.currentTimeMillis()-startTime) < waitTime *1000)
+			{
+				if(driver.findElement(By.cssSelector(tempUrl)).getAttribute("class").contains("highcharts-legend-item-hidden"))
+				{
+					expectedCondition = true;
+					break;
+				}
+			}
+			Assert.assertTrue(expectedCondition, "Error in waiting for Account legend in 'Expense Categories' control  to be disabled.");
+		}
+	}
+	
 	// this verifies one control is not visible by looking for the first legend in each control being not visible.
 	// NOTE --- needs finished.
 	public static void VerifyOneControlNotPresent(controlType cntrlType) throws Exception
 	{
+		
+		String methodName = "ExpenseHelper.VerifyOneControlNotPresent";
+		String errMessage = "Failed waiting for no precense of ";
+		
 		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
-
+		
 		switch(cntrlType)
 		{
-			case totalExpenseSpendCatergory: // needs work -- 
+			case totalExpenseSpendCatergory:
 			{
-				chartId =  UsageHelper.getChartId(1);  
-				ShowText(chartId);
-				// tempUrl = "#" + chartId + ">svg>.highcharts-yaxis-labels>text:nth-of-type(1)"; // css no work		
-				//tempUrl = ".//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group']/*/*[contains(@d,'M 0 0')]"; // latest attempt
+				chartId = UsageHelper.getChartId(1);
 				
-				// tempUrl  = "(.//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group ']/*/*)[1][@visibility='hidden']";
+				String tempUrl = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(1)";
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.cssSelector(tempUrl), MediumTimeout), errMessage + "totalExpenseSpendCatergory");
 				
-				//(.//*[@id='highcharts-nwh8js1-0']/*/*[@class='highcharts-series-group ']/*/*)[1][@visibility='hidden']
-				// Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-				//WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // DEBUG
-				
-				//WaitForElementVisible(By.xpath(tempUrl), MediumTimeout); // always visible.
-				 
 				break;
 			}
 			case expenseTrending:
 			{
 				chartId =  UsageHelper.getChartId(2);  
-				ShowText(chartId);
+				//ShowText(chartId);
 				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
-				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout), errMessage + "expenseTrending");
 				break;
 			}
 			case costPerServiceNumber:
@@ -806,7 +829,7 @@ public class ExpenseHelper extends BaseClass
 				chartId =  UsageHelper.getChartId(3);  
 				// ShowText(chartId);
 				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
-				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout), errMessage + "costPerServiceNumber");
 				break;
 			}
 			case countOfServiceNumbers:
@@ -814,7 +837,12 @@ public class ExpenseHelper extends BaseClass
 				chartId =  UsageHelper.getChartId(4);  
 				// ShowText(chartId);
 				tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
-				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout), errMessage + "countOfServiceNumbers");
+				break;
+			}
+			default:
+			{
+				Assert.fail("Incorrect value sent in " + methodName);
 				break;
 			}
 		}

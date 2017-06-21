@@ -20,6 +20,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.CommonTestStepActions.ExpensesViewMode;
 import helperObjects.ExpenseHelper;
@@ -106,10 +107,12 @@ public class CostPerServiceNumberTrend extends  BaseClass
 
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
-				//clickBarIndex(y);  
-				//ExpenseValuesHelper.CostPerServiceNumberclickBarIndex(y); // 1/29/17 - changed to call ExpenseValuesHelper. this has a more reliable click method.
-				
-				if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
+				if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
+				{
+					TotalExpensesTrend.clickBarIndexMatrixPortal(y, firstMonth, chartId);
+					firstMonth = false;
+				}
+				else if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
 				{
 					ExpenseValuesHelper.CostPerServiceNumberclickBarIndex(y); // 1/29/17 - changed to call ExpenseValuesHelper. this has a more reliable click method.
 				}
@@ -135,8 +138,14 @@ public class CostPerServiceNumberTrend extends  BaseClass
 			// webEleListLegends.get(x).click();
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			
-			ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);
-			
+			if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
+			{
+				webEleListLegends.get(x).click(); // this is web element click.
+			}
+			else
+			{
+				ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);				
+			}
 			Thread.sleep(1500);
 		}
 	}

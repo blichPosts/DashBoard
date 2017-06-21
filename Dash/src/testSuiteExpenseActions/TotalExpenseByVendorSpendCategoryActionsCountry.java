@@ -36,18 +36,40 @@ public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass
 		
 		// store vendor names currently shown in expense control. 
 		TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest(); 
-
-		CommonTestStepActions.SelectCountryView();
 		
-		CommonTestStepActions.UnSelectAllVendors();
-		ExpenseHelper.VerifyControlsNotPresent();
+		// this is for page switch.
+		if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!!
+		{
+			// move to country view.
+			CommonTestStepActions.SelectCountryView();
+			Pause("Wait for country page to load.");
+		}
+		else
+		{
+			// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
+			// this list is stored in the expense helper class.
+			ExpenseHelper.SetupForCountryPageWait();
+			
+			// move to country view.
+			CommonTestStepActions.SelectCountryView();
+			
+			// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
+			// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
+			ExpenseHelper.WaitForCountryPageLoad();			
+		}
+	
+		// can't do this is matrix.
+		if(!loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!!
+		{
+			CommonTestStepActions.UnSelectAllVendors();
+			ExpenseHelper.VerifyControlsNotPresent();
+			CommonTestStepActions.selectOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
+			ExpenseHelper.SetupCountryAndVendorData(); 
+		}
 		
-		CommonTestStepActions.selectOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));
-		
-		// need to 
 		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
-		ExpenseHelper.SetupCountryAndVendorData();
+
 		
 		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.country);
 		

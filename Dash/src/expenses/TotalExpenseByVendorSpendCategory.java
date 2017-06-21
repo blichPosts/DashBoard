@@ -78,58 +78,49 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		}
 		
 		totalExpenseExpectedLegendsList = ExpenseHelper.GetTotalExpenseLegends(); // this is needed in 'VerifyToolTipInfo' method.
-
 		
-		//if(expectedSpendCategoryLegends != null)
-		//{
-		//	expectedSpendCategoryLegends.clear();
-		//}
-
+		Assert.assertTrue(totalExpenseExpectedLegendsList.size() != 0, "Error in seeting upt list in TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest");
 		
-		// setup list of legends that are selected. legends are added in the order that they are selected.  
-		//expectedSpendCategoryLegends.clear();
-		
-		//expectedSpendCategoryLegends.add("Voice");
-		//expectedSpendCategoryLegends.add("Data");
-		//expectedSpendCategoryLegends.add("Messages");
-		//expectedSpendCategoryLegends.add("Roaming");
-		//expectedSpendCategoryLegends.add("Equipment");
-		//expectedSpendCategoryLegends.add("Taxes");
-		//expectedSpendCategoryLegends.add("Other");
-		//expectedSpendCategoryLegends.add("Account");	
 	}
-	
 	
 	// PROTOTYPE
 	public static void VerifyRemovingCategories(ViewType viewType) throws Exception 
 	{
 		// DebugTimeout(1, "Start");
-		Thread.sleep(1000);
+		// Thread.sleep(1000);
 		
 		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
 		
 		List<WebElement> tempList; // this holds hover info.
- 				
+		
+		if(!loginType.equals(LoginType.ReferenceApp))
+		{
+			// move to the spend category control.
+			WebElement temp = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)")); // jnupp
+			new Actions(driver).moveToElement(temp).perform();
+			Thread.sleep(500);
+		}
+		
 		// get web element  list of legends in expense spend category. this is for clicking legends. 
 		totalExpenseLegendsElementList =  ExpenseHelper.GetTotalExpenseCatergoryLegends();  
 		
+		// this waits for the vendor(s) in total expense spend control.
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+
+		Thread.sleep(500);
+
 		if(expenseControlSlicesElemntsList != null)
 		{
 			expenseControlSlicesElemntsList.clear();
 		}
 		
-		// this waits for the vendor(s) in total expense spend control.
-		ExpenseHelper.WaitForControlLegend(controlType.expenseTrending);
-		
-		Thread.sleep(500);
-		
 		// store the web elements for the slices into a list. 
 		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections));  
-		
+
 		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
 		{
 			DebugTimeout(0, "starting click");
-			Thread.sleep(2000);
+			// Thread.sleep(1000); // commented 6/8/17
 			
 			if(loginType.equals(loginType.ReferenceApp))
 			{
@@ -137,33 +128,30 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 				expenseControlSlicesElemntsList.get(x).click();
 				expenseControlSlicesElemntsList.get(x).click();
 			}
+			else if (loginType.equals(LoginType.MatrixPortal))
+			{
+				Thread.sleep(1000); // need this in matrix.
+				ClickOneSpendCategoryMatrixPortal(chartId);
+			}
 			else
 			{
-				// move to the spend category control.
-				WebElement expenseTrendingSection = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)"));
-				new Actions(driver).moveToElement(expenseTrendingSection).perform();
-				
-				Thread.sleep(1000);
-				
+				//Thread.sleep(500);
 				MoveMouseToSpendCategory();
 			}
 			
 			Thread.sleep(2000);
-
+			
 			// store the info found in the hover.  
 			tempList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
 			
 			VerifyToolTipInfo(tempList, x);
 			
-			// ShowInt(tempList.size()); // DEBUG
-			
 			Thread.sleep(500);
 
-			//DebugTimeout(1, "Click legend");
-			totalExpenseLegendsElementList.get(x).click(); // click legend.
+			totalExpenseLegendsElementList.get(x).click(); // click legend. 
 		}
 		
-		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category. 
+		ExpenseHelper.VerifyExpenseCategoryLegendsDisabled();
 	}
 	
 	public static void Setupdata()  
@@ -318,9 +306,6 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	{
 		Robot robot = new Robot();
 		
-		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-		// String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
-		
 		// String referencePoint = "#" + chartId +  ">svg>g:nth-of-type(3)>text"; 
 		String referencePoint = "#" + chartId +  ">svg>.highcharts-series-group>g:nth-of-type(7)";
 		
@@ -337,12 +322,10 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		int y_offset = (int) GeneralHelper.getScrollPosition();
 		y += y_offset + 60; 
 		
-		// below was -10, changed to -250   5/18/17  bob version 1.2.8
-		robot.mouseMove(x - 250, y); // bob added  these lines after. 
+		// below was -250, changed to -50   6/9/17  bob version 1.2.16
+		robot.mouseMove(x - 50, y); // bob added  these lines after. 
 		Thread.sleep(500);
 		
-		// Pause("look at pointer");
- 
 		robot.mouseMove(x, y);
 		// System.out.println("coordinates - x: " + x + "  y: " + y);
 		
@@ -362,6 +345,47 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		}
 	}
 
+	// matrix
+	// NOTE - this currently selects just the only graph showing. This will change in future - 6/8/17 
+	public static void ClickOneSpendCategoryMatrixPortal(String chartId) throws Exception
+	{
+		// NOTE: css bar and css line use the same css selector.
+		
+		// X - one of the month indicators.
+		String cssBar = "#" + chartId + ">svg>g.highcharts-axis-labels>text:nth-of-type(7)";	
+		
+		// Y - one of the month indicators. 
+		String cssLine = "#" + chartId + ">svg>g.highcharts-axis-labels>text:nth-of-type(7)";
+
+		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(cssBar));
+		WebElement line = driver.findElement(By.cssSelector(cssLine));
+		
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// Get the location of the second line of the chart -> to get the "y" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		Point barCoordinates = bar.getLocation();
+		Point lineCoordinates = line.getLocation();
+		
+		Robot robot = new Robot(); 
+		
+		int x = barCoordinates.getX();
+		int y = lineCoordinates.getY() + 50;
+
+		// doing this because 
+		robot.mouseMove(x -30, y);
+		Thread.sleep(500);
+
+		robot.mouseMove(x, y);
+		//System.out.println("coordinates - x: " + x + "  y: " + y);
+		
+		// DebugTimeout(9999, "9999");
+		
+		Thread.sleep(500);
+		
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+	}	
 	
 	
 	// //////////////////////////////////////////////////////////////////////////////////////////////////

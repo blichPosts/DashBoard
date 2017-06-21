@@ -102,6 +102,7 @@ public class TotalExpensesTrend extends BaseClass
 		
 		// get the 'expense trending' control visible by moving to it. 
 		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(1)"));
+
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));
 		
 		new Actions(driver).moveToElement(expenseTrending).perform();
@@ -123,8 +124,8 @@ public class TotalExpensesTrend extends BaseClass
 			{
 				if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
 				{
-					clickBarIndexMatrixPortal(y, firstMonth);
-					
+					clickBarIndexMatrixPortal(y, firstMonth, chartId);
+					firstMonth = false;
 				}
 				else if(loginType.equals(LoginType.ReferenceApp))
 				{
@@ -200,22 +201,13 @@ public class TotalExpensesTrend extends BaseClass
 	}
 	
 	// matrix
-	public static void clickBarIndexMatrixPortal(int barIndex, boolean firstMonth) throws Exception
+	public static void clickBarIndexMatrixPortal(int barIndex, boolean firstMonth, String chartId) throws Exception
 	{
-		// this is OK
-		cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + barIndex + ")";
-		// cssLine = "#" + chartId + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-of-type(2)";
+		// X - month indicators.
+		cssBar = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + barIndex + ")";
 		
-		
-		// .tdb-h3>span:nth-of-type(1)
-		
-		// cssLine = "#" + chartId + ">svg>g:nth-of-type(3)";	// orig	 	
-		// cssLine = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(5)";
-		
-		cssLine = ".tdb-h3>span:nth-of-type(1)";
-		
-		
-		// #highcharts-n8m4osk-4>svg>g.highcharts-axis-labels.highcharts-xaxis-labels 
+		// Y
+		cssLine = "#" + chartId +   ">svg>g.highcharts-axis-labels>text:nth-of-type(5)";
 		
 		// 'bar' and 'line' WebElements will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -230,7 +222,7 @@ public class TotalExpensesTrend extends BaseClass
 		Robot robot = new Robot(); 
 		
 		int x = barCoordinates.getX() + 30;
-		int y = lineCoordinates.getY() - 500;
+		int y = lineCoordinates.getY() - 650;
 
 		if (firstMonth) 
 		{ // <-- ana_add 
@@ -245,11 +237,7 @@ public class TotalExpensesTrend extends BaseClass
 		
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-		
-		// DebugTimeout(9999, "9999");
-		
 	}
-	
 	
 	
 	// --------------------- FAILURE - keeping here for reference -----------------

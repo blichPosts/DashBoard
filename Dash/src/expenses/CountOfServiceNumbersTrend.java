@@ -14,6 +14,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
@@ -127,8 +128,12 @@ public class CountOfServiceNumbersTrend extends BaseClass
 			
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
-				// clickBarIndex(y); // orig
-				if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
+				if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
+				{
+					TotalExpensesTrend.clickBarIndexMatrixPortal(y, firstMonth, chartId);
+					firstMonth = false;
+				}
+				else if(loginType.equals(LoginType.ReferenceApp)) // for reference app.
 				{
 					clickBarIndex(y);
 				}
@@ -153,7 +158,14 @@ public class CountOfServiceNumbersTrend extends BaseClass
 			Thread.sleep(2000);
 			//webEleListLegends.get(x).click();
 			
-			ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);
+			if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
+			{
+				webEleListLegends.get(x).click(); // this is web element click.
+			}
+			else
+			{
+				ExpenseHelper.SelectLegendWithPointer(chartId, x + 1); // this has to use X/Y click.				
+			}
 			
 			Thread.sleep(1500);
 		}
@@ -257,6 +269,7 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		// verify number of legends equal number of bar chart sections.
 		Assert.assertTrue(driver.findElements(By.xpath(cntrlPath)).size() == numberOfLegends, errMessage);
 	}
+
 	
 	// //////////////////////////////// HELPER ///////////////////////////////////////////////////////////
 	

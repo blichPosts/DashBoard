@@ -236,7 +236,7 @@ public class SpendCategories extends BaseClass
 		{
 			if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
 			{
-		//		TotalExpensesTrend.clickBarIndexMatrixPortal(y, firstMonth, chartId);
+				TotalExpensesTrend.clickBarIndexMatrixPortal(y, firstMonth, chartId);
 				firstMonth = false;
 			}
 			else
