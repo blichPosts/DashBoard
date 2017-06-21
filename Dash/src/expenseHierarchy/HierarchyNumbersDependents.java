@@ -1148,8 +1148,8 @@ public class HierarchyNumbersDependents extends BaseClass
 			if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout))
 			{
 				Assert.assertTrue(WaitForNoDependentsInPage(cntr));
-				Pause("RARE CASE - no breadcrumbs and have hit bottom of drill downs.");
-				// ShowText("Have found spot with glitch ============================================================ .");
+				//Pause("RARE CASE - no breadcrumbs and have hit bottom of drill downs.");
+				ShowText("Have found spot with glitch ============================================================ .");
 				break;
 			}
 			
@@ -2288,15 +2288,25 @@ public class HierarchyNumbersDependents extends BaseClass
 
 		HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 		
+		// 6/20/17 - commented and added section directly below. // bladd jnupp
 		// wait for correct number of bread crumbs and also wait for the bottom bread crumb to be clickable.
-		Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, MediumTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");		
+		// Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, MediumTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");		
+		
+		// verify the correct number of bread crumbs or verify the case described below. 
+		// this covers the rare case when there are no bread crumbs and the current page says there are no dependent units on the page.
+		// if there are no bread crumbs there should be a message saying there are no dependent units on the page. 
+		if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout))
+		{
+			Assert.assertTrue(WaitForNoDependentsInPage(cntr));
+			Pause("RARE CASE - no breadcrumbs and have hit bottom of drill downs.");
+		}
 		
 		// Pause("Wait after drill down click."); // **********************************************************************************
 		
 		// this waits to see if the bottom of the drill-downs has been found.
 		if(drillDownPageType == DrillDownPageType.expense)
 		{
-			// if have hit a page with no dependents then break (return from this method call). // bladd jnupp
+			// if have hit a page with no dependents then break (return from this method call). 
 			if(WaitForNoDependentsInPage(cntr, dependentNameToDrillTo))
 			{
 				return false;
