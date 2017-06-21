@@ -117,33 +117,33 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 				// Domestic chart
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
 				Thread.sleep(2000);
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 				
 				// Roaming chart
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);	
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
 				Thread.sleep(2000);	
 				
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
 				
-				UsageTrendingValues.verifyUsageTrendingChartTooltip(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 								
 			} catch(NullPointerException e) {

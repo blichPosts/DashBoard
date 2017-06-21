@@ -19,6 +19,7 @@ public class TotalUsageByCountry extends BaseClass {
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	
@@ -27,6 +28,9 @@ public class TotalUsageByCountry extends BaseClass {
 	{
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
+		
+		CommonTestStepActions.selectMonthYearPulldown("April 2017");
+		Thread.sleep(2000);
 		
 			
 		// #1 Select Vendor View 
@@ -52,9 +56,7 @@ public class TotalUsageByCountry extends BaseClass {
 		// #6 Verify that Vendors selected are listed in charts 
 		// Not valid test and the same functionality is tested from TotalUsageByCountryActions test
 		// The test does not take into account that the amount for the selected country can be zero and in that case the country won't be listed on the chart
-		// TotalUsage.verifyCountriesInUsageByCountryCharts();
-		
-		
+		 TotalUsage.verifyCountriesInUsageByCountryCharts();
 		
 	}
 	
@@ -63,7 +65,7 @@ public class TotalUsageByCountry extends BaseClass {
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Total Usage by Vendor test finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "Total Usage by Country test finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}

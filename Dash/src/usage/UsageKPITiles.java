@@ -1,5 +1,6 @@
 package usage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -13,14 +14,13 @@ import helperObjects.UsageHelper;
 public class UsageKPITiles extends BaseClass{
 
 	
-	public static void verifyDomesticRoamingLabels() {
+	public static void verifyLabelsAboveKPIs() {
 		
+		List<WebElement> labelsAboveKPIs = driver.findElements(By.cssSelector(".tdb-kpiSection__title"));
 		
-		List<WebElement> kpiDomesticRoamingTitles = driver.findElements(By.cssSelector(".tdb-h3.tdb-kpiSection__title"));
-		
-		Assert.assertEquals(kpiDomesticRoamingTitles.get(0).getText(), "Domestic (includes overage)");
-		Assert.assertEquals(kpiDomesticRoamingTitles.get(1).getText(), "Roaming");
-		
+		Assert.assertEquals(labelsAboveKPIs.get(0).getText(), "Domestic (includes overage)");
+		Assert.assertEquals(labelsAboveKPIs.get(1).getText(), "Roaming");
+		ShowText("Labels above KPIs: " + labelsAboveKPIs.get(0).getText() + ", " + labelsAboveKPIs.get(1).getText());
 		
 	}
 	
@@ -31,11 +31,10 @@ public class UsageKPITiles extends BaseClass{
 		
 		List<WebElement> webList = driver.findElements(By.cssSelector(".tdb-kpi__title")); // get the names of the three 'Domestic' KPI components. 
 
-		for(int x = 0; x < UsageKpiNames.length; x++)
+		for(int i = 0; i < UsageKpiNames.length; i++)
 		{
-			//System.out.println("From web list: " + webList.get(x).getText());
-			//System.out.println("From UsageKPINames: " + UsageKpiNames[x]);
-			Assert.assertTrue(webList.get(x).getText().contains(UsageKpiNames[x]));
+			ShowText("KPI title: " + webList.get(i).getText());
+			Assert.assertTrue(webList.get(i).getText().contains(UsageKpiNames[i]));
 		}
 		
 	}
@@ -58,47 +57,97 @@ public class UsageKPITiles extends BaseClass{
 	public static void verifyRollingAveragesUnits() {
 
 		
-		List<WebElement> rollingAmounts = driver.findElements(By.cssSelector(".tdb-inlineBlock.tdb-width--one-half.tdb-align--right"));	
-				
-		  for(int i = 0; i < rollingAmounts.size(); i++){
-			System.out.println("Rolling amounts: " + rollingAmounts.get(i).getText());
+		for (int i = 1; i <= 3; i++) {
+			
+			String xpath = "//div[@class='tdb-kpi'][" + i + "]/div/div[@class='tdb-kpi__averages']/div/div[@class='tdb-inlineBlock']/following-sibling::div";
+			boolean found = true;
+			List<WebElement> rollingAmounts = new ArrayList<WebElement>();
+			
+			try {
+				rollingAmounts = driver.findElements(By.xpath(xpath));
+
+			} catch (Exception e) {
+				found = false;
+
 			}
+			
+
+			if (found && rollingAmounts.size() == 2) {
+				
+				ShowText(rollingAmounts.get(0).getText());
+				ShowText(rollingAmounts.get(1).getText());
+				
+				switch (i) {
+				
+					case 1: 
+						// Voice 
+						Assert.assertTrue(rollingAmounts.get(0).getText().endsWith(UsageHelper.minutes));
+						Assert.assertTrue(rollingAmounts.get(1).getText().endsWith(UsageHelper.minutes));
+						break; 
+						
+					case 2:
+						// Data
+						String rollingAmt = rollingAmounts.get(0).getText();
+						boolean unitsOfData = (rollingAmt.endsWith(UsageHelper.dataB) || rollingAmt.endsWith(UsageHelper.dataKB) || rollingAmt.endsWith(UsageHelper.dataMB) 
+								|| rollingAmt.endsWith(UsageHelper.dataGB) || rollingAmt.endsWith(UsageHelper.dataTB));
+						
+						Assert.assertTrue(unitsOfData);
+						
+						rollingAmt = rollingAmounts.get(1).getText();
+						unitsOfData = (rollingAmt.endsWith(UsageHelper.dataB) || rollingAmt.endsWith(UsageHelper.dataKB) || rollingAmt.endsWith(UsageHelper.dataMB) 
+								|| rollingAmt.endsWith(UsageHelper.dataGB) || rollingAmt.endsWith(UsageHelper.dataTB));
+						
+						Assert.assertTrue(unitsOfData);
+						break; 
+						
+					case 3:
+						// Messages
+						Assert.assertTrue(rollingAmounts.get(0).getText().endsWith(UsageHelper.messages));
+						Assert.assertTrue(rollingAmounts.get(1).getText().endsWith(UsageHelper.messages));
+						break;
+						
+				}
+									
+			}
+			
+		}
 		
 		
-		// Voice
-		Assert.assertEquals(rollingAmounts.get(0).getText().endsWith(UsageHelper.minutes), true);
-		Assert.assertEquals(rollingAmounts.get(1).getText().endsWith(UsageHelper.minutes), true);
-		
-		// Messages
-		Assert.assertEquals(rollingAmounts.get(4).getText().endsWith(UsageHelper.messages), true);
-		Assert.assertEquals(rollingAmounts.get(5).getText().endsWith(UsageHelper.messages), true);
-		
-		// Data
-		String rollingAmt = rollingAmounts.get(2).getText();
-		boolean unitsOfData = (rollingAmt.endsWith(UsageHelper.dataB) || rollingAmt.endsWith(UsageHelper.dataKB) || rollingAmt.endsWith(UsageHelper.dataMB) 
-				|| rollingAmt.endsWith(UsageHelper.dataGB) || rollingAmt.endsWith(UsageHelper.dataTB));
-		
-		Assert.assertTrue(unitsOfData);
-		
-		rollingAmt = rollingAmounts.get(3).getText();
-		unitsOfData = (rollingAmt.endsWith(UsageHelper.dataB) || rollingAmt.endsWith(UsageHelper.dataKB) || rollingAmt.endsWith(UsageHelper.dataMB) 
-				|| rollingAmt.endsWith(UsageHelper.dataGB) || rollingAmt.endsWith(UsageHelper.dataTB));
-		
-		Assert.assertTrue(unitsOfData);
 		
 		// Roaming Data
-		rollingAmt = rollingAmounts.get(6).getText();
-		unitsOfData = (rollingAmt.endsWith(UsageHelper.dataB) || rollingAmt.endsWith(UsageHelper.dataKB) || rollingAmt.endsWith(UsageHelper.dataMB) 
-				|| rollingAmt.endsWith(UsageHelper.dataGB) || rollingAmt.endsWith(UsageHelper.dataTB));
 		
-		Assert.assertTrue(unitsOfData);
+		String xpath = "//div[@class='tdb-kpiBlock-USAGE__roaming']/div/div/div[@class='tdb-kpi__averages']/div/div[@class='tdb-inlineBlock']/following-sibling::div";
+		boolean found = true;
 		
-		rollingAmt = rollingAmounts.get(7).getText();
-		unitsOfData = (rollingAmt.endsWith(UsageHelper.dataB) || rollingAmt.endsWith(UsageHelper.dataKB) || rollingAmt.endsWith(UsageHelper.dataMB) 
-				|| rollingAmt.endsWith(UsageHelper.dataGB) || rollingAmt.endsWith(UsageHelper.dataTB));
+		List<WebElement> rollingAmounts = new ArrayList<WebElement>();
 		
-		Assert.assertTrue(unitsOfData);
-						
+		try {
+			rollingAmounts = driver.findElements(By.xpath(xpath));
+
+		} catch (Exception e) {
+			found = false;
+
+		}
+	
+		
+		if (found && rollingAmounts.size() == 2) {
+			
+			ShowText(rollingAmounts.get(0).getText());
+			ShowText(rollingAmounts.get(1).getText());
+			
+			String rollingAmt = rollingAmounts.get(0).getText();
+			boolean unitsOfData = (rollingAmt.endsWith(UsageHelper.dataB) || rollingAmt.endsWith(UsageHelper.dataKB) || rollingAmt.endsWith(UsageHelper.dataMB) 
+					|| rollingAmt.endsWith(UsageHelper.dataGB) || rollingAmt.endsWith(UsageHelper.dataTB));
+			
+			Assert.assertTrue(unitsOfData);
+			
+			rollingAmt = rollingAmounts.get(1).getText();
+			unitsOfData = (rollingAmt.endsWith(UsageHelper.dataB) || rollingAmt.endsWith(UsageHelper.dataKB) || rollingAmt.endsWith(UsageHelper.dataMB) 
+					|| rollingAmt.endsWith(UsageHelper.dataGB) || rollingAmt.endsWith(UsageHelper.dataTB));
+			
+			Assert.assertTrue(unitsOfData);	
+			
+		}			
 		
 	}
 	

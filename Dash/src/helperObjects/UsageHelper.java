@@ -14,7 +14,7 @@ import Dash.BaseClass;
 
 public class UsageHelper extends BaseClass{
 
-	public final static String path = "D:/Documents/CMD Dashboard/CreateFilesProgram/ ";
+	//public final static String path = "D:/Documents/CMD Dashboard/CreateFilesProgram/ ";
 	public final static String minutes = "min";
 	public final static String messages = "msg";
 	public final static String dataB = "B";
@@ -34,10 +34,10 @@ public class UsageHelper extends BaseClass{
 	public final static String domesticOverageLegend = "Domestic Overage";
 	public final static String roamingLegend = "Roaming";
 	
-	public final static String totalUsageByVendor = "Total Usage by Vendor - ";
-	public final static String totalUsageByCountry = "Total Usage by Country - ";
-	public final static String usageTrendingByVendor = "Usage by Vendor - ";	
-	public final static String usageTrendingByCountry = "Usage by Country - ";
+	public final static String totalUsageByVendor = "Total Usage by Vendor";
+	public final static String totalUsageByCountry = "Total Usage by Country";
+	public final static String usageTrendingByVendor = "Usage by Vendor";	
+	public final static String usageTrendingByCountry = "Usage by Country";
 	
 	public final static String colorLegendEnabled = "color: rgb(51, 51, 51)";
 	public final static String colorLegendDisabled = "color: rgb(204, 204, 204)";
@@ -53,6 +53,12 @@ public class UsageHelper extends BaseClass{
 	public final static int categoryVoice = 1;
 	public final static int categoryData = 2;
 	public final static int categoryMessages = 3;
+	
+	public final static String categoryVoiceName = "Voice";
+	public final static String categoryDataName = "Data";
+	public final static String categoryMessagesName = "Messages";
+	
+	
 	
 
 	public static void selectVendorView(){
@@ -122,7 +128,6 @@ public class UsageHelper extends BaseClass{
 	
 	
 	
-	
 	public static void selectCategory(int section, int category){
 		
 		String sectionToSelect = "";
@@ -133,6 +138,49 @@ public class UsageHelper extends BaseClass{
 		categoryToSelect.click();
 		
 	}
+	
+	
+	
+	public static void selectCategoryNew(int chartNum, int category){
+		
+		String categoryName = getNameCategorySelected(category);
+		
+		if (chartNum == totalUsageSection) {
+			
+			driver.findElement(By.xpath("//h2[not(contains(text(), 'Usage Trending'))]/following-sibling::div[1]/div[contains(text(), '" + categoryName + "')]")).click();
+			
+		} else if (chartNum == usageTrendingDomesticChart) {
+			
+			driver.findElement(By.xpath("//h2[contains(text(), 'Usage Trending')]/following-sibling::div[1]/div[contains(text(), '" + categoryName + "')]")).click();
+			
+		} else if (chartNum == usageTrendingRoamingChart) {
+			
+			driver.findElement(By.xpath("//h2[contains(text(), 'Usage Trending')]/following-sibling::div[3]/div[contains(text(), '" + categoryName + "')]")).click();
+			
+		}
+ 		
+		
+		/*
+				
+		-- Selector Total Usage --
+		
+		//h2[not(contains(text(), 'Usage Trending'))]/following-sibling::div[1]/div[contains(text(), 'Voice')] -- OK!!!
+		
+		
+		-- Selector Usage Trending Domestic --
+		
+		 //h2[contains(text(), 'Usage Trending')]/following-sibling::div[1]/div[contains(text(), 'Voice')] -- OK!!!
+		
+		
+		-- Selector Usage Trending Roaming --
+		
+		//h2[contains(text(), 'Usage Trending')]/following-sibling::div[3]/div[contains(text(), 'Data')] -- OK!!
+		
+		*/
+		
+	}
+	
+	
 	
 	
 	// Move to chart in parameters
@@ -163,6 +211,7 @@ public class UsageHelper extends BaseClass{
 
 		UsageOneMonth currentMonth;
 		String monthYear = "";
+		String countryName = valuesFromFileTmp.get(0).getCountry();
 		String vendorName = valuesFromFileTmp.get(0).getVendorName();
 		int fileIndex = 0;
 		
@@ -193,7 +242,7 @@ public class UsageHelper extends BaseClass{
 					String monthNew = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
 					String yearNew = monthYearParts[1];
 					
-					UsageOneMonth usageMonth = new UsageOneMonth(vendorName, yearNew, monthNew);
+					UsageOneMonth usageMonth = new UsageOneMonth(vendorName, countryName, yearNew, monthNew);
 					valuesFromFileNew.add(i, usageMonth);
 				
 					//ShowText("month year new: " + monthNew + " " + yearNew);
@@ -205,7 +254,7 @@ public class UsageHelper extends BaseClass{
 				String monthNew = CommonTestStepActions.ConvertMonthToInt(monthYearParts[0]);
 				String yearNew = monthYearParts[1];
 				
-				UsageOneMonth usageMonth = new UsageOneMonth(vendorName, yearNew, monthNew);
+				UsageOneMonth usageMonth = new UsageOneMonth(vendorName, countryName, yearNew, monthNew);
 				valuesFromFileNew.add(i, usageMonth);
 			
 				//ShowText("month year new: " + monthNew + " " + yearNew);
@@ -264,8 +313,7 @@ public class UsageHelper extends BaseClass{
 	}
 
 	
-	
-	// Gets the Usage data summarized  
+	// Gets the Usage data summarized -- Usage View -- for KPI TILES
 	public static List<UsageOneMonth> summarizeDataUsageVendorsSelected(List<List<UsageOneMonth>> data) throws ParseException {
 		
 		List<UsageOneMonth> dataSummarized = new ArrayList<>();
@@ -286,7 +334,7 @@ public class UsageHelper extends BaseClass{
 			String month = monthYear[0];
 			String year = monthYear[1];
 			
-			UsageOneMonth usageSummarized = new UsageOneMonth("", year, month);
+			UsageOneMonth usageSummarized = new UsageOneMonth("", "", year, month);
 						
 			//System.out.println("Month: " + month + ", Year: " + year);
 			
@@ -337,8 +385,7 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	
-	
-	// Gets the Expenses data summarized  
+	// Gets the Expenses data summarized -- Expense View -- for KPI TILES
 	public static List<UsageOneMonth> summarizeDataExpensesVendorsSelected(List<List<UsageOneMonth>> data) throws ParseException {
 		
 		List<UsageOneMonth> dataSummarized = new ArrayList<>();
@@ -359,7 +406,7 @@ public class UsageHelper extends BaseClass{
 			String month = monthYear[0];
 			String year = monthYear[1];
 			
-			UsageOneMonth usageSummarized = new UsageOneMonth("", year, month);
+			UsageOneMonth expensesSummarized = new UsageOneMonth("", "", year, month);
 						
 			//System.out.println("Month: " + month + ", Year: " + year);
 			
@@ -371,12 +418,12 @@ public class UsageHelper extends BaseClass{
 					
 					if(month.equals(usage.getOrdinalMonth()) && year.equals(usage.getOrdinalYear())){
 							
-						usageSummarized.setTotalCharge(Double.toString(Double.parseDouble(usageSummarized.getTotalCharge()) + Double.parseDouble(usage.getTotalCharge())));
+						expensesSummarized.setTotalCharge(Double.toString(Double.parseDouble(expensesSummarized.getTotalCharge()) + Double.parseDouble(usage.getTotalCharge())));
 						
-						usageSummarized.setNumberOfLines(Double.toString(Double.parseDouble(usageSummarized.getNumberOfLines()) + Double.parseDouble(usage.getNumberOfLines())));
+						expensesSummarized.setNumberOfLines(Double.toString(Double.parseDouble(expensesSummarized.getNumberOfLines()) + Double.parseDouble(usage.getNumberOfLines())));
 												
 						if(!invoiceMonthAssigned){
-							usageSummarized.setInvoiceMonth(usage.getInvoiceMonth());
+							expensesSummarized.setInvoiceMonth(usage.getInvoiceMonth());
 							invoiceMonthAssigned = true;
 						}
 						
@@ -386,7 +433,7 @@ public class UsageHelper extends BaseClass{
 			
 			}
 
-			dataSummarized.add(usageSummarized);
+			dataSummarized.add(expensesSummarized);
 			 
 		}
 		
@@ -395,8 +442,6 @@ public class UsageHelper extends BaseClass{
 		return dataSummarized;
 		
 	}
-	
-	
 	
 	
 	private static String[] getMonthYearSeparated(String date){
@@ -467,7 +512,6 @@ public class UsageHelper extends BaseClass{
 		}
 		
 	}
-	
 		
 	
 	public static String getMonthOfInvoiceMonth(String invoiceMonth){
@@ -520,7 +564,6 @@ public class UsageHelper extends BaseClass{
 	}
 	
 	
-
 	public static List<String> getMonthListUnifiedForVendorsSelected(List<List<UsageOneMonth>> listUsageVendorsSelected) throws ParseException{
 		
 		
@@ -629,7 +672,6 @@ public class UsageHelper extends BaseClass{
 	}
 	
 
-
 	// Sort the vendors, since in the Total Usage charts the vendors are sorted in alphabetical order. 
 	public static List<UsageOneMonth> sortVendorsAlphabetically(List<UsageOneMonth> listVendorsSelectedData) {
 		
@@ -689,6 +731,27 @@ public class UsageHelper extends BaseClass{
 		}
 		
 		return listMonthYearString;
+		
+	}
+
+
+	
+	public static String getNameCategorySelected(int category) {
+		
+		switch (category) {
+			case categoryVoice:
+				return categoryVoiceName;
+				
+			case categoryData:
+				return categoryDataName;
+				
+			case categoryMessages:
+				return categoryMessagesName;
+				
+			default:
+				return null;
+				
+		}
 		
 	}
 	

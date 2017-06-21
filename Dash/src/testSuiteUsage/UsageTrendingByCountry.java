@@ -18,6 +18,7 @@ public class UsageTrendingByCountry extends BaseClass{
 	public static void setUp() throws Exception
 	{
 		setUpDriver();
+		MainLogin();
 	}
 	
 	
@@ -26,7 +27,11 @@ public class UsageTrendingByCountry extends BaseClass{
 	{
 		
 		CommonTestStepActions.GoToUsagePageDetailedWait();
-			
+		
+		CommonTestStepActions.selectMonthYearPulldown("April 2017");
+		Thread.sleep(2000);
+		
+		
 		// #1 Select Country View 
 		UsageHelper.selectCountryView();
 		
@@ -45,7 +50,6 @@ public class UsageTrendingByCountry extends BaseClass{
 		
 		// #5 Verify that 13 months are listed in the Usage Trending charts 
 		UsageTrending.verifyMonthYearInUsageTrendingCharts();
-		
 			
 	}
 	
