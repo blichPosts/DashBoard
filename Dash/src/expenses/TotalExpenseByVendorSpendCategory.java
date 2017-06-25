@@ -316,6 +316,9 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
 		
+		ShowText("ID ... " + chartId);
+		
+		
 		int x = barCoordinates.getX();
 		int y = GeneralHelper.getYCoordinate(chartId);
 		

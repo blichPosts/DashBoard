@@ -22,7 +22,10 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
@@ -71,6 +74,7 @@ public class BaseClass
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
 	public static LoginType loginType; // bladdxx // new
+	public static BrowserType browserType;
 
 	// names of the three KPI blocks in expenses page from left to right.
 	public static String [] ExpenseKpiNames = {"Total Expense", "Count of Service Numbers", "Cost per Service Number"};
@@ -112,12 +116,19 @@ public class BaseClass
 		DeveloperInstance
 	}	
 	
+	public enum BrowserType
+	{
+		Chrome,
+		FireFox
+	}
+	
 	// ctor
 	public BaseClass()  
 	{
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
-		loginType = LoginType.Command; // bladdxx  
+		loginType = LoginType.Command; // bladdxx
+		browserType = BrowserType.Chrome;
 
 	}
 	
@@ -206,17 +217,29 @@ public class BaseClass
 	// bladdxx
 	public static void setUpDriver() throws Exception
 	{
-		//driver = new FirefoxDriver();
-		//System.setProperty("webdriver.ie.driver", path + "\\IEDriverServer.exe");
-		
 		currentDirectory = new File(".");
 		projectPath = currentDirectory.getAbsolutePath();
 		
-		System.setProperty("webdriver.chrome.driver", projectPath + "\\chromedriver.exe");
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--disable-extensions");
-		options.addArguments("disable-infobars");  // <-- Line added by Ana. Needed because with the chromedriver 2.28, there's an info bar that we don't want to have when browser is launched
-		driver = new ChromeDriver(options);		
+		if(browserType.equals(BrowserType.Chrome))
+		{
+			System.setProperty("webdriver.chrome.driver", projectPath + "\\chromedriver.exe");
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--disable-extensions");
+			options.addArguments("disable-infobars");  // <-- Line added by Ana. Needed because with the chromedriver 2.28, there's an info bar that we don't want to have when browser is launched
+			driver = new ChromeDriver(options);		
+		}
+		else if(browserType.equals(BrowserType.FireFox))
+		{
+			System.setProperty("webdriver.gecko.driver",  projectPath +  "\\geckodriver.exe");
+			
+			FirefoxOptions options = new FirefoxOptions();
+			options.setBinary("C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"); //Location where Firefox is installed
+
+			DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+			capabilities.setCapability("moz:firefoxOptions", options);
+
+			driver = new FirefoxDriver(capabilities);
+		}
 		
 		switch(loginType)
 		{
@@ -609,6 +632,11 @@ public class BaseClass
 		driver.findElement(By.cssSelector("#menuMainReporting_Dashboard")).click();
 		
 		GeneralHelper.setUpiFrame();
+		
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			Thread.sleep(2500);
+		}
 		
 		GeneralHelper.switchToContentFrame();
 		

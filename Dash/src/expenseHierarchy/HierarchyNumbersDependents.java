@@ -2,6 +2,7 @@ package expenseHierarchy;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,6 +58,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	public static boolean runningDependentsThroughMonths = true;
 	public static boolean shouldInsertMinusSign = false;
 	public static boolean tempBoolean = false;
+	public static boolean breadCrumbsExist = false;
 	
 	
 	public static Stack<String> aboveTileStack = new Stack<String>();
@@ -479,6 +481,30 @@ public class HierarchyNumbersDependents extends BaseClass
         ShowText("Offset moved.");
 	}
 
+	// this will do an x/y click of the indexed tile map sent in 
+	public static void ClickTilemapPoint(int index) throws AWTException, InterruptedException
+	{
+		WebElement tileNumber = driver.findElement(By.cssSelector("#" + chartId + ">svg>g>g.highcharts-label:nth-of-type(" + index + ")")); // select tile map number
+        
+        Point p = getAbsoluteLocationTileMap(tileNumber); 
+        
+        //Point p = GeneralHelper.getAbsoluteLocation(tileNumber);
+        
+        int x_offset = tileNumber.getSize().getHeight() / 2;
+        int y_offset = tileNumber.getSize().getWidth() / 2;
+        
+        int a = p.getX() + x_offset;
+        int b = p.getY() + y_offset;
+        
+        Robot robot = new Robot();
+        robot.mouseMove(a, b);
+        
+        Thread.sleep(2000); // orig
+        //Thread.sleep(1000);
+        
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+	}
 	
 	
 	// this builds the json request string for getting the json rows of dependent unit values. 
@@ -902,11 +928,17 @@ public class HierarchyNumbersDependents extends BaseClass
 					costSelectorString = HierarchyNumbersDependents.GetCostFilterString();
 				}
 				
-				String temp = ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " ") +".0";
+				// String temp = ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " ") +".0";
+				String temp = "";
 				
 				if(shouldInsertMinusSign)
 				{
-					temp = "-" + temp;
+					// temp = "-" + temp;
+					temp = ele.getText().split("\n")[0]  + " -" + ele.getText().split("\n")[1].replace(costSelectorString, " ").trim() +".0";
+				}
+				else
+				{
+					temp = ele.getText().split("\n")[0]  + ele.getText().split("\n")[1].replace(costSelectorString, " ") +".0";					
 				}
 				
 				// ShowText("Add to actual " + temp);
@@ -1114,7 +1146,16 @@ public class HierarchyNumbersDependents extends BaseClass
 			// tile map #1 is clicked, if it also doesn't have a zero value.
 			try
 			{
-				driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + (tileToSelect + 1) + ")")).click();				
+				WaitForElementClickable(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + (tileToSelect + 1) + ")"), ShortTimeout, 
+						"Failed in wait for tile map element to click in  HierarchyNumbersDependents.DrillDownAcrossCostFiltersTileMapCommand");
+				if(browserType.equals(BrowserType.Chrome))
+				{
+					driver.findElement(By.cssSelector("#" + chartId + ">svg>g:nth-of-type(6)>g:nth-of-type(" + (tileToSelect + 1) + ")")).click();					
+				}
+				else if(browserType.equals(BrowserType.FireFox))
+				{
+					ClickTilemapPoint(tileToSelect + 1);
+				}				
 			}
 			catch (Exception ex)
 			{
@@ -1139,18 +1180,21 @@ public class HierarchyNumbersDependents extends BaseClass
 			HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 			Thread.sleep(2000); // give time for tile map to load.
 			
-			// 6/14/17 -  commented and added new steps further below. // bladd jnupp
+			// 6/14/17 -  commented and added new steps further below. 
 			// wait for the new bread crumb to be added.
 			//Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrumb count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
 
-			// this covers the rare case when there are no bread crumbs and the current page says there are no dependent units on the page.
-			// if there are no bread crumbs there should be a message saying there are no dependent units on the page. 
-			if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout))
+			// 6/23/17 - updated for new condition. see comments.
+			if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout)) // see if there are no bread crumbs.
 			{
-				Assert.assertTrue(WaitForNoDependentsInPage(cntr));
-				//Pause("RARE CASE - no breadcrumbs and have hit bottom of drill downs.");
-				ShowText("Have found spot with glitch ============================================================ .");
-				break;
+				if(!WaitForNoDependentsInPage(cntr)) // see if the current page has a message saying there are no dependents.  
+				{
+					// if the current page doesn't have a message saying there are no dependents, verify there are one or more dependent units listed.
+					Assert.assertTrue(DependentUnitsListed(ShortTimeout), 
+							          "Failed check in situation where there are no bread crumbs and the page doesn't say 'This item has no dependent units. " +   
+							          "There should be one or more dependents in the dependent units list. Method name is HierarchyNumbersDependents.DrillDownDependentUnitsTwo.");
+					continue;
+				}
 			}
 			
 			// if have hit a page with no dependents then break. 
@@ -1238,6 +1282,12 @@ public class HierarchyNumbersDependents extends BaseClass
 			List<WebElement> unitsList = driver.findElements(By.cssSelector(HierarchyHelper.dependentsListCssLocator)); 
 			dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
 			
+			// fire fox browser can't select anything outside of the page section shown. have to limit drill down selections.   
+			if(browserType.equals(BrowserType.FireFox) && dependentUnitToSelect > 7)
+			{
+				dependentUnitToSelect = 7;
+			}
+
 			System.out.println("** Selecting Dependent Unit " + (dependentUnitToSelect + 1) + " **");
 			
 			// store this for checking string above tile map later.
@@ -1251,17 +1301,21 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			HierarchyHelper.WaitForProgressBarInactive(MediumTimeout); 
 
-			// 6/14/17 -  commented and added new steps further below. // bladd jnupp
+			// 6/14/17 -  commented and added new steps further below. 
 			// wait for the new bread crumb to be added.
 			// Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");
 
-			// this covers the rare case when there are no bread crumbs and the current page says there are no dependent units on the page.
-			// if there are no bread crumbs there should be a message saying there are no dependent units on the page. 
-			if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout))
+			// 6/23/17 - updated for new condition. see comments.
+			if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout)) // see if there are no bread crumbs.
 			{
-				Assert.assertTrue(WaitForNoDependentsInPage(cntr));
-				Pause("RARE CASE - no breadcrumbs and have hit bottom of drill downs.");
-				break;
+				if(!WaitForNoDependentsInPage(cntr)) // see if the current page has a message saying there are no dependents.  
+				{
+					// if the current page doesn't have a message saying there are no dependents, verify there are one or more dependent units listed.
+					Assert.assertTrue(DependentUnitsListed(ShortTimeout), 
+							          "Failed check in situation where there are no bread crumbs and the page doesn't say 'This item has no dependent units. " +   
+							          "There should be one or more dependents in the dependent units list. Method name is HierarchyNumbersDependents.DrillDownDependentUnitsTwo.");
+					continue;
+				}
 			}
 			
 			ShowText("Checking to see if have hit end of drill down."); 
@@ -1345,6 +1399,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	// go through each category selector in  the tile map section.
 	public static void LoopThroughCatergoriesFor_Lists_Up_Down() throws Exception 
 	{
+		breadCrumbsExist = true;  // jnupp
 		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
 		
 		Thread.sleep(1000);
@@ -1357,7 +1412,14 @@ public class HierarchyNumbersDependents extends BaseClass
 			currentCategorySelection = values[x].name();
 			ShowText("STARTING test for ---- " + values[x].name());
 			Thread.sleep(1000);
-			DrillDown_Up_DependentUnits();				
+			DrillDown_Up_DependentUnits();
+			
+			if(!breadCrumbsExist)
+			{
+				ShowText("Leaving categories loop because there are no breadrumbs. This happened in selected category " + values[x].name() +"."); // jnupp
+				Pause("Bail in loop around categpites. Should see month switch.");
+				break;
+			}
 			ShowText("Pass complete for ---- " + values[x].name() +".");
 		}
 	}
@@ -1496,7 +1558,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 	
 	/*// remove after 17.2 release.
-	public static void LoopThroughMonths() throws Exception
+	public static void LoopThroughMonthsDependents_Down_Up() throws Exception
 	{
 		CommonTestStepActions.initializeMonthSelector();
 		for(WebElement ele : CommonTestStepActions.webListPulldown)
@@ -1515,6 +1577,34 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 	}
 	*/
+	
+	
+	public static void LoopThroughMonthsDependentUnitsLists_Down_Up() throws Exception // jnupp 
+	{
+		runningDependentsThroughMonths = false;
+		
+		CommonTestStepActions.initializeMonthSelector();
+
+		for(WebElement ele : CommonTestStepActions.webListPulldown)
+		{
+			CommonTestStepActions.selectMonthYearPulldown(ele.getText());
+			
+			ShowText("Selected Month is " + ele.getText());
+			
+			HierarchyHelper.WaitForProgressBarInactive(TenTimeout);
+			
+			Thread.sleep(2000); 
+			
+			if(!LookForNoDependentsFound())
+			{
+				ShowText("Current Month: " + ele.getText());
+				HierarchyNumbersDependents.LoopThroughCatergoriesFor_Lists_Up_Down(); 
+			}
+
+			ShowText("Month Complete - short pause.");
+			Thread.sleep(1500);
+		}
+	}	
 	
 	
 	public static void LoopThroughMonthsDependentUnits() throws Exception 
@@ -1676,10 +1766,9 @@ public class HierarchyNumbersDependents extends BaseClass
 		// this loops through the drilling down clicks, drilling down into the dependent units 'maxLevelsToDrillDownTo' times.
 		for(drillDownCntr = 0; drillDownCntr < maxLevelsToDrillDownTo; drillDownCntr++)
 		{
-			// this if statement calls the method that does the drill down. If the drill-down method returns false, click the bottom bread crumb and leave for loop.
-			if(!DrillDownIntoDependentUnit(drillDownCntr)) 
+			// this if statement calls the method that does the drill down. If the drill-down method returns false, click the bottom bread crumb and leave this for loop.
+			if(!DrillDownIntoDependentUnit(drillDownCntr) && breadCrumbsExist) // jnupp 
 			{
-				WaitForElementVisible(By.cssSelector(".breadcrumbs>span"), MediumTimeout); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
 				WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
 				numBreadCrumbs = driver.findElements(By.cssSelector(".breadcrumbs>span")).size(); // get number of bread crumbs shown.
 				driver.findElement(By.cssSelector(".breadcrumbs>span:nth-of-type("  + numBreadCrumbs + ")")).click();// click the bottom bread crumb to leave the page with no dependent units shown.  
@@ -1695,6 +1784,14 @@ public class HierarchyNumbersDependents extends BaseClass
 		}
 		
 		// ShowListsOfDependentUnitsStoredAway(); // this will show all lists on the list that were added in 'AddDependentUnitList' method.
+		
+		if(!breadCrumbsExist) // if there are no bread crumbs  // jnupp
+		{
+			drillDownCntr = -1;
+			ShowText("BAIL");
+			Pause("BAIL");
+		}
+		
 		
 		//  this works its way back up by clicking the bread crumbs until there are no bread crumbs left.
 		for(int y = drillDownCntr; y >= 0; y--)
@@ -1909,6 +2006,35 @@ public class HierarchyNumbersDependents extends BaseClass
 		{
 			return false;
 		}
+	}
+	
+	// this tells whether there are dependent units listed or not. 
+	public static boolean DependentUnitsListed(int timeOut) throws InterruptedException
+	{
+		// get current time.
+		long currentTime= System.currentTimeMillis();
+		long endTime = currentTime + timeOut * 1000;
+		boolean haveFoundDependentUnits = false;
+		
+		// wait for presence of dependent units in the dependent units list.
+		while(System.currentTimeMillis() < endTime) 
+		{
+			if(driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList)).size() > 0)
+			{
+				haveFoundDependentUnits = true;
+				break;
+			}
+			Thread.sleep(1000);
+		}
+		
+		if(haveFoundDependentUnits)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}		
 	}
 	
 	// this verifies the main title is correct. the expected hierarchy name is passed in.
@@ -2261,6 +2387,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		listsOfPreviousDependentUnits.add(myList);
 	}
 
+	// NOTE: this is "specific" to the drill down/up dependent lists test. 
 	public static boolean DrillDownIntoDependentUnit(int cntr) throws Exception  
 	{
 		int dependentUnitToSelect = 0;
@@ -2273,6 +2400,13 @@ public class HierarchyNumbersDependents extends BaseClass
 		// get list of dependent units from the UI. get a random number to be used to pick one of the dependent unit.
 		List<WebElement> unitsList = driver.findElements(By.cssSelector(ExpenseHelper.hierarchyDependentsList)); 
 		dependentUnitToSelect = rand.nextInt(numberOfDependentUnits);
+		
+		// fire fox browser can't select anything outside of the page section shown. have to limit drill down selections.  
+		if(browserType.equals(BrowserType.FireFox) && dependentUnitToSelect > 7)
+		{
+			dependentUnitToSelect = 7;
+		}
+		
 		Thread.sleep(1000);
 
 		// get name associated with the dependent unit to be clicked.
@@ -2288,17 +2422,16 @@ public class HierarchyNumbersDependents extends BaseClass
 
 		HierarchyHelper.WaitForProgressBarInactive(MediumTimeout);
 		
-		// 6/20/17 - commented and added section directly below. // bladd jnupp
+		// 6/20/17 - commented and added section directly below.
 		// wait for correct number of bread crumbs and also wait for the bottom bread crumb to be clickable.
 		// Assert.assertTrue(WaitForCorrectBreadCrumbCount(cntr + 1, MediumTimeout), "Fail in wait for breadcrump count. Method is HierarchyNumbersDependents.WaitForCorrectBreadCrumbCount");		
 		
-		// verify the correct number of bread crumbs or verify the case described below. 
-		// this covers the rare case when there are no bread crumbs and the current page says there are no dependent units on the page.
-		// if there are no bread crumbs there should be a message saying there are no dependent units on the page. 
-		if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout))
+		// 6/24/17 - updated for new condition. see comments.
+		if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout)) // see if there are no bread crumbs.
 		{
-			Assert.assertTrue(WaitForNoDependentsInPage(cntr));
-			Pause("RARE CASE - no breadcrumbs and have hit bottom of drill downs.");
+			// if there are no bread crumbs. // jnupp
+			breadCrumbsExist = false;
+			return false; // jnupp
 		}
 		
 		// Pause("Wait after drill down click."); // **********************************************************************************
@@ -2314,16 +2447,9 @@ public class HierarchyNumbersDependents extends BaseClass
 			else
 			{
 				WaitForPageTransition(dependentNameToDrillTo); // extra check after progress bar inactive.
-				//aboveTileStack.push(driver.findElement(By.xpath("(//h3[@class='tdb-h3'])[1]")).getText()); // save off the text above the tile map in the page that was clicked into. 
-				//aboveKpiStack.push(driver.findElement(By.cssSelector(".tdb-kpi__header.tdb-kpi__header.tdb-text--bold>span:nth-of-type(1)")).getText()); // store current text shown above KPIs.
 
 				aboveTileStack.push(driver.findElement(By.cssSelector(HierarchyHelper.textShownAboveTileMapCssLocator)).getText()); // save off the text above the tile map in the page that was clicked into. 
-				aboveKpiStack.push(driver.findElement(By.cssSelector(HierarchyHelper.textShownAboveKpiTilesCssLocator)).getText()); // store current text shown above KPIs.
-				
-				
-				
-				
-				// send text name of unit being clicked 
+				aboveKpiStack.push(driver.findElement(By.cssSelector(HierarchyHelper.textShownAboveKpiTilesCssLocator)).getText()); // store current text shown above KPIs in the page that was clicked into. 
 			}
 		}
 		else
