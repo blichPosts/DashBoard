@@ -130,12 +130,13 @@ public class TotalExpenseByVendorCarrier extends BaseClass
 				
 				if(ViewType.vendor == vendor)
 				{
-					ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice();
+					// ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice();
 					Assert.assertEquals(ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice(), str);
+					//ShowText(ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice() + " " + str);
 				}
 				else
 				{
-					ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice();
+					// ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice();
 					Assert.assertEquals(ExpenseHelper.GetvaluesInExpenseControlAndStoreOneSlice(), CountryForVendor(str));
 				}
 				

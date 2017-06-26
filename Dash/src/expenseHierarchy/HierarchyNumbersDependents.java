@@ -3,6 +3,7 @@ package expenseHierarchy;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Stack;
 
 import javax.swing.JOptionPane;
 
+import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM2.ChildrenIterator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -1343,6 +1345,16 @@ public class HierarchyNumbersDependents extends BaseClass
 		ShowText("------------- Done -----------------");
 	}
 
+	
+	public static void ShowChildListToFile() throws IOException // jnupp
+	{
+		ShowText("------------- Start File Oue-----------------");
+		for(Child chl : HierarchyNumbersDependents.childList) {chl.ShowOutFile();}
+		ShowText("------------- Done File Out -----------------");
+	}
+	
+	
+	
 	// go through each category selector in  the tile map section.
 	public static void LoopThroughCatergoriesDependentUnits() throws Exception 
 	{
@@ -1363,12 +1375,20 @@ public class HierarchyNumbersDependents extends BaseClass
 			Thread.sleep(1000);
 			
 			currentCategorySelection = values[x].name(); // store current category for later testing of text above tile map.
-			
+
 			// create list of dependent units from Json call.
 			BuildDependentChildObjects(); 
 			
 			Thread.sleep(1000);
 
+			// jnupp below
+			// this will output all the dependent units read in before the rounding is done. See Child object for output file name.
+			Child.SetupOutputFile();
+			ShowChildListToFile();
+			Child.CloseFile();
+			// jnupp above
+
+			// this rounds the doubles in the list of child objects read in. 
 			RoundValuesInChildList();
 			
 			Thread.sleep(1000);
@@ -1399,7 +1419,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	// go through each category selector in  the tile map section.
 	public static void LoopThroughCatergoriesFor_Lists_Up_Down() throws Exception 
 	{
-		breadCrumbsExist = true;  // jnupp
+		breadCrumbsExist = true;
 		hierarchyTileMapTabSelection[] values = hierarchyTileMapTabSelection.values(); // get tab selectors from enum.
 		
 		Thread.sleep(1000);
@@ -1416,7 +1436,7 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			if(!breadCrumbsExist)
 			{
-				ShowText("Leaving categories loop because there are no breadrumbs. This happened in selected category " + values[x].name() +"."); // jnupp
+				ShowText("Leaving categories loop because there are no breadrumbs. This happened in selected category " + values[x].name() +".");
 				Pause("Bail in loop around categpites. Should see month switch.");
 				break;
 			}
@@ -1579,7 +1599,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	*/
 	
 	
-	public static void LoopThroughMonthsDependentUnitsLists_Down_Up() throws Exception // jnupp 
+	public static void LoopThroughMonthsDependentUnitsLists_Down_Up() throws Exception 
 	{
 		runningDependentsThroughMonths = false;
 		
@@ -1767,7 +1787,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(drillDownCntr = 0; drillDownCntr < maxLevelsToDrillDownTo; drillDownCntr++)
 		{
 			// this if statement calls the method that does the drill down. If the drill-down method returns false, click the bottom bread crumb and leave this for loop.
-			if(!DrillDownIntoDependentUnit(drillDownCntr) && breadCrumbsExist) // jnupp 
+			if(!DrillDownIntoDependentUnit(drillDownCntr) && breadCrumbsExist)  
 			{
 				WaitForElementClickable(By.cssSelector(".breadcrumbs>span"), MediumTimeout, ""); // sometimes getting "stale element reference" in 'numBreadCrumbs' line below.
 				numBreadCrumbs = driver.findElements(By.cssSelector(".breadcrumbs>span")).size(); // get number of bread crumbs shown.
@@ -1785,7 +1805,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		
 		// ShowListsOfDependentUnitsStoredAway(); // this will show all lists on the list that were added in 'AddDependentUnitList' method.
 		
-		if(!breadCrumbsExist) // if there are no bread crumbs  // jnupp
+		if(!breadCrumbsExist) // if there are no bread crumbs force the loop below to not run.
 		{
 			drillDownCntr = -1;
 			ShowText("BAIL");
@@ -2429,9 +2449,9 @@ public class HierarchyNumbersDependents extends BaseClass
 		// 6/24/17 - updated for new condition. see comments.
 		if(!WaitForCorrectBreadCrumbCount(cntr + 1, ShortTimeout)) // see if there are no bread crumbs.
 		{
-			// if there are no bread crumbs. // jnupp
+			// there are no bread crumbs sowing so set the 'breadCrumbsExist' flag false so the loop on categories will stop loopin.
 			breadCrumbsExist = false;
-			return false; // jnupp
+			return false; // indicate no more drilling down.
 		}
 		
 		// Pause("Wait after drill down click."); // **********************************************************************************

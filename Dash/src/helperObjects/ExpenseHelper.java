@@ -285,6 +285,7 @@ public class ExpenseHelper extends BaseClass
 	public static String GetvaluesInExpenseControlAndStoreOneSlice() throws Exception
 	{
 		int x = 1;
+		String tempText = "";
 		
 		for(WebElement ele : expenseControlSlicesElemntsList) // go through the list of control slices.
 		{
@@ -300,14 +301,14 @@ public class ExpenseHelper extends BaseClass
 				{
 					break;
 				}
-				//ShowText("pre click");
+
 				ele.click();
 				Thread.sleep(1000);
 				x++;
-				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText());
-				//ShowText(driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'ont-weight')]")).getText());
 				
-				return driver.findElement(By.xpath("//div[@id='" +  chartId + "']/*/*[contains(@class,'highcharts-tooltip')]/*/*[contains(@style,'font-size')]")).getText();
+				tempText = driver.findElement(By.cssSelector("#"  +  chartId +  ">svg>g.highcharts-tooltip>text>tspan:nth-of-type(2)")).getText().split(":")[1].trim();
+				return tempText;
+
 			}
 		}
 		return "";
@@ -906,6 +907,12 @@ public class ExpenseHelper extends BaseClass
 		
 		// chartId = UsageHelper.getChartId(1);// get chart id for total expense
 		
+		
+		if(webElementListLegends != null)
+		{
+			webElementListLegends.clear();
+		}
+		
 		webElementListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + tempLocator)); // store all the web elements for the legends.   
 		
 		// go through the legends and select one at time. verify all states (enabled/disabled) of the legends are correct after each legend is selected.
@@ -1138,6 +1145,7 @@ public class ExpenseHelper extends BaseClass
 		}
 	}
 	
+	// NOTE: 6/26/17 - 
 	// this is for clicking legends under a trend chart using x/y locator. 
 	public static void SelectLegendWithPointer(String chartId, int indexHighchart) throws InterruptedException, AWTException
 	{

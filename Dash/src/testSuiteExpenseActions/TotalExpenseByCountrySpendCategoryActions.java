@@ -12,7 +12,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 
-public class TotalExpenseByVendorSpendCategoryActionsCountry extends BaseClass 
+public class TotalExpenseByCountrySpendCategoryActions extends BaseClass 
 {
 
 	@BeforeClass

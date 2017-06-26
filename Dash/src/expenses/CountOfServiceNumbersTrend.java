@@ -112,10 +112,12 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		// get the 'Cost per Service Number trending' control visible by moving to it. 
 		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(3)"));
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)>div:nth-of-type(5)"));
-		
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
 		Thread.sleep(1000);
+
+		// this gets the web element list for the legends so they can be clicked using web elements.
+		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text")); 
 		
 		// setup expected months. these are the months that will be shown in the hover for each bar clicked.
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
@@ -152,7 +154,6 @@ public class CountOfServiceNumbersTrend extends BaseClass
 				{
 					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleCountOfServiceNumbersCountry);  // verify current hover value with country title. 
 				}				
-				// ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), "");  // verify current hover value
 			}
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(2000);
@@ -164,7 +165,11 @@ public class CountOfServiceNumbersTrend extends BaseClass
 			}
 			else
 			{
-				ExpenseHelper.SelectLegendWithPointer(chartId, x + 1); // this has to use X/Y click.				
+				// 6/26/17 - this x/y click method is no longer needed to click legends. see directly below. keeping this call here in case it's needed in the future.
+				// ExpenseHelper.SelectLegendWithPointer(chartId, x + 1); // this has to use X/Y click.
+				
+				// 6/26/17 - this is the new click. by changing the way the list of legend web elements is created further above in this method, the click below works.   
+				eleList.get(x).click();				
 			}
 			
 			Thread.sleep(1500);

@@ -83,16 +83,16 @@ public class CostPerServiceNumberTrend extends  BaseClass
 	{
 		Thread.sleep(1000);
 		
-		// get the 'Cost per Service Number trending' control visible by moving to it. 
-		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(2)"));
-		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card>div:nth-of-type(4)"));
-		
 		// change to below because of legend click problems. 5/6/17
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));  
-		
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
 		Thread.sleep(1000);
+		
+		// this gets the web element list for the legends so they can be clicked using web elements.
+		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text")); 
+
+		Assert.assertTrue(eleList.size() > 0, "Error in CostPerServiceNumber.VerifyRemovingLegends. Legends list should not be empty.");
 		
 		// setup expected months. these are the months that will be shown in the hover for each bar clicked.
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
@@ -121,7 +121,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
 					firstMonth = false; // <-- ana_add
 				}				
-				Thread.sleep(500);
+				// Thread.sleep(500);
 				
 				// need to see which view type is being tested. each view type will have a different expected hover title.   
 				if(ExpenseHelper.expenseViewMode == ExpensesViewMode.vendor)
@@ -144,7 +144,11 @@ public class CostPerServiceNumberTrend extends  BaseClass
 			}
 			else
 			{
-				ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);				
+				// 6/26/17 - this x/y click method is no longer needed to click legends. see directly below. keeping this call here in case it's needed in the future.
+				// ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);
+				
+				// 6/26/17 - this is the new click. by changing the way the list of legend web elements is created further above in this method, the click below works.   
+				eleList.get(x).click();
 			}
 			Thread.sleep(1500);
 		}

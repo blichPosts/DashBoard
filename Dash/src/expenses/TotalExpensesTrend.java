@@ -108,6 +108,11 @@ public class TotalExpensesTrend extends BaseClass
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
 		Thread.sleep(1000);
+
+		// this gets the web element list for the legends so they can be clicked using web elements.
+		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text")); 
+		
+		Assert.assertTrue(eleList.size() > 0, "Error in TotalExpensesTrend.VerifyRemovingLegends. Legends list should not be empty.");
 		
 		// setup expected months. these are the months that will be shown in the hover for each bar clicked.
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
@@ -119,7 +124,8 @@ public class TotalExpensesTrend extends BaseClass
 		for(int x = 0; x < webEleListLegends.size(); x++)
 		{
 			boolean firstMonth = true; // <-- ana_add
-            
+
+			// this loops across all months and clicks/verifies each month in the trend. 
 			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
 			{
 				if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
@@ -132,11 +138,11 @@ public class TotalExpensesTrend extends BaseClass
 					clickBarIndex(y);
 				}
 				else
-				{  // ** NEXT LINE TO BE UNCOMMENTED **
+				{  
 					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
 				}
 				
-				Thread.sleep(500);
+				// Thread.sleep(500);
 				
 				// need to see which view type is being tested. each view type will have a different expected hover title.   
 				if(ExpenseHelper.expenseViewMode == ExpensesViewMode.vendor)
@@ -147,9 +153,8 @@ public class TotalExpensesTrend extends BaseClass
 				{
 					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleExpenseCountry);  // verify current hover value with country title. 
 				}
-				// ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), "");  // verify current hover value
 			}
-
+		
 			totalExpenseLegendsList.remove(webEleListLegends.get(x).getText());
 			Thread.sleep(2000);
 			
@@ -159,7 +164,11 @@ public class TotalExpensesTrend extends BaseClass
 			}
 			else
 			{
-				ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);	 // this click needs x/y click.			
+				// 6/26/17 - this x/y click method is no longer needed to click legends. see directly below. keeping this call here in case it's needed in the future.
+				// ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);	 // this click needs x/y click.  	
+				
+				// 6/26/17 - this is the new click. by changing the way the list of legend web elements is created further above in this method, the click below works.   
+				eleList.get(x).click();
 			}
 			Thread.sleep(1500);
 		}

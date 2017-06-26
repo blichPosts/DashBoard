@@ -1,5 +1,9 @@
 package helperObjects;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Comparator;
 
 // this is a dependent unit
@@ -15,7 +19,12 @@ public class Child implements Comparator<Child> /*, Comparable<Child>*/
 	// public int tempCost = 0;
 	public double tempCost = 0;
 	static int childRowNumber = 0; //  this keeps track 
-   
+
+	// file output. // jnupp
+    public static BufferedWriter output = null;
+    public static String lineFeed = "\r\n";
+    public static File file;
+
 	public Child(){}
 			
 	//public Child(String chName, int cst) 
@@ -96,6 +105,23 @@ public class Child implements Comparator<Child> /*, Comparable<Child>*/
 		System.out.println(childName + " " + cost);
 	}	
    
+	public static void SetupOutputFile() throws IOException // jnupp
+	{
+		file = new File("C:\\LichPublic\\JavaOutFile.txt");
+        output = new BufferedWriter(new FileWriter(file));
+	}	
+	
+	public void ShowOutFile() throws IOException // jnupp
+	{
+		output.write(childName + " " + cost + lineFeed);
+	}	
+	
+	public static void CloseFile() throws IOException // jnupp
+	{
+        output.close();
+	}	
+	
+	
 	public String GetNameAndCost()
 	{
 		// split the name into an array.

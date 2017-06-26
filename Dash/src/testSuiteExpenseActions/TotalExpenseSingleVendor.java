@@ -42,9 +42,16 @@ public class TotalExpenseSingleVendor extends BaseClass
 		
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();
+
+		// ////////////////////////////////////////////////////////////////////////
+		// 							VENDOR
+		// ////////////////////////////////////////////////////////////////////////
 		
 		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors(CommonTestStepActions.ViewType.vendor); // vendors		
 		
+		// ////////////////////////////////////////////////////////////////////////
+		// 							COUNTRY
+		// ////////////////////////////////////////////////////////////////////////
 		CommonTestStepActions.SelectCountryView();
 		CommonTestStepActions.UnSelectAllVendors();
 		ExpenseHelper.VerifyControlsNotPresent();
@@ -53,21 +60,31 @@ public class TotalExpenseSingleVendor extends BaseClass
 		
 		ExpenseHelper.SetChartId(0);
 		
-		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors(CommonTestStepActions.ViewType.country); // countries		
+		TotalExpenseByVendorCarrier.VerifySelectUnselectVendors(CommonTestStepActions.ViewType.country); // countries
 		
+		// ////////////////////////////////////////////////////////////////////////
+		//			BELOW - remove all methods in ExpenseHelper					
+		// ////////////////////////////////////////////////////////////////////////
+		/*
 		CommonTestStepActions.SelectAllVendors();
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
-		Thread.sleep(3000); // saving time. spent too much time on this test already. wait for six vendors in each control needs written.
+		Thread.sleep(3000); // wait for six vendors in each control needs written.
 
 		ExpenseHelper.SetChartId(0);
 
 		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);
 		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // vendor
+		
+		Pause("disable done");
+		
 		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // vendor
+		
+		Pause("enable done");
+
 
 		CommonTestStepActions.SelectAllVendors();
-		CommonTestStepActions.GoToExpensePageDetailedWait();
+		// CommonTestStepActions.GoToExpensePageDetailedWait();
 
 		CommonTestStepActions.SelectVendorView();
 		CommonTestStepActions.UnSelectAllVendors();
@@ -76,13 +93,14 @@ public class TotalExpenseSingleVendor extends BaseClass
 		CommonTestStepActions.SelectAllVendors();
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
-		Thread.sleep(3000); // saving time. spent too much time on this test already. wait for six vendors in each control needs written.
+		Thread.sleep(3000); // wait for six vendors in each control needs written.
 
 		ExpenseHelper.SetChartId(0);
 		
 		ExpenseHelper.SetTempLocator(ExpenseHelper.partialXpathToLegendsListInControls);
 		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.disabling); // country
 		ExpenseHelper.VerifySelectUnselect(enableDisableActionsType.enabling); // country
+		*/
 	}
 	
 	@AfterClass

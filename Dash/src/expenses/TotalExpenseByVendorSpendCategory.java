@@ -96,17 +96,18 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		if(!loginType.equals(LoginType.ReferenceApp))
 		{
 			// move to the spend category control.
-			WebElement temp = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)")); // jnupp
+			WebElement temp = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)")); 
 			new Actions(driver).moveToElement(temp).perform();
 			Thread.sleep(500);
 		}
 		
-		// get web element  list of legends in expense spend category. this is for clicking legends. 
-		totalExpenseLegendsElementList =  ExpenseHelper.GetTotalExpenseCatergoryLegends();  
-		
-		// this waits for the vendor(s) in total expense spend control.
+		// this waits are for the vendor(s) in total expense spend control and total expanse control.
 		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
 
+		// get the web elements for the legends so the legend text parts can be clicked on.
+		totalExpenseLegendsElementList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text")); 
+		
 		Thread.sleep(500);
 
 		if(expenseControlSlicesElemntsList != null)
@@ -135,8 +136,8 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			}
 			else
 			{
-				//Thread.sleep(500);
-				MoveMouseToSpendCategory();
+				Thread.sleep(500);
+				MoveMouseToSpendCategory(); 
 			}
 			
 			Thread.sleep(2000);
@@ -144,14 +145,14 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			// store the info found in the hover.  
 			tempList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
 			
-			VerifyToolTipInfo(tempList, x);
+			VerifyToolTipInfo(tempList, x); 
 			
 			Thread.sleep(500);
 
 			totalExpenseLegendsElementList.get(x).click(); // click legend. 
 		}
-		
-		ExpenseHelper.VerifyExpenseCategoryLegendsDisabled();
+
+		ExpenseHelper.VerifyExpenseCategoryLegendsDisabled(); // verify the spend category control is empty.
 	}
 	
 	public static void Setupdata()  
@@ -315,9 +316,6 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
-		
-		ShowText("ID ... " + chartId);
-		
 		
 		int x = barCoordinates.getX();
 		int y = GeneralHelper.getYCoordinate(chartId);
