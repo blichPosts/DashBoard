@@ -23,7 +23,7 @@ public class TotalExpenseByCountrySpendCategoryActions extends BaseClass
 	}
 	
 	@Test
-	public static void TotalExpenseByVendorSpendCategoryActionsCountryTest() throws Exception
+	public static void TotalExpenseByCountrySpendCategoryActionsTest() throws Exception
 	{
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
