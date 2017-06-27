@@ -49,7 +49,7 @@ public class UsageTrendingMultipleValuesByCountry  extends BaseClass{
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		UsageHelper.selectCountryView();
-		CommonTestStepActions.UnSelectAllVendors();
+		//CommonTestStepActions.UnSelectAllVendors();
 			
 		// #2 Get the data for each of the selected vendors for all months.
 		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = FleetHelper.getExpenseUsageDataForTest();
@@ -69,7 +69,7 @@ public class UsageTrendingMultipleValuesByCountry  extends BaseClass{
 		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
 						
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
-		int indexMonthToSelect = 2;
+		int indexMonthToSelect = 0;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 		

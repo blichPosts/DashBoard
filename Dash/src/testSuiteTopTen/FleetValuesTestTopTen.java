@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -48,7 +47,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
 		String monthYearToSelect = "";
 		
-		int indexMonth = 0;
+		int indexMonth = 1;
 		
 		do {
 
@@ -59,7 +58,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 			
 			// Wait for chart to be loaded
-			WaitForElementVisible(By.cssSelector("chart>div"), ExtremeTimeout);
+			GeneralHelper.waitForChartToLoad(MediumTimeout);
  
 			
 			// #4 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the expected ones
@@ -105,7 +104,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 				
 			} catch (NoSuchElementException e) {
 				
-				System.out.println("chart not found");
+				System.out.println("chart not found or value found is null");
 				
 			}
 			

@@ -43,12 +43,11 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 		// Wait for countries and vendors to be loaded on PoV section
 		FleetHelper.waitForPoVSectionToBeLoaded(); 
 			
+		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectVendorView();
-		CommonTestStepActions.UnSelectAllVendors();
 		
-		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// #2 Get the data for each of the selected vendors for all months.
 		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = FleetHelper.getExpenseUsageDataForTest();
@@ -68,7 +67,7 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 		
 			
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
-		int indexMonthToSelect = 0;
+		int indexMonthToSelect = 3;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 		

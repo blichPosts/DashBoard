@@ -155,7 +155,7 @@ public class UsageTrendingValues extends BaseClass {
 			
 			for (int j = 0; j < allValuesFromFile.get(indexMonthValues).size(); j++) {
 			
-				String key = allValuesFromFile.get(indexMonthValues).get(j).getVendorName();
+//				String key = allValuesFromFile.get(indexMonthValues).get(j).getVendorName();
 				
 				UsageOneMonth usageOneMonth = allValuesFromFile.get(indexMonthValues).get(j);
 				
@@ -470,110 +470,5 @@ public class UsageTrendingValues extends BaseClass {
 		
 	}
 	
-	
-	
-
-	// NOT USED - REPLACED BY THE METHOD ADDED IN GeneralHelper CLASS
-//	private static void moveMouseToBar(String chartId, int indexHighchart) throws InterruptedException, AWTException{
-//		
-//		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-//		
-//		// 'bar' WebElement will be used to set the position of the mouse on the chart
-//		WebElement bar = driver.findElement(By.cssSelector(cssBar));
-//				
-//		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-//		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-//		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
-//		
-//		int y_offset = (int) GeneralHelper.getScrollPosition();
-//		
-//		int x = barCoordinates.getX();
-//		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;
-//		
-//		Robot robot = new Robot(); 
-//		robot.mouseMove(x, y);
-//		
-//		// ShowText("coordinates:  x: " + x + "  y: " + y);
-//		
-//		Thread.sleep(500);
-//		
-//		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-//		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-//		
-//		
-//		try {
-//			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
-//			//System.out.println("Tooltip present");
-//		} catch (Exception e) {
-//			System.out.println("Tooltip NOT present");
-//			e.printStackTrace();
-//		}
-//		
-//		
-//	}
-
-	
-	
-	// *** TO BE REMOVED --- replaced by 2 methods in new class FleetHelper- 
-	
-//	public static List<List<UsageOneMonth>> getListWithData(List<List<UsageOneMonth>> data) throws ParseException {
-//		
-//		
-//		List<String> monthsToSelect = UsageHelper.getMonthYearListString();
-//		
-//		List<List<UsageOneMonth>> listVendorsSelectedData = new ArrayList<>();
-//		
-//		// Some vendors might not have information for all last 13 months; in that case the value displayed on the Usage Trending chart is zero
-//		// So to have a valid value to compare with, the info for those missing months (on source file) is created and values are set to zero.  
-//		for (List<UsageOneMonth> list: data) {
-//			
-//			List<UsageOneMonth> valuesFromFileOneVendor = UsageHelper.addMissingMonthsForVendor(list);
-//			listVendorsSelectedData.add(valuesFromFileOneVendor);
-//		
-//		}
-//		
-//
-//		int indexMonth = 0;
-//	
-//		List<List<UsageOneMonth>> dataForUsageTrending = new ArrayList<>();
-//		
-//		do {
-//		
-//			// listOneMonthData will have the data for a specific month, for all the vendors previously selected
-//			List<UsageOneMonth> listOneMonthData = new ArrayList<>();
-//			
-//			// values has the 13 months for one vendor
-//			for (List<UsageOneMonth> values: listVendorsSelectedData){
-//				
-//				int indexMonthForVendorSelected = 0;
-//				boolean dataFoundForMonth = false;
-//				
-//				while (indexMonthForVendorSelected < values.size() && !dataFoundForMonth){
-//					
-//					String monthYear = CommonTestStepActions.convertMonthNumberToName(values.get(indexMonthForVendorSelected).getOrdinalMonth(), values.get(indexMonthForVendorSelected).getOrdinalYear()); 
-//					
-//					if (monthsToSelect.get(indexMonth).equals(monthYear)) {
-// 
-//						listOneMonthData.add(values.get(indexMonthForVendorSelected));
-//						dataFoundForMonth = true;
-//						
-//					}
-//						
-//					indexMonthForVendorSelected++;
-//				}
-//					
-//			}
-//
-//			dataForUsageTrending.add(listOneMonthData);
-//			
-//			indexMonth++;
-//			
-//		} while (indexMonth < monthsToSelect.size());
-//		
-//		
-//		return dataForUsageTrending;
-//		
-//	}
-//		
 	
 }

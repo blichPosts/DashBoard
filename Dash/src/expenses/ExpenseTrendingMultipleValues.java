@@ -9,7 +9,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
@@ -24,7 +23,16 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 
 	
 	private static List<HashMap<String, String>> expectedValues;
-	private static HashMap<String, Boolean> vendorHasData;
+	private static HashMap<String, Boolean> hasData;
+	
+	private static List<String> vendorsSelectedCheckBox;
+	private static List<WebElement> vendorsInChart;
+	private static List<String> vendorsInChartNames;
+	
+	private static List<String> countriesSelectedCheckBox;
+	private static List<WebElement> countriesInChart;
+	private static List<String> countriesInChartNames;
+	
 	private static String chartId;
 	
 	
@@ -39,20 +47,26 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				
 		Thread.sleep(2000);
 			
-		List<WebElement> legendsElements = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
-		List<String> legends = new ArrayList<>();
-		
-		for (WebElement e: legendsElements) {
-			legends.add(e.getText());
-			// System.out.println("Legend: " + e.getText());
-		}
-		
-		ViewType view = ViewType.vendor;
-		
-		vendorHasData = GeneralHelper.isThereDataForSelectedMonth(allValuesFromFile, view);		
+		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		
 		expectedValues = new ArrayList<HashMap<String, String>>();
 		
+		vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
+		
+		vendorsInChartNames = new ArrayList<String>();
+		
+		for (int i = 0; i < vendorsInChart.size(); i++){
+			
+			vendorsInChartNames.add(vendorsInChart.get(i).getText());
+		}	
+		
+		vendorsSelectedCheckBox = FleetHelper.getVendorsSelected();
+	
+		ViewType view = ViewType.vendor;
+		
+		hasData = GeneralHelper.isThereDataForSelectedMonth(allValuesFromFile, view);		
+		
+				
 		// Get the expected values of the vendors listed on the chart
 		getExpectedValues(barChartId, allValuesFromFile, categorySelector, view);
 
@@ -92,8 +106,11 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
 			int amount = highchartSeries.size();
 			int factor = 2;  // Ana added - May 17
+			
 			int expectedAmountItemsTooltip = (amount * factor) + 2;  // Ana modif - May 17
-			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			int amountItemsTooltipFound = tooltip.size();
+			
+			GeneralHelper.verifyExpectedAndActualValues(amountItemsTooltipFound, expectedAmountItemsTooltip);
 			
 			
 			// For each vendor listed in the tooltip verify the label and the amount shown
@@ -119,9 +136,9 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			
 			// Verify month and year shown on the tooltip (first line)
 			String monthYearFound = tooltip.get(0).getText();
-			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
+			String monthYearExpected = monthYearList.get(indexMonth);
 				
-			Assert.assertEquals(monthYearFound, monthYearExpected);
+			GeneralHelper.verifyExpectedAndActualLabels(monthYearFound, monthYearExpected);
 			// System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;
@@ -135,120 +152,155 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 	private static void getExpectedValues(int barChartId, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector, ViewType view) throws ParseException {
 		
 		
-		for(int indexMonthValues = 0; indexMonthValues < allValuesFromFile.size(); indexMonthValues++){
+		for (int indexMonthValues = 0; indexMonthValues < allValuesFromFile.size(); indexMonthValues++) {
 			
 			HashMap<String, String> map = new HashMap<>();
 			
 			for (int j = 0; j < allValuesFromFile.get(indexMonthValues).size(); j++) {
 			
-				String keyVendor = allValuesFromFile.get(indexMonthValues).get(j).getVendorName();
+//				String keyVendor = allValuesFromFile.get(indexMonthValues).get(j).getVendorName();
 				
 				UsageOneMonth usageOneMonth = allValuesFromFile.get(indexMonthValues).get(j);
 				
-				if (vendorHasData.get(keyVendor)) {
-	
-					if (barChartId == FleetHelper.expenseByVendorChart) {
+//				if (hasData.get(keyVendor)) {
+				
+				String itemName = "";
+				
+				if (view.equals(ViewType.country)) {
 					
-						if (categorySelector == FleetHelper.expenseCategoryAll){
-
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getTotalCharge()), true));
+					itemName = allValuesFromFile.get(indexMonthValues).get(j).getCountry();
+					
+				} else if (view.equals(ViewType.vendor)) {
+					
+					itemName = allValuesFromFile.get(indexMonthValues).get(j).getVendorName();
+					
+				}
+	
+				if (barChartId == FleetHelper.expenseByVendorChart) {
+				
+					switch (categorySelector) {
+					
+						case FleetHelper.expenseCategoryAll:
 							
-						} else if (categorySelector == FleetHelper.expenseCategoryVoice){
-
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getVoiceCharges()), true));
+							map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getTotalCharge()), true));
+							break;
 							
-						} else if (categorySelector == FleetHelper.expenseCategoryData){
-
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getDataCharges()), true));
+						case FleetHelper.expenseCategoryVoice:
+	
+							map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getVoiceCharges()), true));
+							break;
 							
-						} else if (categorySelector == FleetHelper.expenseCategoryMessages){
-
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getMessagesCharges()), true));
+						case FleetHelper.expenseCategoryData:
+	
+							map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getDataCharges()), true));
+							break;
 							
-						} else if (categorySelector == FleetHelper.expenseCategoryRoaming){
-
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getRoamingCharges()), true));
+						case FleetHelper.expenseCategoryMessages:
+	
+							map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getMessagesCharges()), true));
+							break;
 							
-						} else if (categorySelector == FleetHelper.expenseCategoryEquipment){
-
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getEquipmentCharges()), true));
+						case FleetHelper.expenseCategoryRoaming:
+	
+							map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getRoamingCharges()), true));
+							break;
 							
-						} else if (categorySelector == FleetHelper.expenseCategoryTaxes){
-
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getTaxCharges()), true));
+						case FleetHelper.expenseCategoryEquipment:
+	
+							map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getEquipmentCharges()), true));
+							break;
 							
-						} else if (categorySelector == FleetHelper.expenseCategoryOther){
-
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getOtherCharges()), true));
+						case FleetHelper.expenseCategoryTaxes:
+	
+							map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getTaxCharges()), true));
+							break;
 							
-						} else if (categorySelector == FleetHelper.expenseCategoryAccount){
-
-							map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getTotalAccountLevelCharges()), true));
+						case FleetHelper.expenseCategoryOther:
+	
+							map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getOtherCharges()), true));
+							break;
 							
-						}						
+						case FleetHelper.expenseCategoryAccount:
+	
+							map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getTotalAccountLevelCharges()), true));
+							break;
+							
+					}						
+					
+				} else if (barChartId == FleetHelper.costPerServiceNumberChart) {
+					
+					String costPerServiceNumber = "$0";
+					int numberOfLines = (int) Double.parseDouble(usageOneMonth.getNumberOfLines());  // Integer.parseInt(usageOneMonth.getNumberOfLines());
+					
+					// If numberOfLines is not zero, then calculate the costPerServiceNumber, otherwise, costPerServiceNumber will be set to zero. 
+					// This is to avoid the error generated by a division by zero.
+					if (numberOfLines != 0) {   
 						
-					} else if (barChartId == FleetHelper.costPerServiceNumberChart) {
+						double costTmp = 0;
 						
-						String costPerServiceNumber = "$0";
-						int numberOfLines = Integer.parseInt(usageOneMonth.getNumberOfLines());
+						switch (categorySelector) {
 						
-						// If numberOfLines is not zero, then calculate the costPerServiceNumber, otherwise, costPerServiceNumber will be set to zero. 
-						// This is to avoid the error generated by a division by zero.
-						if (numberOfLines != 0) {   
-							
-							double costTmp = 0;
-							
-							if (categorySelector == FleetHelper.expenseCategoryAll){
+							case FleetHelper.expenseCategoryAll:
 								
 								costTmp = Double.parseDouble(usageOneMonth.getTotalCharge()) / numberOfLines;
-																
-							} else if (categorySelector == FleetHelper.expenseCategoryVoice){
-
+								break;
+								
+							case FleetHelper.expenseCategoryVoice:
+		
 								costTmp = Double.parseDouble(usageOneMonth.getVoiceCharges()) / numberOfLines;
-																
-							} else if (categorySelector == FleetHelper.expenseCategoryData){
-
+								break;
+								
+							case FleetHelper.expenseCategoryData:
+		
 								costTmp = Double.parseDouble(usageOneMonth.getDataCharges()) / numberOfLines;
+								break;
 								
-							} else if (categorySelector == FleetHelper.expenseCategoryMessages){
-
+							case FleetHelper.expenseCategoryMessages:
+		
 								costTmp = Double.parseDouble(usageOneMonth.getMessagesCharges()) / numberOfLines;
+								break;
 								
-							} else if (categorySelector == FleetHelper.expenseCategoryRoaming){
-
+							case FleetHelper.expenseCategoryRoaming:
+		
 								costTmp = Double.parseDouble(usageOneMonth.getRoamingCharges()) / numberOfLines;
+								break;
 								
-							} else if (categorySelector == FleetHelper.expenseCategoryEquipment){
-
+							case FleetHelper.expenseCategoryEquipment:
+		
 								costTmp = Double.parseDouble(usageOneMonth.getEquipmentCharges()) / numberOfLines;
+								break;
 								
-							} else if (categorySelector == FleetHelper.expenseCategoryTaxes){
-
+							case FleetHelper.expenseCategoryTaxes:
+		
 								costTmp = Double.parseDouble(usageOneMonth.getTaxCharges()) / numberOfLines;
+								break;
 								
-							} else if (categorySelector == FleetHelper.expenseCategoryOther){
-
+							case FleetHelper.expenseCategoryOther:
+		
 								costTmp = Double.parseDouble(usageOneMonth.getOtherCharges()) / numberOfLines;
+								break;
 								
-							} else if (categorySelector == FleetHelper.expenseCategoryAccount){
-
+							case FleetHelper.expenseCategoryAccount:
+		
 								costTmp = Double.parseDouble(usageOneMonth.getTotalAccountLevelCharges()) / numberOfLines;
-							}	
+								break;
 							
-							costPerServiceNumber = UsageCalculationHelper.roundNoDecimalDigits(costTmp, true);
-							
-						}
+						}	
 						
-						map.put(usageOneMonth.getVendorName(), costPerServiceNumber);
+						costPerServiceNumber = UsageCalculationHelper.roundNoDecimalDigits(costTmp, true);
 						
-						
-					} else if (barChartId == FleetHelper.countServiceNumbersChart) {
-						
-						map.put(usageOneMonth.getVendorName(), UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getNumberOfLines()), false));
-												
 					}
-										
+					
+					map.put(itemName, costPerServiceNumber);
+					
+					
+				} else if (barChartId == FleetHelper.countServiceNumbersChart) {
+					
+					map.put(itemName, UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(usageOneMonth.getNumberOfLines()), false));
+											
 				}
+									
+//				}
 									
 			}
 			
@@ -262,14 +314,33 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 	private static void calculateOtherExpectedValues(int barChartId, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector, ViewType view) {
 		
 		
-		List<WebElement> vendorsInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
-		List<String> vendorsInChartNames = new ArrayList<String>();
+		int amountItemsSelected = 0;
+		int amountItemsInChart = 0;
 		
-		for (int i = 0; i < vendorsInChart.size(); i++){
-			vendorsInChartNames.add(vendorsInChart.get(i).getText());
-		}	
+		List<String> itemsSelectedCheckbox = new ArrayList<>();
+		List<String> itemsInChartNames = new ArrayList<>();
 		
-		List<WebElement> vendorsSelectedCheckBox = driver.findElements(By.cssSelector("md-checkbox.md-checkbox-checked>label>span"));
+		if (view.equals(ViewType.country)) {
+			
+			amountItemsSelected = countriesSelectedCheckBox.size();
+			amountItemsInChart = countriesInChartNames.size();
+			
+			itemsSelectedCheckbox.addAll(countriesSelectedCheckBox);
+			itemsInChartNames.addAll(countriesInChartNames);
+			
+		} else if (view.equals(ViewType.vendor)) {
+			
+			amountItemsSelected = vendorsSelectedCheckBox.size();
+			amountItemsInChart = vendorsInChartNames.size();
+			
+			itemsSelectedCheckbox.addAll(vendorsSelectedCheckBox);
+			itemsInChartNames.addAll(vendorsInChartNames);
+		}
+		
+				
+		boolean moreThanFiveItemsSelected = (amountItemsSelected > 5);
+		boolean sixItemsInChart = (amountItemsInChart == 6);
+		
 		
 		// The list contains one HashMap per month. Each HashMap contains the data for all the vendors.
 		List<HashMap<String, UsageOneMonth>> listUsageAllMonths = new ArrayList<>();
@@ -282,8 +353,20 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			
 			for (int j = 0; j < listForMonth.size(); j++) {
 			
-				UsageOneMonth u = listForMonth.get(j);
-				mapTmp.put(u.getVendorName(), u);
+				UsageOneMonth usage = listForMonth.get(j);
+				String itemName = ""; 
+				
+				if (view.equals(ViewType.country)) {
+					
+					itemName = usage.getCountry();
+					
+				} else if (view.equals(ViewType.vendor)) {
+
+					itemName = usage.getVendorName();
+					
+				}
+				
+				mapTmp.put(itemName, usage);
 				
 			}
 			
@@ -292,14 +375,13 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		}
 		
 				
-		//  Calculate the value for "Other"
-		boolean moreThanFiveVendorsSelected = vendorsSelectedCheckBox.size() > 5;
-		boolean sixVendorsInChart = vendorsInChartNames.size() == 6;
+		// ** Calculate the value for "Other" **
+
+		String otherLabel = "Other";
 		
-		String otherVendors = "Other";
-		
-		// If more than 5 vendors are selected, and there are 6 vendors in chart
-		if (moreThanFiveVendorsSelected && sixVendorsInChart) {
+		// If more than 5 vendors/countries are selected on the PoV section, and there are 6 vendors/countries in chart,  
+		// then the data for one or more vendors/countries is summarized in the "Other" item. The value for "Other" needs to be calculated.
+		if (moreThanFiveItemsSelected && sixItemsInChart) {
 			
 			// System.out.println("More Than 5 Vendors Selected: " + moreThanFiveVendorsSelected);
 			// System.out.println("6 Vendors in Chart: " + sixVendorsInChart);
@@ -312,115 +394,135 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				String expensesOther = "";
 				String countOther = "";
 								
-				for (int i = 0; i < vendorsSelectedCheckBox.size(); i++) {
+				for (int i = 0; i < amountItemsSelected; i++) {
 					
-					String v = vendorsSelectedCheckBox.get(i).getText();
+					String item = itemsSelectedCheckbox.get(i);
 					
 					// ************ SEE NOTE NEXT TO NEXT LINE - CHANGE TO BE MADE **************************
-					if (!vendorsInChartNames.contains(v) && vendorHasData.get(v)) { // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
-						
-//						System.out.println("Vendor " + v + ", is not listed in chart");
+					if (!itemsInChartNames.contains(item) && hasData.get(item)) { // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
 					
-						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(v);
+						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(item);
 							
 						if (barChartId == FleetHelper.expenseByVendorChart) {
 							
-							if (categorySelector == FleetHelper.expenseCategoryAll){
+							switch (categorySelector) {
+							
+								case FleetHelper.expenseCategoryAll: 
+									
+									otherTmpSum += (Double.parseDouble(usage.getTotalCharge()));
+									break;
+									
+								case FleetHelper.expenseCategoryVoice:
+									
+									otherTmpSum += (Double.parseDouble(usage.getVoiceCharges()));
+									break;
+									
+								case FleetHelper.expenseCategoryData:
+									
+									otherTmpSum += (Double.parseDouble(usage.getDataCharges()));
+									break;
+									
+								case FleetHelper.expenseCategoryMessages:
+									
+									otherTmpSum += (Double.parseDouble(usage.getMessagesCharges()));
+									break;
+									
+								case FleetHelper.expenseCategoryRoaming:
+									
+									otherTmpSum += (Double.parseDouble(usage.getRoamingCharges()));
+									break;
+									
+								case FleetHelper.expenseCategoryEquipment:
+									
+									otherTmpSum += (Double.parseDouble(usage.getEquipmentCharges()));
+									break;
+									
+								case FleetHelper.expenseCategoryTaxes:
+									
+									otherTmpSum += (Double.parseDouble(usage.getTaxCharges()));
+									break;
+									
+								case FleetHelper.expenseCategoryOther:
+									
+									otherTmpSum += (Double.parseDouble(usage.getOtherCharges()));
+									break;
+									
+								case FleetHelper.expenseCategoryAccount:
+									
+									otherTmpSum += (Double.parseDouble(usage.getTotalAccountLevelCharges()));
+									break;
 										
-								otherTmpSum += (Double.parseDouble(usage.getTotalCharge()));
-								
-							} else if (categorySelector == FleetHelper.expenseCategoryVoice){
-								
-								otherTmpSum += (Double.parseDouble(usage.getVoiceCharges()));
-								
-							} else if (categorySelector == FleetHelper.expenseCategoryData){
-								
-								otherTmpSum += (Double.parseDouble(usage.getDataCharges()));
-								
-							} else if (categorySelector == FleetHelper.expenseCategoryMessages){
-								
-								otherTmpSum += (Double.parseDouble(usage.getMessagesCharges()));
-								
-							} else if (categorySelector == FleetHelper.expenseCategoryRoaming){
-								
-								otherTmpSum += (Double.parseDouble(usage.getRoamingCharges()));
-								
-							} else if (categorySelector == FleetHelper.expenseCategoryEquipment){
-								
-								otherTmpSum += (Double.parseDouble(usage.getEquipmentCharges()));
-								
-							} else if (categorySelector == FleetHelper.expenseCategoryTaxes){
-								
-								otherTmpSum += (Double.parseDouble(usage.getTaxCharges()));
-								
-							} else if (categorySelector == FleetHelper.expenseCategoryOther){
-								
-								otherTmpSum += (Double.parseDouble(usage.getOtherCharges()));
-								
-							} else if (categorySelector == FleetHelper.expenseCategoryAccount){
-								
-								otherTmpSum += (Double.parseDouble(usage.getTotalAccountLevelCharges()));
-								
 							}
 							
 							expensesOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, true);
-							expectedValues.get(indexMonthValues).put(otherVendors, expensesOther); 
+							expectedValues.get(indexMonthValues).put(otherLabel, expensesOther); 
 							
 							
 						} else if (barChartId == FleetHelper.costPerServiceNumberChart) {
 							
-							int numberOfLines = Integer.parseInt(usage.getNumberOfLines());
+							int numberOfLines = (int) Double.parseDouble(usage.getNumberOfLines());
 							
 							// If numberOfLines is not zero, then calculate the costPerServiceNumber, otherwise, costPerServiceNumber will be set to zero. 
 							// This is to avoid the error generated by a division by zero.
 							if (numberOfLines != 0) { 
 								
-								if (categorySelector == FleetHelper.expenseCategoryAll){
-									
-									otherTmpSum += Double.parseDouble(usage.getTotalCharge());
-																										
-								} else if (categorySelector == FleetHelper.expenseCategoryVoice){
-
-									otherTmpSum += Double.parseDouble(usage.getVoiceCharges());
-																	
-								} else if (categorySelector == FleetHelper.expenseCategoryData){
-
-									otherTmpSum += Double.parseDouble(usage.getDataCharges());
-									
-								} else if (categorySelector == FleetHelper.expenseCategoryMessages){
-
-									otherTmpSum += Double.parseDouble(usage.getMessagesCharges());
-									
-								} else if (categorySelector == FleetHelper.expenseCategoryRoaming){
-
-									otherTmpSum += Double.parseDouble(usage.getRoamingCharges());
-									
-								} else if (categorySelector == FleetHelper.expenseCategoryEquipment){
-
-									otherTmpSum += Double.parseDouble(usage.getEquipmentCharges());
-									
-								} else if (categorySelector == FleetHelper.expenseCategoryTaxes){
-
-									otherTmpSum += Double.parseDouble(usage.getTaxCharges());
-									
-								} else if (categorySelector == FleetHelper.expenseCategoryOther){
-
-									otherTmpSum += Double.parseDouble(usage.getOtherCharges());
-									
-								} else if (categorySelector == FleetHelper.expenseCategoryAccount){
-
-									otherTmpSum += Double.parseDouble(usage.getTotalAccountLevelCharges());
-									
+								switch (categorySelector) {
+								
+									case FleetHelper.expenseCategoryAll: 
+										
+										otherTmpSum += Double.parseDouble(usage.getTotalCharge());
+										break;
+										
+									case FleetHelper.expenseCategoryVoice:
+										
+										otherTmpSum += Double.parseDouble(usage.getVoiceCharges());
+										break;
+										
+									case FleetHelper.expenseCategoryData:
+										
+										otherTmpSum += Double.parseDouble(usage.getDataCharges());
+										break;
+										
+									case FleetHelper.expenseCategoryMessages:
+										
+										otherTmpSum += Double.parseDouble(usage.getMessagesCharges());
+										break;
+										
+									case FleetHelper.expenseCategoryRoaming:
+										
+										otherTmpSum += Double.parseDouble(usage.getRoamingCharges());
+										break;
+										
+									case FleetHelper.expenseCategoryEquipment:
+										
+										otherTmpSum += Double.parseDouble(usage.getEquipmentCharges());
+										break;
+										
+									case FleetHelper.expenseCategoryTaxes:
+										
+										otherTmpSum += Double.parseDouble(usage.getTaxCharges());
+										break;
+										
+									case FleetHelper.expenseCategoryOther:
+										
+										otherTmpSum += Double.parseDouble(usage.getOtherCharges());
+										break;
+										
+									case FleetHelper.expenseCategoryAccount:
+										
+										otherTmpSum += Double.parseDouble(usage.getTotalAccountLevelCharges());
+										break;
+											
 								}
 								
 								numberLinesTmpSum += numberOfLines;
 								costServNumberTmpSum = otherTmpSum / numberLinesTmpSum;
 								expensesOther = UsageCalculationHelper.roundNoDecimalDigits(costServNumberTmpSum, true);
-								expectedValues.get(indexMonthValues).put(otherVendors, expensesOther); 
+								expectedValues.get(indexMonthValues).put(otherLabel, expensesOther); 
 								
 							} else if (numberOfLines == 0 && numberLinesTmpSum == 0) {
 								
-								expectedValues.get(indexMonthValues).put(otherVendors, "$0"); 
+								expectedValues.get(indexMonthValues).put(otherLabel, "$0"); 
 								
 							}
 							
@@ -429,7 +531,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 							
 							otherTmpSum += Double.parseDouble(usage.getNumberOfLines());				
 							countOther = UsageCalculationHelper.roundNoDecimalDigits(otherTmpSum, false);
-							expectedValues.get(indexMonthValues).put(otherVendors, countOther);
+							expectedValues.get(indexMonthValues).put(otherLabel, countOther);
 							
 						}	
 														
@@ -444,6 +546,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 	}
 
 
+	
 	public static void verifyExpenseTrendingChartTooltipByCountry(int barChartId, List<List<UsageOneMonth>> allValuesFromFile, int categorySelector) throws InterruptedException, ParseException, AWTException {
 		
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
@@ -453,21 +556,27 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 				
 		Thread.sleep(2000);
 			
-		List<WebElement> legendsElements = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
-		List<String> legends = new ArrayList<>();
-		
-		for (WebElement e: legendsElements) {
-			legends.add(e.getText());
-			// System.out.println("Legend: " + e.getText());
-		}
-		
-		ViewType view = ViewType.country;
-		
-		vendorHasData = GeneralHelper.isThereDataForSelectedMonth(allValuesFromFile, view);		
+		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		
 		expectedValues = new ArrayList<HashMap<String, String>>();
 		
-		// Get the expected values of the vendors listed on the chart
+		countriesInChart = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
+		
+		countriesInChartNames = new ArrayList<String>();
+		
+		for (int i = 0; i < countriesInChart.size(); i++){
+			
+			countriesInChartNames.add(countriesInChart.get(i).getText());
+		}	
+		
+		countriesSelectedCheckBox = FleetHelper.getCountriesSelected();
+	
+		ViewType view = ViewType.country;
+		
+		hasData = GeneralHelper.isThereDataForSelectedMonth(allValuesFromFile, view);		
+		
+				
+		// Get the expected values of the countries listed on the chart
 		getExpectedValues(barChartId, allValuesFromFile, categorySelector, view);
 
 		// Calculate the value for the 'Other' element on the chart
@@ -493,38 +602,38 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 
 			// 0 MM-YYYY -- month and year appears once
 			// 1 ? -- this is for the bullet
-			// 2 <vendor's name>
-			// 3 <amount shown for the vendor>
+			// 2 <country's name>
+			// 3 <amount shown for the country>
 			
 			// ** May 17 - Ana 
 			// Dash version 1.2.8 - tooltip's format has changed on DOM: the amount of items in the tooltip equals to the (amount of series * 2) + 1 
 			// 0 MM-YYYY -- month and year appears once -- stays the same
 			// 1 ? -- this is for the bullet -- stays the same
-			// 2 : <vendor's name> : <amount shown for the vendor>  -- unified in the same line 
+			// 2 : <country's name> : <amount shown for the country>  -- unified in the same line 
 						
 			
 			List<WebElement> highchartSeries = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-series-group>.highcharts-series"));
 			int amount = highchartSeries.size();
-			int factor = 2;  // Ana added - May 17
-			int expectedAmountItemsTooltip = (amount * factor) + 2;  // Ana modif - May 17
-			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			int factor = 2;
+			int expectedAmountItemsTooltip = (amount * factor) + 2;
+			GeneralHelper.verifyExpectedAndActualValues(tooltip.size(), expectedAmountItemsTooltip);
 			
 			
-			// For each vendor listed in the tooltip verify the label and the amount shown
+			// For each country listed in the tooltip verify the label and the amount shown
 			for (int i = 1; i <= legends.size(); i++) {
 			
-				int index = i * factor + 1;  // Ana modif - May 17 -- before modif --> int index =  i * 3 - 1;  
+				int index = i * factor + 1;  
 				
 				// Get the label and remove colon at the end of its text
-				String labelFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 17 -- before modif --> tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+				String labelFound = tooltip.get(index).getText().split(":")[1].trim();
 
 				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
-				String valueFound = tooltip.get(index).getText().split(":")[2].trim(); // Ana modif - May 17 -- before modif --> tooltip.get(index+1).getText().trim().replace(" ", "");
+				String valueFound = tooltip.get(index).getText().split(":")[2].trim();
 					
 				// Get the value expected
 				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
 				
-				System.out.println("Vendor: " + labelFound);
+				System.out.println("Country: " + labelFound);
 				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
@@ -533,9 +642,9 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			
 			// Verify month and year shown on the tooltip (first line)
 			String monthYearFound = tooltip.get(0).getText();
-			String monthYearExpected = monthYearList.get(indexMonth).replace("/", "-");
+			String monthYearExpected = monthYearList.get(indexMonth);
 				
-			Assert.assertEquals(monthYearFound, monthYearExpected);
+			GeneralHelper.verifyExpectedAndActualLabels(monthYearFound, monthYearExpected);
 			// System.out.println("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
 			indexHighchart++;
@@ -543,10 +652,6 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			
 		}
 				
-		
-		
 	}
 	
-	
-
 }

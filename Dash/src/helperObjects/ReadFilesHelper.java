@@ -115,7 +115,7 @@ public class ReadFilesHelper extends BaseClass {
 
 	    for (int i = 0; i < array.length(); i++){
 	    	
-	    	JSONObject jsonObj  = array.getJSONObject(i);
+	    	JSONObject jsonObj = array.getJSONObject(i);
 	    	trendDataOneMonth = new HierarchyTrendData();
 	        
 	    	trendDataOneMonth.setId(jsonObj.getString("id"));

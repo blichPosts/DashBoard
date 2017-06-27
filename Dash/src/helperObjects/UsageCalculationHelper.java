@@ -20,30 +20,30 @@ public class UsageCalculationHelper extends BaseClass{
 		
 		// System.out.println("Original amount: " + amount);
 			
-		if (amount < 1024.0) {
+		if (amount < 1024.0) {  // Kb
 			
 			tmpAmount = amount;
 		}
-		else if (amount > 1024.0 && amount < 1048576.0) {
+		else if (amount > 1024.0 && amount < 1048576.0) { // Mb
 			
 			tmpAmount = amount / 1024;
 			
 		}
-		else if (amount > 1048576.0 && amount < 1073741824.0) {
+		else if (amount > 1048576.0 && amount < 1073741824.0) { // Gb
 			
 			tmpAmount = amount / Math.pow(1024, 2);
 			
 		}
-		else if (amount > 1073741824.0 && amount < 1099511627776.0) {
+		else if (amount > 1073741824.0) { // && amount < 1099511627776.0) { // Tb
 			
 			tmpAmount = amount / Math.pow(1024, 3);
 			
 		}
-		else if (amount > 1099511627776.0) {
-			
-			tmpAmount = amount / Math.pow(1024, 4);
-			
-		}
+//		else if (amount > 1099511627776.0) {
+//			
+//			tmpAmount = amount / Math.pow(1024, 4);
+//			
+//		}
 		
 //		if (amount < 1000.0) {
 //			
@@ -260,7 +260,7 @@ public class UsageCalculationHelper extends BaseClass{
 			tmpAmount = amount / Math.pow(1024, 2);
 			unit = "GB";
 		}
-		else if (amount > 1000000000.0 && amount < 1000000000000.0) {
+		else if (amount > 1000000000.0) { // && amount < 1000000000000.0) {
 			tmpAmount = amount / Math.pow(1024, 3);
 			unit = "TB";
 		}

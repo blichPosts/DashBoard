@@ -52,7 +52,7 @@ public class UsageKPITilesTestValuesOneVendor extends BaseClass{
 		// #1 Select Vendor View 
 		UsageHelper.selectVendorView();
 					
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
+		List<WebElement> vendors = CommonTestStepActions.getAllVendorsInPoV();
 		List<String> vendorNames = new ArrayList<>();
 		
 		for(WebElement vendor: vendors){

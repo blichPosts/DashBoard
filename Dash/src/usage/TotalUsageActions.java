@@ -25,7 +25,7 @@ public class TotalUsageActions extends BaseClass{
 	// unless there are already 5 vendors listed. In this case the value for the selected vendor may be included under "Other"  
 	public static void vendorsAddedToCharts(int chartNum, int kpiNum) throws InterruptedException {
 		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames(); 
+		List<WebElement> vendors = CommonTestStepActions.getAllVendorsInPoV(); 
 		List<WebElement> kpiTiles = driver.findElements(By.cssSelector(".tdb-kpi__statistic"));
 		
 			

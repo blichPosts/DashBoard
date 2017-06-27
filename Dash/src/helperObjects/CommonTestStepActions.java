@@ -379,7 +379,7 @@ public class CommonTestStepActions extends BaseClass
 		List<String> listVendorsChecked = new ArrayList<String>();
 		
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = getAllVendorNames();
+		List<WebElement> listVendorsLabels = getAllVendorsInPoV();
 		
 		
 		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
@@ -418,7 +418,7 @@ public class CommonTestStepActions extends BaseClass
 		List<String> listCountriesCheckedTemp = new ArrayList<String>();			
 			
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = getAllVendorNames();   //driver.findElements(By.cssSelector(".md-checkbox-label"));
+		List<WebElement> listVendorsLabels = getAllVendorsInPoV();   //driver.findElements(By.cssSelector(".md-checkbox-label"));
 		
 		
 		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
@@ -458,8 +458,8 @@ public class CommonTestStepActions extends BaseClass
 	}
 
 	
-	// It returns a list with all the vendor names listed on the Point of View section
-	public static List<WebElement> getAllVendorNames(){
+	// It returns a list with all the vendors listed on the Point of View section
+	public static List<WebElement> getAllVendorsInPoV(){
 		 
 		String xpath = "";
 		
@@ -489,7 +489,7 @@ public class CommonTestStepActions extends BaseClass
 	public static void selectOneVendor(String vendorName) {
 	
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
-		List<WebElement> listVendorsLabels = getAllVendorNames();
+		List<WebElement> listVendorsLabels = getAllVendorsInPoV();
 		
 		
 		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
@@ -674,5 +674,23 @@ public class CommonTestStepActions extends BaseClass
 			ShowText("Nothing to close. Settings pane appears already closed.");
 		}
 	}	
+	
+	
+	// It returns a list with all the vendors' names
+	public static List<String> getAllVendorNames(){
+		 
+		List<WebElement> vendorsList = getAllVendorsInPoV();
+		List<String> vendorNames = new ArrayList<>(); 
+		
+		for (WebElement vendor: vendorsList) {
+			
+			vendorNames.add(vendor.getText());
+			// ShowText(vendor.getText());
+		}
+		
+		return vendorNames;
+		
+	}
+		
 	
 }

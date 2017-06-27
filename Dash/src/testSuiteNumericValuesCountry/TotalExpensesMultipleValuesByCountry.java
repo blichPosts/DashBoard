@@ -49,7 +49,7 @@ public class TotalExpensesMultipleValuesByCountry extends BaseClass{
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
+		List<WebElement> vendors = CommonTestStepActions.getAllVendorsInPoV();
 		List<String> vendorNames = new ArrayList<>();
 		
 		for(WebElement vendor: vendors){
@@ -156,5 +156,3 @@ public class TotalExpensesMultipleValuesByCountry extends BaseClass{
 	
 }
 	
-	
-

@@ -49,7 +49,7 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 		
 		// #1 Select Vendor View and Unselect all vendors 
 		UsageHelper.selectVendorView();
-		CommonTestStepActions.UnSelectAllVendors();
+		//CommonTestStepActions.UnSelectAllVendors();
 		
 		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataForTest();
 

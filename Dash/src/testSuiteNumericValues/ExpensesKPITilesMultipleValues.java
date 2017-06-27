@@ -50,7 +50,7 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectVendorView();
-		CommonTestStepActions.UnSelectAllVendors();
+		//CommonTestStepActions.UnSelectAllVendors();
 					
 						
 		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataForTest();

@@ -55,7 +55,7 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 		CommonTestStepActions.UnSelectAllVendors();
 		
 		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
+		List<WebElement> vendors = CommonTestStepActions.getAllVendorsInPoV();
 		List<String> vendorNames = new ArrayList<>();
 		
 		
