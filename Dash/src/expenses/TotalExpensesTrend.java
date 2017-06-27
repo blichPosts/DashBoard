@@ -160,7 +160,8 @@ public class TotalExpensesTrend extends BaseClass
 			
 			if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
 			{
-				webEleListLegends.get(x).click(); // this is web element click.
+				// webEleListLegends.get(x).click(); // this is web element click.
+				eleList.get(x).click(); // 6/26/17 
 			}
 			else
 			{

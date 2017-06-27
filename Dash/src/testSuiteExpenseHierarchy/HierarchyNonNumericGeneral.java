@@ -48,8 +48,6 @@ public class HierarchyNonNumericGeneral extends BaseClass
 		
 		ShowText("Verify maximum pulldowns.");
 		
-		Pause("Freeze");
-		
 		HierarchyGeneral.VerifyMaxDisplayedPullDowns();
 		
 		HierarchyGeneral.VerifySelectionsMatchUsingPovPullDown();

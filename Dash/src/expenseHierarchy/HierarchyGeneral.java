@@ -242,7 +242,7 @@ public class HierarchyGeneral extends BaseClass
 	//														helpers 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
-	// this compares values in a pulldown to the expected pulldown. the pulldown to use is passed in vie xpath. 
+	// this compares values in a pulldown to the expected pulldown. the pulldown to use is passed in via xpath. 
 	public static void VerifyCorrectPullDownValues(String xpath)
 	{
 		// get the values in the pull down sent in by xpath.
