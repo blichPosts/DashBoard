@@ -44,12 +44,11 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 		// Wait for countries and vendors to be loaded on PoV section
 		FleetHelper.waitForPoVSectionToBeLoaded(); 
 			
+		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectVendorView();
-		CommonTestStepActions.UnSelectAllVendors();
-
-		CommonTestStepActions.GoToExpensePageDetailedWait();
+		
 		
 		// #2 Get the data for each of the selected vendors for all months.
 		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = FleetHelper.getExpenseUsageDataForTest();

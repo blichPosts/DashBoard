@@ -424,13 +424,12 @@ public class TotalExpensesValues extends BaseClass {
 				break;
 			
 		}
-			
+		
+		ShowText("Label Found: " + labelFound + ", Label Expected: " + labelExpected);
+		ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
+		
 		Assert.assertEquals(labelFound, labelExpected);
 		GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
-		
-		System.out.println("  labelFound: " + labelFound + ", labelExpected: " + labelExpected);
-		System.out.println("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
-		
 		
 	}
 
@@ -585,7 +584,7 @@ public class TotalExpensesValues extends BaseClass {
 				String vendorNameFound = tooltip.get(index).getText().split(":")[1].trim();
 				tmpListVendorFound.add(vendorNameFound);
 				
-				ShowText("vendorNameFound: " + vendorNameFound);
+				ShowText("Vendor Name Found: " + vendorNameFound);
 				
 				
 				// Get the value on tooltip and remove all blank spaces
@@ -599,7 +598,7 @@ public class TotalExpensesValues extends BaseClass {
 
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				
-				ShowText("  valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+				ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 				
 				indexVendorInChart++;
 				
@@ -727,7 +726,7 @@ public class TotalExpensesValues extends BaseClass {
 				String countryNameExpected = countriesInChartNames.get(indexCountryInChart);
 					
 				Assert.assertEquals(countryNameFound, countryNameExpected);
-				System.out.println("country name found: " + countryNameFound + ", country name expected: " + countryNameExpected);
+				System.out.println("Country name found: " + countryNameFound + ", Country name expected: " + countryNameExpected);
 				
 				
 				// Verify the label and the amount shown on the tooltip
@@ -897,7 +896,7 @@ public class TotalExpensesValues extends BaseClass {
 				String countryNameFound = tooltip.get(index).getText().split(":")[1].trim();
 				tmpListCountryFound.add(countryNameFound);
 				
-				ShowText("country name found: " + countryNameFound);
+				ShowText("Country name found: " + countryNameFound);
 				
 				
 				// Get the value on tooltip and remove all blank spaces
@@ -911,8 +910,7 @@ public class TotalExpensesValues extends BaseClass {
 
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				
-				ShowText("  value found: " + valueFound + ", value expected: " + valueExpected);
-				
+				ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 				indexCountryInChart++;
 				
 			}

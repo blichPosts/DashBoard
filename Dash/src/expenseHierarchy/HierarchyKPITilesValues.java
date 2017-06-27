@@ -211,10 +211,11 @@ public class HierarchyKPITilesValues extends BaseClass{
 						String trend = trendingElementKpi.get(1).getText();
 						int trendValueActual = getTrendingValueWithNoSymbol(trend); 
 						
-						Assert.assertTrue(trendingElementKpi.size() == 2);
+						Assert.assertTrue(trendingElementKpi.size() == 2, "The trending percentage is missing.");
+						Assert.assertTrue(trend.endsWith("%"), "% symbol is missing.");
+						
 						GeneralHelper.verifyExpectedAndActualValues(trendValueActual, trendValueExpected);
-						Assert.assertTrue(trend.endsWith("%"));
-																		
+						
 						ShowText("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
  
 					}

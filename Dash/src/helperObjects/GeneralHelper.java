@@ -249,18 +249,22 @@ public class GeneralHelper extends BaseClass {
 	// Due to rounding there may be some case where the value found and the value expected differ on 1, e.g.: Value found = 28, Value expected = 27
 	public static void verifyExpectedAndActualValues(double valueActual, double valueExpected) {
 		
-		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
+		String errorMessage = "Value found: " + valueActual + " is different from Value expected: " + valueExpected + "  **";
+				
+		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 , errorMessage);
 		
 	}
 	
-	
+
 	public static void verifyExpectedAndActualValues(long valueActual, long valueExpected) {
 		
-		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 );
+		String errorMessage = "Value found: " + valueActual + " is different from Value expected: " + valueExpected + "  **";
+		
+		Assert.assertTrue(Math.abs(valueActual - valueExpected) <= 1 , errorMessage);
 				
 	}
 	
-	
+
 	public static void verifyExpectedAndActualValues(String valueActual, String valueExpected) {
 		
 		// ShowText("Value actual: " + valueActual + "; Value expected: " + valueExpected);
@@ -270,7 +274,9 @@ public class GeneralHelper extends BaseClass {
 		
 		// ShowText("numActual: " + numActual + "; numExpected: " + numExpected);
 		
-		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1 );
+		String errorMessage = "Value found: " + numActual + " is different from Value expected: " + numExpected + "  **";
+				
+		Assert.assertTrue(Math.abs(numActual - numExpected) <= 1, errorMessage);
 		
 	}
 		
@@ -314,6 +320,15 @@ public class GeneralHelper extends BaseClass {
 	}
 
 	
+	
+	public static void verifyExpectedAndActualLabels(String labelFound, String labelExpected) {
+		
+		Assert.assertEquals(labelFound, labelExpected, "Label found: " + labelFound + " is not the same as the label expected: " + labelExpected);
+		
+	}
+	
+	
+	
 	public static boolean waitForKPIsToLoad(int timeOut) throws Exception {
 	    
 		By byMainKPIvalue = By.cssSelector(".tdb-kpi__statistic");
@@ -341,8 +356,14 @@ public class GeneralHelper extends BaseClass {
 		
 	}	
 	
-	
-	
+
+	public static boolean waitForChartToLoad(int chartId, int timeOut) throws Exception {
+		
+		String cssSelector = "#" + UsageHelper.getChartId(chartId) + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-child(2)";
+		return WaitForElementVisibleNoThrow(By.cssSelector(cssSelector), timeOut);
+		
+	}
+
 
 	// NEW - this is working -- We need to obtain the "y" coordinate of the center of the chart. 
 	// This is to make sure that the mouse is not outside the chart, and therefore, tooltip gets displayed.
@@ -464,39 +485,34 @@ public class GeneralHelper extends BaseClass {
 		int height = bar.getSize().getHeight();
 		int width = bar.getSize().getWidth();
 		
-		ShowText("height: " + height + ", " + "width: " + width);
-		
+				
 		double factor = 1;
-		if (!isTopTenChart) factor = 0.5; 
+		//if (!isTopTenChart) factor = 0.5; 
 		
 		int x_offset = (int) (width * 0.5);
 		int y_offset = (int) (height * factor) + (int) getScrollPosition();
 		
-		ShowText("x_offset: " + x_offset + ", " + "y_offset: " + y_offset);
-		
 		int x = coordinates.getX() + x_offset + 2;
 		int y = coordinates.getY() + y_offset;
-		
-		ShowText("x: " + x + ", " + "y: " + y);
 		
 		Robot robot = new Robot();
 		robot.mouseMove(x, y);
 		
-		if (!isTopTenChart) {
-			
-			Thread.sleep(500);
-			robot.mouseMove(x + 5, y);
-			
-			if (width > 10.0) {
-				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-			}
-			
-			if (width < 10.0) {
-				robot.mousePress(InputEvent.BUTTON1_MASK);
-				robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			}
-						
-		}
+//		if (!isTopTenChart) {
+//			
+//			Thread.sleep(500);
+//			robot.mouseMove(x + 5, y);
+//			
+//			if (width > 10.0) {
+//				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
+//			}
+//			
+//			if (width < 10.0) {
+//				robot.mousePress(InputEvent.BUTTON1_MASK);
+//				robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//			}
+//						
+//		}
 		
 		Thread.sleep(500);
 		// robot.mouseMove(x + 10, y);  // <-- If needed, uncomment it. It replaces the mouse press and release, since in this chart the mouse click on the bar should redirect to a different page in CMD.
@@ -578,6 +594,7 @@ public class GeneralHelper extends BaseClass {
 		return driver.findElement(By.cssSelector(".tdb-pov__monthPicker>div>select>option:last-of-type")).getText();
 		
 	}
+
 
 	
 }

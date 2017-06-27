@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.WebElement;
-import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.AncestorsInfo;
+import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 
 public class HierarchyAncestors extends BaseClass {
@@ -33,7 +33,7 @@ public class HierarchyAncestors extends BaseClass {
 //			ShowText("valueFound: " + valueFound);
 //			ShowText("valueExpected: " + valueExpected);
 			
-			Assert.assertEquals(valueFound, valueExpected);
+			GeneralHelper.verifyExpectedAndActualLabels(valueFound, valueExpected);
 			
 		}
 		

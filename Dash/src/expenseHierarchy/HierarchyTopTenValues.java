@@ -91,7 +91,7 @@ public class HierarchyTopTenValues extends BaseClass{
 		GeneralTopTenHelper.verifyValuesSortedDescendantOrder(expectedValuesList); 
 		
 		// Verify that the element "Average" exists on the Top Ten chart.
-		Assert.assertTrue(chartLabelsFound.contains("Average"));
+		Assert.assertTrue(chartLabelsFound.contains("Average"), "Average is not included in the chart.");
 		
 		// Verify the info contained on each of the tooltips for the values listed on the chart 	
 		
@@ -122,12 +122,12 @@ public class HierarchyTopTenValues extends BaseClass{
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-			System.out.println("labelFound: " + labelFound);
-			System.out.println("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+			System.out.println("Label Found: " + labelFound);
+			System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
 			// They cannot be verified by order, since if there are 2 elements that have the same value (expenses value) the order in which they'll be listed cannot be known
-			Assert.assertTrue(expectedLabels.contains(labelFound));
+			Assert.assertTrue(expectedLabels.contains(labelFound), "Label found " + labelFound + " is not included in the 'Expected Labels' list");
 			GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 			
 			indexHighchart++;
@@ -298,7 +298,8 @@ public class HierarchyTopTenValues extends BaseClass{
 		fullNameFound = fullNameFound.split(" ")[0] + " " + fullNameFound.split(" ")[1];
 		String hierarchyFound = driver.findElement(By.cssSelector("tr.top>.pad-r5:nth-of-type(3)")).getText().split("\n")[1];
 		String serviceNumberFound = GeneralTopTenHelper.formatPhoneNumber(driver.findElement(By.cssSelector("tr.data-row>td:nth-of-type(2)>a")).getText());
-		String totalChargesValueFound = driver.findElements(By.cssSelector(".data-cell.datar>strong")).get(6).getText().replace(",", "");
+		String totalChargesValueFound = driver.findElements(By.cssSelector(".data-cell.data")).get(4).getText().replace(",", "").replace(" ", "");
+//		String totalChargesValueFound = driver.findElements(By.cssSelector(".data-cell.datar>strong")).get(6).getText().replace(",", ""); // --> OLD 
 	
 		
 		ShowText("  * fullNameFound: " + fullNameFound + " - * fullNameExpected: " + fullNameExpected);
@@ -306,10 +307,10 @@ public class HierarchyTopTenValues extends BaseClass{
 		ShowText("  * serviceNumberFound: " + serviceNumberFound + " - * serviceNumberExpected: " + serviceNumberExpected);
 		ShowText("  * totalChargesValueFound: " + totalChargesValueFound + " - * totalChargesValueExpected: " + totalChargesValueExpected);
 		
-		Assert.assertEquals(fullNameFound, fullNameExpected);
-		Assert.assertEquals(hierarchyFound, hierarchyExpected);
-		Assert.assertEquals(serviceNumberFound, serviceNumberExpected);
-		Assert.assertEquals(totalChargesValueFound, totalChargesValueExpected);
+		GeneralHelper.verifyExpectedAndActualLabels(fullNameFound, fullNameExpected);
+		GeneralHelper.verifyExpectedAndActualLabels(hierarchyFound, hierarchyExpected);
+		GeneralHelper.verifyExpectedAndActualLabels(serviceNumberFound, serviceNumberExpected);
+		GeneralHelper.verifyExpectedAndActualLabels(totalChargesValueFound, totalChargesValueExpected);
 		
 	}
 

@@ -52,7 +52,7 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 		UsageHelper.selectVendorView();
 					
 		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
+		List<WebElement> vendors = CommonTestStepActions.getAllVendorsInPoV();
 		List<String> vendorNames = new ArrayList<>();
 		
 		for(WebElement vendor: vendors){

@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -13,9 +11,9 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyTopTenValues;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
-import helperObjects.UsageHelper;
 
 
 public class HierarchyTopTenReport extends BaseClass {
@@ -48,8 +46,7 @@ public class HierarchyTopTenReport extends BaseClass {
 		
 
 		// #3 Get the hierarchy's value
-		String hierarchyValue = "";
-		hierarchyValue = ReadFilesHelper.getHierarchyValue();
+		String hierarchyValue = ReadFilesHelper.getHierarchyValue();
 		
 			
 		// #4 Get the last month listed on month selector
@@ -61,8 +58,6 @@ public class HierarchyTopTenReport extends BaseClass {
 		int indexMonth = 0;
 		boolean dataForMonthSelected = true;
 	
-		String cssSelector = "#" + UsageHelper.getChartId(HierarchyHelper.topTenChart) + ">svg>g.highcharts-grid.highcharts-yaxis-grid>path:nth-child(2)";
-		
 		
 		do {
 			
@@ -75,17 +70,9 @@ public class HierarchyTopTenReport extends BaseClass {
 			
 			// #6 Verify that the values displayed on the tooltips of "Top Ten" chart are the same as the ones read from file
 			
-			try {
-				
-				// Wait for chart to be loaded
-				dataForMonthSelected = WaitForElementVisibleNoThrow(By.cssSelector(cssSelector), TenTimeout);
-				
-			} catch (TimeoutException e) {
-				
-				System.out.println("No data for the selected month");
-				
-			}
-			
+			// Wait for chart to be loaded
+			dataForMonthSelected = GeneralHelper.waitForChartToLoad(HierarchyHelper.topTenChart, MediumTimeout);
+						
 			if (dataForMonthSelected) {
 					
 				// Run test for "Expense" chart and category "Total"
@@ -105,7 +92,7 @@ public class HierarchyTopTenReport extends BaseClass {
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Test for Hierarchy Top Ten values finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "Test for Hierarchy Top Ten Report finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}

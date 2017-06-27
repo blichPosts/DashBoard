@@ -1,4 +1,4 @@
-package testSuiteNumericValues;
+package testSuiteNumericValuesCountry;
 
 import java.util.List;
 
@@ -17,8 +17,9 @@ import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
 
-public class ExpensesByVendorMultipleValues extends BaseClass{
+public class CountServiceNumberMultipleValuesByCountry extends BaseClass{
 
+	
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
@@ -29,7 +30,7 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 
 
 	@Test
-	public static void ExpensesByVendorMultipleValuesTest() throws Exception
+	public static void CountServiceNumberMultipleValuesTest() throws Exception
 	{
 
 		// Enable Start collecting data
@@ -43,11 +44,12 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		// Wait for countries and vendors to be loaded on PoV section
 		FleetHelper.waitForPoVSectionToBeLoaded(); 
 			
-		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// #1 Select Vendor View and Unselect all vendors  
-		CommonTestStepActions.SelectVendorView();
-		
+		CommonTestStepActions.SelectCountryView();
+		//CommonTestStepActions.UnSelectAllVendors();
+
+		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// #2 Get the data for each of the selected vendors for all months.
 		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = FleetHelper.getExpenseUsageDataForTest();
@@ -65,70 +67,29 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		// #4 Each list in dataForExpenseTrending will have the data for a specific month, for all the vendors previously selected
 		List<List<UsageOneMonth>> dataForExpenseTrending = FleetHelper.getListsWithDataPerMonth(listVendorsSelectedData);
 		
+		List<List<UsageOneMonth>> dataSummarizedForCountry = FleetHelper.getExpenseTrendingDataSummarized(dataForExpenseTrending);
+		
 			
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
-		int indexMonthToSelect = 0;
+		int indexMonthToSelect = 1;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 
-				
+		
 		do {
 					
 			monthYearToSelect = monthsWithDataToSelectPulldown.get(indexMonthToSelect);  
-			System.out.println(" ** Month Year: " + monthYearToSelect);
+			System.out.println("Month Year: " + monthYearToSelect);
 			
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-			Thread.sleep(2000);  // --> to give time to the data of the selected month to be displayed
+			Thread.sleep(2000);
 			
 			// #5 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
 			
 			try {
 				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryAll);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryAll);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.countServiceNumbersChart, dataSummarizedForCountry, FleetHelper.expenseCategoryAll);
 				Thread.sleep(2000);
-				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryVoice);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryVoice);
-				Thread.sleep(2000);
-				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryData);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryData);
-				Thread.sleep(2000);
-				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryMessages);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryMessages);
-				Thread.sleep(2000);
-				 
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryRoaming);
-				Thread.sleep(2000);
-				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryEquipment);
-				Thread.sleep(2000);
-				 
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryTaxes);
-				Thread.sleep(2000);
-				 
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryOther);
-				Thread.sleep(2000);
-				 
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryAccount);
-				Thread.sleep(2000);
-				 
 				
 			} catch (NullPointerException e) {
 				
@@ -149,9 +110,10 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Test for Expenses Trending values finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "Test for Count of Service Numbers values finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}
+
 
 }

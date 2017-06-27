@@ -47,25 +47,32 @@ public class FleetHelper extends BaseClass {
 	
 	public static List<List<UsageOneMonth>> getExpenseUsageDataForTest() throws Exception {
 		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
-		List<String> vendorNames = new ArrayList<>();
-		
+		List<String> vendorNames = CommonTestStepActions.getAllVendorNames();
 			
-		for (WebElement vendor: vendors) {
-			
-			vendorNames.add(vendor.getText());
-			// ShowText(vendor.getText());
-		}
-			
-		int amountOfVendors = 15; //GeneralHelper.getAmountOfVendorsToSelect(vendors.size()); // If we don't want the prompt to show up, just replace the assignment with a numeric value. 
+		int amountOfVendors = 10; //GeneralHelper.getAmountOfVendorsToSelect(vendors.size()); // If we don't want the prompt to show up, just replace the assignment with a numeric value. 
 
-		if (amountOfVendors > vendorNames.size())
-			amountOfVendors = vendorNames.size();
-		 
-						
-		System.out.println("Amount of Vendors Selected: " + amountOfVendors);
+		if (amountOfVendors >= vendorNames.size()) {
 		
-		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = new ArrayList<List<UsageOneMonth>>(); 
+			amountOfVendors = vendorNames.size();
+			
+		} else if (amountOfVendors < vendorNames.size()) {
+			
+			// Unselect all vendors..
+			CommonTestStepActions.UnSelectAllVendors();
+			
+			// .. and select one by one the amount of vendors in 'amountOfVendors'
+			for (int i = 0; i < amountOfVendors; i++) {
+
+				CommonTestStepActions.selectOneVendor(vendorNames.get(i));
+				
+			}
+			
+		}
+		 				
+		ShowText("Amount of Vendors Selected: " + amountOfVendors);
+		
+		
+		List<List<UsageOneMonth>> listDataSelectedVendors = new ArrayList<List<UsageOneMonth>>(); 
 		
 		for (int i = 0; i < amountOfVendors; i++) {
 			
@@ -73,15 +80,12 @@ public class FleetHelper extends BaseClass {
 			
 			// Read data from the ajax call response
 			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);			
-			listSelectedDataForMonthListUnified.add(valuesFromAjaxCall);
-				
-			// Select one vendor
-			CommonTestStepActions.selectOneVendor(vendor);
+			listDataSelectedVendors.add(valuesFromAjaxCall);
 			
 		}
 		
-		return listSelectedDataForMonthListUnified;
-		
+		return listDataSelectedVendors;
+				
 	}
 
 
@@ -190,7 +194,6 @@ public class FleetHelper extends BaseClass {
 				
 					String countryName = driver.findElement(By.xpath("//div[@class='tdb-povGroup']/div[@class='tdb-povGroup'][" + (i-1) + "]/div[@class='tdb-povGroup__label--subhead']")).getText();
 					listCountryNames.add(countryName);
-					// ShowText("countryName: " + countryName);
 					
 				}
 				
@@ -206,12 +209,11 @@ public class FleetHelper extends BaseClass {
 
 	
 
+	// Summarize Usage values by Country for a specific month
 	public static List<UsageOneMonth> summarizeUsageValuesByCountry(List<UsageOneMonth> listOneMonthData) {
 		
-		List<UsageOneMonth> dataSummarized = new ArrayList<>();
 				
 		HashMap<String, UsageOneMonth> hashmapValuesByCountry = new HashMap<>();
-		
 					
 		for (UsageOneMonth usage: listOneMonthData) {
 			
@@ -265,19 +267,18 @@ public class FleetHelper extends BaseClass {
 	
 		}
 		
-		dataSummarized = new ArrayList<>(hashmapValuesByCountry.values());		 
+		List<UsageOneMonth> dataSummarized = new ArrayList<>(hashmapValuesByCountry.values());		 
 	
 		return dataSummarized;
 
 	}
 
 	
+	// Summarize Expenses values by Country for a specific month
 	public static List<UsageOneMonth> summarizeExpensesValuesByCountry(List<UsageOneMonth> listOneMonthData) {
 		
-		List<UsageOneMonth> dataSummarized = new ArrayList<>();
 				
 		HashMap<String, UsageOneMonth> hashmapValuesByCountry = new HashMap<>();
-		
 					
 		for (UsageOneMonth usage: listOneMonthData) {
 			
@@ -348,7 +349,7 @@ public class FleetHelper extends BaseClass {
 	
 		}
 		
-		dataSummarized = new ArrayList<>(hashmapValuesByCountry.values());		 
+		List<UsageOneMonth> dataSummarized = new ArrayList<>(hashmapValuesByCountry.values());		 
 	
 		return dataSummarized;
 

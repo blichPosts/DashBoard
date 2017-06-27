@@ -50,7 +50,7 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 
 		// #1 Select Vendor View and Unselect all vendors  
 		UsageHelper.selectVendorView();
-		CommonTestStepActions.UnSelectAllVendors();
+		//CommonTestStepActions.UnSelectAllVendors();
 		
 		// #2 Get the data for each of the selected vendors for all months.
 		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataForTest();

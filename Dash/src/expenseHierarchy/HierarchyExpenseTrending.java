@@ -9,7 +9,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
@@ -58,7 +57,6 @@ public class HierarchyExpenseTrending extends BaseClass {
 		expectedLabels.add(HierarchyHelper.allocatedChildren);
 					
 		
-
 		// Verify the info contained on each of the tooltips for the 13 months 		
 		
 		boolean firstBar = true;
@@ -78,21 +76,24 @@ public class HierarchyExpenseTrending extends BaseClass {
 			// 3 <amount shown for the vendor>
 						
 			int factor = 2;
+			
 			int expectedAmountItemsTooltip = (amount * factor) + 1;
-			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			int amountItemsTooltipFound = tooltip.size();
+			
+			GeneralHelper.verifyExpectedAndActualValues(amountItemsTooltipFound, expectedAmountItemsTooltip);
 			
 
 			// For each vendor listed in the tooltip verify the label and the amount shown
 			for (int i = 1; i <= legends.size(); i++) {
 			
-				int index =  i * factor;  // Ana modif - May 19 -- before modif --> int index =  i * 3 - 1;
+				int index =  i * factor;
 				
 				// Get the label and remove colon at the end of its text
-				String labelFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 19 -- before modif --> tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
+				String labelFound = tooltip.get(index).getText().split(":")[1].trim();
 
 				// Get the value on tooltip and remove all blank spaces. E.g.: number in the tooltip is displayed like: $15 256 985. Value needed is: $15256985
-				String valueFound = tooltip.get(index).getText().split(":")[2].trim(); // Ana modif - May 19 -- before modif --> tooltip.get(index+1).getText().trim().replace(" ", "");
-//				String valueFoundRounded = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(valueFound.replace("$", "")), true);
+				String valueFound = tooltip.get(index).getText().split(":")[2].trim();
+
 				String valueFoundRounded = UsageCalculationHelper.roundNoDecimalDigits(Double.parseDouble(GeneralHelper.getNumericValue(valueFound)), true);
 				
 				// Get the expected label 
@@ -106,18 +107,18 @@ public class HierarchyExpenseTrending extends BaseClass {
 				ShowText("labelFound: " + labelFound + ", labelExpected: " + labelExpected);
 				ShowText("valueFound: " + valueFoundRounded + ", valueExpected: " + valueExpected);
 				
-				Assert.assertEquals(labelFound, labelExpected);
+				GeneralHelper.verifyExpectedAndActualLabels(labelFound, labelExpected);
 				GeneralHelper.verifyExpectedAndActualValues(valueFoundRounded, valueExpected);
-				
+
 			}
 			
 			// Verify month and year shown on the tooltip (first line)
 			String monthYearFound = tooltip.get(0).getText();
 			String monthYearExpected = monthYearList.get(indexMonth);
-				
-			Assert.assertEquals(monthYearFound, monthYearExpected);
-			ShowText("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
 			
+			ShowText("monthYearFound: " + monthYearFound + ", monthYearExpected: " + monthYearExpected);
+			GeneralHelper.verifyExpectedAndActualLabels(monthYearFound, monthYearExpected);
+						
 			indexHighchart++;
 			indexMonth--;
 			
@@ -125,53 +126,6 @@ public class HierarchyExpenseTrending extends BaseClass {
 		
 	}
 	
-
-	
-	// NOT USED - REPLACED BY THE METHOD ADDED IN GeneralHelper CLASS
-//	private static void moveMouseToBar(boolean firstBar, String chartId, int indexHighchart) throws InterruptedException, AWTException {
-//		
-//		
-//		String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-//		
-//		// WebElement 'bar' will be used to set the position of the mouse on the chart
-//		WebElement bar = driver.findElement(By.cssSelector(cssBar));
-//
-//		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
-//		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
-//		
-//		Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
-//		
-//		int x_offset = bar.getSize().getWidth() / 2;
-//		int y_offset = (int) GeneralHelper.getScrollPosition();
-//		
-//		int x = coordinates.getX() + x_offset;
-//		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;;
-//		
-//		Robot robot = new Robot();
-//		
-//		if (firstBar) {
-//			robot.mouseMove(x - x_offset, y);
-//			Thread.sleep(500);
-//		}
-//		
-//		robot.mouseMove(x, y);
-//		Thread.sleep(500);
-//		
-//		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-//		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-//			
-////		firstBar = false;
-//		
-//		try {
-//			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
-//			//System.out.println("Tooltip present");
-//		} catch (Exception e) {
-//			System.out.println("Tooltip NOT present");
-//			e.printStackTrace();
-//		}
-//				
-//		
-//	}
 
 
 

@@ -151,8 +151,8 @@ public class ExpensesKPITilesValues extends BaseClass{
 						String trend = trendingElementKpi.get(1).getText();
 						int trendValueActual = getTrendingValueWithNoSymbol(trend); 
 						
-						Assert.assertTrue(trendingElementKpi.size() == 2);
-						Assert.assertTrue(trend.endsWith("%"));
+						Assert.assertTrue(trendingElementKpi.size() == 2, "The trending percentage is missing.");
+						Assert.assertTrue(trend.endsWith("%"), "% symbol is missing.");
 						
 						System.out.println("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
 						

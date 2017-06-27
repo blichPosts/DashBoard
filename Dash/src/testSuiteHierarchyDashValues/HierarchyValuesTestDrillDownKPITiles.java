@@ -52,8 +52,6 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 		
 		for (int i = 0; i < amountHierarchies; i++) {
 		
-//			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
-			
 			GeneralHelper.selectFirstMonth();
 			
 			String hierarchyValue = HierarchyHelper.getHierarchyValue(i);
@@ -71,18 +69,19 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 			}
 			
 			
-			int j = 1;
-			int levelsToDrillDown = 3;  // Drill down up to 5 levels
+			int numLevel = 1;
+			int levelsToDrillDown = 3;  // Drill down up to <levelsToDrillDown> levels
 			int monthIndex = 0;
 			
 			
-			while (j <= levelsToDrillDown) {
+			while (numLevel <= levelsToDrillDown) {
 			
-				ShowText(" **** Drilling down Level #" + j);
-				ShowText(" **** Month year selected: " + CommonTestStepActions.GetPulldownTextSelected());
+				ShowText(" **** Drilling down Level #" + numLevel);
 				
 				List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown();
 				int indexMonth = 0;
+				
+				CommonTestStepActions.selectMonthYearPulldown(monthsInDropdown.get(indexMonth));
 				
 				// While there are no dependent units to drill down then select the previous month
 				while (HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInDropdown.size()) {
@@ -91,11 +90,12 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 					indexMonth = monthIndex;
 					CommonTestStepActions.selectMonthYearPulldown(monthYear);
 					monthIndex++;
-					ShowText(" **** Month Year: " + monthYear);
-					
+										
 					GeneralHelper.waitForDataToBeLoaded();
 					
 				}	
+				
+				ShowText(" **** Month year selected: " + CommonTestStepActions.GetPulldownTextSelected());
 				
 				if (!HierarchyHelper.getDependentUnitsPoV().isEmpty() && monthIndex < monthsInDropdown.size()) {
 				
@@ -177,7 +177,7 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 					
 				}
 				
-				j++;
+				numLevel++;
 				
 			}
 		

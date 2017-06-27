@@ -1,4 +1,4 @@
-package testSuiteNumericValues;
+package testSuiteNumericValuesCountry;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
 
-public class ExpensesByVendorMultipleValues extends BaseClass{
+public class ExpensesByCountryMultipleValues extends BaseClass{
 
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -43,11 +43,12 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		// Wait for countries and vendors to be loaded on PoV section
 		FleetHelper.waitForPoVSectionToBeLoaded(); 
 			
-		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// #1 Select Vendor View and Unselect all vendors  
-		CommonTestStepActions.SelectVendorView();
+		CommonTestStepActions.SelectCountryView();
+		//CommonTestStepActions.UnSelectAllVendors();
 		
+		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
 		// #2 Get the data for each of the selected vendors for all months.
 		List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = FleetHelper.getExpenseUsageDataForTest();
@@ -65,9 +66,11 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 		// #4 Each list in dataForExpenseTrending will have the data for a specific month, for all the vendors previously selected
 		List<List<UsageOneMonth>> dataForExpenseTrending = FleetHelper.getListsWithDataPerMonth(listVendorsSelectedData);
 		
+		List<List<UsageOneMonth>> dataSummarizedForCountry = FleetHelper.getExpenseTrendingDataSummarized(dataForExpenseTrending);
+		
 			
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
-		int indexMonthToSelect = 0;
+		int indexMonthToSelect = 1;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 
@@ -86,47 +89,47 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 				
 				FleetHelper.selectCategory(FleetHelper.expenseCategoryAll);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryAll);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryAll);
 				Thread.sleep(2000);
 				
 				FleetHelper.selectCategory(FleetHelper.expenseCategoryVoice);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryVoice);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryVoice);
 				Thread.sleep(2000);
 				
 				FleetHelper.selectCategory(FleetHelper.expenseCategoryData);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryData);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryData);
 				Thread.sleep(2000);
 				
 				FleetHelper.selectCategory(FleetHelper.expenseCategoryMessages);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryMessages);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryMessages);
 				Thread.sleep(2000);
 				 
 				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryRoaming);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryRoaming);
 				Thread.sleep(2000);
 				
 				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryEquipment);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryEquipment);
 				Thread.sleep(2000);
 				 
 				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryTaxes);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryTaxes);
 				Thread.sleep(2000);
 				 
 				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryOther);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryOther);
 				Thread.sleep(2000);
 				 
 				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
 				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryAccount);
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryAccount);
 				Thread.sleep(2000);
 				 
 				
@@ -149,7 +152,7 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 	public static void closeDriver() throws Exception
 	{
 		System.out.println("Close Browser.");		
-	    JOptionPane.showMessageDialog(frame, "Test for Expenses Trending values finished. Select OK to close browser.");
+	    JOptionPane.showMessageDialog(frame, "Test for Expenses By Country values finished. Select OK to close browser.");
 		driver.close();
 		driver.quit();
 	}

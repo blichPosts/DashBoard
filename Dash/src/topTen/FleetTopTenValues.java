@@ -139,8 +139,8 @@ public class FleetTopTenValues extends BaseClass {
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-			 ShowText("labelFound: " + labelFound); 
-			 ShowText("valueFound: " + valueFound + ", valueExpected: " + valueExpected);
+			 ShowText("Label Found: " + labelFound); 
+			 ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
 			// They cannot be verified by order, since if there are 2 elements that have the same value (expenses value) the order in which they'll be listed cannot be known

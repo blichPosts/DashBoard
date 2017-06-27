@@ -50,7 +50,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 		// #1 Select Vendor View 
 		CommonTestStepActions.SelectVendorView();
 		
-		List<WebElement> vendors = CommonTestStepActions.getAllVendorNames();
+		List<WebElement> vendors = CommonTestStepActions.getAllVendorsInPoV();
 		List<String> vendorNames = new ArrayList<>();
 		
 		for(WebElement vendor: vendors){
