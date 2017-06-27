@@ -1102,9 +1102,9 @@ public class ExpenseHelper extends BaseClass
 	
 	public static void MoveMouseToBarExpenseActions(String chartId, int indexHighchart, boolean firstMonth) throws InterruptedException, AWTException
 	{
- 
+		// X coordinate
 		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-		String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")";
+		String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")"; // jnupp fail
 
 		// 'bar' WebElement will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));

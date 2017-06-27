@@ -47,7 +47,10 @@ public class TotalExpensesTrendVendorActions extends BaseClass
 
 		ExpenseHelper.SetChartId(2);  // expense helper needs to know the current control because it has a method that's used.
 		
-		TotalExpensesTrend.VerifyRemovingLegends();
+		// TotalExpensesTrend.VerifyRemovingLegends(); // jnupp
+		TotalExpensesTrend.VerifyAddingLegends();
+		
+		Pause("DONE");
 		
 		// verify expense trending control is empty .
 		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.expenseTrending); // verify there are no bar graphs in expense spend category.

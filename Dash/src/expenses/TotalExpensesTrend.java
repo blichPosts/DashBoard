@@ -175,6 +175,103 @@ public class TotalExpensesTrend extends BaseClass
 		}
 	}
 	
+	// this verifies adding vendors one at a time in the expense trending control.
+	// NOTE: this is intended to be run after all legends in the trend control are disabled.  
+	public static void VerifyAddingLegends() throws Exception  // jnupp
+	{
+		Thread.sleep(1000);
+		
+		Pause("Unclick all"); // jnupp
+		
+		// this string list will have legend names added as legends are enabled/clicked. it is expected to be non-null.
+		totalExpenseLegendsList.clear(); 
+		
+		// get the 'expense trending' control visible by moving to it. 
+		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));
+		new Actions(driver).moveToElement(expenseTrending).perform();
+
+		Thread.sleep(1000);
+
+		// this gets the web element list for the legends so they can be clicked using web elements.
+		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text")); 
+		
+		Assert.assertTrue(eleList.size() > 0, "Error in TotalExpensesTrend.VerifyRemovingLegends. Legends list should not be empty.");
+		
+		// select the first legend so there are bar graphs an add the legend name to totalExpenseLegendsList.
+		webEleListLegends.get(0).click();
+		totalExpenseLegendsList.add(webEleListLegends.get(0).getText()); //  
+		
+		//ShowText("-------");
+		//ShowListOfStrings(totalExpenseLegendsList);
+		// Pause("See strings");
+		
+		// setup expected months. these are the months that will be shown in the hover for each bar clicked.
+		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
+		Collections.reverse(expectedMonthYear);
+		
+		// ShowText(expectedMonthYear.get(0)); 
+		
+		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
+		for(int x = 1; x < webEleListLegends.size(); x++) // jnupp to 1
+		{
+			boolean firstMonth = true; // <-- ana_add
+
+			// this loops across all months and clicks/verifies each month in the trend. 
+			for(int y = 1; y <= ExpenseHelper.maxNumberOfMonths; y++)
+			{
+				if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
+				{
+					clickBarIndexMatrixPortal(y, firstMonth, chartId);
+					firstMonth = false;
+				}
+				else if(loginType.equals(LoginType.ReferenceApp))
+				{
+					clickBarIndex(y);
+				}
+				else
+				{  
+					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
+				}
+				
+				// Thread.sleep(500);
+				
+				// need to see which view type is being tested. each view type will have a different expected hover title.   
+				if(ExpenseHelper.expenseViewMode == ExpensesViewMode.vendor)
+				{
+					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleExpenseVendor);  // verify current hover value with vendor title					
+				}
+				else
+				{
+					// jnupp
+					//ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleExpenseCountry);  // verify current hover value with country title. 
+				}
+			}
+			
+			// totalExpenseLegendsList.remove(webEleListLegends.get(x).getText()); // jnupp
+			Thread.sleep(2000);
+			
+			if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
+			{
+				// webEleListLegends.get(x).click(); // this is web element click.
+				eleList.get(x).click(); // 6/26/17 
+			}
+			else
+			{
+				// 6/26/17 - this x/y click method is no longer needed to click legends. see directly below. keeping this call here in case it's needed in the future.
+				// ExpenseHelper.SelectLegendWithPointer(chartId, x + 1);	 // this click needs x/y click.  	
+				
+				// 6/26/17 - this is the new click. by changing the way the list of legend web elements is created further above in this method, the click below works.
+				totalExpenseLegendsList.add(webEleListLegends.get(x).getText());
+				ShowText("-------");
+				ShowListOfStrings(totalExpenseLegendsList);
+				eleList.get(x).click();
+			}
+			Thread.sleep(1500);
+		}
+	}
+	
+	
+	
 	public static void clickBarIndex(int barIndex) throws Exception
 	{
 		cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + barIndex + ")";
