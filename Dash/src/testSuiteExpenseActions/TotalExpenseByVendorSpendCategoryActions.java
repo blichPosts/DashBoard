@@ -47,7 +47,7 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		
 		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
 		
-		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category.
+		// ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category.
 	}
 	
 	@AfterClass

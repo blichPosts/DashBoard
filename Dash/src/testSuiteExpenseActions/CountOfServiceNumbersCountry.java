@@ -66,9 +66,10 @@ public class CountOfServiceNumbersCountry extends BaseClass
 		ExpenseHelper.SetChartId(4); // expense helper needs to know the current control because it has a method that's used.
 
 		CountOfServiceNumbersTrend.VerifyRemovingLegends(); // do verification.
-		
+		CountOfServiceNumbersTrend.VerifyAddingLegends(); // do verification.
+
 		// verify expense trending control is empty.
-		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.countOfServiceNumbers); // verify there are no bar graphs in expense spend category.
+		// ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.countOfServiceNumbers); // verify there are no bar graphs in expense spend category.
 	}
 	
 	@AfterClass

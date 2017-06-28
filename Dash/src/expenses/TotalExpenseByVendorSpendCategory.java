@@ -83,7 +83,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		
 	}
 	
-	// PROTOTYPE
+	// this ---------------------------------------------------------------------------------  TODO
 	public static void VerifyRemovingCategories(ViewType viewType) throws Exception 
 	{
 		// DebugTimeout(1, "Start");
@@ -91,7 +91,9 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		
 		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
 		
-		List<WebElement> tempList; // this holds hover info.
+		BuildLegendsList(); // get a string list (expectedSpendCategoryLegends) of expected legend names in expense spend control.
+		
+		List<WebElement> currentHoverList; // this holds hover info.
 		
 		if(!loginType.equals(LoginType.ReferenceApp))
 		{
@@ -106,46 +108,26 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
 
 		// get the web elements for the legends so the legend text parts can be clicked on.
-		totalExpenseLegendsElementList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-legend>g>g>g>text")); 
+		totalExpenseLegendsElementList = driver.findElements(By.cssSelector("#" + chartId + ExpenseHelper.partialCssForLegendsText)); 
 		
 		Thread.sleep(500);
-
-		if(expenseControlSlicesElemntsList != null)
-		{
-			expenseControlSlicesElemntsList.clear();
-		}
 		
-		// store the web elements for the slices into a list. 
-		expenseControlSlicesElemntsList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForSliceSelections));  
-
 		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
 		{
 			DebugTimeout(0, "starting click");
 			// Thread.sleep(1000); // commented 6/8/17
 			
-			if(loginType.equals(loginType.ReferenceApp))
-			{
-				// these two clicks make the hover visible.
-				expenseControlSlicesElemntsList.get(x).click();
-				expenseControlSlicesElemntsList.get(x).click();
-			}
-			else if (loginType.equals(LoginType.MatrixPortal))
-			{
-				Thread.sleep(1000); // need this in matrix.
-				ClickOneSpendCategoryMatrixPortal(chartId);
-			}
-			else
-			{
-				Thread.sleep(500);
-				MoveMouseToSpendCategory(); 
-			}
+			PerformClick(expenseControlSlicesElemntsList , x);
 			
 			Thread.sleep(2000);
 			
 			// store the info found in the hover.  
-			tempList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+			currentHoverList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
 			
-			VerifyToolTipInfo(tempList, x); 
+			VerifyToolTipInfoTwo(expectedSpendCategoryLegends, currentHoverList);
+			
+			currentHoverList.clear();
+			expectedSpendCategoryLegends.remove(0);
 			
 			Thread.sleep(500);
 
@@ -166,7 +148,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		// this gets the number of items (legends) shown in the UI.  
 		numberOfLegendsInBarChart = legendsList.size();
 
-				// build the list of expected spend category legends. these are the legends that are expected to be present. 
+		// build the list of expected spend category legends. these are the legends that are expected to be present. 
 		expectedSpendCategoryLegends.add("Voice");
 		expectedSpendCategoryLegends.add("Data");
 		expectedSpendCategoryLegends.add("Messages");
@@ -388,6 +370,18 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 	}	
 	
+	public static void BuildLegendsList()
+	{
+		// build the list of expected spend category legends. these are the legends that are expected to be present. 
+		expectedSpendCategoryLegends.add("Voice");
+		expectedSpendCategoryLegends.add("Data");
+		expectedSpendCategoryLegends.add("Messages");
+		expectedSpendCategoryLegends.add("Roaming");
+		expectedSpendCategoryLegends.add("Equipment");
+		expectedSpendCategoryLegends.add("Taxes");
+		expectedSpendCategoryLegends.add("Other");
+		expectedSpendCategoryLegends.add("Account");
+	}
 	
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	// 										Helpers.
@@ -447,6 +441,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		if(eventNumber == 0) // build expected list.
 		{
 			BuildListOfAllSpendCatergoryHoverItems(list);
+			ShowWebElementListText(list); // jnupp
 		}
 		else
 		{
@@ -487,11 +482,14 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 				}
 			}
 			
+			ShowText("Actual List");
+			ShowListOfStrings(actuallList); // jnupp
+			
+			
 			for(int y = 0, z = eventNumber; z < expectedlList.size(); y++, z++)
 			{
-
-				ShowText(actuallList.get(y)); // DEBUG
-				ShowText(expectedlList.get(z)); // DEBUG
+				ShowText("Show " + actuallList.get(y)); // DEBUG
+				ShowText("Show " + expectedlList.get(z)); // DEBUG
 				Assert.assertEquals(actuallList.get(y), expectedlList.get(z));	
 			}
 
@@ -499,6 +497,55 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		}
 	}
 
+	// * get a list of expected legend names (legends that are enabled) and a list of items in the tool tip.
+	// * store the legend names into a list and store the legend names found in the tool tip list into a list
+	// * make sure both list match.
+	public static void VerifyToolTipInfoTwo(List<String> expectedLegendNames, List<WebElement> actualToolTipInfoList) throws Exception 
+	{
+		List<String> localListActual = new ArrayList<String>();
+		List<String> localListExpected = new ArrayList<String>();
+		
+		ShowInt(expectedLegendNames.size());
+		
+		// store legend names from tool tip info.
+		for(WebElement ele : actualToolTipInfoList)
+		{
+			if(ele.getText().split(":").length == 3)
+			{
+				localListActual.add(ele.getText().split(":")[1].trim());
+			}
+		}
+		
+		// store legend names from legend list passed in. 
+		for(String str : expectedLegendNames)
+		{
+			localListExpected.add(str);
+		}
+		
+		Assert.assertEquals(localListActual, localListExpected, "Legend names in the tooltip are not the same as the actual legend names.");
+	}
+
+	// this will do click on expense trend control
+	public static void PerformClick(List<WebElement> expenseControlSlicesElemntsList, int x) throws Exception
+	{
+		if(loginType.equals(loginType.ReferenceApp))
+		{
+			// these two clicks make the hover visible.
+			expenseControlSlicesElemntsList.get(x).click();
+			expenseControlSlicesElemntsList.get(x).click();
+		}
+		else if (loginType.equals(LoginType.MatrixPortal))
+		{
+			Thread.sleep(1000); // need this in matrix.
+			ClickOneSpendCategoryMatrixPortal(chartId);
+		}
+		else
+		{
+			Thread.sleep(500);
+			MoveMouseToSpendCategory(); 
+		}
+	}
+	
 	public static void BuildListOfAllSpendCatergoryHoverItems(List<WebElement> list) throws Exception
 	{
 		int x = 0;

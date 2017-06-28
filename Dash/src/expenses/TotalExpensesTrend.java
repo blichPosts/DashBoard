@@ -173,17 +173,19 @@ public class TotalExpensesTrend extends BaseClass
 			}
 			Thread.sleep(1500);
 		}
+		
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.expenseTrending); // verify there are no bar graphs in expense spend category.
+		
 	}
 	
 	// this verifies adding vendors one at a time in the expense trending control.
 	// NOTE: this is intended to be run after all legends in the trend control are disabled.  
-	public static void VerifyAddingLegends() throws Exception  // jnupp
+	public static void VerifyAddingLegends() throws Exception 
 	{
 		Thread.sleep(1000);
 		
-		Pause("Unclick all"); // jnupp
-		
-		// this string list will have legend names added as legends are enabled/clicked. it is expected to be non-null.
+		// this string list will have legend names added as legends are enabled/clicked. it is expected to be non-null
+		// because the VerifyRemovingLegends() test created it. 
 		totalExpenseLegendsList.clear(); 
 		
 		// get the 'expense trending' control visible by moving to it. 
@@ -197,13 +199,9 @@ public class TotalExpensesTrend extends BaseClass
 		
 		Assert.assertTrue(eleList.size() > 0, "Error in TotalExpensesTrend.VerifyRemovingLegends. Legends list should not be empty.");
 		
-		// select the first legend so there are bar graphs an add the legend name to totalExpenseLegendsList.
+		// select the first legend so there are bar graphs and add the legend name to totalExpenseLegendsList.
 		webEleListLegends.get(0).click();
-		totalExpenseLegendsList.add(webEleListLegends.get(0).getText()); //  
-		
-		//ShowText("-------");
-		//ShowListOfStrings(totalExpenseLegendsList);
-		// Pause("See strings");
+		totalExpenseLegendsList.add(webEleListLegends.get(0).getText());   
 		
 		// setup expected months. these are the months that will be shown in the hover for each bar clicked.
 		expectedMonthYear = CommonTestStepActions.YearMonthIntergerFromPulldownTwoDigitYear();
@@ -242,10 +240,15 @@ public class TotalExpensesTrend extends BaseClass
 				}
 				else
 				{
-					// jnupp
-					//ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleExpenseCountry);  // verify current hover value with country title. 
+					ExpenseHelper.VerifyToolTipTwo(totalExpenseLegendsList, expectedMonthYear.get(y - 1), ExpenseHelper.expectedHoverTitleExpenseCountry);  // verify current hover value with country title. 
 				}
 			}
+
+			// the hovers have been tested. if the last legend to be added has been added, exit the for loop that clicks the legends to add a legend.
+			if(x == webEleListLegends.size()) 
+			{
+				break;
+			}						
 			
 			// totalExpenseLegendsList.remove(webEleListLegends.get(x).getText()); // jnupp
 			Thread.sleep(2000);
@@ -262,14 +265,11 @@ public class TotalExpensesTrend extends BaseClass
 				
 				// 6/26/17 - this is the new click. by changing the way the list of legend web elements is created further above in this method, the click below works.
 				totalExpenseLegendsList.add(webEleListLegends.get(x).getText());
-				ShowText("-------");
-				ShowListOfStrings(totalExpenseLegendsList);
 				eleList.get(x).click();
 			}
 			Thread.sleep(1500);
 		}
 	}
-	
 	
 	
 	public static void clickBarIndex(int barIndex) throws Exception
