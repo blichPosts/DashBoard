@@ -12,9 +12,8 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.ExpenseHelper.controlType;
 
-public class TotalExpenseByVendorSpendCategoryActions extends BaseClass 
+public class ExpenseVendorSpendCategoryAll extends BaseClass
 {
-
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
@@ -23,33 +22,32 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 	}
 	
 	@Test
-	public static void TotalExpenseByVendorSpendCategoryActionsTest() throws Exception
+	public static void ExpenseVendorSpendCategoryAllTest() throws Exception
 	{
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
 		
-		// need to set chartId for 'expense helper' because call below uses expense helper call.
+		// need to set chartId for 'expense helper'.
 		ExpenseHelper.SetChartId(1);
+		
+		// need to set chartId for 'TotalExpenseByVendorSpendCategory'.
+		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
 		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
 		
-		// store vendor names currently shown in expense control. 
-		TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest(); 
+		 TotalExpenseByVendorSpendCategory.VerifyRemovingCategoriesMultipleVendors(ViewType.vendor);
+
+		 
 		
-		// if not using matrix portal, select the first vendor in the stored vendor list.
-		if(!loginType.equals(LoginType.MatrixPortal))
-		{
-			CommonTestStepActions.UnSelectAllVendors();
-			ExpenseHelper.VerifyControlsNotPresent();
-			CommonTestStepActions.selectOneVendor(TotalExpenseByVendorSpendCategory.totalExpenseExpectedLegendsList.get(0));			
-		}
 		
-		// need chartId for 'TotalExpenseByVendorSpendCategory'.
-		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
-		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
-		TotalExpenseByVendorSpendCategory.VerifyAddingCategories(ViewType.vendor);
+		
+		
+		
+		
+		
+		
 	}
 	
 	@AfterClass
@@ -61,4 +59,5 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		driver.close();
 		driver.quit();
 	}	
+	
 }

@@ -7,6 +7,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Dash.BaseClass;
+import Dash.BaseClass.ViewType;
 import expenses.TotalExpenseByVendorSpendCategory;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
@@ -34,7 +35,7 @@ public class TotalExpenseByCountrySpendCategoryActions extends BaseClass
 		// need chartId in helper.
 		ExpenseHelper.SetChartId(1);
 		
-		// store vendor names currently shown in expense control. 
+		// store country names currently shown in expense control. 
 		TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest(); 
 		
 		// this is for page switch.
@@ -58,7 +59,7 @@ public class TotalExpenseByCountrySpendCategoryActions extends BaseClass
 			ExpenseHelper.WaitForCountryPageLoad();			
 		}
 	
-		// can't do this is matrix.
+		// if not using matrix portal, select the first country in the stored country list.
 		if(!loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!!
 		{
 			CommonTestStepActions.UnSelectAllVendors();
@@ -69,12 +70,9 @@ public class TotalExpenseByCountrySpendCategoryActions extends BaseClass
 		
 		TotalExpenseByVendorSpendCategory.SetChartId(1);
 		
-
-		
+		// need chartId for 'TotalExpenseByVendorSpendCategory'.
 		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.country);
-		
-		// verify control is empty.
-		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory); // verify there are no bar graphs in expense spend category.
+		TotalExpenseByVendorSpendCategory.VerifyAddingCategories(ViewType.country);
 	}
 	
 	@AfterClass

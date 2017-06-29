@@ -247,7 +247,7 @@ public class ExpenseHelper extends BaseClass
 				// 'tempStringList' has the country names stored away from the vendor view. 
 				for(int y = 0; y < tempStringList.size(); y++)
 				{
-					 // see if country shown in country view is 
+					 // see if country shown in country view is in tempStringList
 					if(tempStringList.contains(webElementListLegends.get(y).getText()))   
 					{
 						foundCountryLegend = true;

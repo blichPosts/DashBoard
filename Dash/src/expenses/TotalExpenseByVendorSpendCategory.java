@@ -83,43 +83,37 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		
 	}
 	
-	// this ---------------------------------------------------------------------------------  TODO
+	// this verifies the spend category names in the expense vendor spend control reflect what control legends are selected.
+	// this starts with all controls selected and then disables them one at a time, and verifies the hover results. 
 	public static void VerifyRemovingCategories(ViewType viewType) throws Exception 
 	{
-		// DebugTimeout(1, "Start");
-		// Thread.sleep(1000);
-		
 		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
 		
-		BuildLegendsList(); // get a string list (expectedSpendCategoryLegends) of expected legend names in expense spend control.
+		List<WebElement> currentHoverList; // this holds current hover info.
+
+		BuildLegendsList(); // create a string list (expectedSpendCategoryLegends) of expected legend names in expense spend control.
+
+		ShowText("Disabling Legends");
 		
-		List<WebElement> currentHoverList; // this holds hover info.
+		// move to the spend category control.
+		WebElement temp = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)")); 
+		new Actions(driver).moveToElement(temp).perform();
+		// Thread.sleep(500);
 		
-		if(!loginType.equals(LoginType.ReferenceApp))
-		{
-			// move to the spend category control.
-			WebElement temp = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)")); 
-			new Actions(driver).moveToElement(temp).perform();
-			Thread.sleep(500);
-		}
-		
-		// this waits are for the vendor(s) in total expense spend control and total expanse control.
+		// these waits are for the vendor(s) in total expense spend control and total expense control.
 		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
 		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
 
-		// get the web elements for the legends so the legend text parts can be clicked on.
+		// get the web elements for the legends so the legend text names can be clicked on.
 		totalExpenseLegendsElementList = driver.findElements(By.cssSelector("#" + chartId + ExpenseHelper.partialCssForLegendsText)); 
 		
-		Thread.sleep(500);
+		// Thread.sleep(500);
 		
 		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
 		{
-			DebugTimeout(0, "starting click");
-			// Thread.sleep(1000); // commented 6/8/17
+			PerformClick(expenseControlSlicesElemntsList , x); // get hover to show.
 			
-			PerformClick(expenseControlSlicesElemntsList , x);
-			
-			Thread.sleep(2000);
+			// Thread.sleep(500);
 			
 			// store the info found in the hover.  
 			currentHoverList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
@@ -127,15 +121,151 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			VerifyToolTipInfoTwo(expectedSpendCategoryLegends, currentHoverList);
 			
 			currentHoverList.clear();
-			expectedSpendCategoryLegends.remove(0);
+			expectedSpendCategoryLegends.remove(0); // this removes the first item from the list of expected legend names.
 			
-			Thread.sleep(500);
+			// Thread.sleep(500);
 
-			totalExpenseLegendsElementList.get(x).click(); // click legend. 
+			totalExpenseLegendsElementList.get(x).click(); // click legend x to disable it. 
 		}
 
 		ExpenseHelper.VerifyExpenseCategoryLegendsDisabled(); // verify the spend category control is empty.
 	}
+	
+	// this verifies the spend category names in the expense vendor spend control reflect what control legends are selected.
+	// this starts with all control legends disabled, enables them one at a time, and verifies the hover results.  
+	public static void VerifyAddingCategories(ViewType viewType) throws Exception // jnupp
+	{
+		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
+		
+		BuildLegendsList(); // create a string list (expectedSpendCategoryLegends) of expected legend names in expense spend control.
+		
+		List<WebElement> currentHoverList; // this holds current hover info. 
+		List<String> currentExpectedList = new ArrayList<String>(); // this holds expected legend names. items are added as the legends are selected.
+
+		ShowText("Enabling Legends");
+		
+		// move to the spend category control.
+		WebElement temp = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)")); 
+		new Actions(driver).moveToElement(temp).perform();
+		Thread.sleep(500);
+		
+		// get the web elements for the legends so the legend text names can be clicked on.
+		totalExpenseLegendsElementList = driver.findElements(By.cssSelector("#" + chartId + ExpenseHelper.partialCssForLegendsText)); 
+		
+		Thread.sleep(500);
+		
+		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
+		{
+			totalExpenseLegendsElementList.get(x).click(); // click legend x to enable it.
+			currentExpectedList.add(expectedSpendCategoryLegends.get(x)); // add the name pf the enabled legend.
+			
+			Thread.sleep(500);
+			
+			PerformClick(expenseControlSlicesElemntsList , x); // get hover to show.
+			
+			Thread.sleep(500);
+			
+			// store the info found in the hover.  
+			currentHoverList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+			
+			//ShowText("--------------------");
+			//ShowWebElementListText(currentHoverList);
+			//ShowText("--------------------");
+			//ShowListOfStrings(currentExpectedList);
+			//ShowText("DONE");
+			
+			VerifyToolTipInfoTwo(currentExpectedList, currentHoverList);
+			
+			currentHoverList.clear();
+			//expectedSpendCategoryLegends.remove(0); // this removes the first item from the list of expected legend names.
+			
+			Thread.sleep(500);
+		}
+	}
+	
+	// TODO
+	// this verifies the spend category names in the expense vendor spend control reflect what control legends are selected.
+	// this starts with all controls selected and then disables them one at a time, and verifies the hover results. 
+	public static void VerifyRemovingCategoriesMultipleVendors(ViewType viewType) throws Exception  // jnupp
+	{
+		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
+		
+		List<WebElement> currentHoverList; // this holds current hover info.
+
+		// create a string list (expectedSpendCategoryLegends) of expected legend names in expense spend control.
+		BuildLegendsList(); 
+
+		// store vendor names currently shown in expense control. these will be the same vendor names shown in the spend control. 
+		TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest();
+		
+		ShowText("Disabling Legends Multiple Vendors");
+		
+		// move to the spend category control.
+		WebElement temp = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)")); 
+		new Actions(driver).moveToElement(temp).perform();
+		// Thread.sleep(500);
+		
+		// these waits are for the vendor(s) in total expense spend control and total expense control.
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
+
+		// get the web elements for the legends so the legend text names can be clicked on. 
+		totalExpenseLegendsElementList = driver.findElements(By.cssSelector("#" + chartId + ExpenseHelper.partialCssForLegendsText)); 
+		
+		// first go through and verify vendor/country names in tool tip for each vendor/country. 
+		for(int x = 1; x <= ExpenseHelper.maxNumberOfLegends + 1; x++)
+		{
+			TotalExpenseByVendorSpendCategory.MoveMouseToSpendCategoryMultipleVendors(x); // select vendor/country x
+
+			currentHoverList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo)); // get toll tip info.
+			
+			Assert.assertEquals(currentHoverList.get(0).getText(),totalExpenseExpectedLegendsList.get(x - 1), ""); // verify vendor/country name.
+			currentHoverList.clear();
+		}
+
+
+		//  
+		for(int x = 1; x <= ExpenseHelper.maxNumberOfLegends + 1; x++)
+		{
+			TotalExpenseByVendorSpendCategory.MoveMouseToSpendCategoryMultipleVendors(x); // select vendor/country x
+
+			currentHoverList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo)); // get toll tip info.
+			
+			Assert.assertEquals(currentHoverList.get(0).getText(),totalExpenseExpectedLegendsList.get(x - 1), ""); // verify vendor/country name.
+			currentHoverList.clear();
+		}
+		
+		
+		
+		
+		
+		// Thread.sleep(500);
+		
+		/*
+		for(int x = 0; x < ExpenseHelper.numOfLegendsInExpenseSpendCategory; x++)
+		{
+			PerformClick(expenseControlSlicesElemntsList , x); // get hover to show.
+			
+			// Thread.sleep(500);
+			
+			// store the info found in the hover.  
+			currentHoverList = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo));
+			
+			VerifyToolTipInfoTwo(expectedSpendCategoryLegends, currentHoverList);
+			
+			currentHoverList.clear();
+			expectedSpendCategoryLegends.remove(0); // this removes the first item from the list of expected legend names.
+			
+			// Thread.sleep(500);
+
+			totalExpenseLegendsElementList.get(x).click(); // click legend x to disable it. 
+		}
+
+		ExpenseHelper.VerifyExpenseCategoryLegendsDisabled(); // verify the spend category control is empty.
+		*/
+	}	
+	
+	
 	
 	public static void Setupdata()  
 	{
@@ -290,9 +420,117 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		Robot robot = new Robot();
 		
 		// String referencePoint = "#" + chartId +  ">svg>g:nth-of-type(3)>text"; 
-		String referencePoint = "#" + chartId +  ">svg>.highcharts-series-group>g:nth-of-type(7)";
+		// String referencePoint = "#" + chartId +  ">svg>.highcharts-series-group>g:nth-of-type(7)"; // orig
+		String referencePoint = "#" + chartId +  ">svg>g.highcharts-legend>g>g>g:nth-of-type(4)"; // jnupp
+		// >svg>g.highcharts-legend>g>g>g:nth-of-type(4) // jnupp
+		
 		
 		// 'bar' WebElement will be used to set the position of the mouse on the chart
+		WebElement bar = driver.findElement(By.cssSelector(referencePoint));
+				
+		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
+		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
+		Point barCoordinates = GeneralHelper.getAbsoluteLocation(bar);
+		
+		int x = barCoordinates.getX();
+		int y = GeneralHelper.getYCoordinate(chartId);
+		
+		int y_offset = (int) GeneralHelper.getScrollPosition();
+		y += y_offset + 100; //  
+		
+		// below was -250, changed to -50   6/9/17  bob version 1.2.16
+		robot.mouseMove(x - 50, y); // bob added  these lines after. 
+		Thread.sleep(500);
+		
+		robot.mouseMove(x, y);
+		// System.out.println("coordinates - x: " + x + "  y: " + y);
+		
+		Thread.sleep(500);
+		
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		
+		try 
+		{
+			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+		} 
+		catch (Exception e) 
+		{
+			System.out.println("Tooltip NOT present in DOM.");
+			e.printStackTrace();
+		}
+	}
+
+	public static void MoveMouseToSpendCategoryMultipleVendors(/*String chartId,*/ int index) throws Exception // jnupp
+	{
+		Robot robot = new Robot();
+		
+		String yClickPoint = "";
+		yClickPoint = "#" + chartId +  ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + index  + ")";  
+
+		// web element for Y  
+		WebElement Y = driver.findElement(By.cssSelector(yClickPoint));
+
+		Point elementLoc = Y.getLocation();
+		
+		int xLoc = elementLoc.getX();
+		int yLoc = elementLoc.getY();
+
+		if(index  == 1)
+		{
+			robot.mouseMove(xLoc + 175, yLoc + 198);				
+		}
+		
+		Thread.sleep(500);
+
+		robot.mouseMove(xLoc + 275, yLoc + 198);
+		
+		// Thread.sleep(500);
+		
+		try 
+		{
+			WaitForElementPresent(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"), MainTimeout);
+		} 
+		catch (Exception e) 
+		{
+			System.out.println("Tooltip NOT present in DOM.");
+			e.printStackTrace();
+		}
+		
+
+		/*
+		// String yClickPoint = "#" + chartId +  ">svg>.highcharts-series-group>g:nth-of-type(7)";  
+		// "#" + chartId +  ">svg>.highcharts-series-group>g:nth-of-type(7)
+		
+		// web element for Y  
+		WebElement Y = driver.findElement(By.cssSelector(yClickPoint));
+
+		Point elementLoc = Y.getLocation();
+		
+		int xLoc = elementLoc.getX();
+		int yLoc = elementLoc.getY();
+
+		robot.mouseMove(xLoc + 175, yLoc + 198);
+		
+		Thread.sleep(500);
+
+		robot.mouseMove(xLoc + 275, yLoc + 198);
+		
+		Thread.sleep(500);
+		
+		
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		 */
+
+		
+		
+		// DebugTimeout(9999, "9999");
+		
+		/*
+		// String referencePoint = "#" + chartId +  ">svg>g:nth-of-type(3)>text"; 
+		String referencePoint = "#" + chartId +  ">svg>.highcharts-series-group>g:nth-of-type(7)";
+
 		WebElement bar = driver.findElement(By.cssSelector(referencePoint));
 				
 		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
@@ -326,8 +564,11 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			System.out.println("Tooltip NOT present in DOM.");
 			e.printStackTrace();
 		}
+		*/
 	}
-
+	
+	
+	
 	// matrix
 	// NOTE - this currently selects just the only graph showing. This will change in future - 6/8/17 
 	public static void ClickOneSpendCategoryMatrixPortal(String chartId) throws Exception
@@ -370,8 +611,11 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 	}	
 	
+	// this is used for expense trend control tests.
 	public static void BuildLegendsList()
 	{
+		expectedlList.clear();
+		
 		// build the list of expected spend category legends. these are the legends that are expected to be present. 
 		expectedSpendCategoryLegends.add("Voice");
 		expectedSpendCategoryLegends.add("Data");
@@ -441,7 +685,6 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		if(eventNumber == 0) // build expected list.
 		{
 			BuildListOfAllSpendCatergoryHoverItems(list);
-			ShowWebElementListText(list); // jnupp
 		}
 		else
 		{
@@ -483,7 +726,6 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 			}
 			
 			ShowText("Actual List");
-			ShowListOfStrings(actuallList); // jnupp
 			
 			
 			for(int y = 0, z = eventNumber; z < expectedlList.size(); y++, z++)
@@ -504,8 +746,6 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	{
 		List<String> localListActual = new ArrayList<String>();
 		List<String> localListExpected = new ArrayList<String>();
-		
-		ShowInt(expectedLegendNames.size());
 		
 		// store legend names from tool tip info.
 		for(WebElement ele : actualToolTipInfoList)
