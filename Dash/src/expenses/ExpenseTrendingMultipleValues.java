@@ -43,9 +43,12 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
 		chartId = UsageHelper.getChartId(barChartId);
-		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
-				
-		Thread.sleep(2000);
+		
+		GeneralHelper.moveDown(chartId);
+		
+//		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
+//				
+//		Thread.sleep(2000);
 			
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		

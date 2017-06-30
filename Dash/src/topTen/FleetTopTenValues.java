@@ -23,7 +23,6 @@ import helperObjects.UsageHelper;
 public class FleetTopTenValues extends BaseClass {
 
 	
-	
 	public static void verifyTopTenChartValues(int barChartId, int category) throws Exception {
 		
 		// Select category
@@ -102,7 +101,7 @@ public class FleetTopTenValues extends BaseClass {
 
 		
 		// Verify that there are up to 10 elements listed on the chart: the Top Ten Service Numbers
-		Assert.assertTrue(chartElementNames.size() <= 10);
+		Assert.assertTrue(chartElementNames.size() <= 10, "The amount of service numbers listed on chart should be 10 or less.");
 		
 		// Verify that the values are sorted in descendant order by "value"
 //		FleetTopTenHelper.verifyValuesSortedDescendantOrder(expectedValuesList); 
@@ -114,7 +113,6 @@ public class FleetTopTenValues extends BaseClass {
 		while (indexHighchart <= chartElementNames.size()) {
 	
 			GeneralHelper.moveMouseToBar(chartId, indexHighchart, true);
-	
 			
 			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"));
 			
@@ -144,7 +142,7 @@ public class FleetTopTenValues extends BaseClass {
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
 			// They cannot be verified by order, since if there are 2 elements that have the same value (expenses value) the order in which they'll be listed cannot be known
-			Assert.assertTrue(expectedLabels.contains(labelFound));
+			Assert.assertTrue(expectedLabels.contains(labelFound), "Label found " + labelFound + " is not included in the 'Expected Labels' list");
 			GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 			
 			indexHighchart++;

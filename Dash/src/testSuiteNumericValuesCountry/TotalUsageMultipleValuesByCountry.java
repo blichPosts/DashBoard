@@ -33,6 +33,9 @@ public class TotalUsageMultipleValuesByCountry extends BaseClass{
 	public static void TotalUsageMultipleValuesByCountryTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();	
+		
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);
@@ -74,7 +77,7 @@ public class TotalUsageMultipleValuesByCountry extends BaseClass{
 			
 			// #4 Select month on month/year selector
 			CommonTestStepActions.selectMonthYearPulldown(monthsToSelect.get(indexMonth));
-			ShowText("\n month year: " + monthsToSelect.get(indexMonth)); 
+			ShowText("Month year: " + monthsToSelect.get(indexMonth)); 
 			
 			Thread.sleep(2000);
 			
@@ -88,21 +91,21 @@ public class TotalUsageMultipleValuesByCountry extends BaseClass{
 			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryVoice);
 			Thread.sleep(2000);				
 			
-			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
-			
-			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryData);
-			Thread.sleep(2000);
-			
-			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryData);
-			Thread.sleep(2000);				
-			
-			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
-			
-			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryMessages);
-			Thread.sleep(2000);
-			
-			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryMessages);
-			Thread.sleep(2000);
+//			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
+//			
+//			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryData);
+//			Thread.sleep(2000);
+//			
+//			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryData);
+//			Thread.sleep(2000);				
+//			
+//			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
+//			
+//			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryMessages);
+//			Thread.sleep(2000);
+//			
+//			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryMessages);
+//			Thread.sleep(2000);
 						
 			indexMonth++;
 

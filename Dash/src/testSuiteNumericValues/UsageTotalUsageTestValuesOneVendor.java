@@ -36,6 +36,9 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 	public static void UsageTotalUsageTestValuesOneVendorTest() throws Exception
 	{
 
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();	
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);

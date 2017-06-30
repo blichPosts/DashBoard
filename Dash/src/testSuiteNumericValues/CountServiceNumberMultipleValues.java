@@ -33,6 +33,9 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 	public static void CountServiceNumberMultipleValuesTest() throws Exception
 	{
 
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+		
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);
@@ -68,7 +71,7 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 		
 			
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
-		int indexMonthToSelect = 0;
+		int indexMonthToSelect = 1;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 
@@ -79,7 +82,7 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 			System.out.println("Month Year: " + monthYearToSelect);
 			
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-			Thread.sleep(2000);
+			Thread.sleep(4000);
 			
 			// #5 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
 			
@@ -87,7 +90,6 @@ public class CountServiceNumberMultipleValues extends BaseClass{
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.countServiceNumbersChart, dataForExpenseTrending, FleetHelper.expenseCategoryAll);
 				Thread.sleep(2000);
-				 
 				
 			} catch (NullPointerException e) {
 				

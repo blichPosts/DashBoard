@@ -33,6 +33,9 @@ public class HierarchyValuesTestDrillDownTopTen extends BaseClass {
 	public static void HierarchyValuesTestDrillDownTopTenTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+						
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		

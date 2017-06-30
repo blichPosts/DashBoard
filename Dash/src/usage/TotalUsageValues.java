@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.FleetHelper;
@@ -108,8 +107,8 @@ public class TotalUsageValues extends BaseClass {
 				String vendorNameFound = tooltip.get(0).getText();
 				String vendorNameExpected = vendorsInChartNames.get(indexVendorInChart);
 					
-				Assert.assertEquals(vendorNameFound, vendorNameExpected);
-				ShowText("vendor name found: " + vendorNameFound + ", vendor name expected: " + vendorNameExpected);
+				ShowText("Vendor name found: " + vendorNameFound + ", Vendor name expected: " + vendorNameExpected);
+				GeneralHelper.verifyExpectedAndActualLabels(vendorNameFound, vendorNameExpected);
 				
 				
 				// Verify the label and the amount shown on the tooltip
@@ -210,9 +209,9 @@ public class TotalUsageValues extends BaseClass {
 				// Verify country shown on the tooltip
 				String countryNameFound = tooltip.get(0).getText();
 				String countryNameExpected = countriesInChartNames.get(indexCountryInChart);
-					
-				Assert.assertEquals(countryNameFound, countryNameExpected);
-				ShowText("country name found: " + countryNameFound + ", country name expected: " + countryNameExpected);
+				
+				ShowText("Country name found: " + countryNameFound + ", Country name expected: " + countryNameExpected);
+				GeneralHelper.verifyExpectedAndActualLabels(countryNameFound, countryNameExpected);
 				
 				
 				// Verify the label and the amount shown on the tooltip
@@ -487,11 +486,10 @@ public class TotalUsageValues extends BaseClass {
 			
 		}
 		
-		Assert.assertEquals(labelFound, labelExpected);
-		
-		ShowText("  label found: " + labelFound + ", label expected: " + labelExpected);
-		ShowText("  value found: " + valueFound + ", value expected: " + valueExpected);
+		ShowText("  Label found: " + labelFound + ", Label expected: " + labelExpected);
+		ShowText("  Value found: " + valueFound + ", Value expected: " + valueExpected);
 
+		GeneralHelper.verifyExpectedAndActualLabels(labelFound, labelExpected);
 		GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 		
 	}

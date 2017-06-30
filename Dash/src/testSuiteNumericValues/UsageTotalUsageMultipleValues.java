@@ -34,6 +34,9 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 	public static void UsageTotalUsageMultipleValuesTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();	
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);

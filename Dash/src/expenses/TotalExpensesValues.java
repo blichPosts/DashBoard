@@ -12,7 +12,6 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 
 import org.openqa.selenium.WebElement;
-import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.FleetHelper;
@@ -101,14 +100,14 @@ public class TotalExpensesValues extends BaseClass {
 				// 17
 				
 				// Verify that the amount of items in the tooltip equals to the (amount of series * 2) + 1:
-				Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+				GeneralHelper.verifyExpectedAndActualValues(tooltip.size(), expectedAmountItemsTooltip);
 				
 				// Verify country/vendor shown on the tooltip
 				String vendorNameFound = tooltip.get(0).getText();
 				String vendorNameExpected = vendorsInChartNames.get(indexVendorInChart);
 					
-				Assert.assertEquals(vendorNameFound, vendorNameExpected);
-				System.out.println("vendor name found: " + vendorNameFound + ", vendor name expected: " + vendorNameExpected);
+				GeneralHelper.verifyExpectedAndActualLabels(vendorNameFound, vendorNameExpected);
+				System.out.println("Vendor name found: " + vendorNameFound + ", Vendor name expected: " + vendorNameExpected);
 				
 				
 				// Verify the label and the amount shown on the tooltip
@@ -428,7 +427,7 @@ public class TotalExpensesValues extends BaseClass {
 		ShowText("Label Found: " + labelFound + ", Label Expected: " + labelExpected);
 		ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 		
-		Assert.assertEquals(labelFound, labelExpected);
+		GeneralHelper.verifyExpectedAndActualLabels(labelFound, labelExpected);
 		GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 		
 	}
@@ -562,6 +561,7 @@ public class TotalExpensesValues extends BaseClass {
 				
 				// The 'bar' WebElement will be used to set the position of the mouse on the chart
 				WebElement slice = listChartParts.get(indexVendorInChart);
+				
 				int amountSlices = listChartParts.size();
 				
 				moveMouseToElement(slice, amountSlices, chartId);
@@ -575,7 +575,7 @@ public class TotalExpensesValues extends BaseClass {
 				// 2 Expense
 				// 3 <Total Expense Amount for vendor>
 				
-				Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+				GeneralHelper.verifyExpectedAndActualValues(tooltip.size(), expectedAmountItemsTooltip);
 				
 				// Verify the label and the amount shown on the tooltip
 				int index = 1;
@@ -662,9 +662,6 @@ public class TotalExpensesValues extends BaseClass {
 
 
 
-	
-	
-	
 	public static void verifyTotalExpensesBarChartTooltipByCountry(int barChartId, List<UsageOneMonth> listOneMonthData) throws InterruptedException, AWTException {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
@@ -719,13 +716,13 @@ public class TotalExpensesValues extends BaseClass {
 				// 17
 				
 				// Verify that the amount of items in the tooltip equals to the (amount of series * 2) + 1:
-				Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+				GeneralHelper.verifyExpectedAndActualValues(tooltip.size(), expectedAmountItemsTooltip);
 				
 				// Verify country/vendor shown on the tooltip
 				String countryNameFound = tooltip.get(0).getText();
 				String countryNameExpected = countriesInChartNames.get(indexCountryInChart);
 					
-				Assert.assertEquals(countryNameFound, countryNameExpected);
+				GeneralHelper.verifyExpectedAndActualLabels(countryNameFound, countryNameExpected);
 				System.out.println("Country name found: " + countryNameFound + ", Country name expected: " + countryNameExpected);
 				
 				
@@ -759,9 +756,9 @@ public class TotalExpensesValues extends BaseClass {
 
 
 
-	public static void verifyTotalExpensesPieChartTooltipByCountry(int barChartId, List<UsageOneMonth> listOneMonthData) throws ParseException, InterruptedException, AWTException {
+	public static void verifyTotalExpensesPieChartTooltipByCountry(int pieChartId, List<UsageOneMonth> listOneMonthData) throws ParseException, InterruptedException, AWTException {
 			
-		String chartId = UsageHelper.getChartId(barChartId);
+		String chartId = UsageHelper.getChartId(pieChartId);
 		
 		List<String> countriesSelectedCheckBox = FleetHelper.getCountriesSelected();
 				
@@ -874,10 +871,11 @@ public class TotalExpensesValues extends BaseClass {
 				
 				// The 'bar' WebElement will be used to set the position of the mouse on the chart
 				WebElement slice = listChartParts.get(indexCountryInChart);
+				
 				int amountSlices = listChartParts.size();
 				
 				moveMouseToElement(slice, amountSlices, chartId);
-				
+								
 				List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-tooltip>text>tspan"));
 				
 				// Verify that the amount of items in the tooltip equals to the (amount of series * 3) + 1: 				
@@ -887,7 +885,7 @@ public class TotalExpensesValues extends BaseClass {
 				// 2 Expense
 				// 3 <Total Expense Amount for country>
 				
-				Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+				GeneralHelper.verifyExpectedAndActualValues(tooltip.size(), expectedAmountItemsTooltip);
 				
 				// Verify the label and the amount shown on the tooltip
 				int index = 1;

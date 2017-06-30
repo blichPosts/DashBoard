@@ -485,9 +485,9 @@ public class CommonTestStepActions extends BaseClass
 	}
 	
 	
-
-	public static void selectOneVendor(String vendorName) {
 	
+	public static void selectOneVendor(String vendorName) {
+		
 		// this list will have ALL the names of the vendors LISTED on the Point of View section
 		List<WebElement> listVendorsLabels = getAllVendorsInPoV();
 		
@@ -514,6 +514,41 @@ public class CommonTestStepActions extends BaseClass
 
 	}
 	
+	
+	// **** TEST for firefox
+//	public static void selectOneVendor(String vendorName) {
+//	
+//		// this list will have ALL the names of the vendors LISTED on the Point of View section
+//		List<WebElement> listVendorsLabels = getAllVendorsInPoV();
+//		
+//		
+//		// Add the names of the vendors that are selected on the Point of View to the listVendorsChecked list
+//		for (int i = 1; i <= listVendorsLabels.size(); i++) {
+//			
+//			//int num = i + 1;
+////			String checkBoxXpath = ".//input[@id='input-md-checkbox-" + i + "']/../..";    
+//			
+////			String cssSelector = "md-checkbox>label:nth-of-type(" + i + ")";   //"span.md-checkbox-label:nth-of-type(" + i + ")";
+//			
+//			String checkBoxId = "input-md-checkbox-" + i;
+//			
+//			String xpathLabel = ".//input[@id='input-md-checkbox-" + i + "']/../following-sibling::span";
+//			
+//			WebElement label = driver.findElement(By.xpath(xpathLabel));  //driver.findElement(By.xpath(checkBoxXpath));  //driver.findElement(By.cssSelector(cssSelector));
+//			
+//			// If the vendor's name from the list matches the name in the parameter then click the checkbox, so the vendor is selected 
+////			if(listVendorsLabels.get(i-1).getText().equals(vendorName)){
+//			if(label.getText().equals(vendorName)){
+////				driver.findElement(By.cssSelector(cssSelector)).click();
+////				listVendorsLabels.get(i-1).click();
+//				driver.findElement(By.xpath(xpathLabel)).click();
+//				
+//			}
+//			
+//		}
+//
+//	}
+//	
 
 		
 	// 1/2/17 - added the version of the numbers that start with "0", like "01", in case the month number received is in that format (Ana) 

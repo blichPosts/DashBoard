@@ -102,7 +102,7 @@ public class BaseClass
 		Remove
 	}
 
-	public enum ViewType // needed for base class methods. // bladdxx -- used by total rxpense 
+	public enum ViewType // needed for base class methods. // bladdxx -- used by total expense 
 	{
 		vendor,
 		country
@@ -128,7 +128,7 @@ public class BaseClass
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
 		loginType = LoginType.Command; // bladdxx
-		browserType = BrowserType.Chrome;
+		browserType = BrowserType.FireFox;
 
 	}
 	
@@ -633,10 +633,10 @@ public class BaseClass
 		
 		GeneralHelper.setUpiFrame();
 		
-		if(browserType.equals(BrowserType.FireFox))
-		{
-			Thread.sleep(2500);
-		}
+//		if(browserType.equals(BrowserType.FireFox))
+//		{
+//			Thread.sleep(5000);
+//		}
 		
 		GeneralHelper.switchToContentFrame();
 		

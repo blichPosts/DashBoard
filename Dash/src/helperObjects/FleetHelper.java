@@ -49,25 +49,27 @@ public class FleetHelper extends BaseClass {
 		
 		List<String> vendorNames = CommonTestStepActions.getAllVendorNames();
 			
-		int amountOfVendors = 10; //GeneralHelper.getAmountOfVendorsToSelect(vendors.size()); // If we don't want the prompt to show up, just replace the assignment with a numeric value. 
-
-		if (amountOfVendors >= vendorNames.size()) {
+		int amountOfVendors = vendorNames.size();
 		
-			amountOfVendors = vendorNames.size();
-			
-		} else if (amountOfVendors < vendorNames.size()) {
-			
-			// Unselect all vendors..
-			CommonTestStepActions.UnSelectAllVendors();
-			
-			// .. and select one by one the amount of vendors in 'amountOfVendors'
-			for (int i = 0; i < amountOfVendors; i++) {
-
-				CommonTestStepActions.selectOneVendor(vendorNames.get(i));
-				
-			}
-			
-		}
+//		int amountOfVendors = 10; //GeneralHelper.getAmountOfVendorsToSelect(vendors.size()); // If we don't want the prompt to show up, just replace the assignment with a numeric value. 
+//
+//		if (amountOfVendors >= vendorNames.size() || browserType.equals(BrowserType.FireFox)) {
+//		
+//			amountOfVendors = vendorNames.size();
+//			
+//		} else if (amountOfVendors < vendorNames.size()) {
+//			
+//			// Unselect all vendors..
+//			CommonTestStepActions.UnSelectAllVendors();
+//			
+//			// .. and select one by one the amount of vendors in 'amountOfVendors'
+//			for (int i = 0; i < amountOfVendors; i++) {
+//
+//				CommonTestStepActions.selectOneVendor(vendorNames.get(i));
+//				
+//			}
+//			
+//		}
 		 				
 		ShowText("Amount of Vendors Selected: " + amountOfVendors);
 		

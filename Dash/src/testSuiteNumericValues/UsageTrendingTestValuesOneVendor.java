@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.FleetHelper;
+import helperObjects.GeneralHelper;
 import helperObjects.ReadFilesHelper;
 import helperObjects.UsageHelper;
 import helperObjects.UsageOneMonth;
@@ -33,6 +34,9 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 	@Test
 	public static void UsageTrendingTestValuesOneVendorTest() throws Exception
 	{
+
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
 
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
@@ -120,15 +124,15 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
-				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
-				Thread.sleep(2000);
-				
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
-				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
-				Thread.sleep(2000);
+//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
+//				
+//				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
+//				Thread.sleep(2000);
+//				
+//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
+//				
+//				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
+//				Thread.sleep(2000);
 				
 				// Roaming chart
 				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
@@ -136,15 +140,15 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);	
 				
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
-				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
-				Thread.sleep(2000);	
-				
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
-				
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
-				Thread.sleep(2000);
+//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
+//				
+//				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
+//				Thread.sleep(2000);	
+//				
+//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
+//				
+//				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
+//				Thread.sleep(2000);
 								
 			} catch(NullPointerException e) {
 				

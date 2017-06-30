@@ -3,6 +3,7 @@ package helperObjects;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -563,6 +564,64 @@ public class UsageHelper extends BaseClass{
 		
 	}
 	
+	 
+	// *** New version of this method - old version commented below... mmm seems not working ... going back to old method
+//	public static List<String> getMonthListUnifiedForVendorsSelected(List<List<UsageOneMonth>> listUsageVendorsSelected) throws ParseException{
+//		
+//		
+//		HashMap<String, String> tmpMapMonthsToSelect = new HashMap<>();
+//		
+//		CommonTestStepActions.initializeMonthSelector();
+//		List<String> months = CommonTestStepActions.YearMonthIntergerFromPulldown(); 
+//		
+//		for (int i = 0; i < months.size(); i++) {
+//			
+//			String[] monthYear = getMonthYearSeparated(months.get(i));
+//			String month = monthYear[0]; // month in the format "M" 
+//			String year = monthYear[1]; // year in the format "YYYY"
+//			
+//			//if the month has a leading "0", remove it, to match the format of the month in source file 
+//			if (month.startsWith("0") && month.length() == 2)  
+//				month = month.substring(1, 2);
+//			
+////				System.out.println("Month: " + month + ", Year: " + year);
+//			
+//			for (int j = 0; j < listUsageVendorsSelected.size(); j++) {
+//			
+//				List<UsageOneMonth> listOneVendor = listUsageVendorsSelected.get(j);
+//				
+//				for (int k = 0; k < listOneVendor.size(); k++){
+//				
+//					if(month.equals(listOneVendor.get(k).getOrdinalMonth()) && year.equals(listOneVendor.get(k).getOrdinalYear())){
+//						
+//						String monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
+//													
+//						tmpMapMonthsToSelect.put(monthYearToSelect, monthYearToSelect);
+//								
+//					} 
+//				
+//				}
+//
+//			}
+//			 
+//		}
+//		
+//		
+//		List<String> monthsToSelectPulldown = new ArrayList<>(tmpMapMonthsToSelect.values());	
+//		
+//		System.out.println("monthsToSelectPulldown.size(): " + monthsToSelectPulldown.size());
+//		
+//		return monthsToSelectPulldown;
+//		
+//	}
+	
+	
+	
+	
+	
+	
+	
+	// old version of method
 	
 	public static List<String> getMonthListUnifiedForVendorsSelected(List<List<UsageOneMonth>> listUsageVendorsSelected) throws ParseException{
 		
@@ -576,13 +635,13 @@ public class UsageHelper extends BaseClass{
 		CommonTestStepActions.initializeMonthSelector();
 		List<String> months = CommonTestStepActions.YearMonthIntergerFromPulldown(); 
 		
-		boolean monthEqualToInvoiceMonth = false;
-		String ordinalMonth = listUsageVendorsSelected.get(0).get(0).getOrdinalMonth();
-		String monthFromInvoiceMonth = getMonthOfInvoiceMonth(listUsageVendorsSelected.get(0).get(0).getInvoiceMonth());
+//		boolean monthEqualToInvoiceMonth = false;
+//		String ordinalMonth = listUsageVendorsSelected.get(0).get(0).getOrdinalMonth();
+//		String monthFromInvoiceMonth = getMonthOfInvoiceMonth(listUsageVendorsSelected.get(0).get(0).getInvoiceMonth());
 		
-		if (ordinalMonth.equals(monthFromInvoiceMonth)){
-			monthEqualToInvoiceMonth = true;
-		}
+//		if (ordinalMonth.equals(monthFromInvoiceMonth)){
+//			monthEqualToInvoiceMonth = true;
+//		}
 		
 				
 		for (int i = 0; i < months.size(); i++) {
@@ -603,7 +662,7 @@ public class UsageHelper extends BaseClass{
 				
 				for (int k = 0; k < listOneVendor.size(); k++){
 				
-					if (monthEqualToInvoiceMonth) {
+//					if (monthEqualToInvoiceMonth) {
 										
 						if(month.equals(listOneVendor.get(k).getOrdinalMonth()) && year.equals(listOneVendor.get(k).getOrdinalYear())){
 							
@@ -619,33 +678,33 @@ public class UsageHelper extends BaseClass{
 									
 						} 
 						
-					} else if (!monthEqualToInvoiceMonth) {
-						
-						String monthTmp;
-						String yearTmp;
-						
-						if(month.equals("12")){
-							monthTmp = "1"; 
-							yearTmp = Integer.toString(Integer.parseInt(year) - 1);
-						} else { 
-							monthTmp = Integer.toString(Integer.parseInt(month) - 1);
-							yearTmp = year;
-						}
-						
-						if(monthTmp.equals(listOneVendor.get(k).getOrdinalMonth()) && yearTmp.equals(listOneVendor.get(k).getOrdinalYear())){
-							
-							String monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(monthTmp, yearTmp);
-							
-							if(!monthsWithData.get(i).equals(monthYearToSelect)){
-								
-//								System.out.println("2-Month Added: " + monthYearToSelect);
-								monthsWithData.add(i, monthYearToSelect);
-								
-							}
-									
-						}
-						
-					}
+//					} else if (!monthEqualToInvoiceMonth) {
+//						
+//						String monthTmp;
+//						String yearTmp;
+//						
+//						if(month.equals("12")){
+//							monthTmp = "1"; 
+//							yearTmp = Integer.toString(Integer.parseInt(year) - 1);
+//						} else { 
+//							monthTmp = Integer.toString(Integer.parseInt(month) - 1);
+//							yearTmp = year;
+//						}
+//						
+//						if(monthTmp.equals(listOneVendor.get(k).getOrdinalMonth()) && yearTmp.equals(listOneVendor.get(k).getOrdinalYear())){
+//							
+//							String monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(monthTmp, yearTmp);
+//							
+//							if(!monthsWithData.get(i).equals(monthYearToSelect)){
+//								
+////								System.out.println("2-Month Added: " + monthYearToSelect);
+//								monthsWithData.add(i, monthYearToSelect);
+//								
+//							}
+//									
+//						}
+//						
+//					}
 				
 				}
 
@@ -660,7 +719,7 @@ public class UsageHelper extends BaseClass{
 			if (!monthsWithData.get(i).equals("")) {
 				
 				monthsToSelectPulldown.add(monthsWithData.get(i));
-//				System.out.println("Month to select: " + monthsWithData.get(i));
+				// System.out.println("Month to select: " + monthsWithData.get(i));
 			}
 				
 		}

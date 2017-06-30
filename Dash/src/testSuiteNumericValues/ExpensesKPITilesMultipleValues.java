@@ -34,6 +34,9 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 	public static void ExpensesKPITilesMultipleValuesTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);

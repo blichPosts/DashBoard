@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyTopTenValues;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.GeneralTopTenHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
@@ -33,6 +34,9 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 	public static void HierarchyValuesTestTopTenTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		

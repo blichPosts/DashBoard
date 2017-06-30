@@ -35,6 +35,9 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 	public static void HierarchyValuesTestDrillDownKPITilesTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+						
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		

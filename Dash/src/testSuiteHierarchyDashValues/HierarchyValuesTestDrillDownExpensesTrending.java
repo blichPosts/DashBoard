@@ -34,6 +34,9 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 	public static void HierarchyValuesTestDrillDownExpensesTrendingTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|  -- NOT WORKING ANYWAYS, SINCE moveTo method doesn't work on Firefox 
+		GeneralHelper.waitForHeaderVisible();
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		

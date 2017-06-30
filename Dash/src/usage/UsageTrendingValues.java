@@ -9,7 +9,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.testng.Assert;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
@@ -42,9 +41,9 @@ public class UsageTrendingValues extends BaseClass {
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
 		String chartId = UsageHelper.getChartId(chartNum);
-		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
 		
-		Thread.sleep(2000);
+		GeneralHelper.moveDown(chartId);
+		
 		
 		category = categorySelector;
 			
@@ -100,7 +99,7 @@ public class UsageTrendingValues extends BaseClass {
 			int amountOfSeries = highchartSeries.size();
 			int factor = 2;  // Ana added - May 17
 			int expectedAmountItemsTooltip = (amountOfSeries * factor) + 2;  // Ana modif - May 18
-			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			GeneralHelper.verifyExpectedAndActualValues(tooltip.size(), expectedAmountItemsTooltip);
 			
 			
 			// For each vendor listed in the tooltip verify the amount shown
@@ -135,8 +134,8 @@ public class UsageTrendingValues extends BaseClass {
 				chartName = "Roaming";
 			}
 			
-			Assert.assertEquals(monthYearFound, monthYearExpected + ": " + chartName); 
 			// System.out.println("Month/Year Found: " + monthYearFound + ", Month/Year Expected: " + monthYearExpected);
+			GeneralHelper.verifyExpectedAndActualLabels(monthYearFound, monthYearExpected + ": " + chartName); 
 			
 			indexHighchart++;
 			indexMonth--;
@@ -366,9 +365,8 @@ public class UsageTrendingValues extends BaseClass {
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
 		String chartId = UsageHelper.getChartId(chartNum);
-		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
 		
-		Thread.sleep(2000);
+		GeneralHelper.moveDown(chartId);
 		
 		category = categorySelector;
 			
@@ -424,7 +422,7 @@ public class UsageTrendingValues extends BaseClass {
 			int amountOfSeries = highchartSeries.size();
 			int factor = 2;
 			int expectedAmountItemsTooltip = (amountOfSeries * factor) + 2;
-			Assert.assertEquals(tooltip.size(), expectedAmountItemsTooltip);
+			GeneralHelper.verifyExpectedAndActualValues(tooltip.size(), expectedAmountItemsTooltip);
 			
 			
 			// For each country listed in the tooltip verify the amount shown
@@ -459,7 +457,7 @@ public class UsageTrendingValues extends BaseClass {
 				chartName = "Roaming";
 			}
 			
-			Assert.assertEquals(monthYearFound, monthYearExpected + ": " + chartName); 
+			GeneralHelper.verifyExpectedAndActualLabels(monthYearFound, monthYearExpected + ": " + chartName); 
 			ShowText("Month/Year Found: " + monthYearFound + ", Month/Year Expected: " + monthYearExpected);
 			
 			indexHighchart++;

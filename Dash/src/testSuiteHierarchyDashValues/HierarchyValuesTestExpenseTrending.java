@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyExpenseTrending;
+import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.HierarchyTrendData;
 import helperObjects.ReadFilesHelper;
@@ -31,6 +32,9 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 	public static void HierarchyValuesTestExpenseTrendingTest() throws Exception
 	{
 
+		// *** Needed for Firefox *** :|  -- NOT WORKING ANYWAYS, SINCE moveTo method doesn't work on Firefox 
+		GeneralHelper.waitForHeaderVisible();
+		
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		
