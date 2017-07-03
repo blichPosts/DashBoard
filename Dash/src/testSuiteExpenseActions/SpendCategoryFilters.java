@@ -1,6 +1,8 @@
 package testSuiteExpenseActions;
 
 
+import javax.swing.JOptionPane;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -137,7 +139,7 @@ public class SpendCategoryFilters extends BaseClass
 	{
 		System.out.println("Close Browser.");	
 		ExpenseHelper.SetWaitDefault();
-	    // JOptionPane.showMessageDialog(frame, "Select OK. This is Ana edit. TEST");
+	    JOptionPane.showMessageDialog(frame, "Done");
 		driver.close();
 		driver.quit();
 	}	

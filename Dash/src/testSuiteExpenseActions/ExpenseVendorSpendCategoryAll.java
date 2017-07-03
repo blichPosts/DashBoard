@@ -36,18 +36,8 @@ public class ExpenseVendorSpendCategoryAll extends BaseClass
 		
 		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
 		
-		 TotalExpenseByVendorSpendCategory.VerifyRemovingCategoriesMultipleVendors(ViewType.vendor);
-
-		 
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		TotalExpenseByVendorSpendCategory.VerifyRemovingCategoriesMultipleVendors(ViewType.vendor);
+		TotalExpenseByVendorSpendCategory.VerifyAddingCategoriesMultipleVendors(ViewType.vendor);
 	}
 	
 	@AfterClass
