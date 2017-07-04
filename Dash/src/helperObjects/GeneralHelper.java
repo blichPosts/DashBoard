@@ -21,7 +21,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import Dash.BaseClass;
-import Dash.BaseClass.BrowserType;
 
 
 public class GeneralHelper extends BaseClass {
@@ -564,16 +563,31 @@ public class GeneralHelper extends BaseClass {
 		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 		Point coordinates = getAbsoluteLocation(bar);
-		
+		Point coordinatesChart = getAbsoluteLocation(driver.findElement(By.cssSelector("#" + chartId + ">svg>.highcharts-grid.highcharts-yaxis-grid")));
+
 		int height = bar.getSize().getHeight();
 		int width = bar.getSize().getWidth();
-				
-		int x_offset = (int) (width * 0.5);
+			
+		
+		int x_offset = (int) (width * 0.5); 
 		int y_offset = (int) height + (int) getScrollPosition();
+ 
 		
 		int x = coordinates.getX() + x_offset + 2;
 		int y = coordinates.getY() + y_offset;
+	
 		
+		// These conditions have been added so the test can be run on Firefox. Otherwise the correct coordinates cannot be obtainesd for ** Firefox **
+		if (width == 0) {
+			x_offset = 20;
+			x = coordinatesChart.getX() + x_offset; 
+		}
+		if (height == 0) {
+			y_offset = calculateOffset(chartId, indexHighchart);
+			y = coordinatesChart.getY() + y_offset;  
+			
+		}
+	
 		
 		Robot robot = new Robot();
 		robot.mouseMove(x, y);
@@ -607,6 +621,21 @@ public class GeneralHelper extends BaseClass {
 	}
 	
 	
+	// Offset will be calculated in case the bar's height is 0 -- Needed for Firefox 
+	private static int calculateOffset(String chartId, int indexHighchart) {
+		
+		WebElement chartBorder = driver.findElement(By.cssSelector("#" + chartId + ">svg>rect.highcharts-plot-border"));
+		int charBorderHeight = Integer.parseInt(chartBorder.getAttribute("height"));
+		
+		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text"));
+		
+		int y_offset_new = charBorderHeight / legends.size() * indexHighchart;
+		
+		return y_offset_new;
+		
+	}
+
+
 	// Get the last month listed in month-year selector
 	public static String getLastMonthFromSelector() {
 
@@ -634,7 +663,7 @@ public class GeneralHelper extends BaseClass {
 		
 		// Only scroll down if the scroll bar is at the top of the page
 		if (getScrollPosition() == 0) {
-			
+			ShowText("Scroll down....");
 			Robot robot = new Robot();
 			robot.keyPress(KeyEvent.VK_PAGE_DOWN);
 			robot.keyRelease(KeyEvent.VK_PAGE_DOWN);
@@ -645,7 +674,7 @@ public class GeneralHelper extends BaseClass {
 	
 	
 	public static void moveDown(String chartId) throws AWTException, InterruptedException {
-		
+				
 		if (browserType.equals(BrowserType.FireFox)) {
 
 			scrollPage();

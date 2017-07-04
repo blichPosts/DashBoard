@@ -296,7 +296,7 @@ public class TotalUsageActions extends BaseClass{
 			ShowText("Vendor: " + tooltip.get(0).getText());
 			Assert.assertEquals(tooltip.get(0).getText(), vendorsInChartList.get(indexHighchart-1));
 			
-			String categorySelected = UsageHelper.getNameCategorySelected(category);
+			String categorySelected = UsageHelper.getNameCategory(category);
 			
 			ShowText("Category: " + tooltip.get(1).getText());
 			Assert.assertTrue(tooltip.get(1).getText().startsWith(categorySelected));	
@@ -331,7 +331,7 @@ public class TotalUsageActions extends BaseClass{
 	// Verify that only one category is selected
 	public static void verifySelectedCategories(int chartNum, int categorySelected) {
 		
-		String categoryName = UsageHelper.getNameCategorySelected(categorySelected);
+		String categoryName = UsageHelper.getNameCategory(categorySelected);
 		
 		for (int i = 1; i <= 3; i++) {
 			

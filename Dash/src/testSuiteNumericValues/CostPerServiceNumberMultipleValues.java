@@ -88,52 +88,49 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 			// #5 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
 			
 			try {
-				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryAll);
-				
+	
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryAll);
 				Thread.sleep(2000);
 				
 //				FleetHelper.selectCategory(FleetHelper.expenseCategoryVoice);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryVoice);
-//				Thread.sleep(2000);
-//				
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryData);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryData);
-//				Thread.sleep(2000);
-//				
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryMessages);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryMessages);
-//				Thread.sleep(2000);
-//				
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryRoaming);
-//				Thread.sleep(2000);
-//				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryEquipment);
-//				Thread.sleep(2000);
-//				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryTaxes);
-//				Thread.sleep(2000);
-//			 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryOther);
-//				Thread.sleep(2000);
-//				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryAccount);
-//				Thread.sleep(2000);
 				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryVoice);
+				Thread.sleep(2000);
+				
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryData);
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryData);
+				Thread.sleep(2000);
+				
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryMessages);
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryMessages);
+				Thread.sleep(2000);
+				
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryRoaming);
+				Thread.sleep(2000);
+				 
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryEquipment);
+				Thread.sleep(2000);
+				 
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryTaxes);
+				Thread.sleep(2000);
+			 
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryOther);
+				Thread.sleep(2000);
+				 
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryAccount);
+				Thread.sleep(2000);
 				
 			} catch (NullPointerException e) {
 				

@@ -144,7 +144,7 @@ public class UsageHelper extends BaseClass{
 	
 	public static void selectCategoryNew(int chartNum, int category){
 		
-		String categoryName = getNameCategorySelected(category);
+		String categoryName = getNameCategory(category);
 		
 		if (chartNum == totalUsageSection) {
 			
@@ -795,7 +795,7 @@ public class UsageHelper extends BaseClass{
 
 
 	
-	public static String getNameCategorySelected(int category) {
+	public static String getNameCategory(int category) {
 		
 		switch (category) {
 			case categoryVoice:

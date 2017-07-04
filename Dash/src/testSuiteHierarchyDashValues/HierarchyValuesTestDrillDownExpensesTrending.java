@@ -34,7 +34,7 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 	public static void HierarchyValuesTestDrillDownExpensesTrendingTest() throws Exception
 	{
 		
-		// *** Needed for Firefox *** :|  -- NOT WORKING ANYWAYS, SINCE moveTo method doesn't work on Firefox 
+		// *** Needed for Firefox *** :| 
 		GeneralHelper.waitForHeaderVisible();
 				
 		// Enable Start collecting data
@@ -114,17 +114,17 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 					
 					try {
 						
-						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
+//						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
 						
 						HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryTotal);
 						Thread.sleep(2000);
 						
-						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
+//						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
 						
 						HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryOptimizable);
 						Thread.sleep(2000);
 						
-						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
+//						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
 						
 						HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryRoaming);
 						Thread.sleep(2000);

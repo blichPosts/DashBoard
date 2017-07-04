@@ -78,52 +78,51 @@ public class UsageTrendingMultipleValues extends BaseClass {
 
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 			Thread.sleep(2000);
-
-			// #5 Verify that the values displayed on the tooltips of "Usage
-			// Trending" charts are the same as the ones read from file
+			
+			// #5 Verify that the values displayed on the tooltips of "Usage Trending" charts are the same as the ones read from file
 
 			try {
 
 				// Domestic chart
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
-
+//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
+//				FleetHelper.selectCategoryAlt(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryVoiceName);
+				
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 
-				// UsageHelper.selectCategory(UsageHelper.usageTrendingSection,
-				// UsageHelper.categoryData);
-				//
-				// UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart,
-				// dataForUsageTrending, UsageHelper.categoryData);
-				// Thread.sleep(2000);
+//				 UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
+				
+//				FleetHelper.selectCategoryAlt(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryDataName);
+				
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
+				Thread.sleep(2000);
+				 
+//				FleetHelper.selectCategoryAlt(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryMessagesName);
+				
 				//
 				// UsageHelper.selectCategory(UsageHelper.usageTrendingSection,
 				// UsageHelper.categoryMessages);
 				//
-				// UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart,
-				// dataForUsageTrending, UsageHelper.categoryMessages);
-				// Thread.sleep(2000);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
 
 				// Roaming chart
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
+//				FleetHelper.selectCategoryAlt(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryVoiceName);
 
-				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart,
-						dataForUsageTrending, UsageHelper.categoryVoice);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 
 				// UsageHelper.selectCategory(UsageHelper.usageTrendingSection,
 				// UsageHelper.categoryData);
 				//
-				// UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart,
-				// dataForUsageTrending, UsageHelper.categoryData);
-				// Thread.sleep(2000);
+				 UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
+				 Thread.sleep(2000);
 				//
 				// UsageHelper.selectCategory(UsageHelper.usageTrendingSection,
 				// UsageHelper.categoryMessages);
 				//
-				// UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart,
-				// dataForUsageTrending, UsageHelper.categoryMessages);
-				// Thread.sleep(2000);
+				 UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				 Thread.sleep(2000);
 
 			} catch (NullPointerException e) {
 

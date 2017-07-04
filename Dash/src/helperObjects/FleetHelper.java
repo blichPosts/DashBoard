@@ -31,9 +31,19 @@ public class FleetHelper extends BaseClass {
 	public final static int expenseCategoryOther = 8;
 	public final static int expenseCategoryAccount = 9;
 
-	public final static int usageCategoryVoice = 1;
-	public final static int usageCategoryData = 2;
-	public final static int usageCategoryMessages = 3;
+	public final static String expenseCategoryAllName = "All";
+	public final static String expenseCategoryVoiceName = "Voice";
+	public final static String expenseCategoryDataName = "Data";
+	public final static String expenseCategoryMessagesName = "Messages";
+	public final static String expenseCategoryRoamingName = "Roaming";
+	public final static String expenseCategoryEquipmentName = "Equipment";
+	public final static String expenseCategoryTaxesName = "Taxes";
+	public final static String expenseCategoryOtherName = "Other";
+	public final static String expenseCategoryAccountName = "Account";
+	
+//	public final static int usageCategoryVoice = 1;
+//	public final static int usageCategoryData = 2;
+//	public final static int usageCategoryMessages = 3;
 	
 
 	
@@ -43,6 +53,53 @@ public class FleetHelper extends BaseClass {
 		categoryToSelect.click();
 		
 	}
+
+	
+	public static void selectCategoryUsage(int chartNum, String category) throws InterruptedException{
+		
+		ShowText("Category to select: " + category);
+		
+		String xpath = "";   // ".//div[@class='tdb-card']/div/div[text()='" + category + "']";
+		
+		if (chartNum == UsageHelper.totalUsageDomesticChart) {
+			
+			xpath = ".//div[@class='tdb-USAGE']/div/div/div[@class='tdb-card']/h3/preceding-sibling::div/div[text()='" + category + "']";
+			
+		} else if (chartNum == UsageHelper.usageTrendingDomesticChart) {
+			
+			xpath = ".//div[@class='tdb-USAGE']/div/div[@class='tdb-card']/h3/preceding-sibling::div/div[text()='" + category + "']";
+			
+		} else if (chartNum == UsageHelper.usageTrendingRoamingChart) {
+			
+			xpath = ".//div[@class='tdb-USAGE']/div/div[@class='tdb-card']/h3/following-sibling::div/div[text()='" + category + "']";
+			
+		} else if (chartNum == FleetHelper.expenseByVendorChart || chartNum == FleetHelper.costPerServiceNumberChart) {
+			
+			xpath = ".//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div[@class='tdb-card']/h3[2]/preceding-sibling::div[1]/div[text()='" + category + "']";
+			
+		}
+
+		WebElement categoryToSelect = driver.findElement(By.xpath(xpath));
+		categoryToSelect.click();
+		
+		Thread.sleep(2000);
+		
+	}
+	
+	
+	public static void selectCategoryExpenses(int chartNum, String category) throws InterruptedException{
+		
+		ShowText("Category to select: " + category);
+		
+		String xpath = ".//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div[@class='tdb-card']/h3[2]/preceding-sibling::div[1]/div[text()='" + category + "']";
+		
+		WebElement categoryToSelect = driver.findElement(By.xpath(xpath));
+		categoryToSelect.click();
+		
+		Thread.sleep(2000);
+		
+	}
+	
 	
 	
 	public static List<List<UsageOneMonth>> getExpenseUsageDataForTest() throws Exception {
@@ -420,6 +477,44 @@ public class FleetHelper extends BaseClass {
 		
 	}
 	
+	
+	public static String getNameCategoryExpenses(int category) {
+		
+		switch (category) {
+			
+			case expenseCategoryAll:
+				return expenseCategoryAllName;
+				
+			case expenseCategoryVoice:
+				return expenseCategoryVoiceName;
+				
+			case expenseCategoryData:
+				return expenseCategoryDataName;
+				
+			case expenseCategoryMessages:
+				return expenseCategoryMessagesName;
+								
+			case expenseCategoryRoaming:
+				return expenseCategoryRoamingName;
+				
+			case expenseCategoryEquipment:
+				return expenseCategoryEquipmentName;
+				
+			case expenseCategoryTaxes:
+				return expenseCategoryTaxesName;
+				
+			case expenseCategoryOther:
+				return expenseCategoryOtherName;
+				
+			case expenseCategoryAccount:
+				return expenseCategoryAccountName;
+				
+			default:
+				return null;
+				
+		}
+		
+	}
 	
 	
 }

@@ -25,6 +25,14 @@ public class FleetTopTenValues extends BaseClass {
 	
 	public static void verifyTopTenChartValues(int barChartId, int category) throws Exception {
 		
+		String chartId = UsageHelper.getChartId(barChartId);
+		
+		if (barChartId == GeneralTopTenHelper.roamingUsageChart) {
+			GeneralHelper.moveDown(chartId);
+		}
+		
+		Thread.sleep(2000);
+		
 		// Select category
 		HierarchyHelper.selectCategoryTopTen(barChartId, category);
 		
@@ -52,7 +60,7 @@ public class FleetTopTenValues extends BaseClass {
 			// Verify values on the selected Top Ten chart and for the selected category
 			if (!GeneralTopTenHelper.allValuesAreZero(valuesExpected) && chartHasData) {
 			
-				verifyTooltipTopTenChart(valuesExpected, barChartId, category);
+				verifyTooltipTopTenChart(valuesExpected, chartId, category);
 				
 			}
 		
@@ -62,14 +70,13 @@ public class FleetTopTenValues extends BaseClass {
 	
 	
 	
-	public static void verifyTooltipTopTenChart(List<FleetTopTenData> topTenValues, int barChartId, int category) throws AWTException, InterruptedException {
+	public static void verifyTooltipTopTenChart(List<FleetTopTenData> topTenValues, String chartId, int category) throws AWTException, InterruptedException {
 		
-		String chartId = UsageHelper.getChartId(barChartId);
-		
-		WebElement topTenChart = driver.findElement(By.cssSelector("#" + chartId));
-		new Actions(driver).moveToElement(topTenChart).perform();
-		
-		Thread.sleep(2000);
+			
+//		WebElement topTenChart = driver.findElement(By.cssSelector("#" + chartId));
+//		new Actions(driver).moveToElement(topTenChart).perform();
+//		
+//		Thread.sleep(2000);
 		
 		List<WebElement> chartElementNames = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 		List<String> chartLabelsFound = new ArrayList<String>();
@@ -91,7 +98,7 @@ public class FleetTopTenValues extends BaseClass {
 			
 			String label = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
 	    	expectedLabels.add(label);
-	    	 ShowText("label:  " + label);
+	    	ShowText("label:  " + label);
 	    	
 	    	String value = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
 	    	expectedValuesList.add(value);

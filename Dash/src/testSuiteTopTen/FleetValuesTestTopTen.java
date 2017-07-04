@@ -34,6 +34,9 @@ public class FleetValuesTestTopTen extends BaseClass {
 	public static void FleetValuesTestTopTenTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+		
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		
@@ -47,7 +50,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
 		String monthYearToSelect = "";
 		
-		int indexMonth = 1;
+		int indexMonth = 3;
 		
 		do {
 
@@ -66,31 +69,31 @@ public class FleetValuesTestTopTen extends BaseClass {
 			try {
 				
 				// Run test for "Expense" chart and category "All"
-				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseAll);
-				
-				// Run test for "Expense" chart and category "Voice"
-				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseVoice);
-						
-				// Run test for "Expense" chart and category "Data"
-				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseData);
-								
-				// Run test for "Expense" chart and category "Messages"
-				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseMessages);
-								
-				// Run test for "Expense" chart and category "Roaming"
-				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseRoaming);
-				
-				// Run test for "Domestic Usage" chart and category "Voice"
-				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageVoice);
-						
-				// Run test for "Domestic Usage" chart and category "Voice Overage"
-				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageVoiceOverage);
-								
-				// Run test for "Domestic Usage" chart and category "Data"
-				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageData);
-								
-				// Run test for "Domestic Usage" chart and category "Messages"
-				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageMessages);
+//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseAll);
+//				
+//				// Run test for "Expense" chart and category "Voice"
+//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseVoice);
+//						
+//				// Run test for "Expense" chart and category "Data"
+//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseData);
+//								
+//				// Run test for "Expense" chart and category "Messages"
+//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseMessages);
+//								
+//				// Run test for "Expense" chart and category "Roaming"
+//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.expenseChart, GeneralTopTenHelper.categoryExpenseRoaming);
+//				
+//				// Run test for "Domestic Usage" chart and category "Voice"
+//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageVoice);
+//						
+//				// Run test for "Domestic Usage" chart and category "Voice Overage"
+//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageVoiceOverage);
+//								
+//				// Run test for "Domestic Usage" chart and category "Data"
+//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageData);
+//								
+//				// Run test for "Domestic Usage" chart and category "Messages"
+//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageMessages);
 				
 				// Run test for "Roaming Usage" chart and category "Voice"
 				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.roamingUsageChart, GeneralTopTenHelper.categoryRoamingUsageVoice);

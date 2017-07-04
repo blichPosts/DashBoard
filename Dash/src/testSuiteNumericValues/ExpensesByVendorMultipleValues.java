@@ -87,51 +87,50 @@ public class ExpensesByVendorMultipleValues extends BaseClass{
 			
 			try {
 				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryAll);
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryAll);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryAll);
 				Thread.sleep(2000);
 				
 //				FleetHelper.selectCategory(FleetHelper.expenseCategoryVoice);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryVoice);
-//				Thread.sleep(2000);
-//				
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryVoice);
+				Thread.sleep(2000);
+				
 //				FleetHelper.selectCategory(FleetHelper.expenseCategoryData);
-//				
-//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryData);
-//				Thread.sleep(2000);
-//				
+				
+				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryData);
+				Thread.sleep(2000);
+				
 //				FleetHelper.selectCategory(FleetHelper.expenseCategoryMessages);
-//				
+				
 //				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryMessages);
 //				Thread.sleep(2000);
 //				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
+////				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
 //				
 //				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryRoaming);
 //				Thread.sleep(2000);
 //				
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
+////				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
 //				
 //				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryEquipment);
 //				Thread.sleep(2000);
 //				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
+////				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
 //				
 //				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryTaxes);
 //				Thread.sleep(2000);
 //				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
+////				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
 //				
 //				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryOther);
 //				Thread.sleep(2000);
 //				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
+////				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
 //				
 //				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.expenseByVendorChart, dataForExpenseTrending, FleetHelper.expenseCategoryAccount);
 //				Thread.sleep(2000);
-				 
 				
 			} catch (NullPointerException e) {
 				

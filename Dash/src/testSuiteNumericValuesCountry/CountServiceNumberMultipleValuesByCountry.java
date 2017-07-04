@@ -33,6 +33,9 @@ public class CountServiceNumberMultipleValuesByCountry extends BaseClass{
 	public static void CountServiceNumberMultipleValuesTest() throws Exception
 	{
 
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);

@@ -134,7 +134,6 @@ public class TotalExpensesMultipleValues extends BaseClass{
 						indexMonthForVendorSelected++;
 					}
 						
-					
 				}
 				
 				

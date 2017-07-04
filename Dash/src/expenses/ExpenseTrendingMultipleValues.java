@@ -45,11 +45,10 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		chartId = UsageHelper.getChartId(barChartId);
 		
 		GeneralHelper.moveDown(chartId);
+
+		FleetHelper.selectCategoryExpenses(barChartId, FleetHelper.getNameCategoryExpenses(categorySelector));
 		
-//		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
-//				
-//		Thread.sleep(2000);
-			
+		
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		
 		expectedValues = new ArrayList<HashMap<String, String>>();
@@ -113,14 +112,14 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			int expectedAmountItemsTooltip = (amount * factor) + 2;  // Ana modif - May 17
 			int amountItemsTooltipFound = tooltip.size();
 			
-			GeneralHelper.verifyExpectedAndActualValues(amountItemsTooltipFound, expectedAmountItemsTooltip);
+			//GeneralHelper.verifyExpectedAndActualValues(amountItemsTooltipFound, expectedAmountItemsTooltip);
 			
 			
 			// For each vendor listed in the tooltip verify the label and the amount shown
 			for (int i = 1; i <= legends.size(); i++) {
 			
 				int index = i * factor + 1;  // Ana modif - May 17 -- before modif --> int index =  i * 3 - 1;  
-				
+//				ShowText("index: " + index + ", factor: " + factor + ", i: " + i);
 				// Get the label and remove colon at the end of its text
 				String labelFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 17 -- before modif --> tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
 
@@ -555,9 +554,12 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
 		chartId = UsageHelper.getChartId(barChartId);
-		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
-				
-		Thread.sleep(2000);
+		
+		GeneralHelper.moveDown(chartId);
+		
+//		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
+//				
+//		Thread.sleep(2000);
 			
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		

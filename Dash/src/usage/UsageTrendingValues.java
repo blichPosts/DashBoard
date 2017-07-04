@@ -44,6 +44,7 @@ public class UsageTrendingValues extends BaseClass {
 		
 		GeneralHelper.moveDown(chartId);
 		
+		FleetHelper.selectCategoryUsage(chartNum, UsageHelper.getNameCategory(categorySelector));
 		
 		category = categorySelector;
 			

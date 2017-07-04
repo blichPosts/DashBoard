@@ -32,6 +32,9 @@ public class ExpensesByCountryMultipleValues extends BaseClass{
 	public static void ExpensesByVendorMultipleValuesTest() throws Exception
 	{
 
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+		
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);
@@ -92,45 +95,45 @@ public class ExpensesByCountryMultipleValues extends BaseClass{
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryAll);
 				Thread.sleep(2000);
 				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryVoice);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryVoice);
-				Thread.sleep(2000);
-				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryData);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryData);
-				Thread.sleep(2000);
-				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryMessages);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryMessages);
-				Thread.sleep(2000);
-				 
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryRoaming);
-				Thread.sleep(2000);
-				
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryEquipment);
-				Thread.sleep(2000);
-				 
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryTaxes);
-				Thread.sleep(2000);
-				 
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryOther);
-				Thread.sleep(2000);
-				 
-				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
-				
-				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryAccount);
-				Thread.sleep(2000);
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryVoice);
+//				
+//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryVoice);
+//				Thread.sleep(2000);
+//				
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryData);
+//				
+//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryData);
+//				Thread.sleep(2000);
+//				
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryMessages);
+//				
+//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryMessages);
+//				Thread.sleep(2000);
+//				 
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
+//				
+//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryRoaming);
+//				Thread.sleep(2000);
+//				
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
+//				
+//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryEquipment);
+//				Thread.sleep(2000);
+//				 
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
+//				
+//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryTaxes);
+//				Thread.sleep(2000);
+//				 
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
+//				
+//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryOther);
+//				Thread.sleep(2000);
+//				 
+//				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
+//				
+//				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltipByCountry(FleetHelper.expenseByVendorChart, dataSummarizedForCountry, FleetHelper.expenseCategoryAccount);
+//				Thread.sleep(2000);
 				 
 				
 			} catch (NullPointerException e) {

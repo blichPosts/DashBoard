@@ -12,6 +12,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
+import helperObjects.FleetHelper;
 import helperObjects.GeneralHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.HierarchyTrendData;
@@ -29,9 +30,9 @@ public class HierarchyExpenseTrending extends BaseClass {
 				
 		String chartId = UsageHelper.getChartId(chartNum);
 		
-		WebElement expenseTrendingSection = driver.findElement(By.cssSelector("#" + chartId));
-		new Actions(driver).moveToElement(expenseTrendingSection).perform();
-		
+		GeneralHelper.moveDown(chartId);
+	
+		HierarchyHelper.selectCategoryHierarchy(HierarchyHelper.getCategoryName(categorySelector));
 		Thread.sleep(2000);
 		
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
