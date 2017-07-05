@@ -20,6 +20,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import Dash.BaseClass.BrowserType;
 import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.CommonTestStepActions.ExpensesViewMode;
@@ -83,10 +84,16 @@ public class CostPerServiceNumberTrend extends  BaseClass
 	{
 		Thread.sleep(1000);
 		
+		// this does nothing in fire fox.
 		// change to below because of legend click problems. 5/6/17
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));  
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			ExpenseHelper.scrollPage();
+		}
+		
 		Thread.sleep(1000);
 		
 		// this gets the web element list for the legends so they can be clicked using web elements.
@@ -165,10 +172,17 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		// because the VerifyRemovingLegends() test created it. 
 		totalExpenseLegendsList.clear(); 
 		
+		// this does nothing in fire fox.
 		// get the 'cost per service number' control visible by moving to it. 
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			ExpenseHelper.scrollPage();
+		}
+		
+		
 		Thread.sleep(1000);
 
 		// this gets the web element list for the legends so they can be clicked using web elements.

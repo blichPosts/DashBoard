@@ -3,6 +3,7 @@ package helperObjects;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1316,6 +1317,17 @@ public class ExpenseHelper extends BaseClass
 		tmpStrIn = tmpStrIn.replace("K","").replace(".", "").replace(".",""); // remove all but numbers.
 		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
 	}	
+	
+	public static void scrollPage() throws AWTException, InterruptedException 
+	{
+		  // Only scroll down if the scroll bar is at the top of the page
+		  if (GeneralHelper.getScrollPosition() == 0) 
+		  {
+			   Robot robot = new Robot();
+			   robot.keyPress(KeyEvent.VK_PAGE_DOWN);
+			   robot.keyRelease(KeyEvent.VK_PAGE_DOWN);
+		  }
+	}
 };
 
 

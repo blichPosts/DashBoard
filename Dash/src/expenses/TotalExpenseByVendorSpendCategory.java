@@ -38,6 +38,10 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	
 	public static String titleExpense = "Total Expense by Vendor and Spend Category ($)";
 	public static String titleCountry = "Total Expense by Country and Spend Category ($)";
+	
+	public static String titleVendorErrorMessage = "Failed title check for vendor in ";
+	public static String titleCountryErrorMessage = "Failed title check for country in ";
+	
 	static String errMessage = "";
 	
 	public static ViewType vType;
@@ -188,7 +192,18 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 	// one at a time, and verifies the hover results for all graphs each time a legend is removed.  
 	public static void VerifyRemovingCategoriesMultipleVendors(ViewType viewType) throws Exception 
 	{
-		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
+		// check main title.
+		if(viewType.equals( ViewType.vendor))
+		{
+			Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)>h3")).getText(),titleExpense,
+								titleVendorErrorMessage + "TotalExpenseByVendorSpendCategory.VerifyRemovingCategoriesMultipleVendors");			
+		}
+		else
+		{
+			Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)>h3")).getText(),titleCountry,
+								titleCountryErrorMessage + "TotalExpenseByVendorSpendCategory.VerifyRemovingCategoriesMultipleVendors");	
+		}
+
 		
 		List<WebElement> currentHoverList; // this holds current hover info.
 
@@ -222,7 +237,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 					            "Verify of vendor/country name in 'TotalExpenseByVendorSpendCategory.VerifyRemovingCategoriesMultipleVendors' failed."); // verify vendor/country name.
 			currentHoverList.clear();
 		}
-
+		
 		// ////////////////////////////////////////////////////////////////////////////////////////////
 		// now do the legend removal testing. 
 		// ////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,12 +273,22 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		}
 	}	
 	
-	// this verifies the spend category names in the expense spend control reflect what control legends are selected. // jnupp - edit this
-	// it does this with all vendors/countries selected. this starts with all trend legends selected and then disables them 
-	// one at a time, and verifies the hover results for all graphs each time a legend is removed.  
+	// this verifies the spend category names in the expense spend control reflect what control legends are selected.
+	// this starts control with no trend legends selected and then adds them then one at a time, and verifies the hover results for 
+	// all graphs each time a legend is added.  
 	public static void VerifyAddingCategoriesMultipleVendors(ViewType viewType) throws Exception 
 	{
-		vType = viewType; // setup the view type for use in this 'TotalExpenseByVendorSpendCategory' class.
+		// check main title.
+		if(viewType.equals( ViewType.vendor))
+		{
+			Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)>h3")).getText(),titleExpense,
+								titleVendorErrorMessage + "TotalExpenseByVendorSpendCategory.VerifyRemovingCategoriesMultipleVendors");			
+		}
+		else
+		{
+			Assert.assertEquals(driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)>h3")).getText(),titleCountry,
+								titleCountryErrorMessage + "TotalExpenseByVendorSpendCategory.VerifyRemovingCategoriesMultipleVendors");	
+		}
 		
 		List<WebElement> currentHoverList; // this holds current hover info.
 
@@ -281,7 +306,7 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		// Thread.sleep(500);
 		
 		// ////////////////////////////////////////////////////////////////////////////////////////////
-		//  
+		//  Verify adding legends.
 		// ////////////////////////////////////////////////////////////////////////////////////////////
 
 		// get the web elements for the legends so the legend text names can be clicked on and the names of the legends can be stored.
@@ -532,15 +557,27 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 		
 		int xLoc = elementLoc.getX();
 		int yLoc = elementLoc.getY();
+		
+		int yLocOffset = 0;
+		
+		if(browserType.equals(BrowserType.Chrome))
+		{
+			yLocOffset = 198;			
+		}
+		else
+		{
+			yLocOffset = 205;
+		}
+
 
 		if(index  == 1) // first time called, need a mouse move.
 		{
-			robot.mouseMove(xLoc + 175, yLoc + 198);				
+			robot.mouseMove(xLoc + 175, yLoc + yLocOffset);				
 		}
 		
 		Thread.sleep(500);
 
-		robot.mouseMove(xLoc + 275, yLoc + 198);
+		robot.mouseMove(xLoc + 275, yLoc + yLocOffset);
 		
 		// Thread.sleep(500);
 		

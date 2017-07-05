@@ -27,6 +27,8 @@ public class TotalExpensesTrendVendorActions extends BaseClass
 	@Test
 	public static void TotalExpensesTrendVendorActionsTest() throws Exception
 	{
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.
+		
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
@@ -47,8 +49,13 @@ public class TotalExpensesTrendVendorActions extends BaseClass
 
 		ExpenseHelper.SetChartId(2);  // expense helper needs to know the current control because it has a method that's used.
 		
-		TotalExpensesTrend.VerifyRemovingLegends(); 
+		//TotalExpensesTrend.VerifyRemovingLegends();
+		
+		Pause("Remove");
+		
 		TotalExpensesTrend.VerifyAddingLegends();
+		
+		Pause("Pass");
 	}
 	
 	@AfterClass

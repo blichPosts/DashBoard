@@ -24,6 +24,8 @@ public class CountOfServiceNumbersVendor extends BaseClass
 	@Test
 	public static void CountOfServiceNumbersTrendVendorTest() throws Exception
 	{
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.
+		
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 

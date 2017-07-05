@@ -692,5 +692,10 @@ public class CommonTestStepActions extends BaseClass
 		
 	}
 		
-	
+	// this waits for the 'Month' text and the first item in the pulldown list to be visible.
+	public static void WaitForMonthSelectorVisible() throws Exception
+	{
+		WaitForElementVisible(By.cssSelector(".tdb-pov__monthLabel"), MediumTimeout);
+		WaitForElementVisible(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select>option:nth-of-type(1)"), MediumTimeout);
+	}
 }

@@ -14,6 +14,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
+import Dash.BaseClass.BrowserType;
 import Dash.BaseClass.LoginType;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
@@ -109,11 +110,16 @@ public class CountOfServiceNumbersTrend extends BaseClass
 	{
 		Thread.sleep(1000);
 		
+		// fire fox does nothing here.
 		// get the 'Cost per Service Number trending' control visible by moving to it. 
-		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(3)"));
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)>div:nth-of-type(5)"));
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			ExpenseHelper.scrollPage();
+		}
+		
 		Thread.sleep(1000);
 
 		// this gets the web element list for the legends so they can be clicked using web elements.
@@ -187,10 +193,16 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		// because the VerifyRemovingLegends() test created it. 
 		totalExpenseLegendsList.clear(); 
 		
+		// firefox does nothing here.
 		// get the 'expense trending' control visible by moving to it. 
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			ExpenseHelper.scrollPage();
+		}
+		
 		Thread.sleep(1000);
 
 		// this gets the web element list for the legends so they can be clicked using web elements.

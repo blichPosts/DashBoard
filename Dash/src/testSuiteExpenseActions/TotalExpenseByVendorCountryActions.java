@@ -25,7 +25,8 @@ public class TotalExpenseByVendorCountryActions extends BaseClass
 	@Test
 	public static void TotalExpenseByVendorCountryActionsTest() throws Exception
 	{
-		
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.		
+
 		// #1 - this step isn't done because the spread sheet is needed. 
 		
 		// setup page for test.

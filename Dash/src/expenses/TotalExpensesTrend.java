@@ -22,6 +22,7 @@ import org.testng.Assert;
 import org.w3c.dom.Element;
 
 import Dash.BaseClass;
+import Dash.BaseClass.BrowserType;
 import expenseHierarchy.HierarchyNumbersDependents;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
@@ -103,10 +104,15 @@ public class TotalExpensesTrend extends BaseClass
 		// get the 'expense trending' control visible by moving to it. 
 		// WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-card:nth-of-type(3)>div:nth-of-type(1)"));
 
+		// this does nothing in fire fox.
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));
-		
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			ExpenseHelper.scrollPage();
+		}
+		
 		Thread.sleep(1000);
 
 		// this gets the web element list for the legends so they can be clicked using web elements.
@@ -140,6 +146,7 @@ public class TotalExpensesTrend extends BaseClass
 				else
 				{  
 					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
+					firstMonth = false;
 				}
 				
 				// Thread.sleep(500);
@@ -188,10 +195,16 @@ public class TotalExpensesTrend extends BaseClass
 		// because the VerifyRemovingLegends() test created it. 
 		totalExpenseLegendsList.clear(); 
 		
+		// fire fox does nothing here
 		// get the 'expense trending' control visible by moving to it. 
 		WebElement expenseTrending = driver.findElement(By.cssSelector(".tdb-EXPENSE__NORMAL-VIEW>div:nth-of-type(2)"));
 		new Actions(driver).moveToElement(expenseTrending).perform();
 
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			ExpenseHelper.scrollPage();
+		}
+		
 		Thread.sleep(1000);
 
 		// this gets the web element list for the legends so they can be clicked using web elements.
@@ -209,8 +222,8 @@ public class TotalExpensesTrend extends BaseClass
 		
 		// ShowText(expectedMonthYear.get(0)); 
 		
-		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
-		for(int x = 1; x < webEleListLegends.size(); x++) // jnupp to 1
+		// this loop will select each vendor, one at a time, and verify the hover values for each month.
+		for(int x = 1; x <= webEleListLegends.size(); x++) // jnupp to 1
 		{
 			boolean firstMonth = true; // <-- ana_add
 
@@ -229,6 +242,7 @@ public class TotalExpensesTrend extends BaseClass
 				else
 				{  
 					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
+					firstMonth = false;
 				}
 				
 				// Thread.sleep(500);
