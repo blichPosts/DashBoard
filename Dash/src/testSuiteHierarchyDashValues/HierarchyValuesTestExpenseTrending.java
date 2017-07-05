@@ -75,22 +75,12 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 			// will be displayed on the Expense Trending chart. 
 			
 			try {
-				
-//				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
-//				Thread.sleep(2000);
-				
+								
 				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromAjaxCall, HierarchyHelper.categoryTotal);
-				
-//				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
-//				Thread.sleep(2000);
 				
 				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromAjaxCall, HierarchyHelper.categoryOptimizable);
 				
-//				HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
-//				Thread.sleep(2000);
-				
 				HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromAjaxCall, HierarchyHelper.categoryRoaming);
-				
 				
 			} catch (NullPointerException e) {
 				

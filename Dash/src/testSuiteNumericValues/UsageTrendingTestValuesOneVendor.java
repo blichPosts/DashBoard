@@ -65,26 +65,26 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 
 		
 		// Run the test for each vendor 
-		for (String vendorSelected: vendorNames) {
+		for (String vendor: vendorNames) {
 			
-			String vendor = vendorSelected;
-			
+						
 			// #2 Get the data from the AJAX call
-			List<UsageOneMonth> valuesTmp = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
+			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
 						
 			// Some vendors might not have information for all last 13 months; in that case the value displayed on the Usage Trending chart is zero
 			// So to have a valid value to compare with, the info for those missing months (on source file) is created and values are set to zero.  
-			List<UsageOneMonth> values = UsageHelper.addMissingMonthsForVendor(valuesTmp);
+			List<UsageOneMonth> valuesForAllMonths = UsageHelper.addMissingMonthsForVendor(valuesFromAjaxCall);
 			
+			GeneralHelper.moveToTop();
 			
 			// #3 Select only one vendor
 			CommonTestStepActions.UnSelectAllVendors();
 			CommonTestStepActions.selectOneVendor(vendor);
-			
+			Thread.sleep(2000);
 			
 			// #4 Select month on month/year selector
 			// Month to be selected on pulldown needs to be one of the months for which there's data in the source file
-			UsageOneMonth oneMonthData = valuesTmp.get(0);
+			UsageOneMonth oneMonthData = valuesFromAjaxCall.get(0);
 						
 			String[] monthYear = UsageHelper.getMonthYearToSelect(oneMonthData);
 			
@@ -103,7 +103,7 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 			// will be displayed on the Usage Trending charts 
 			
 			List<List<UsageOneMonth>> listSelectedDataForMonthListUnified = new ArrayList<>();
-			listSelectedDataForMonthListUnified.add(values);
+			listSelectedDataForMonthListUnified.add(valuesForAllMonths);
 			
 
 			// #6 Some vendors might not have information for all last 13 months; in that case the value displayed on the Trending chart is zero
@@ -119,38 +119,28 @@ public class UsageTrendingTestValuesOneVendor extends BaseClass{
 			try {
 				
 				// Domestic chart
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
-//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
-//				
-//				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
-//				Thread.sleep(2000);
-//				
-//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
-//				
-//				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
-//				Thread.sleep(2000);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
+				Thread.sleep(2000);
+				
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
 				
 				// Roaming chart
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
-				
+
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);	
 				
-//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
-//				
-//				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
-//				Thread.sleep(2000);	
-//				
-//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
-//				
-//				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
-//				Thread.sleep(2000);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
+				Thread.sleep(2000);	
 								
-			} catch(NullPointerException e) {
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
+								
+			} catch (NullPointerException e) {
 				
 				System.out.println("chart not found or value found is null");
 				

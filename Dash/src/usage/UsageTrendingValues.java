@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
@@ -116,8 +115,8 @@ public class UsageTrendingValues extends BaseClass {
 							
 				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
 				
-				System.out.println("Vendor: " + labelFound);
-				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
+//				System.out.println("Vendor: " + labelFound);
+//				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 				
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				
@@ -369,6 +368,9 @@ public class UsageTrendingValues extends BaseClass {
 		
 		GeneralHelper.moveDown(chartId);
 		
+		FleetHelper.selectCategoryUsage(chartNum, UsageHelper.getNameCategory(categorySelector));
+		
+		
 		category = categorySelector;
 			
 		expectedValues = new ArrayList<>();
@@ -439,8 +441,8 @@ public class UsageTrendingValues extends BaseClass {
 							
 				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
 				
-				System.out.println("Country: " + labelFound);
-				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
+//				System.out.println("Country: " + labelFound);
+//				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 				
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				

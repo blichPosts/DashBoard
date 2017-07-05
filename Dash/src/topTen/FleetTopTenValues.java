@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
@@ -28,10 +27,11 @@ public class FleetTopTenValues extends BaseClass {
 		String chartId = UsageHelper.getChartId(barChartId);
 		
 		if (barChartId == GeneralTopTenHelper.roamingUsageChart) {
+			ShowText("Roaming usage chart");
 			GeneralHelper.moveDown(chartId);
 		}
 		
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		
 		// Select category
 		HierarchyHelper.selectCategoryTopTen(barChartId, category);
@@ -72,6 +72,7 @@ public class FleetTopTenValues extends BaseClass {
 	
 	public static void verifyTooltipTopTenChart(List<FleetTopTenData> topTenValues, String chartId, int category) throws AWTException, InterruptedException {
 		
+		ShowText("Chart id: " + chartId + ", category: " + category);
 			
 //		WebElement topTenChart = driver.findElement(By.cssSelector("#" + chartId));
 //		new Actions(driver).moveToElement(topTenChart).perform();
@@ -92,13 +93,13 @@ public class FleetTopTenValues extends BaseClass {
 			
 		}
 			
-		 ShowText("expected labels:");
+		// ShowText("expected labels:");
 		// Set up lists with expected values and labels		
 		for (FleetTopTenData data: topTenValues) {
 			
 			String label = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
 	    	expectedLabels.add(label);
-	    	ShowText("label:  " + label);
+	    	//ShowText("label:  " + label);
 	    	
 	    	String value = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
 	    	expectedValuesList.add(value);
@@ -144,8 +145,8 @@ public class FleetTopTenValues extends BaseClass {
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-			 ShowText("Label Found: " + labelFound); 
-			 ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
+			// ShowText("Label Found: " + labelFound); 
+			// ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
 			// They cannot be verified by order, since if there are 2 elements that have the same value (expenses value) the order in which they'll be listed cannot be known

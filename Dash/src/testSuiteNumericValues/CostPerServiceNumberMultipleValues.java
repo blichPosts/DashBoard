@@ -91,44 +91,28 @@ public class CostPerServiceNumberMultipleValues extends BaseClass{
 	
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryAll);
 				Thread.sleep(2000);
-				
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryVoice);
-				
+								
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryVoice);
 				Thread.sleep(2000);
-				
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryData);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryData);
 				Thread.sleep(2000);
 				
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryMessages);
-				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryMessages);
 				Thread.sleep(2000);
 				
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryRoaming);
-				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryRoaming);
 				Thread.sleep(2000);
-				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryEquipment);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryEquipment);
 				Thread.sleep(2000);
-				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryTaxes);
 				
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryTaxes);
 				Thread.sleep(2000);
-			 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryOther);
-				
+			 	
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryOther);
 				Thread.sleep(2000);
-				 
-//				FleetHelper.selectCategory(FleetHelper.expenseCategoryAccount);
-				
+			
 				ExpenseTrendingMultipleValues.verifyExpenseTrendingChartTooltip(FleetHelper.costPerServiceNumberChart, dataForExpenseTrending, FleetHelper.expenseCategoryAccount);
 				Thread.sleep(2000);
 				

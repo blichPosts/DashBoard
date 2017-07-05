@@ -74,7 +74,7 @@ public class CountServiceNumberMultipleValuesByCountry extends BaseClass{
 		
 			
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
-		int indexMonthToSelect = 1;
+		int indexMonthToSelect = 3;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 

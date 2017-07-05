@@ -21,6 +21,7 @@ public class UsageTrendingMultipleValues extends BaseClass {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
+		
 		setUpDriver();
 		MainLogin();
 
@@ -84,45 +85,26 @@ public class UsageTrendingMultipleValues extends BaseClass {
 			try {
 
 				// Domestic chart
-//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
-//				FleetHelper.selectCategoryAlt(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryVoiceName);
 				
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 
-//				 UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
-				
-//				FleetHelper.selectCategoryAlt(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryDataName);
-				
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryData);
 				Thread.sleep(2000);
-				 
-//				FleetHelper.selectCategoryAlt(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryMessagesName);
 				
-				//
-				// UsageHelper.selectCategory(UsageHelper.usageTrendingSection,
-				// UsageHelper.categoryMessages);
-				//
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingDomesticChart, dataForUsageTrending, UsageHelper.categoryMessages);
 				Thread.sleep(2000);
 
 				// Roaming chart
-//				FleetHelper.selectCategoryAlt(UsageHelper.usageTrendingDomesticChart, UsageHelper.categoryVoiceName);
 
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 
-				// UsageHelper.selectCategory(UsageHelper.usageTrendingSection,
-				// UsageHelper.categoryData);
-				//
-				 UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
-				 Thread.sleep(2000);
-				//
-				// UsageHelper.selectCategory(UsageHelper.usageTrendingSection,
-				// UsageHelper.categoryMessages);
-				//
-				 UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
-				 Thread.sleep(2000);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryData);
+				Thread.sleep(2000);
+				
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByVendor(UsageHelper.usageTrendingRoamingChart, dataForUsageTrending, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
 
 			} catch (NullPointerException e) {
 

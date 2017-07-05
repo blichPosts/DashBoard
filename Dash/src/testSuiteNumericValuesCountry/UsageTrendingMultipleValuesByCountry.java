@@ -91,36 +91,26 @@ public class UsageTrendingMultipleValuesByCountry  extends BaseClass{
 			try { 
 				
 				// Domestic chart
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
 				
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingDomesticChart, dataSummarizedForCountry, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
+								
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingDomesticChart, dataSummarizedForCountry, UsageHelper.categoryData);
+				Thread.sleep(2000);
 				
-//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
-//				
-//				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingDomesticChart, dataSummarizedForCountry, UsageHelper.categoryData);
-//				Thread.sleep(2000);
-//				
-//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
-//				
-//				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingDomesticChart, dataSummarizedForCountry, UsageHelper.categoryMessages);
-//				Thread.sleep(2000);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingDomesticChart, dataSummarizedForCountry, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
 				
 				// Roaming chart
-				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryVoice);
-				
+
 				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingRoamingChart, dataSummarizedForCountry, UsageHelper.categoryVoice);
 				Thread.sleep(2000);	
 				
-//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryData);
-//				
-//				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingRoamingChart, dataSummarizedForCountry, UsageHelper.categoryData);
-//				Thread.sleep(2000);	
-//				
-//				UsageHelper.selectCategory(UsageHelper.usageTrendingSection, UsageHelper.categoryMessages);
-//				
-//				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingRoamingChart, dataSummarizedForCountry, UsageHelper.categoryMessages);
-//				Thread.sleep(2000);
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingRoamingChart, dataSummarizedForCountry, UsageHelper.categoryData);
+				Thread.sleep(2000);	
+				
+				UsageTrendingValues.verifyUsageTrendingChartTooltipByCountry(UsageHelper.usageTrendingRoamingChart, dataSummarizedForCountry, UsageHelper.categoryMessages);
+				Thread.sleep(2000);
 								
 			} catch (NullPointerException e) {
 				

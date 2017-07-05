@@ -75,13 +75,12 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 			
 			// #4 Select month on month/year selector
 			CommonTestStepActions.selectMonthYearPulldown(monthsToSelect.get(indexMonth));
-			System.out.println("\n Month year: " + monthsToSelect.get(indexMonth)); 
+			System.out.println("Month year: " + monthsToSelect.get(indexMonth)); 
 			
 			Thread.sleep(2000);
 			
 			// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
 			
-//			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
 			FleetHelper.selectCategoryUsage(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryVoiceName);
 			
 			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageDomesticChart, listOneMonthData, UsageHelper.categoryVoice);
@@ -90,7 +89,6 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageRoamingChart, listOneMonthData, UsageHelper.categoryVoice);
 			Thread.sleep(2000);				
 			
-//			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
 			FleetHelper.selectCategoryUsage(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryDataName);
 			
 			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageDomesticChart, listOneMonthData, UsageHelper.categoryData);
@@ -99,7 +97,6 @@ public class UsageTotalUsageMultipleValues extends BaseClass{
 			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageRoamingChart, listOneMonthData, UsageHelper.categoryData);
 			Thread.sleep(2000);				
 			
-//			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
 			FleetHelper.selectCategoryUsage(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryMessagesName);
 			
 			TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageDomesticChart, listOneMonthData, UsageHelper.categoryMessages);

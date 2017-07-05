@@ -516,21 +516,6 @@ public class GeneralHelper extends BaseClass {
 		Robot robot = new Robot();
 		robot.mouseMove(x, y);
 		
-//		if (!isTopTenChart) {
-//			
-//			Thread.sleep(500);
-//			robot.mouseMove(x + 5, y);
-//			
-//			if (width > 10.0) {
-//				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-//			}
-//			
-//			if (width < 10.0) {
-//				robot.mousePress(InputEvent.BUTTON1_MASK);
-//				robot.mouseRelease(InputEvent.BUTTON1_MASK);
-//			}
-//						
-//		}
 		
 		Thread.sleep(500);
 		// robot.mouseMove(x + 10, y);  // <-- If needed, uncomment it. It replaces the mouse press and release, since in this chart the mouse click on the bar should redirect to a different page in CMD.
@@ -659,20 +644,6 @@ public class GeneralHelper extends BaseClass {
 	}
 
 	
-	public static void scrollPage() throws AWTException, InterruptedException {
-		
-		// Only scroll down if the scroll bar is at the top of the page
-		if (getScrollPosition() == 0) {
-			ShowText("Scroll down....");
-			Robot robot = new Robot();
-			robot.keyPress(KeyEvent.VK_PAGE_DOWN);
-			robot.keyRelease(KeyEvent.VK_PAGE_DOWN);
-			
-		}
-		
-	}
-	
-	
 	public static void moveDown(String chartId) throws AWTException, InterruptedException {
 				
 		if (browserType.equals(BrowserType.FireFox)) {
@@ -688,5 +659,38 @@ public class GeneralHelper extends BaseClass {
 		Thread.sleep(2000);
 		
 	}
+	
+	
+	
+	public static void scrollPage() throws AWTException, InterruptedException {
+		
+		// Only scroll down if the scroll bar is at the top of the page
+		if (getScrollPosition() == 0) {
+			
+			ShowText("Scroll down....");
+			Robot robot = new Robot();
+			robot.keyPress(KeyEvent.VK_PAGE_DOWN);
+			robot.keyRelease(KeyEvent.VK_PAGE_DOWN);
+			
+		}
+		
+	}
+	
+
+	
+	public static void moveToTop() throws AWTException, InterruptedException {
+		
+		// Only scroll up if the scroll bar is NOT at the top of the page
+		if (getScrollPosition() != 0) {
+			
+			ShowText("Scroll up....");
+			Robot robot = new Robot();
+			robot.keyPress(KeyEvent.VK_PAGE_UP);
+			robot.keyRelease(KeyEvent.VK_PAGE_UP);
+			
+		}
+		
+	}
+	
 	
 }

@@ -91,9 +91,9 @@ public class FleetValuesTestTopTen extends BaseClass {
 //								
 //				// Run test for "Domestic Usage" chart and category "Data"
 //				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageData);
-//								
-//				// Run test for "Domestic Usage" chart and category "Messages"
-//				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageMessages);
+								
+				// Run test for "Domestic Usage" chart and category "Messages"
+				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.domesticUsageChart, GeneralTopTenHelper.categoryDomesticUsageMessages);
 				
 				// Run test for "Roaming Usage" chart and category "Voice"
 				FleetTopTenValues.verifyTopTenChartValues(GeneralTopTenHelper.roamingUsageChart, GeneralTopTenHelper.categoryRoamingUsageVoice);

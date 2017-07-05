@@ -46,13 +46,13 @@ public class FleetHelper extends BaseClass {
 //	public final static int usageCategoryMessages = 3;
 	
 
-	
-	public static void selectCategory(int category){
-		
-		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(" + category + ")"));
-		categoryToSelect.click();
-		
-	}
+	// NOT USED - REMOVE
+//	public static void selectCategory(int category){
+//		
+//		WebElement categoryToSelect = driver.findElement(By.cssSelector(".tdb-inlineBlock.tdb-boxSelector__option:nth-of-type(" + category + ")"));
+//		categoryToSelect.click();
+//		
+//	}
 
 	
 	public static void selectCategoryUsage(int chartNum, String category) throws InterruptedException{
@@ -72,10 +72,6 @@ public class FleetHelper extends BaseClass {
 		} else if (chartNum == UsageHelper.usageTrendingRoamingChart) {
 			
 			xpath = ".//div[@class='tdb-USAGE']/div/div[@class='tdb-card']/h3/following-sibling::div/div[text()='" + category + "']";
-			
-		} else if (chartNum == FleetHelper.expenseByVendorChart || chartNum == FleetHelper.costPerServiceNumberChart) {
-			
-			xpath = ".//div[@class='tdb-EXPENSE__NORMAL-VIEW']/div[@class='tdb-card']/h3[2]/preceding-sibling::div[1]/div[text()='" + category + "']";
 			
 		}
 

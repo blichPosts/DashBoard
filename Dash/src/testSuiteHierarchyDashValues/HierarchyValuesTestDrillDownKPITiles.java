@@ -114,8 +114,6 @@ public class HierarchyValuesTestDrillDownKPITiles extends BaseClass{
 				
 					// Get the data for the month indicated by "indexMonth"
 					HierarchyTrendData trendData = valuesFromAjaxCall.get(indexMonth);
-										
-					ShowText("month/year: " + trendData.getOrdinalMonth() + "/" + trendData.getOrdinalYear());
 					
 					String totalExpense = trendData.getTotalExpense();
 					String optimizableExpense = trendData.getOptimizableExpense();

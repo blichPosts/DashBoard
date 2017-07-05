@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
@@ -112,7 +111,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			int expectedAmountItemsTooltip = (amount * factor) + 2;  // Ana modif - May 17
 			int amountItemsTooltipFound = tooltip.size();
 			
-			//GeneralHelper.verifyExpectedAndActualValues(amountItemsTooltipFound, expectedAmountItemsTooltip);
+			GeneralHelper.verifyExpectedAndActualValues(amountItemsTooltipFound, expectedAmountItemsTooltip);
 			
 			
 			// For each vendor listed in the tooltip verify the label and the amount shown
@@ -557,10 +556,9 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		
 		GeneralHelper.moveDown(chartId);
 		
-//		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
-//				
-//		Thread.sleep(2000);
-			
+		FleetHelper.selectCategoryExpenses(barChartId, FleetHelper.getNameCategoryExpenses(categorySelector));
+		
+		
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		
 		expectedValues = new ArrayList<HashMap<String, String>>();

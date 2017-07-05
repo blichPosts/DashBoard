@@ -50,7 +50,7 @@ public class TotalExpensesValues extends BaseClass {
 		
 		String chartId = UsageHelper.getChartId(barChartId);
 		
-		vendorsSelectedCheckBox = FleetHelper.getVendorsSelected(); //driver.findElements(By.cssSelector("md-checkbox.md-checkbox-checked>label>span"));
+		vendorsSelectedCheckBox = FleetHelper.getVendorsSelected();
 		
 		expensesMap = new HashMap<String, UsageOneMonth>();
 		
