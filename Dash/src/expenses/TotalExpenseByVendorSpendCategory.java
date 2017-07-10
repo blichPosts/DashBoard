@@ -14,6 +14,7 @@ import org.testng.Assert;
 import org.testng.internal.TestMethodWithDataProviderMethodWorker;
 
 import Dash.BaseClass;
+import Dash.BaseClass.BrowserType;
 import helperObjects.ExpenseHelper;
 import helperObjects.GeneralHelper;
 import helperObjects.UsageHelper;
@@ -99,13 +100,20 @@ public class TotalExpenseByVendorSpendCategory extends BaseClass
 
 		ShowText("Disabling Legends");
 		
+		// this does nothing when using firefox.
 		// move to the spend category control.
 		WebElement temp = driver.findElement(By.cssSelector(".tdb-currentCharts-EXPENSE>div:nth-of-type(2)")); 
 		new Actions(driver).moveToElement(temp).perform();
+		
+		//if(browserType.equals(BrowserType.FireFox))
+		//{
+		//	ExpenseHelper.scrollPage();
+		//}
+		
 		// Thread.sleep(500);
 		
 		// these waits are for the vendor(s) in total expense spend control and total expense control.
-		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpense); // jnupp
 		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
 
 		// get the web elements for the legends so the legend text names can be clicked on.

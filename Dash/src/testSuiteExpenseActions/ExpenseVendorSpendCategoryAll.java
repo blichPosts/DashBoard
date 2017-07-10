@@ -48,7 +48,7 @@ public class ExpenseVendorSpendCategoryAll extends BaseClass
 	{
 		System.out.println("Close Browser.");	
 		ExpenseHelper.SetWaitDefault();
-	    JOptionPane.showMessageDialog(frame, "DONE");
+	    // JOptionPane.showMessageDialog(frame, "DONE");
 		driver.close();
 		driver.quit();
 	}	

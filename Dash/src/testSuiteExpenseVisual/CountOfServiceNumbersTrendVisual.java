@@ -16,6 +16,7 @@ import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
 import helperObjects.UsageHelper;
+import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.expenseFilters;
 
 public class CountOfServiceNumbersTrendVisual extends BaseClass 
@@ -31,6 +32,9 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 	@Test
 	public static void CountOfServiceNumbersTrendVisualTest() throws Exception
 	{
+
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.
+		
 		// #1
 		// Select vendors view and view the 'Count of Service Numbers' component.
 
@@ -39,6 +43,10 @@ public class CountOfServiceNumbersTrendVisual extends BaseClass
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
 		
 		CommonTestStepActions.GoToExpensePageDetailedWait(); 
+		
+		// wait for some controls to become visible.
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);
 		
 		CountOfServiceNumbersTrend.SetChartId(4); // setup unique id for this control test.
 		

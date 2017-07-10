@@ -182,7 +182,6 @@ public class CostPerServiceNumberTrend extends  BaseClass
 			ExpenseHelper.scrollPage();
 		}
 		
-		
 		Thread.sleep(1000);
 
 		// this gets the web element list for the legends so they can be clicked using web elements.
@@ -201,7 +200,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 		// ShowText(expectedMonthYear.get(0)); 
 		
 		// this loop will un-select each vendor, one at a time, and verify the hover values for each month.
-		for(int x = 1; x < webEleListLegends.size(); x++) // jnupp to 1
+		for(int x = 1; x <= webEleListLegends.size(); x++) 
 		{
 			boolean firstMonth = true; // <-- ana_add
 
@@ -220,6 +219,7 @@ public class CostPerServiceNumberTrend extends  BaseClass
 				else
 				{  
 					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
+					firstMonth = false;
 				}
 				
 				// Thread.sleep(500);
@@ -241,8 +241,8 @@ public class CostPerServiceNumberTrend extends  BaseClass
 				break;
 			}						
 			
-			// totalExpenseLegendsList.remove(webEleListLegends.get(x).getText()); // jnupp
-			Thread.sleep(2000);
+			// totalExpenseLegendsList.remove(webEleListLegends.get(x).getText()); 
+			Thread.sleep(1000);
 			
 			if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 
 			{

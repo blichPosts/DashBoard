@@ -16,6 +16,7 @@ import expenses.TotalExpenseByVendorCarrier;
 import expenses.TotalExpenseByVendorSpendCategory;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 
 public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 {
@@ -31,6 +32,8 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 	public static void TotalExpenseByVendorSpendVisualTest() throws Exception
 	{
 
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.		
+		
 		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
 		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  
@@ -40,6 +43,10 @@ public class TotalExpenseByVendorSpendCategoryVisual extends BaseClass
 		// #1
 		// Select all the vendors in the Point of View and select all of the vendor legends.
 		CommonTestStepActions.SelectAllVendors(); // MATRIX -----------------------------------------  !!!!!
+		
+		// wait for some controls to become visible.
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);
 		
 		// set chart id for this test case's corresponding class 'TotalExpenseByVendorSpendCategory'.
 		TotalExpenseByVendorSpendCategory.SetupChartId();

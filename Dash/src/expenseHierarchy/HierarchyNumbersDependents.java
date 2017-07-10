@@ -343,7 +343,6 @@ public class HierarchyNumbersDependents extends BaseClass
 					Pause("Error "  + err.getMessage()  + " in tile map data compare.  Hover text = " + hoverInfo + " Text created from UI = " + currentDependentUnitInfo);
 					Assert.fail("Test Stopped.");
 				}
-
 			}
 		}
 	}	
@@ -1348,9 +1347,8 @@ public class HierarchyNumbersDependents extends BaseClass
 	
 	public static void ShowChildListToFile() throws IOException // jnupp
 	{
-		ShowText("------------- Start File Oue-----------------");
 		for(Child chl : HierarchyNumbersDependents.childList) {chl.ShowOutFile();}
-		ShowText("------------- Done File Out -----------------");
+		ShowText("File out done");
 	}
 	
 	
@@ -1899,6 +1897,19 @@ public class HierarchyNumbersDependents extends BaseClass
 	// this lets the caller know how many of the tile maps, starting from the first one, can be safely clicked.
 	public static int NumberOfTileMapsToSelect()
 	{
+		int minHeightWidth = 0;
+		
+		
+		if(browserType.equals(BrowserType.Chrome))
+		{
+			minHeightWidth = 28;
+		}
+		
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			minHeightWidth = 35;
+		}
+		
 		String chartId = UsageHelper.getChartId(0);
 		
 		List<WebElement> eleList = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-series-group>g>g>rect"));
@@ -1908,7 +1919,7 @@ public class HierarchyNumbersDependents extends BaseClass
 		// Length and width >= 28.
 		for(WebElement ele : eleList)
 		{
-			if(Integer.valueOf(ele.getAttribute("width")) >= 28 && Integer.valueOf(ele.getAttribute("height")) >= 28)
+			if(Integer.valueOf(ele.getAttribute("width")) >= minHeightWidth && Integer.valueOf(ele.getAttribute("height")) >= minHeightWidth)
 			{
 				numTilesThatCanBeChecked++;
 			}

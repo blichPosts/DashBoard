@@ -28,6 +28,8 @@ public class TotalExpenseByVendorCarrierVisual extends BaseClass
 	public static void TotalExpenseByVendorCarrierVisualTest() throws Exception
 	{
 		
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.
+		
 		// this makes sure the most amount of expense legends are shown. the 'desiredMonth' can be found by running the commented 
 		// code in 'TotalExpenseByVendorCountryActions' under under test suite 'testSuiteExpenseActions'.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);  

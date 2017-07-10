@@ -34,7 +34,7 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		// need to set chartId for 'expense helper' because call below uses expense helper call.
 		ExpenseHelper.SetChartId(1);
 		
-		ExpenseHelper.WaitForControlLegend(controlType.totalExpense);
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
 		
 		// store vendor names currently shown in expense control. 
 		TotalExpenseByVendorSpendCategory.InitializeTotalExpenseSpendCategoryTest(); 
@@ -52,6 +52,7 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		
 		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
 		TotalExpenseByVendorSpendCategory.VerifyAddingCategories(ViewType.vendor);
+		Pause("Passed");
 	}
 	
 	@AfterClass

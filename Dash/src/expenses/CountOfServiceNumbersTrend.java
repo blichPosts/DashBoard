@@ -67,7 +67,7 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		// this get web list of legends that are used for clicking legends. 
 		webEleListLegends = driver.findElements(By.xpath("//div[@id='" +  chartId + "']"  + ExpenseHelper.partialXpathForLegendsInTotalSpendCategoryCategories));
 		
-		for(WebElement ele :webEleListLegends){ShowText(ele.getText());} // DEBUG
+		// for(WebElement ele :webEleListLegends){ShowText(ele.getText());} // DEBUG
 		
 	}	
 	
@@ -221,7 +221,7 @@ public class CountOfServiceNumbersTrend extends BaseClass
 		// ShowText(expectedMonthYear.get(0)); 
 		
 		// this loop will select each vendor, one at a time, and verify the hover values for each month.
-		for(int x = 1; x <= webEleListLegends.size(); x++) // jnupp to 1
+		for(int x = 1; x <= webEleListLegends.size(); x++) 
 		{
 			boolean firstMonth = true; // <-- ana_add
 
@@ -240,6 +240,7 @@ public class CountOfServiceNumbersTrend extends BaseClass
 				else
 				{  
 					ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);
+					firstMonth = false;
 				}
 				
 				// Thread.sleep(500);

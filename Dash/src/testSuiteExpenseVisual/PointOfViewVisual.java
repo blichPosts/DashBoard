@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 
 
 public class PointOfViewVisual extends BaseClass
@@ -24,6 +25,8 @@ public class PointOfViewVisual extends BaseClass
 	public static void PointOfViewVisualTest() throws Exception
 	{
 		
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.
+		
 		// initialize month selector variable.
 		//CommonTestStepActions.initializeMonthSelector(); 
 		
@@ -35,6 +38,11 @@ public class PointOfViewVisual extends BaseClass
 		// #1 Observe the month selector in the left pane described in the summary - The month is displayed with MMM-YYYY format.		
 		// #2 In the 'Overview Dash board Selector' component, select the 'View Total Expense' tab.
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // #2
+		
+		// wait for some controls to become visible.
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);
+		
 		CommonTestStepActions.initializeMonthSelector();
 		ExpenseHelper.VerifyMonthPullDownFormatExpense(); // #1
 		

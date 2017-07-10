@@ -60,7 +60,7 @@ public class CostPerServiceNumberTrendCountry extends BaseClass
 			ExpenseHelper.WaitForCountryPageLoad();
 		}
 		
-		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
+		// CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		
 		CostPerServiceNumberTrend.SetupChartId();
 		

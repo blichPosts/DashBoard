@@ -13,6 +13,7 @@ import expenses.TotalExpenseByVendorSpendCategory;
 import expenses.TotalExpensesTrend;
 import helperObjects.CommonTestStepActions;
 import helperObjects.ExpenseHelper;
+import helperObjects.ExpenseHelper.controlType;
 import helperObjects.ExpenseHelper.expenseFilters;
 
 public class TotalExpensesTrendVisual extends BaseClass 
@@ -28,6 +29,9 @@ public class TotalExpensesTrendVisual extends BaseClass
 	@Test
 	public static void TotalExpenseTrendVisualTest() throws Exception
 	{
+
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.
+		
 		// initialize month selector variable.
 		CommonTestStepActions.initializeMonthSelector(); 
 		
@@ -39,6 +43,10 @@ public class TotalExpensesTrendVisual extends BaseClass
 		
 		CommonTestStepActions.SelectAllVendors();
 
+		// wait for some controls to become visible.
+		ExpenseHelper.WaitForControlLegend(controlType.totalExpenseSpendCatergory);
+		ExpenseHelper.WaitForControlLegend(controlType.countOfServiceNumbers);
+		
 		TotalExpensesTrend.SetupChartId();
 		
 		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being tested.

@@ -49,13 +49,8 @@ public class TotalExpensesTrendVendorActions extends BaseClass
 
 		ExpenseHelper.SetChartId(2);  // expense helper needs to know the current control because it has a method that's used.
 		
-		//TotalExpensesTrend.VerifyRemovingLegends();
-		
-		Pause("Remove");
-		
+		TotalExpensesTrend.VerifyRemovingLegends();
 		TotalExpensesTrend.VerifyAddingLegends();
-		
-		Pause("Pass");
 	}
 	
 	@AfterClass

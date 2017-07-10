@@ -61,8 +61,6 @@ public class TotalExpensesTrendCountryActions extends BaseClass
 			ExpenseHelper.WaitForCountryPageLoad();
 		}
 		
-		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
-		
 		TotalExpensesTrend.SetupChartId(); // expense helper needs to know the current control because it has a method that's used.
 		
 		// this sets up a string list of the legends (for expected values) and a web list of legends (for clicking legends).

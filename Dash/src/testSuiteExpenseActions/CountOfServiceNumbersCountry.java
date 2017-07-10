@@ -58,8 +58,6 @@ public class CountOfServiceNumbersCountry extends BaseClass
 			ExpenseHelper.WaitForCountryPageLoad();
 		}
 		
-		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
-		
 		CountOfServiceNumbersTrend.SetupChartId();
 		
 		// this sets up a string list of the legends (for expected values) and a web list of legends (for clicking legends).
@@ -69,9 +67,6 @@ public class CountOfServiceNumbersCountry extends BaseClass
 
 		CountOfServiceNumbersTrend.VerifyRemovingLegends(); // do verification.
 		CountOfServiceNumbersTrend.VerifyAddingLegends(); // do verification.
-
-		// verify expense trending control is empty.
-		// ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.countOfServiceNumbers); // verify there are no bar graphs in expense spend category.
 	}
 	
 	@AfterClass

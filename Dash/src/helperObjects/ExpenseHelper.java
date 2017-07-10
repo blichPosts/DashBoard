@@ -136,13 +136,17 @@ public class ExpenseHelper extends BaseClass
 	// this gets the bar chart section in expense spend category. also gets pie section in 'expense' control.
 	public static String partialXpathForBarChartInTotalSpendCategoryCategories = "/*/*[@class='highcharts-series-group']/*";
 	
-	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// CSS     
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	// gets text values for legends
 	public static String partialCssForLegendsText = ">svg>g.highcharts-legend>g>g>g>text";  
+	
+	// vertical legends in spend category control.
+	public static String partialCssForSpendCategoryVerticalLegends = ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text";
+	
+	
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// The xpaths below help in getting hover values in the controls and selecting elements in controls (some controls).    
@@ -752,18 +756,20 @@ public class ExpenseHelper extends BaseClass
 	{
 		ExpenseHelper.SetWaitShort(); // override the default because of wait for no element.
 		
-		// NEED TO ADD TOTAL EXPENSE HERE
+		// NEED TO ADD TOTAL EXPENSE HERE -- bob added 7/6/15 
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpense); 
 		
+		//chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
+		//tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
+		//Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.totalExpenseSpendCatergory);
 		
-		chartId =  UsageHelper.getChartId(1); // total expense vendor spend.
-		tempUrl = "(//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForLegendsInTotalSpendCategory + ")[1]/*";		
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), TinyTimeout));
-
-		chartId =  UsageHelper.getChartId(2); // expense trending. 
-		// ShowText(chartId);
-		tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
-		Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
-
+		//chartId =  UsageHelper.getChartId(2); // expense trending. 
+		//// ShowText(chartId);
+		//tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
+		// Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.xpath(tempUrl), MediumTimeout));
+		ExpenseHelper.VerifyOneControlNotPresent(ExpenseHelper.controlType.expenseTrending);
+		
 		chartId =  UsageHelper.getChartId(3); // cost per service number. 
 		// ShowText(chartId);
 		tempUrl = "(//div[@id='" +  chartId + "']" +  partialXpathToMonthListInControls  + ")[1]";
@@ -814,13 +820,19 @@ public class ExpenseHelper extends BaseClass
 		
 		switch(cntrlType)
 		{
+			case totalExpense: // bob added 7/6/15 
+			{
+				chartId = UsageHelper.getChartId(0);
+				String tempUrl = "#" + chartId + ">svg>g>g>g>g:nth-of-type(1)";
+				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.cssSelector(tempUrl), MediumTimeout), errMessage + "totalExpense");
+				break;
+			}
 			case totalExpenseSpendCatergory:
 			{
 				chartId = UsageHelper.getChartId(1);
 				
 				String tempUrl = "#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(1)";
 				Assert.assertTrue(WaitForElementNotVisibleNoThrow(By.cssSelector(tempUrl), MediumTimeout), errMessage + "totalExpenseSpendCatergory");
-				
 				break;
 			}
 			case expenseTrending:
@@ -1110,7 +1122,7 @@ public class ExpenseHelper extends BaseClass
 	{
 		// X coordinate
 		// String cssBar = "#" + chartId + ">svg>.highcharts-series-group>.highcharts-series.highcharts-series-0>rect:nth-of-type(" + indexHighchart + ")";
-		String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")"; // jnupp fail
+		String cssBar = "#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text:nth-of-type(" + indexHighchart + ")"; 
 
 		// 'bar' WebElement will be used to set the position of the mouse on the chart
 		WebElement bar = driver.findElement(By.cssSelector(cssBar));
@@ -1135,7 +1147,7 @@ public class ExpenseHelper extends BaseClass
 		robot.mouseMove(x, y);
 		// System.out.println("coordinates - x: " + x + "  y: " + y);
 		
-		Thread.sleep(500);
+		// Thread.sleep(500); // removed 7/6/17
 		
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
@@ -1318,6 +1330,7 @@ public class ExpenseHelper extends BaseClass
 		VerifyInteger(tmpStrIn, errMess); // verify it has all integers.
 	}	
 	
+	// this scrolls page down - replace this with 
 	public static void scrollPage() throws AWTException, InterruptedException 
 	{
 		  // Only scroll down if the scroll bar is at the top of the page
@@ -1328,6 +1341,34 @@ public class ExpenseHelper extends BaseClass
 			   robot.keyRelease(KeyEvent.VK_PAGE_DOWN);
 		  }
 	}
+	
+	public static void scrollPageUp() throws AWTException, InterruptedException 
+	{
+		  // Only scroll down if the scroll bar is at the top of the page
+		  if (GeneralHelper.getScrollPosition() != 0) 
+		  {
+			   Robot robot = new Robot();
+			   Thread.sleep(500);
+			   robot.keyPress(KeyEvent.VK_PAGE_UP);
+			   Thread.sleep(500);
+			   robot.keyRelease(KeyEvent.VK_PAGE_UP);
+		  }
+	}
+	
+	
+	public static void HitDownArrow() throws AWTException, InterruptedException 
+	{
+	   Robot robot = new Robot();
+	   Thread.sleep(500);
+	   robot.keyPress(KeyEvent.VK_DOWN);
+	   Thread.sleep(500);
+	   robot.keyRelease(KeyEvent.VK_DOWN);
+	   Thread.sleep(500);
+	}
+	
+	
+	
+	
 };
 
 

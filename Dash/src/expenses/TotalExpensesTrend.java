@@ -223,7 +223,7 @@ public class TotalExpensesTrend extends BaseClass
 		// ShowText(expectedMonthYear.get(0)); 
 		
 		// this loop will select each vendor, one at a time, and verify the hover values for each month.
-		for(int x = 1; x <= webEleListLegends.size(); x++) // jnupp to 1
+		for(int x = 1; x <= webEleListLegends.size(); x++) 
 		{
 			boolean firstMonth = true; // <-- ana_add
 
@@ -264,7 +264,7 @@ public class TotalExpensesTrend extends BaseClass
 				break;
 			}						
 			
-			// totalExpenseLegendsList.remove(webEleListLegends.get(x).getText()); // jnupp
+			// totalExpenseLegendsList.remove(webEleListLegends.get(x).getText()); 
 			Thread.sleep(2000);
 			
 			if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!! 

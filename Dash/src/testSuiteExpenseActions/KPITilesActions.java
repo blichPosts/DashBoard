@@ -22,6 +22,9 @@ public class KPITilesActions extends BaseClass
 	public static void KpiTilesActionsTest() throws Exception
 	{
 		
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.
+		
+		
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 
 		// #1

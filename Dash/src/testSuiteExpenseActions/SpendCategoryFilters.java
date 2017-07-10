@@ -38,6 +38,9 @@ public class SpendCategoryFilters extends BaseClass
 	@Test
 	public static void SpendCategoryFiltersTest() throws Exception
 	{
+
+		CommonTestStepActions.WaitForMonthSelectorVisible(); // wait month selector visible.
+		
 		// setup page for test.
 		CommonTestStepActions.selectMonthYearPulldown(ExpenseHelper.desiredMonth);
 		CommonTestStepActions.GoToExpensePageDetailedWait(); // the expense page with all vendors selected is shown at page open. 
@@ -47,6 +50,8 @@ public class SpendCategoryFilters extends BaseClass
 		// ///////////////////////////
 		// 	      vendor view
 		// ///////////////////////////
+
+		ShowText("Running vendor view tests.");
 		
 		// set this so test methods know which variables to use for expected data.
 		SpendCategories.SetViewMode(ExpensesViewMode.vendor);  
@@ -54,7 +59,13 @@ public class SpendCategoryFilters extends BaseClass
 		
 		// this sets up names of cost filters.
 		SpendCategories.SetupExpectedCostFilters();
+
 		
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			SpendCategories.MoveToCorrectPagePosition(); // get to the section where the testing is done.		
+		}
+
 		ExpenseHelper.SetExpenseFilter(expenseFilters.Expense); // this indicates which expense filter is being clicked through. 
 		
 		// verify when selecting expense trending selectors  
@@ -72,21 +83,21 @@ public class SpendCategoryFilters extends BaseClass
 		
 		// verify selecting cost per service trending 
 		SpendCategories.VerifySpendCateoryFilter();
-		
+
 		// ///////////////////////////
 		// 	      country view
 		// ///////////////////////////
+
+		ShowText("Running country view tests.");
 		
 		// set this so test methods know which variables to use for expected data.
 		SpendCategories.SetViewMode(ExpensesViewMode.country);
 		
-		// this converts the vendor view total expense legends to a list holding what the legends will be in the country view. 
-		// this list is stored in the expense helper class.
-		//ExpenseHelper.SetupForCountryPageWait();
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			ExpenseHelper.scrollPageUp(); // go back to the top of page so country view can be selected.
+		}
 		
-		// move to country view.
-		//CommonTestStepActions.SelectCountryView();
-
 		if(loginType.equals(LoginType.MatrixPortal)) // matrix ---------------- !!!
 		{
 			// move to country view.
@@ -107,6 +118,11 @@ public class SpendCategoryFilters extends BaseClass
 			// this waits until a legend in the 'count of service numbers' control is found in the list of countries that was stored 
 			// when method 'ExpenseHelper.SetupForCountryViewPageLoad()' was called above.
 			ExpenseHelper.WaitForCountryPageLoad();
+		}
+		
+		if(browserType.equals(BrowserType.FireFox))
+		{
+			SpendCategories.MoveToCorrectPagePosition(); // get to the section where the testing is done.		
 		}
 		
 		// this sets up names of cost filters.

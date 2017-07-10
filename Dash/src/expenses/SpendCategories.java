@@ -40,6 +40,24 @@ public class SpendCategories extends BaseClass
 		new Actions(driver).moveToElement(expenseTrending).perform();
 	}	
 
+	// this is for fire fox.
+	public static void MoveToCorrectPagePosition() throws AWTException, InterruptedException
+	{
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+		ExpenseHelper.HitDownArrow();
+	}
 	
 	public static void SetViewMode(ExpensesViewMode vMode)
 	{
@@ -136,17 +154,21 @@ public class SpendCategories extends BaseClass
 				VerifyHoverTitles(UsageHelper.getChartId(4), expected);
 				
 			}
-			else // this is for expense view.
+			else // this is for country view.
 			{
 				// expense trending
 				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(1)")).getText();
 				expected = TotalExpensesTrend.countryTitleShort + " - " + expectedCostFilters.get(x);
 				Assert.assertEquals(actual, expected, "");
 				
+				VerifyHoverTitles(UsageHelper.getChartId(2), expected.replace(" ($)", ""));
+				
 				// cost per service number.
 				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(2)")).getText();
 				expected = CostPerServiceNumberTrend.countryTitleShort + " - " + expectedCostFilters.get(x);
 				Assert.assertEquals(actual, expected, "");
+				
+				VerifyHoverTitles(UsageHelper.getChartId(3), expected.replace(" ($)", ""));
 				
 				// count of service numbers.
 				actual = driver.findElement(By.cssSelector(".tdb-card > h3:nth-of-type(3)")).getText();
@@ -243,11 +265,6 @@ public class SpendCategories extends BaseClass
 			{
 				ExpenseHelper.MoveMouseToBarExpenseActions(chartId, y, firstMonth);				
 			}
-
-
-			
-			
-			
 			
 			String actual = driver.findElements(By.xpath("//div[@id='" +  chartId + "']" + ExpenseHelper.partialXpathForHoverInfo)).get(1).getText();
 			

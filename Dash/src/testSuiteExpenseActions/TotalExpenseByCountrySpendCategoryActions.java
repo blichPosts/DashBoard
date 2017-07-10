@@ -75,6 +75,7 @@ public class TotalExpenseByCountrySpendCategoryActions extends BaseClass
 		// need chartId for 'TotalExpenseByVendorSpendCategory'.
 		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.country);
 		TotalExpenseByVendorSpendCategory.VerifyAddingCategories(ViewType.country);
+		Pause("Passed");
 	}
 	
 	@AfterClass
