@@ -65,11 +65,11 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 		// Run the test for each vendor 
 		for(String vendor: vendorNames){
 							
-			// #1 Read data from ajax call
+			// #2 Read data from ajax call
 			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
 			List<UsageOneMonth> valuesOneVendorAllMonths = UsageHelper.addMissingMonthsForVendor(valuesFromAjaxCall);
 			
-			// #2 Select only one vendor
+			// #3 Select only one vendor
 			CommonTestStepActions.UnSelectAllVendors();
 			CommonTestStepActions.selectOneVendor(vendor);
 			ShowText("Vendor selected: " + vendor);
@@ -108,7 +108,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 					monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
 					System.out.println("Month Year: " + monthYearToSelect);
 					
-					// #3 Select month on month/year selector
+					// #4 Select month on month/year selector
 					CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 					
 					Thread.sleep(2000);
@@ -116,10 +116,10 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 					String totalChargeExpenses = oneMonthData.getTotalCharge();
 					String numberOfLinesExpenses = oneMonthData.getNumberOfLines();
 									
-					// #4 Compare the values displayed on the KPIs to the values from spreadsheet
+					// #5 Compare the values displayed on the KPIs to the values from spreadsheet
 					ExpensesKPITilesValues.verifyKPItileValues(totalChargeExpenses, numberOfLinesExpenses);
 										
-					// #5 Calculate 3 Month Rolling Averages and Trending Percentage
+					// #6 Calculate 3 Month Rolling Averages and Trending Percentage
 					// Get the values needed to calculate the 3 month Rolling Averages, and the Trending values
 					// ONLY if there's data for two months before the current month. 
 					// E.g.: Last month with data: January 2016, then March 2016 is the last month that will have the 3 month rolling average and trending values calculated
@@ -139,7 +139,7 @@ public class ExpensesKPITilesTestValuesOneVendor extends BaseClass{
 					}
 					
 					
-					// #6 Calculate 6 Month Rolling Averages
+					// #7 Calculate 6 Month Rolling Averages
 					// Get the values needed to calculate the 6 month Rolling Averages
 					// ONLY if there's data for five months before the current month. 
 					// E.g.: Last month with data: January 2016, then June 2016 is the last month that will have the 6 month rolling average calculated

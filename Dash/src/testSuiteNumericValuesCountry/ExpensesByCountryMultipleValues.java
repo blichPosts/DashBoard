@@ -49,7 +49,6 @@ public class ExpensesByCountryMultipleValues extends BaseClass{
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectCountryView();
-		//CommonTestStepActions.UnSelectAllVendors();
 		
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		

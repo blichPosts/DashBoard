@@ -50,7 +50,6 @@ public class CountServiceNumberMultipleValuesByCountry extends BaseClass{
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectCountryView();
-		//CommonTestStepActions.UnSelectAllVendors();
 
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
@@ -85,7 +84,7 @@ public class CountServiceNumberMultipleValuesByCountry extends BaseClass{
 			System.out.println("Month Year: " + monthYearToSelect);
 			
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-			Thread.sleep(2000);
+			Thread.sleep(5000);
 			
 			// #5 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
 			

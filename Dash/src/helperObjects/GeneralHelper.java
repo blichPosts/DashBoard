@@ -352,9 +352,9 @@ public class GeneralHelper extends BaseClass {
 	}		
 	
 	
-	public static void waitForChartToLoad(int timeOut) throws Exception {
+	public static boolean waitForChartToLoad(int timeOut) throws Exception {
 	    
-		WaitForElementPresent(By.cssSelector("chart>div"), timeOut);
+		return WaitForElementPresent(By.cssSelector("chart>div"), timeOut);
 		
 	}	
 	

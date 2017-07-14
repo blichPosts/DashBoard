@@ -44,8 +44,10 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-
+		List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown();
 		
+		// If the test is run for a tenant that has only one hierarchy, then the Hierarchy dropdown list won't be displayed. 
+		// 'amountHierarchies' is initialized in '1' for the test not to fail if the dropdown is not present.   
 		int amountHierarchies = 1;
 		
 		if (hierarchies.size() > amountHierarchies) {
@@ -54,8 +56,20 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 		
 		
 		for (int i = 0; i < amountHierarchies; i++) {
-			
+		
+			int monthIndex = 0;
 			String hierarchyValue = HierarchyHelper.getHierarchyValue(i);
+			
+			while (!GeneralHelper.waitForChartToLoad(HierarchyHelper.expenseTrendingChart, MediumTimeout) && monthIndex < monthsInDropdown.size()) {
+				
+				String monthYearToSelect = monthsInDropdown.get(monthIndex);
+				CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
+				Thread.sleep(2000);
+				monthIndex++;
+				
+				ShowText("... no data for this chart... select a different month.. --> Month Year selected: " + monthYearToSelect);
+			} 
+			
 			
 			HierarchyHelper.waitForChartToLoad(HierarchyHelper.expenseTrendingChart);  // <-- seems that is not useful :| 
 			Thread.sleep(3000);
@@ -63,13 +77,8 @@ public class HierarchyValuesTestExpenseTrending extends BaseClass{
 			// #3 Get data from JSON
 			List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyValue);
 			
-			// ******   TO DO  ****************
-			// ** Add a loop to find a month that has data ***** 
-			// **********************
-			
-			CommonTestStepActions.selectMonthYearPulldown("April 2017");
-			Thread.sleep(2000);
-			
+
+		
 			// #4 Verify that the values displayed on the tooltips of "Expense Trending" chart are the same as the ones read from file
 			// Note: Only the first month with data is selected for each vendor, since no matter which month is selected the same info
 			// will be displayed on the Expense Trending chart. 

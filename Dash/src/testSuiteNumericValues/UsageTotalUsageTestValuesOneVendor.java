@@ -53,10 +53,9 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		
-		// #1 Select Vendor View and Unselect all vendors  
+		// #1 Select Vendor View
 		UsageHelper.selectVendorView();
-		
-		
+				
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorsInPoV();
 		List<String> vendorNames = new ArrayList<>();

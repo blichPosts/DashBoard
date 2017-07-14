@@ -46,7 +46,7 @@ public class BaseClass
 	// https://qa3.traq.com/manage/login/login.trq
 	
 //	public static String CMD_baseUrl = "https://qa5cmd.tangoe.com/manage/login/login.trq"; // bladdxx
-	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx
+	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";  
 	public static String MatrixPortal_baseUrl = "http://dc1devmatsbl01.prod.tangoe.com/matrixPortalUI/"; // anaadd - June 5 - Matrix Portal
 //	public static String CMD_baseUrl = "https://commcareqa.tangoe.com/manage/login/login.trq";
 	public static String Developer_Url = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense"; // bladdxx 
@@ -128,7 +128,7 @@ public class BaseClass
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
 		loginType = LoginType.Command; // bladdxx
-		browserType = BrowserType.FireFox;
+		browserType = BrowserType.Chrome;
 
 	}
 	

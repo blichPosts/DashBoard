@@ -115,8 +115,8 @@ public class UsageTrendingValues extends BaseClass {
 							
 				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
 				
-//				System.out.println("Vendor: " + labelFound);
-//				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
+				ShowText("Vendor: " + labelFound);
+				ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 				
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				
@@ -134,7 +134,7 @@ public class UsageTrendingValues extends BaseClass {
 				chartName = "Roaming";
 			}
 			
-			// System.out.println("Month/Year Found: " + monthYearFound + ", Month/Year Expected: " + monthYearExpected);
+			ShowText("Month/Year Found: " + monthYearFound + ", Month/Year Expected: " + monthYearExpected);
 			GeneralHelper.verifyExpectedAndActualLabels(monthYearFound, monthYearExpected + ": " + chartName); 
 			
 			indexHighchart++;
@@ -295,13 +295,14 @@ public class UsageTrendingValues extends BaseClass {
 				double otherTmpSum = 0;
 				String valueForOther = "";
 								
-				for (int i = 0; i < amountItemsSelected; i++){
+				for (int i = 0; i < amountItemsSelected; i++) {
 					
 					String item = itemsSelectedCheckbox.get(i);
 					
 					// ************ SEE NOTE NEXT TO NEXT LINE - CHANGE TO BE MADE **************************
-					if (!itemsInChartNames.contains(item) && hasData.get(item)){ // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
-					
+					if (!itemsInChartNames.contains(item)) { // && hasData.get(item)){ // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
+																			     // SFD 112306
+						
 						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(item);
 							
 						if (chartNum == UsageHelper.usageTrendingDomesticChart) {
@@ -441,8 +442,8 @@ public class UsageTrendingValues extends BaseClass {
 							
 				String valueExpected = expectedValues.get(indexMonth).get(labelFound);
 				
-//				System.out.println("Country: " + labelFound);
-//				System.out.println("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
+				ShowText("Country: " + labelFound);
+				ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 				
 				GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 				

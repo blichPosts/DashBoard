@@ -400,7 +400,8 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 					String item = itemsSelectedCheckbox.get(i);
 					
 					// ************ SEE NOTE NEXT TO NEXT LINE - CHANGE TO BE MADE **************************
-					if (!itemsInChartNames.contains(item) && hasData.get(item)) { // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
+					if (!itemsInChartNames.contains(item)) { // && hasData.get(item)) { // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
+																			      // SFD 112306
 					
 						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(item);
 							

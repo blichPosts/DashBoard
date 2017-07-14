@@ -34,16 +34,12 @@ public class UsageCalculationHelper extends BaseClass{
 			tmpAmount = amount / Math.pow(1024, 2);
 			
 		}
-		else if (amount > 1073741824.0) { // && amount < 1099511627776.0) { // Tb
+		else if (amount > 1073741824.0) { // Tb
 			
 			tmpAmount = amount / Math.pow(1024, 3);
 			
 		}
-//		else if (amount > 1099511627776.0) {
-//			
-//			tmpAmount = amount / Math.pow(1024, 4);
-//			
-//		}
+
 		
 //		if (amount < 1000.0) {
 //			
@@ -302,7 +298,7 @@ public class UsageCalculationHelper extends BaseClass{
 
 
 		
-	// Given a value with a prefix representing the units, get ONLY the numeric value
+	// Given a value with a suffix representing the units, get ONLY the numeric value
 	// E.g.: Original value is: 36K min, numeric value obtained is: 36
 	// This is used for the main KPI tile value
 	public static String getNumericValue(String stringValue) {

@@ -309,25 +309,27 @@ public class ReadFilesHelper extends BaseClass {
 			
 			chartNameForJS = "EXPENSE";
 			
-			if (category == GeneralTopTenHelper.categoryExpenseAll) {
+			switch (category) {
+			
+				case GeneralTopTenHelper.categoryExpenseAll:
+					categoryForJS = "ALL";
+					break;
 				
-				categoryForJS = "ALL";
+				case GeneralTopTenHelper.categoryExpenseVoice:
+					categoryForJS = "VOICE";
+					break;
 				
-			} else if (category == GeneralTopTenHelper.categoryExpenseVoice) {
+				case GeneralTopTenHelper.categoryExpenseData:
+					categoryForJS = "DATA";
+					break;
 				
-				categoryForJS = "VOICE";
+				case GeneralTopTenHelper.categoryExpenseMessages:
+					categoryForJS = "MESSAGES";
+					break;
 				
-			} else if (category == GeneralTopTenHelper.categoryExpenseData) {
-				
-				categoryForJS = "DATA";
-				
-			} else if (category == GeneralTopTenHelper.categoryExpenseMessages) {
-				
-				categoryForJS = "MESSAGES";
-				
-			} else if (category == GeneralTopTenHelper.categoryExpenseRoaming) {
-				
-				categoryForJS = "ROAMING";
+				case GeneralTopTenHelper.categoryExpenseRoaming:
+					categoryForJS = "ROAMING";
+					break;
 				
 			}
 			
@@ -335,21 +337,23 @@ public class ReadFilesHelper extends BaseClass {
 			
 			chartNameForJS = "DOMESTIC_USAGE";
 			
-			if (category == GeneralTopTenHelper.categoryDomesticUsageVoice) {
-				
-				categoryForJS = "VOICE";
-				
-			} else if (category == GeneralTopTenHelper.categoryDomesticUsageVoiceOverage) {
-				
-				categoryForJS = "VOICE_OVERAGE";
-				
-			} else if (category == GeneralTopTenHelper.categoryDomesticUsageData) {
-				
-				categoryForJS = "DATA";
-				
-			} else if (category == GeneralTopTenHelper.categoryDomesticUsageMessages) {
-				
-				categoryForJS = "MESSAGES";
+			switch (category) {
+			
+				case GeneralTopTenHelper.categoryDomesticUsageVoice:
+					categoryForJS = "VOICE";
+					break;
+					
+				case GeneralTopTenHelper.categoryDomesticUsageVoiceOverage:
+					categoryForJS = "VOICE_OVERAGE";
+					break;
+					
+				case GeneralTopTenHelper.categoryDomesticUsageData:
+					categoryForJS = "DATA";
+					break;
+					
+				case GeneralTopTenHelper.categoryDomesticUsageMessages:
+					categoryForJS = "MESSAGES";
+					break;
 				
 			} 
 		
@@ -357,17 +361,19 @@ public class ReadFilesHelper extends BaseClass {
 			
 			chartNameForJS = "ROAMING_USAGE";
 			
-			if (category == GeneralTopTenHelper.categoryRoamingUsageVoice) {
+			switch (category) {
 				
-				categoryForJS = "VOICE";
+				case GeneralTopTenHelper.categoryRoamingUsageVoice:
+					categoryForJS = "VOICE";
+					break;
 				
-			} else if (category == GeneralTopTenHelper.categoryRoamingUsageData) {
+				case GeneralTopTenHelper.categoryRoamingUsageData:
+					categoryForJS = "DATA";
+					break;
 				
-				categoryForJS = "DATA";
-				
-			} else if (category == GeneralTopTenHelper.categoryRoamingUsageMessages) {
-				
-				categoryForJS = "MESSAGES";
+				case GeneralTopTenHelper.categoryRoamingUsageMessages:
+					categoryForJS = "MESSAGES";
+					break;
 				
 			} 
 		
@@ -417,8 +423,10 @@ public class ReadFilesHelper extends BaseClass {
 	}
 	
 	
-	// ***********************************
-	// *** OLD - NOT USED ANYMORE ***
+	
+	// *********************************************************************************************************
+	// *** METHODS BELOW ARE OLD - THEY ARE NOT USED ANYMORE - THEY WERE USED WHEN WE READ VALUES FROM FILES ***
+	// *********************************************************************************************************
 	
 	// Reads the data needed for the "Fleet Manager Dashboard" tests
 	public static List<UsageOneMonth> getDataFromSpreadsheet(String filePath) throws IOException{
