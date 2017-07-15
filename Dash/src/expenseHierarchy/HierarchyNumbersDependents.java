@@ -1345,7 +1345,7 @@ public class HierarchyNumbersDependents extends BaseClass
 	}
 
 	
-	public static void ShowChildListToFile() throws IOException // jnupp
+	public static void ShowChildListToFile() throws IOException 
 	{
 		for(Child chl : HierarchyNumbersDependents.childList) {chl.ShowOutFile();}
 		ShowText("File out done");
@@ -1379,15 +1379,16 @@ public class HierarchyNumbersDependents extends BaseClass
 			
 			Thread.sleep(1000);
 
-			// jnupp below
 			// this will output all the dependent units read in before the rounding is done. See Child object for output file name.
 			Child.SetupOutputFile();
 			ShowChildListToFile();
 			Child.CloseFile();
-			// jnupp above
 
 			// this rounds the doubles in the list of child objects read in. 
-			RoundValuesInChildList();
+			// RoundValuesInChildList();
+			
+			// this rounds the doubles in the list of child objects read in. 
+			RoundValuesInChildListTwo(); // bob 7/15/17 - see method
 			
 			Thread.sleep(1000);
 
@@ -1881,6 +1882,21 @@ public class HierarchyNumbersDependents extends BaseClass
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	
+	
+	// https://stackoverflow.com/questions/27450766/rounding-5-down-in-java
+	// there was a problem with rounding a negative number like -2.5. Math.rount(-2.5) would return -2.0. the sorted dependent units list would round -2.5 to -3.
+	// to fix this problem method 'roundHalfDown' is called. this method will round a number like -2.5 to -3. method 'roundHalfDown' was found on stack trace.
+	public static double roundHalfDown(double d) 
+	{
+	    double i = Math.floor(d); // integer portion
+	    double f = d - i; // fractional portion
+	    
+	    // round integer portion based on fractional portion
+	    return f <= 0.5 ? i : i + 1D;
+	}	
+	
+	
 	// clear any bread crumbs that are showing.   
 	public static void ClearBreadCrumbs() throws Exception
 	{
@@ -1973,6 +1989,28 @@ public class HierarchyNumbersDependents extends BaseClass
 		for(Child chld: childList) 
 		{
 			tempDbl = Math.round(chld.cost); 
+			// Thread.sleep(500);
+			chld.cost = tempDbl; 
+		}
+		// http://stackoverflow.com/questions/14204905/java-how-to-remove-trailing-zeros-from-a-double
+	}
+	
+	// there was a problem with rounding a negative number like -2.5. Math.rount(-2.5) would return -2.0. the sorted dependent units list would round -2.5 to -3.
+	// to fix this problem method 'roundHalfDown' is called. this method will round a number like -2.5 to -3. method 'roundHalfDown' was found on stack trace.
+	public static void RoundValuesInChildListTwo() throws InterruptedException 
+	{
+		double tempDbl = 0.0;
+		
+		for(Child chld: childList) 
+		{
+			if(chld.cost < 0) // values is negative 
+			{
+				tempDbl = roundHalfDown(chld.cost); 		
+			}
+			else
+			{
+				tempDbl = Math.round(chld.cost); // old from method above				
+			}
 			// Thread.sleep(500);
 			chld.cost = tempDbl; 
 		}
