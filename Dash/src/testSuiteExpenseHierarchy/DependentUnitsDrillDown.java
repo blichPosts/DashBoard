@@ -55,6 +55,8 @@ public class DependentUnitsDrillDown extends BaseClass
 		
 		HierarchyNumbersDependents.LoopThroughMonthsDependentUnits();
 		
+		ShowText("Test Passed.");
+		
 		Pause("Passed");
 		
 	}

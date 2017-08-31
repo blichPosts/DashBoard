@@ -52,7 +52,7 @@ public class TotalExpenseByVendorSpendCategoryActions extends BaseClass
 		
 		TotalExpenseByVendorSpendCategory.VerifyRemovingCategories(ViewType.vendor);
 		TotalExpenseByVendorSpendCategory.VerifyAddingCategories(ViewType.vendor);
-		Pause("Passed");
+		//Pause("Passed");
 	}
 	
 	@AfterClass
