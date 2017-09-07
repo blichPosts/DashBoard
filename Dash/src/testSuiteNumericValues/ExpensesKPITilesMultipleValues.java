@@ -34,6 +34,9 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 	public static void ExpensesKPITilesMultipleValuesTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);
@@ -50,9 +53,9 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectVendorView();
-		//CommonTestStepActions.UnSelectAllVendors();
 					
-						
+		
+		// #2 Get data for test
 		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataForTest();
 		List<UsageOneMonth> valuesSummarizedVendors = UsageHelper.summarizeDataExpensesVendorsSelected(listVendorsSelectedData);
 		
@@ -72,7 +75,7 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 			monthYearToSelect = CommonTestStepActions.convertMonthNumberToName(month, year);
 			System.out.println("Month Year: " + monthYearToSelect);
 			
-			// #4 Select month on month/year selector
+			// #3 Select month on month/year selector
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
 			
 			Thread.sleep(2000);
@@ -80,11 +83,11 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 			String totalCharge = oneMonthData.getTotalCharge();
 			String numberOfLines = oneMonthData.getNumberOfLines();
 							
-			// #5 Compare the values displayed on the KPIs to the values from spreadsheet
+			// #4 Compare the values displayed on the KPIs to the values from spreadsheet
 			ExpensesKPITilesValues.verifyKPItileValues(totalCharge, numberOfLines);
 			
 			
-			// #6 Calculate 3 Month Rolling Averages and Trending Percentage
+			// #5 Calculate 3 Month Rolling Averages and Trending Percentage
 			// Get the values needed to calculate the 3 month Rolling Averages, and the Trending values
 			// ONLY if there's data for two months before the current month. 
 			// E.g.: Last month with data: January 2016, then March 2016 is the last month that will have the 3 month rolling average and trending values calculated
@@ -104,7 +107,7 @@ public class ExpensesKPITilesMultipleValues extends BaseClass{
 			}
 			
 			
-			// #7 Calculate 6 Month Rolling Averages
+			// #6 Calculate 6 Month Rolling Averages
 			// Get the values needed to calculate the 6 month Rolling Averages
 			// ONLY if there's data for five months before the current month. 
 			// E.g.: Last month with data: January 2016, then June 2016 is the last month that will have the 6 month rolling average calculated

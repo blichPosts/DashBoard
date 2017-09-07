@@ -46,7 +46,7 @@ public class BaseClass
 	// https://qa3.traq.com/manage/login/login.trq
 	
 //	public static String CMD_baseUrl = "https://qa5cmd.tangoe.com/manage/login/login.trq"; // bladdxx
-	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq"; // bladdxx
+	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";  
 	public static String MatrixPortal_baseUrl = "http://dc1devmatsbl01.prod.tangoe.com/matrixPortalUI/"; // anaadd - June 5 - Matrix Portal
 //	public static String CMD_baseUrl = "https://commcareqa.tangoe.com/manage/login/login.trq";
 	public static String Developer_Url = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense"; // bladdxx 
@@ -102,7 +102,7 @@ public class BaseClass
 		Remove
 	}
 
-	public enum ViewType // needed for base class methods. // bladdxx -- used by total rxpense 
+	public enum ViewType // needed for base class methods. // bladdxx -- used by total expense 
 	{
 		vendor,
 		country
@@ -633,10 +633,10 @@ public class BaseClass
 		
 		GeneralHelper.setUpiFrame();
 		
-		if(browserType.equals(BrowserType.FireFox))
-		{
-			Thread.sleep(2500);
-		}
+//		if(browserType.equals(BrowserType.FireFox))
+//		{
+//			Thread.sleep(5000);
+//		}
 		
 		GeneralHelper.switchToContentFrame();
 		

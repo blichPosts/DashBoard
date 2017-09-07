@@ -1,4 +1,4 @@
-package testSuiteTopTen;
+package testSuiteNumericValues;
 
 import java.util.List;
 
@@ -34,6 +34,9 @@ public class FleetValuesTestTopTen extends BaseClass {
 	public static void FleetValuesTestTopTenTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+		
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		
@@ -47,7 +50,7 @@ public class FleetValuesTestTopTen extends BaseClass {
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
 		String monthYearToSelect = "";
 		
-		int indexMonth = 1;
+		int indexMonth = 3;
 		
 		do {
 

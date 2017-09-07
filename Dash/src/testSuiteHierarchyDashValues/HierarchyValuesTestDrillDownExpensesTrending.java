@@ -34,6 +34,9 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 	public static void HierarchyValuesTestDrillDownExpensesTrendingTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :| 
+		GeneralHelper.waitForHeaderVisible();
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		
@@ -45,6 +48,8 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 		List<String> monthsInDropdown = HierarchyHelper.getMonthsListedInDropdown();
 		
 		
+		// If the test is run for a tenant that has only one hierarchy, then the Hierarchy dropdown list won't be displayed. 
+		// 'amountHierarchies' is initialized in '1' for the test not to fail if the dropdown is not present.    
 		int amountHierarchies = 1;
 		
 		if (hierarchies.size() > amountHierarchies) {
@@ -52,12 +57,9 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 		}
 		
 		for (int i = 0; i < amountHierarchies; i++) {
-		
-//			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
 			
 			String hierarchyValue = HierarchyHelper.getHierarchyValue(i);
-			
-//			HierarchyHelper.selectHierarchyFromDropdown(i);
+
 			HierarchyHelper.waitForTileMapToBeDisplayed();
 			
 			List<WebElement> dependentUnits = HierarchyHelper.getDependentUnitsPoV();
@@ -111,17 +113,11 @@ public class HierarchyValuesTestDrillDownExpensesTrending extends BaseClass{
 					
 					try {
 						
-						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryTotal);
-						
 						HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryTotal);
 						Thread.sleep(2000);
 						
-						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryOptimizable);
-						
 						HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryOptimizable);
 						Thread.sleep(2000);
-						
-						HierarchyHelper.selectCategory(HierarchyHelper.expenseTrendingChart, HierarchyHelper.categoryRoaming);
 						
 						HierarchyExpenseTrending.verifyExpenseTrendingChartTooltip(HierarchyHelper.expenseTrendingChart, valuesFromFile, HierarchyHelper.categoryRoaming);
 						Thread.sleep(2000);

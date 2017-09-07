@@ -33,6 +33,9 @@ public class TotalUsageMultipleValuesByCountry extends BaseClass{
 	public static void TotalUsageMultipleValuesByCountryTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();	
+		
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);
@@ -74,13 +77,13 @@ public class TotalUsageMultipleValuesByCountry extends BaseClass{
 			
 			// #4 Select month on month/year selector
 			CommonTestStepActions.selectMonthYearPulldown(monthsToSelect.get(indexMonth));
-			ShowText("\n month year: " + monthsToSelect.get(indexMonth)); 
+			ShowText("Month year: " + monthsToSelect.get(indexMonth)); 
 			
 			Thread.sleep(2000);
 			
 			// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
 			
-			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
+			FleetHelper.selectCategoryUsage(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryVoiceName);
 			
 			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryVoice);
 			Thread.sleep(2000);
@@ -88,7 +91,7 @@ public class TotalUsageMultipleValuesByCountry extends BaseClass{
 			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryVoice);
 			Thread.sleep(2000);				
 			
-			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
+			FleetHelper.selectCategoryUsage(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryDataName);
 			
 			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryData);
 			Thread.sleep(2000);
@@ -96,7 +99,7 @@ public class TotalUsageMultipleValuesByCountry extends BaseClass{
 			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageRoamingChart, listOneMonthDataByCountry, UsageHelper.categoryData);
 			Thread.sleep(2000);				
 			
-			UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
+			FleetHelper.selectCategoryUsage(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryMessagesName);
 			
 			TotalUsageValues.verifyTotalUsageChartTooltipByCountry(UsageHelper.totalUsageDomesticChart, listOneMonthDataByCountry, UsageHelper.categoryMessages);
 			Thread.sleep(2000);

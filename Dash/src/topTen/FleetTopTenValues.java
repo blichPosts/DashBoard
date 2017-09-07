@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import Dash.BaseClass;
@@ -23,8 +22,16 @@ import helperObjects.UsageHelper;
 public class FleetTopTenValues extends BaseClass {
 
 	
-	
 	public static void verifyTopTenChartValues(int barChartId, int category) throws Exception {
+		
+		String chartId = UsageHelper.getChartId(barChartId);
+		
+		if (barChartId == GeneralTopTenHelper.roamingUsageChart) {
+			ShowText("Roaming usage chart");
+			GeneralHelper.moveDown(chartId);
+		}
+		
+		Thread.sleep(5000);
 		
 		// Select category
 		HierarchyHelper.selectCategoryTopTen(barChartId, category);
@@ -53,7 +60,7 @@ public class FleetTopTenValues extends BaseClass {
 			// Verify values on the selected Top Ten chart and for the selected category
 			if (!GeneralTopTenHelper.allValuesAreZero(valuesExpected) && chartHasData) {
 			
-				verifyTooltipTopTenChart(valuesExpected, barChartId, category);
+				verifyTooltipTopTenChart(valuesExpected, chartId, category);
 				
 			}
 		
@@ -63,14 +70,14 @@ public class FleetTopTenValues extends BaseClass {
 	
 	
 	
-	public static void verifyTooltipTopTenChart(List<FleetTopTenData> topTenValues, int barChartId, int category) throws AWTException, InterruptedException {
+	public static void verifyTooltipTopTenChart(List<FleetTopTenData> topTenValues, String chartId, int category) throws AWTException, InterruptedException {
 		
-		String chartId = UsageHelper.getChartId(barChartId);
-		
-		WebElement topTenChart = driver.findElement(By.cssSelector("#" + chartId));
-		new Actions(driver).moveToElement(topTenChart).perform();
-		
-		Thread.sleep(2000);
+		ShowText("Chart id: " + chartId + ", category: " + category);
+			
+//		WebElement topTenChart = driver.findElement(By.cssSelector("#" + chartId));
+//		new Actions(driver).moveToElement(topTenChart).perform();
+//		
+//		Thread.sleep(2000);
 		
 		List<WebElement> chartElementNames = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-axis-labels.highcharts-xaxis-labels>text>tspan"));
 		List<String> chartLabelsFound = new ArrayList<String>();
@@ -86,13 +93,13 @@ public class FleetTopTenValues extends BaseClass {
 			
 		}
 			
-		 ShowText("expected labels:");
+		// ShowText("expected labels:");
 		// Set up lists with expected values and labels		
 		for (FleetTopTenData data: topTenValues) {
 			
 			String label = GeneralTopTenHelper.formatPhoneNumber(data.getServiceNumber());
 	    	expectedLabels.add(label);
-	    	 ShowText("label:  " + label);
+	    	//ShowText("label:  " + label);
 	    	
 	    	String value = UsageCalculationHelper.roundNoDecimalDigits(data.getValue(), false);
 	    	expectedValuesList.add(value);
@@ -102,7 +109,7 @@ public class FleetTopTenValues extends BaseClass {
 
 		
 		// Verify that there are up to 10 elements listed on the chart: the Top Ten Service Numbers
-		Assert.assertTrue(chartElementNames.size() <= 10);
+		Assert.assertTrue(chartElementNames.size() <= 10, "The amount of service numbers listed on chart should be 10 or less.");
 		
 		// Verify that the values are sorted in descendant order by "value"
 //		FleetTopTenHelper.verifyValuesSortedDescendantOrder(expectedValuesList); 
@@ -114,7 +121,6 @@ public class FleetTopTenValues extends BaseClass {
 		while (indexHighchart <= chartElementNames.size()) {
 	
 			GeneralHelper.moveMouseToBar(chartId, indexHighchart, true);
-	
 			
 			List<WebElement> tooltip = driver.findElements(By.cssSelector("#" + chartId + ">svg>g.highcharts-label.highcharts-tooltip>text>tspan"));
 			
@@ -139,12 +145,12 @@ public class FleetTopTenValues extends BaseClass {
 			// Get the expected value 
 			String valueExpected = expectedValues.get(labelFound);
 			
-			 ShowText("Label Found: " + labelFound); 
-			 ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
+			// ShowText("Label Found: " + labelFound); 
+			// ShowText("Value Found: " + valueFound + ", Value Expected: " + valueExpected);
 					
 			// The verification of the expected label is made by verifying that the label found is included in the list of expected labels.
 			// They cannot be verified by order, since if there are 2 elements that have the same value (expenses value) the order in which they'll be listed cannot be known
-			Assert.assertTrue(expectedLabels.contains(labelFound));
+			Assert.assertTrue(expectedLabels.contains(labelFound), "Label found " + labelFound + " is not included in the 'Expected Labels' list");
 			GeneralHelper.verifyExpectedAndActualValues(valueFound, valueExpected);
 			
 			indexHighchart++;

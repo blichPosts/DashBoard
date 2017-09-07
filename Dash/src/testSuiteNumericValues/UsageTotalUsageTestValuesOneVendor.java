@@ -36,6 +36,9 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 	public static void UsageTotalUsageTestValuesOneVendorTest() throws Exception
 	{
 
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();	
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);
@@ -50,10 +53,9 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 		CommonTestStepActions.GoToUsagePageDetailedWait();
 		
 		
-		// #1 Select Vendor View and Unselect all vendors  
+		// #1 Select Vendor View
 		UsageHelper.selectVendorView();
-		CommonTestStepActions.UnSelectAllVendors();
-		
+				
 		
 		List<WebElement> vendors = CommonTestStepActions.getAllVendorsInPoV();
 		List<String> vendorNames = new ArrayList<>();
@@ -71,7 +73,8 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 			// #2 Read data from the ajax call response
 			List<UsageOneMonth> valuesFromAjaxCall = ReadFilesHelper.getJsonDataExpenseUsage(vendor);
 			
-				
+			CommonTestStepActions.UnSelectAllVendors();	
+			
 			// #3 Select only one vendor
 			CommonTestStepActions.selectOneVendor(vendor);
 			
@@ -106,15 +109,15 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 				
 				// #5 Verify that the values displayed on the tooltips of Total Usage charts are the same as the ones read from file  
 				
-				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryVoice);
-
+				FleetHelper.selectCategoryUsage(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryVoiceName);
+				
 				TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 				Thread.sleep(2000);
 				
 				TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryVoice);
 				Thread.sleep(2000);				
 				
-				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryData);
+				FleetHelper.selectCategoryUsage(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryDataName);
 				
 				TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
 				Thread.sleep(2000);
@@ -122,7 +125,7 @@ public class UsageTotalUsageTestValuesOneVendor extends BaseClass{
 				TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageRoamingChart, listOneMonthSortedByVendor, UsageHelper.categoryData);
 				Thread.sleep(2000);				
 				
-				UsageHelper.selectCategory(UsageHelper.totalUsageSection, UsageHelper.categoryMessages);
+				FleetHelper.selectCategoryUsage(UsageHelper.totalUsageDomesticChart, UsageHelper.categoryMessagesName);
 				
 				TotalUsageValues.verifyTotalUsageChartTooltipByVendor(UsageHelper.totalUsageDomesticChart, listOneMonthSortedByVendor, UsageHelper.categoryMessages);
 				Thread.sleep(2000);

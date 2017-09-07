@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 import Dash.BaseClass;
 import expenseHierarchy.HierarchyTopTenValues;
 import helperObjects.CommonTestStepActions;
+import helperObjects.GeneralHelper;
 import helperObjects.GeneralTopTenHelper;
 import helperObjects.HierarchyHelper;
 import helperObjects.ReadFilesHelper;
@@ -33,6 +34,9 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 	public static void HierarchyValuesTestTopTenTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		
@@ -49,7 +53,8 @@ public class HierarchyValuesTestTopTen extends BaseClass {
 		// #3 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
 
-		
+		// If the test is run for a tenant that has only one hierarchy, then the Hierarchy dropdown list won't be displayed. 
+		// 'amountHierarchies' is initialized in '1' for the test not to fail if the dropdown is not present.  
 		int amountHierarchies = 1;
 		
 		if (hierarchies.size() > amountHierarchies) {

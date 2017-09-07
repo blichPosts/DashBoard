@@ -12,24 +12,24 @@ import Dash.BaseClass;
 
 public class GeneralTopTenHelper extends BaseClass {
 
-	public static int categoryExpenseAll = 1;
-	public static int categoryExpenseVoice = 2;
-	public static int categoryExpenseData = 3;
-	public static int categoryExpenseMessages = 4;
-	public static int categoryExpenseRoaming = 5;
+	public static final int categoryExpenseAll = 1;
+	public static final int categoryExpenseVoice = 2;
+	public static final int categoryExpenseData = 3;
+	public static final int categoryExpenseMessages = 4;
+	public static final int categoryExpenseRoaming = 5;
 	
-	public static int categoryDomesticUsageVoice = 1;
-	public static int categoryDomesticUsageVoiceOverage = 2;
-	public static int categoryDomesticUsageData = 3;
-	public static int categoryDomesticUsageMessages = 4;
+	public static final int categoryDomesticUsageVoice = 1;
+	public static final int categoryDomesticUsageVoiceOverage = 2;
+	public static final int categoryDomesticUsageData = 3;
+	public static final int categoryDomesticUsageMessages = 4;
 	
-	public static int categoryRoamingUsageVoice = 1;
-	public static int categoryRoamingUsageData = 2;
-	public static int categoryRoamingUsageMessages = 3;
+	public static final int categoryRoamingUsageVoice = 1;
+	public static final int categoryRoamingUsageData = 2;
+	public static final int categoryRoamingUsageMessages = 3;
 	
-	public static int expenseChart = 0;
-	public static int domesticUsageChart = 1;
-	public static int roamingUsageChart = 2;
+	public static final int expenseChart = 0;
+	public static final int domesticUsageChart = 1;
+	public static final int roamingUsageChart = 2;
 	
 
 	

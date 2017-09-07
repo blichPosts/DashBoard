@@ -22,6 +22,10 @@ public class HierarchyHelper extends BaseClass {
 	public final static int categoryOptimizable = 2;
 	public final static int categoryRoaming = 3;
 
+	public final static String categoryTotalName = "Total";
+	public final static String categoryOptimizableName = "Optimizable";
+	public final static String categoryRoamingName = "Roaming";
+	
 	public final static int treeMapChart = 0;
 	public final static int expenseTrendingChart = 1;
 	public final static int topTenChart = 0;
@@ -91,7 +95,18 @@ public class HierarchyHelper extends BaseClass {
 		
 	}
 	
+	
 
+	public static void selectCategoryHierarchy(String category){
+		
+		String xpath = ".//div[@class='tdb-card']/h2[2]/preceding-sibling::div[1]/div[text()='" + category + "']";
+		
+		WebElement categoryToSelect = driver.findElement(By.xpath(xpath));
+		categoryToSelect.click();
+		
+	}
+	
+	
 	public static void selectCategoryTopTen(int section, int category){
 		
 		String xpath = "//div[@class='tdb-card'][" + (section+1) +"]/div/div[" + category + "]";
@@ -351,6 +366,27 @@ public class HierarchyHelper extends BaseClass {
 		WaitForElementVisible(By.cssSelector(".tdb-flexContainer.tdb-flexContainer--center>select"), MediumTimeout); // this is drop down in top left corner POV.
 		HierarchyHelper.WaitForProgressBarInactive(TenTimeout); // wait for progress bar done.
 		Thread.sleep(2000); // time for tile map to load.
+	}
+
+
+	public static String getCategoryName(int category) {
+		
+		switch (category) {
+	
+			case categoryTotal:
+				return categoryTotalName;
+				
+			case categoryOptimizable:
+				return categoryOptimizableName;
+				
+			case categoryRoaming:
+				return categoryRoamingName;
+			
+			default:
+				return "";
+				
+		}
+	
 	}
 
 }

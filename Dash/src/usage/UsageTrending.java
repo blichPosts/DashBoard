@@ -337,7 +337,7 @@ public class UsageTrending extends BaseClass {
 
 	public static void verifySelectedCategories(int chartNum, int categorySelected) {
 			
-		String categoryName = UsageHelper.getNameCategorySelected(categorySelected);
+		String categoryName = UsageHelper.getNameCategory(categorySelected);
 		
 		WebElement selector = null; 
 		

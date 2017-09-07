@@ -2,8 +2,6 @@ package testSuiteLocalization;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -13,7 +11,7 @@ import helperObjects.CommonTestStepActions;
 import helperObjects.LocalizationHelper;
 import helperObjects.UsageHelper;
 import localization.FleetUsageLanguage;
-import usage.UsageTrendingValues;
+
 
 public class LocalizationFleetUsageTest extends BaseClass {
 

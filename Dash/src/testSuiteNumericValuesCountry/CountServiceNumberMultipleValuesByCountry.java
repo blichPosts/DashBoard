@@ -33,6 +33,9 @@ public class CountServiceNumberMultipleValuesByCountry extends BaseClass{
 	public static void CountServiceNumberMultipleValuesTest() throws Exception
 	{
 
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+				
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);
@@ -47,7 +50,6 @@ public class CountServiceNumberMultipleValuesByCountry extends BaseClass{
 		
 		// #1 Select Vendor View and Unselect all vendors  
 		CommonTestStepActions.SelectCountryView();
-		//CommonTestStepActions.UnSelectAllVendors();
 
 		CommonTestStepActions.GoToExpensePageDetailedWait();
 		
@@ -71,7 +73,7 @@ public class CountServiceNumberMultipleValuesByCountry extends BaseClass{
 		
 			
 		String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 
-		int indexMonthToSelect = 1;
+		int indexMonthToSelect = 3;
 		String monthYearToSelect = "";
 		List<String> monthsWithDataToSelectPulldown = UsageHelper.getMonthListUnifiedForVendorsSelected(listSelectedDataForMonthListUnified);
 
@@ -82,7 +84,7 @@ public class CountServiceNumberMultipleValuesByCountry extends BaseClass{
 			System.out.println("Month Year: " + monthYearToSelect);
 			
 			CommonTestStepActions.selectMonthYearPulldown(monthYearToSelect);
-			Thread.sleep(2000);
+			Thread.sleep(5000);
 			
 			// #5 Verify that the values displayed on the tooltips of "Expense Trending" charts are the same as the ones read from file
 			

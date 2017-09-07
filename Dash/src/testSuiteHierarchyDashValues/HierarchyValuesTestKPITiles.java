@@ -35,6 +35,9 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 	public static void HierarchyValuesTestKPITilesTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();
+		
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		
@@ -43,21 +46,26 @@ public class HierarchyValuesTestKPITiles extends BaseClass{
 		
 		// #2 Select hierarchy from dropdown , run the test for each hierarchy listed on dropdown
 		List<WebElement> hierarchies = HierarchyHelper.getHierarchiesFromDropdown();
-		List<String> hierarchyIds = HierarchyHelper.getHierarchiesValues();
+
+		// If the test is run for a tenant that has only one hierarchy, then the Hierarchy dropdown list won't be displayed. 
+		// 'amountHierarchies' is initialized in '1' for the test not to fail if the dropdown is not present.    
+		int amountHierarchies = 1;
 		
-		for (int i = 1; i <= hierarchies.size(); i++) {
+		if (hierarchies.size() > amountHierarchies) {
+			amountHierarchies = hierarchies.size();
+		}
+				
+		for (int i = 0; i < amountHierarchies; i++) {
 			
 			GeneralHelper.selectFirstMonth();
 			boolean monthSelected = true;
 			
-			HierarchyHelper.selectHierarchyFromDropdown(i);
-			System.out.println(" **** Hierarchy " + hierarchies.get(i-1).getText());
-			
 			Thread.sleep(3000);
 			
 			// #3 Get data from JSON
-			List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyIds.get(i-1));	
-					
+			String hierarchyId = HierarchyHelper.getHierarchyValue(i);  //hierarchyIds.get(i-1);
+			List<HierarchyTrendData> valuesFromAjaxCall = ReadFilesHelper.getJsonDataTrend(hierarchyId);	
+			System.out.println(" **** Hierarchy " + hierarchyId);
 					
 			// #4 Get the last month listed on month selector 
 			String lastMonthListedMonthSelector = GeneralHelper.getLastMonthFromSelector(); 

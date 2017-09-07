@@ -11,6 +11,6 @@ echo %JarPath%;%SelPath%;%SelPathJar%;%SelBin% > "C:\Users\apace\git\DashBoard\D
 dir > "C:\Users\apace\git\DashBoard\Dash\Done.txt"
 set classpath=%JarPath%;%SelPath%;%SelPathJar%;%SelBin%
 echo %classpath% > classPath.txt
-java org.testng.TestNG C:\Users\apace\git\DashBoard\Dash\TestFirstTry.xml  > D:\Documents\DashAutomationTestResults\TestFirstTry.txt
+java org.testng.TestNG C:\Users\apace\git\DashBoard\Dash\TestFirstTry.xml  > D:\Documents\DashAutomationTestResults\TestFirstTry2.txt
 
 

@@ -3,6 +3,7 @@ package helperObjects;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -350,9 +352,9 @@ public class GeneralHelper extends BaseClass {
 	}		
 	
 	
-	public static void waitForChartToLoad(int timeOut) throws Exception {
+	public static boolean waitForChartToLoad(int timeOut) throws Exception {
 	    
-		WaitForElementPresent(By.cssSelector("chart>div"), timeOut);
+		return WaitForElementPresent(By.cssSelector("chart>div"), timeOut);
 		
 	}	
 	
@@ -436,13 +438,29 @@ public class GeneralHelper extends BaseClass {
 		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 		
-		Point coordinates = GeneralHelper.getAbsoluteLocation(bar);
+		Point coordinatesChart = GeneralHelper.getAbsoluteLocation(driver.findElement(By.cssSelector("#" + chartId + ">svg>.highcharts-grid.highcharts-yaxis-grid")));
 		
-		int x_offset = bar.getSize().getWidth() / 2;
+		Point coordinates = GeneralHelper.getAbsoluteLocation(bar); // <-- not used
+//		ShowText("bar.getAttribute(width): " + bar.getAttribute("width"));
+		int x_offset = 0; // Integer.parseInt(bar.getAttribute("width")) / 2; // bar.getSize().getWidth() / 2;  <-- ** TEST ** this change works for both Firefox and Chrome
+		int x = 0;
+		
+		if (fleetExpense && chartNum == FleetHelper.costPerServiceNumberChart) {
+			
+			x_offset = bar.getSize().getWidth() / 2; 
+			x = coordinates.getX() + x_offset; 
+			
+		} else {
+			
+			x_offset = Integer.parseInt(bar.getAttribute("width")) / 2;
+			x = coordinatesChart.getX() + (int) Double.parseDouble(bar.getAttribute("x")) + x_offset; 
+		}
+		
+		
 		int y_offset = (int) GeneralHelper.getScrollPosition();
 		
-		int x = coordinates.getX() + x_offset;
-		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;;
+//		int x = coordinatesChart.getX() + (int) Double.parseDouble(bar.getAttribute("x")) + x_offset;  // coordinates.getX() + x_offset;  <-- ** TEST ** this change works for both Firefox and Chrome 
+		int y = GeneralHelper.getYCoordinate(chartId) + y_offset;
 		
 		Robot robot = new Robot();
 		
@@ -498,21 +516,6 @@ public class GeneralHelper extends BaseClass {
 		Robot robot = new Robot();
 		robot.mouseMove(x, y);
 		
-//		if (!isTopTenChart) {
-//			
-//			Thread.sleep(500);
-//			robot.mouseMove(x + 5, y);
-//			
-//			if (width > 10.0) {
-//				bar.click();  // The click on the bar helps to simulate the mouse movement so the tooltip is displayed
-//			}
-//			
-//			if (width < 10.0) {
-//				robot.mousePress(InputEvent.BUTTON1_MASK);
-//				robot.mouseRelease(InputEvent.BUTTON1_MASK);
-//			}
-//						
-//		}
 		
 		Thread.sleep(500);
 		// robot.mouseMove(x + 10, y);  // <-- If needed, uncomment it. It replaces the mouse press and release, since in this chart the mouse click on the bar should redirect to a different page in CMD.
@@ -545,16 +548,31 @@ public class GeneralHelper extends BaseClass {
 		// Get the location of the series located at the bottom of the chart -> to get the "x" coordinate
 		// These coordinates will be used to put the mouse pointer over the chart and simulate the mouse hover, so the tooltip is displayed
 		Point coordinates = getAbsoluteLocation(bar);
-		
+		Point coordinatesChart = getAbsoluteLocation(driver.findElement(By.cssSelector("#" + chartId + ">svg>.highcharts-grid.highcharts-yaxis-grid")));
+
 		int height = bar.getSize().getHeight();
 		int width = bar.getSize().getWidth();
-				
-		int x_offset = (int) (width * 0.5);
+			
+		
+		int x_offset = (int) (width * 0.5); 
 		int y_offset = (int) height + (int) getScrollPosition();
+ 
 		
 		int x = coordinates.getX() + x_offset + 2;
 		int y = coordinates.getY() + y_offset;
+	
 		
+		// These conditions have been added so the test can be run on Firefox. Otherwise the correct coordinates cannot be obtainesd for ** Firefox **
+		if (width == 0) {
+			x_offset = 20;
+			x = coordinatesChart.getX() + x_offset; 
+		}
+		if (height == 0) {
+			y_offset = calculateOffset(chartId, indexHighchart);
+			y = coordinatesChart.getY() + y_offset;  
+			
+		}
+	
 		
 		Robot robot = new Robot();
 		robot.mouseMove(x, y);
@@ -588,6 +606,21 @@ public class GeneralHelper extends BaseClass {
 	}
 	
 	
+	// Offset will be calculated in case the bar's height is 0 -- Needed for Firefox 
+	private static int calculateOffset(String chartId, int indexHighchart) {
+		
+		WebElement chartBorder = driver.findElement(By.cssSelector("#" + chartId + ">svg>rect.highcharts-plot-border"));
+		int charBorderHeight = Integer.parseInt(chartBorder.getAttribute("height"));
+		
+		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-axis-labels.highcharts-xaxis-labels>text"));
+		
+		int y_offset_new = charBorderHeight / legends.size() * indexHighchart;
+		
+		return y_offset_new;
+		
+	}
+
+
 	// Get the last month listed in month-year selector
 	public static String getLastMonthFromSelector() {
 
@@ -596,5 +629,68 @@ public class GeneralHelper extends BaseClass {
 	}
 
 
+	public static void waitForHeaderVisible() throws Exception {
+		
+		WaitForElementVisibleNoThrow(By.cssSelector("h1"), ExtremeTimeout);
+		
+	}
+
+
+	// Move to element in parameter - ** NEW ** - Need to implement it yet 
+	public static void moveToElement(WebElement element){
+		
+		new Actions(driver).moveToElement(element).perform();
+		
+	}
+
+	
+	public static void moveDown(String chartId) throws AWTException, InterruptedException {
+				
+		if (browserType.equals(BrowserType.FireFox)) {
+
+			scrollPage();
+			
+		} else if (browserType.equals(BrowserType.Chrome)) {
+			
+			new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
+			
+		}
+		
+		Thread.sleep(2000);
+		
+	}
+	
+	
+	
+	public static void scrollPage() throws AWTException, InterruptedException {
+		
+		// Only scroll down if the scroll bar is at the top of the page
+		if (getScrollPosition() == 0) {
+			
+			ShowText("Scroll down....");
+			Robot robot = new Robot();
+			robot.keyPress(KeyEvent.VK_PAGE_DOWN);
+			robot.keyRelease(KeyEvent.VK_PAGE_DOWN);
+			
+		}
+		
+	}
+	
+
+	
+	public static void moveToTop() throws AWTException, InterruptedException {
+		
+		// Only scroll up if the scroll bar is NOT at the top of the page
+		if (getScrollPosition() != 0) {
+			
+			ShowText("Scroll up....");
+			Robot robot = new Robot();
+			robot.keyPress(KeyEvent.VK_PAGE_UP);
+			robot.keyRelease(KeyEvent.VK_PAGE_UP);
+			
+		}
+		
+	}
+	
 	
 }

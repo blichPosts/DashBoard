@@ -34,6 +34,9 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 	public static void UsageKPITilesMultipleValuesTest() throws Exception
 	{
 		
+		// *** Needed for Firefox *** :|
+		GeneralHelper.waitForHeaderVisible();	
+		
 		// Enable Start collecting data
 		ReadFilesHelper.startCollectingData();
 		Thread.sleep(2000);
@@ -49,7 +52,6 @@ public class UsageKPITilesMultipleValues extends BaseClass{
 		
 		// #1 Select Vendor View and Unselect all vendors 
 		UsageHelper.selectVendorView();
-		//CommonTestStepActions.UnSelectAllVendors();
 		
 		List<List<UsageOneMonth>> listVendorsSelectedData = FleetHelper.getExpenseUsageDataForTest();
 

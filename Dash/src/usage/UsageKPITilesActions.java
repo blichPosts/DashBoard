@@ -118,8 +118,7 @@ public class UsageKPITilesActions extends BaseClass{
 					case 1:  // Voice
 						// Amount of minutes must be an integer. This rounding is needed in case the amount of minutes is < 10, 
 						// since the rolling average most likely will have a decimal point if it's < 10, and this is incorrect. 
-						threeMonthAvgExpected = UsageCalculationHelper.convertUnits(avgTmpVoice);
-//						ShowText("Voice rolling average after units converted: " + threeMonthAvgExpected);
+						threeMonthAvgExpected = UsageCalculationHelper.convertUnits(rollingAvgVoice);  // convertUnits(avgTmpVoice);
 						rollingAverage = rollingAvgVoice;
 						kpiValue = Double.parseDouble(valuesForRollingAvg.get(0).getDomesticVoice()) + Double.parseDouble(valuesForRollingAvg.get(0).getDomesticOverageVoice());
 						break;
@@ -131,7 +130,7 @@ public class UsageKPITilesActions extends BaseClass{
 					case 3:  // Messages
 						// Amount of messages must be an integer. This rounding is needed in case the amount of messages is < 10, 
 						// since the rolling average most likely will have a decimal point if it's < 10, and this is incorrect. 
-						threeMonthAvgExpected = UsageCalculationHelper.convertUnits(avgTmpMsg);
+						threeMonthAvgExpected = UsageCalculationHelper.convertUnits(rollingAvgMsg);  // convertUnits(avgTmpMsg);
 						rollingAverage = rollingAvgMsg;
 						kpiValue = Double.parseDouble(valuesForRollingAvg.get(0).getDomesticMessages());
 						break;
@@ -162,9 +161,10 @@ public class UsageKPITilesActions extends BaseClass{
 						String trend = trendingElementKpi.get(1).getText();
 						int trendValueActual = getTrendingValueWithNoSymbol(trend); 
 						
-						Assert.assertTrue(trendingElementKpi.size() == 2);
+						Assert.assertTrue(trendingElementKpi.size() == 2, "The trending percentage is missing.");
+						Assert.assertTrue(trend.endsWith("%"), "% symbol is missing.");
+						
 						GeneralHelper.verifyExpectedAndActualValues(trendValueActual, trendValueExpected);   
-						Assert.assertTrue(trend.endsWith("%"));
 												
 						System.out.println("Trend Value Actual: " + trendValueActual + "%, Trend Value Expected: " + trendValueExpected + "%");
 						
@@ -268,14 +268,13 @@ public class UsageKPITilesActions extends BaseClass{
 		
 		double sum = 0;
 		
-//		ShowText("Values for rolling average: ");
-		for(String v: values){
-//			ShowText(v);
+		for (String v: values) {
+			
 			sum += Double.parseDouble(v);
 		}
 		
 		double average = sum / values.size();
-//		ShowText("Average calculated: " + average);
+
 		return average;
 		
 	}

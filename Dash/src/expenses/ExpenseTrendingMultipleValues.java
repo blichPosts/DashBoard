@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 
 import Dash.BaseClass;
 import helperObjects.CommonTestStepActions;
@@ -43,10 +42,12 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
 		chartId = UsageHelper.getChartId(barChartId);
-		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
-				
-		Thread.sleep(2000);
-			
+		
+		GeneralHelper.moveDown(chartId);
+
+		FleetHelper.selectCategoryExpenses(barChartId, FleetHelper.getNameCategoryExpenses(categorySelector));
+		
+		
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		
 		expectedValues = new ArrayList<HashMap<String, String>>();
@@ -117,7 +118,7 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 			for (int i = 1; i <= legends.size(); i++) {
 			
 				int index = i * factor + 1;  // Ana modif - May 17 -- before modif --> int index =  i * 3 - 1;  
-				
+//				ShowText("index: " + index + ", factor: " + factor + ", i: " + i);
 				// Get the label and remove colon at the end of its text
 				String labelFound = tooltip.get(index).getText().split(":")[1].trim();  // Ana modif - May 17 -- before modif --> tooltip.get(index).getText().substring(0, tooltip.get(index).getText().length()-1);
 
@@ -399,7 +400,8 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 					String item = itemsSelectedCheckbox.get(i);
 					
 					// ************ SEE NOTE NEXT TO NEXT LINE - CHANGE TO BE MADE **************************
-					if (!itemsInChartNames.contains(item) && hasData.get(item)) { // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
+					if (!itemsInChartNames.contains(item)) { // && hasData.get(item)) { // <-- When Ed's fix is included on Dashboard, remove the "vendorHasData.get(v)" condition 
+																			      // SFD 112306
 					
 						UsageOneMonth usage = (UsageOneMonth) listUsageAllMonths.get(indexMonthValues).get(item);
 							
@@ -552,10 +554,12 @@ public class ExpenseTrendingMultipleValues extends BaseClass {
 		// List "allValuesFromFile" has all 13 months listed on pulldown. 
 		
 		chartId = UsageHelper.getChartId(barChartId);
-		new Actions(driver).moveToElement(driver.findElement(By.cssSelector("#" + chartId))).perform();
-				
-		Thread.sleep(2000);
-			
+		
+		GeneralHelper.moveDown(chartId);
+		
+		FleetHelper.selectCategoryExpenses(barChartId, FleetHelper.getNameCategoryExpenses(categorySelector));
+		
+		
 		List<WebElement> legends = driver.findElements(By.cssSelector("#" + chartId + ">svg>.highcharts-legend>g>g>g>text"));
 		
 		expectedValues = new ArrayList<HashMap<String, String>>();
