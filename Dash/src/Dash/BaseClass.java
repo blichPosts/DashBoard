@@ -39,14 +39,14 @@ public class BaseClass
 	public static String baseUrl;
 	//public static String CMD_baseUrl = "https://commcareqa.tangoe.com/manage/login";
 	//public static String CMD_baseUrl = "http://dc1qacmdweb04:8080/manage/login/login.trq";
-	public static String CMD_baseUrl = "https://qa1cmd.tangoe.com/manage/login/login.trq";
+	public static String API_baseUrl = "https://qa1cmd.tangoe.com/manage/login/login.trq";
 	// public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";	
 	// public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense";  // bladdxx comment ana do
 	//public static String CMD_baseUrl = "http://dc1devmule1.prod.tangoe.com:4000/manage/login";
 	// https://qa3.traq.com/manage/login/login.trq
 	
 //	public static String CMD_baseUrl = "https://qa5cmd.tangoe.com/manage/login/login.trq"; // bladdxx
-	// public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";  
+	public static String CMD_baseUrl = "https://qa3.traq.com/manage/login/login.trq";  
 	public static String MatrixPortal_baseUrl = "http://dc1devmatsbl01.prod.tangoe.com/matrixPortalUI/"; // anaadd - June 5 - Matrix Portal
 //	public static String CMD_baseUrl = "https://commcareqa.tangoe.com/manage/login/login.trq";
 	public static String Developer_Url = "http://dc1devmule1.prod.tangoe.com:3000/fleet/expense"; // bladdxx 
@@ -65,11 +65,11 @@ public class BaseClass
 	public static int TenTimeout = 10;	
 	
 	// command variables
-	//public static String commandUserName = "bob.lichtenfels@tangoe.com XX1";
-	//public static String commandPassword = "hop*ititmb9";	
+	public static String commandApiUserName = "tester.xx1";
+	public static String commandApiPassword = "tngo777";	
 	
-	public static String commandUserName = "tester.xx1";  // "analaura.pace@tangoe.com phi";   
-	public static String commandPassword = "tngo777";
+	public static String commandUserName = "bobphi";  // "analaura.pace@tangoe.com phi";   
+	public static String commandPassword = "welcome";
 
 	// public static String commandURL = "https://qa1cmd.tangoe.com/manage/login/login.trq"; // bladdxx comment
 	
@@ -270,7 +270,7 @@ public class BaseClass
 			
 			case CommandApi: // jnupp
 			{
-				baseUrl = CMD_baseUrl;
+				baseUrl = API_baseUrl;
 				break;
 			}			
 			
@@ -635,9 +635,9 @@ public class BaseClass
 		WaitForElementClickable(By.cssSelector(".cmd-button.login-button"), MainTimeout, errMessage);		
 		
 		driver.findElement(By.xpath("//input[@name='userName']")).clear();
-	    driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(commandUserName);	    
+	    driver.findElement(By.xpath("//input[@name='userName']")).sendKeys(commandApiUserName);	    
 	    driver.findElement(By.xpath("//input[@name='password']")).clear();
-	    driver.findElement(By.xpath("//input[@name='password']")).sendKeys(commandPassword);	    
+	    driver.findElement(By.xpath("//input[@name='password']")).sendKeys(commandApiPassword);	    
 	    driver.findElement(By.cssSelector(".cmd-button.login-button")).click();	    
 	    
 	    WaitForElementVisible(By.cssSelector("#tngoMainFooter"), MainTimeout); // this waits for the copyright box at the bottom of the landing page.

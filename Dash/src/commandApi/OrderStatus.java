@@ -65,23 +65,6 @@ public class OrderStatus extends BaseClass
 	    WaitForElementClickable(By.xpath("//input[@value='Search']"),MainTimeout,"failed wait before selecting search button.");	    
 	}
 
-	/*
-	// this assumes oder status page is opened.
-	public static void SearchUserByLastName() throws Exception
-	{
-	    DebugTimeout(0,"starting SearchUserByLastName()");
-	    // saw error again in here 12/10/15  
-	    // unknown error: Element is not clickable at point (132, 711). Other element would receive the click: <iframe src="javascript:(function(){document.open();document.close();})()" id="PLEASE_WAIT_MODAL_WINDOW_FRAME" scrolling="no" frameborder="0" style="display: block; position: absolute; top: 30px; left: 0px; width: 100%; height: 740px; z-index: 99999;"></iframe>
-		WaitForElementPresent(By.xpath("(//td/br)[1]/../input[@name='lastName']"), MainTimeout);
-	    driver.findElement(By.xpath("(//td/br)[1]/../input[@name='lastName']")).sendKeys(userOneLastName);	    
-	    driver.findElement(By.xpath("(//td/br)[1]/../input[@name='firstName']")).sendKeys(userOneFirstName);
-	    // intermittent error here when try to click search: unknown error: Element is not clickable at point (1205, 499). Other element would receive the click: <iframe src="javascript:(function(){document.open();document.close();})()" id="PLEASE_WAIT_MODAL_WINDOW_FRAME" scrolling="no" frameborder="0" style="display: block; position: absolute; top: 30px; left: 0px; width: 100%; height: 740px; z-index: 99999;"></iframe>
-	    WaitForElementClickable(By.xpath("//input[@value='Search']"),MainTimeout,"failed wait before selecting search button.");
-	    driver.findElement(By.xpath("//input[@value='Search']")).click();	    
-	    WaitForElementPresent(By.xpath("(//td/br)[1]/../input[@name='lastName']"), MainTimeout);
-	    DebugTimeout(0,"search method done");
-	}
-*/
 
 	public static void StartDefaultSearch() throws Exception
 	{
@@ -154,6 +137,7 @@ public class OrderStatus extends BaseClass
 		
 		OrderInfoOutList.close();
 	}
+
 
 	public static void SetupListOfOrdersAllCommandData(int numOrders) throws Exception
 	{

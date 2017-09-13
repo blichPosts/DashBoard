@@ -31,8 +31,6 @@ public class OrderListOfOrdersTestSuites extends BaseClass
 		// NOTE: this is for API tests OrdersShort
 		//OrderStatus.StartDefaultSearch();
 		//OrderStatus.SetupListOfOrdersAllCommandData(10);
-		
-		//OrderStatus.GetFirstOrderListed();
 	}
 	
 	@AfterSuite public static void CloseBrowser() 
