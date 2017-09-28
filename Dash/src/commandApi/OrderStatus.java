@@ -1,11 +1,15 @@
 package commandApi;
 
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import Dash.BaseClass;
 
@@ -93,7 +97,8 @@ public class OrderStatus extends BaseClass
 	    
 	    OrderInfoOutList = new FileWriter(OrderInfoOutListFile); // create file writer.
 	    OrderInfoOutList.write("Orders List:\n"); // output header.
-	    
+
+	    Robot robot = new Robot();
 		
 	    for(int x = 3, z = 1; x < /*5*/  13 ; x += 2, z++) 
 		{
@@ -122,7 +127,29 @@ public class OrderStatus extends BaseClass
 		    strTemp = driver.findElement(By.cssSelector(".tngoBox.gridArea>table:nth-of-type(3)>tbody>tr:nth-of-type(" + x + ")>td:nth-of-type(7)")).getText();
 		    
 		    OrderInfoOutList.write("StatusDate:" + strTemp.split("\n")[0] + "\n"); 		    
-		    OrderInfoOutList.write("Status:" + strTemp.split("\n")[1] + "\n");		    
+		    OrderInfoOutList.write("Status:" + strTemp.split("\n")[1] + "\n");		
+		    
+		    //.tngoBox.gridArea>table:nth-of-type(3)>tbody>tr:nth-of-type(9)
+		    //Pause("");
+			//WebElement topSection = driver.findElement(By.cssSelector(".tngoBox.gridArea>table:nth-of-type(3)>tbody>tr:nth-of-type(9)"));
+		    //Thread.sleep(1000);
+			//new Actions(driver).moveToElement(topSection).perform();
+		    //Actions action = new Actions(driver);
+		    //action.moveToElement(topSection);
+		    //action.build().perform();
+		    //Pause("");
+		    
+		    // 9/28/17 - started having trouble clicking orders that aren't visible. tried using moveTo (above) but got error saying the element 
+		    // was not clickable when the 'perform' part was called. had to use page down. 
+		    //ShowInt(x);
+		    if(x >= 9) // when 9 is reached need to move page down to click lower rows.
+		    {
+			    Thread.sleep(1000);
+		    	robot.keyPress(KeyEvent.VK_PAGE_DOWN);
+			    robot.keyRelease(KeyEvent.VK_PAGE_DOWN);
+		    }
+    
+		    WaitForElementClickable(By.cssSelector(".tngoBox.gridArea>table:nth-of-type(3)>tbody>tr:nth-of-type(" + x + ")>td:nth-of-type(2)"), TinyTimeout, "Fail Click");
 
 		    driver.findElement(By.cssSelector(".tngoBox.gridArea>table:nth-of-type(3)>tbody>tr:nth-of-type(" + x + ")>td:nth-of-type(2)")).click();		    
 		    

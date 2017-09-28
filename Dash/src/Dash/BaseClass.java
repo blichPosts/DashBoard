@@ -128,7 +128,7 @@ public class BaseClass
 	{
 		System.out.println("BASE CLASS CONSTRUCTOR...");
 		// projectPath = currentDirectory.getAbsolutePath();
-		loginType = LoginType.CommandApi; // bladdxx
+		loginType = LoginType.Command; // bladdxx
 		browserType = BrowserType.Chrome;
 
 	}
